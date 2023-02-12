@@ -49,7 +49,7 @@ Consider using a Node.js version manager such as https://volta.sh/ or https://gi
 }
 
 async function main() {
-	console.log("Starting onlineornot...");
+	onlineornotProcess = runOnlineornot();
 }
 
 process.on("SIGINT", () => {
