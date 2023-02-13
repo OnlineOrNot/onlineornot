@@ -6,6 +6,7 @@ import { version as onlineornotVersion } from "../package.json";
 import type { CommonYargsArgv, CommonYargsOptions } from "./yargs-types";
 import type Yargs from "yargs";
 import { printBanner } from "./banner";
+import { whoami } from "./whoami";
 
 const resetColor = "\x1b[0m";
 const fgGreenColor = "\x1b[32m";
@@ -73,6 +74,17 @@ export function createCLIParser(argv: string[]) {
 					onlineornot.showHelp("log");
 				}
 			}
+		}
+	);
+
+	// whoami
+	onlineornot.command(
+		"whoami",
+		"🕵️  Retrieve your user info and test your auth config",
+		() => {},
+		async () => {
+			await printBanner();
+			await whoami();
 		}
 	);
 
