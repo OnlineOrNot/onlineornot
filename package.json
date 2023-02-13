@@ -1,6 +1,6 @@
 {
 	"name": "onlineornot",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"description": "Command-line interface for OnlineOrNot",
 	"keywords": [
 		"uptime monitoring"
@@ -37,6 +37,7 @@
 		"cli-table3": "^0.6.3",
 		"esbuild": "^0.17.7",
 		"supports-color": "^9.3.1",
+		"undici": "^5.18.0",
 		"update-check": "^1.5.4",
 		"yargs": "^17.6.2"
 	},
