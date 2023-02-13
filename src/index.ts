@@ -1,28 +1,14 @@
-import chalk from "chalk";
-import supportsColor from "supports-color";
 import makeCLI from "yargs";
 
 import { logger } from "./logger";
 import { version as onlineornotVersion } from "../package.json";
-import { updateCheck } from "./update-check";
 
 import type { CommonYargsArgv, CommonYargsOptions } from "./yargs-types";
 import type Yargs from "yargs";
+import { printBanner } from "./banner";
 
 const resetColor = "\x1b[0m";
 const fgGreenColor = "\x1b[32m";
-
-export async function printBanner() {
-	const text = ` ✅ onlineornot ${onlineornotVersion} ${await updateCheck()}`;
-
-	logger.log(
-		text +
-			"\n" +
-			(supportsColor.stdout
-				? chalk.hex("#FF8800")("-".repeat(text.length))
-				: "-".repeat(text.length))
-	);
-}
 
 export class CommandLineArgsError extends Error {}
 
