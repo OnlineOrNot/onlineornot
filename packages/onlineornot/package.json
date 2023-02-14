@@ -15,7 +15,7 @@
 	},
 	"license": "MIT",
 	"author": "Max Rozen <max@onlineornot.com>",
-	"main": "dist/cli.js",
+	"main": "onlineornot-dist/cli.js",
 	"bin": {
 		"onlineornot": "./bin/onlineornot.js"
 	},
