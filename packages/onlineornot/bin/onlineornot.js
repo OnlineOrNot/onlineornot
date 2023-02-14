@@ -7,7 +7,7 @@ const MIN_NODE_VERSION = "16.13.0";
 let onlineornotProcess;
 
 /**
- * Executes ../dist/cli.js
+ * Executes ../onlineornot-dist/cli.js
  */
 function runOnlineornot() {
 	if (semiver(process.versions.node, MIN_NODE_VERSION) < 0) {
@@ -28,7 +28,7 @@ Consider using a Node.js version manager such as https://volta.sh/ or https://gi
 			"--no-warnings",
 			"--experimental-vm-modules",
 			...process.execArgv,
-			path.join(__dirname, "../dist/cli.js"),
+			path.join(__dirname, "../onlineornot-dist/cli.js"),
 			...process.argv.slice(2),
 		],
 		{

@@ -15,12 +15,13 @@
 	},
 	"license": "MIT",
 	"author": "Max Rozen <max@onlineornot.com>",
-	"main": "dist/cli.js",
+	"main": "onlineornot-dist/cli.js",
 	"bin": {
 		"onlineornot": "./bin/onlineornot.js"
 	},
 	"files": [
-		"dist"
+		"onlineornot-dist",
+		"bin"
 	],
 	"scripts": {
 		"build": "npm run clean && npm run bundle",
@@ -32,7 +33,8 @@
 		"prepublishOnly": "SOURCEMAPS=false npm run build",
 		"prettify": "prettier . --write --ignore-unknown",
 		"start": "npm run bundle && cross-env NODE_OPTIONS=--enable-source-maps ./bin/onlineornot.js",
-		"test": "echo \"Error: TODO\" && exit 0"
+		"test": "echo \"TODO: add tests\" && exit 0",
+		"test:ci": "echo \"TODO: add tests\" && exit 0"
 	},
 	"dependencies": {
 		"chalk": "^5.2.0",

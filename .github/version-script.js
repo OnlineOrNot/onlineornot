@@ -2,7 +2,9 @@ const fs = require("fs");
 const { exec } = require("child_process");
 
 try {
-	const package = JSON.parse(fs.readFileSync("./package.json"));
+	const package = JSON.parse(
+		fs.readFileSync("./packages/onlineornot/package.json")
+	);
 	exec("git rev-parse --short HEAD", (err, stdout) => {
 		if (err) {
 			console.log(err);
@@ -10,7 +12,7 @@ try {
 		}
 		package.version = "0.0.0-" + stdout.trim();
 		fs.writeFileSync(
-			"./package.json",
+			"./packages/onlineornot/package.json",
 			JSON.stringify(package, null, "\t") + "\n"
 		);
 	});
