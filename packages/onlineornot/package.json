@@ -32,7 +32,8 @@
 		"prepublishOnly": "SOURCEMAPS=false npm run build",
 		"prettify": "prettier . --write --ignore-unknown",
 		"start": "npm run bundle && cross-env NODE_OPTIONS=--enable-source-maps ./bin/onlineornot.js",
-		"test": "echo \"Error: TODO\" && exit 0"
+		"test": "echo \"TODO: add tests\" && exit 0",
+		"test:ci": "echo \"TODO: add tests\" && exit 0"
 	},
 	"dependencies": {
 		"chalk": "^5.2.0",
