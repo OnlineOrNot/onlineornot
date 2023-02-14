@@ -1,14 +1,9 @@
-import fs from "node:fs/promises";
 import path from "node:path";
 import { build } from "esbuild";
 import { EXTERNAL_DEPENDENCIES } from "./deps";
 
-type BuildFlags = {
-	watch?: boolean;
-};
-
-async function buildMain(flags: BuildFlags = {}) {
-	const outdir = path.resolve("./dist");
+async function buildMain() {
+	const outdir = path.resolve("./onlineornot-dist");
 	const onlineornotPackageDir = path.resolve(".");
 	/**
 	 * The relative path between the bundled code and the onlineornot package.
@@ -47,7 +42,7 @@ async function run() {
 	// After built once completely, rerun them both in watch mode
 	if (process.argv.includes("--watch")) {
 		console.log("Built. Watching for changes...");
-		await Promise.all([buildMain({ watch: true })]);
+		await Promise.all([buildMain()]);
 	}
 }
 

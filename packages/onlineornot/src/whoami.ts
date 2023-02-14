@@ -26,7 +26,8 @@ export async function getUserInfo() {
 	// verify the token is valid
 	// if not, return undefined
 	try {
-		const result = await fetchResult("/tokens/verify");
+		const result = (await fetchResult("/tokens/verify")) as { status: string };
+		if (result.status !== "active") return;
 	} catch (e) {
 		//if this fails, token is invalid or expired
 		return;

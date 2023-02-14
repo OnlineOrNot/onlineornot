@@ -15,10 +15,7 @@
 		// statements throughout the imported libraries which can break them.
 		"alwaysStrict": false,
 		"skipLibCheck": true,
-		"module": "CommonJS",
-		"types": ["node"],
-		"jsx": "react"
+		"types": []
 	},
-	"include": ["**/*.ts", "**/*.tsx", "**/*.js"],
-	"exclude": ["node_modules", "dist", "**/__tests__", "**/*.test.ts"]
+	"exclude": ["node_modules", "packages"]
 }

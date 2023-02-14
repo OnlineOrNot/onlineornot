@@ -1,12 +1,11 @@
 import assert from "node:assert";
 import { fetch, Headers } from "undici";
 import { version as onlineornotVersion } from "../../package.json";
-import type { RequestInit, HeadersInit } from "undici";
+import { API_BASE_URL } from "../constants";
 import { logger } from "../logger";
 import { ParseError, parseJSON } from "../parse";
-import { API_BASE_URL } from "../constants";
-import { getOnlineOrNotAPITokenFromEnv } from "../environment-variables/misc-variables";
 import { getToken } from "../user";
+import type { RequestInit, HeadersInit } from "undici";
 
 /**
  * Make a fetch request to the OnlineOrNot API.

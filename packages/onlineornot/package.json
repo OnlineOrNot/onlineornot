@@ -1,0 +1,59 @@
+{
+	"name": "onlineornot",
+	"version": "0.0.5",
+	"description": "Command-line interface for OnlineOrNot",
+	"keywords": [
+		"uptime monitoring"
+	],
+	"homepage": "https://github.com/onlineornot/onlineornot#readme",
+	"bugs": {
+		"url": "https://github.com/onlineornot/onlineornot/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/onlineornot/onlineornot.git"
+	},
+	"license": "MIT",
+	"author": "Max Rozen <max@onlineornot.com>",
+	"main": "dist/cli.js",
+	"bin": {
+		"onlineornot": "./bin/onlineornot.js"
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "npm run clean && npm run bundle",
+		"bundle": "node -r esbuild-register scripts/bundle.ts",
+		"check": "run-p check:* --aggregate-output --continue-on-error",
+		"check:format": "prettier . --check --ignore-unknown",
+		"check:types": "tsc --noEmit",
+		"clean": "rimraf dist",
+		"prepublishOnly": "SOURCEMAPS=false npm run build",
+		"prettify": "prettier . --write --ignore-unknown",
+		"start": "npm run bundle && cross-env NODE_OPTIONS=--enable-source-maps ./bin/onlineornot.js",
+		"test": "echo \"Error: TODO\" && exit 0"
+	},
+	"dependencies": {
+		"chalk": "^5.2.0",
+		"cli-table3": "^0.6.3",
+		"esbuild": "^0.17.7",
+		"supports-color": "^9.3.1",
+		"undici": "^5.18.0",
+		"update-check": "^1.5.4",
+		"yargs": "^17.6.2"
+	},
+	"devDependencies": {
+		"@types/node": "^18.13.0",
+		"@types/yargs": "^17.0.22",
+		"cross-env": "^7.0.3",
+		"esbuild-register": "^3.4.2",
+		"prettier": "^2.8.4",
+		"prettier-plugin-packagejson": "^2.4.2",
+		"rimraf": "^4.1.2",
+		"typescript": "^4.9.5"
+	},
+	"engines": {
+		"node": ">=16.13.0"
+	}
+}

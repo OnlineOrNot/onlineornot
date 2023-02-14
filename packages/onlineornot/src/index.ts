@@ -1,12 +1,13 @@
 import makeCLI from "yargs";
 
-import { logger } from "./logger";
 import { version as onlineornotVersion } from "../package.json";
-
-import type { CommonYargsArgv, CommonYargsOptions } from "./yargs-types";
-import type Yargs from "yargs";
 import { printBanner } from "./banner";
+import { logger } from "./logger";
+
 import { whoami } from "./whoami";
+import type { CommonYargsArgv } from "./yargs-types";
+// import type { CommonYargsArgv, CommonYargsOptions } from "./yargs-types";
+// import type Yargs from "yargs";
 
 const resetColor = "\x1b[0m";
 const fgGreenColor = "\x1b[32m";
@@ -45,14 +46,14 @@ export function createCLIParser(argv: string[]) {
 	onlineornot.help().alias("h", "help");
 
 	// Default help command that supports the subcommands
-	const subHelp: Yargs.CommandModule<CommonYargsOptions, CommonYargsOptions> = {
-		command: ["*"],
-		handler: async (args) => {
-			setImmediate(() =>
-				onlineornot.parse([...args._.map((a) => `${a}`), "--help"])
-			);
-		},
-	};
+	// const subHelp: Yargs.CommandModule<CommonYargsOptions, CommonYargsOptions> = {
+	// 	command: ["*"],
+	// 	handler: async (args) => {
+	// 		setImmediate(() =>
+	// 			onlineornot.parse([...args._.map((a) => `${a}`), "--help"])
+	// 		);
+	// 	},
+	// };
 	onlineornot.command(
 		["*"],
 		false,
