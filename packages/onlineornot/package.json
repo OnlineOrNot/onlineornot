@@ -20,7 +20,8 @@
 		"onlineornot": "./bin/onlineornot.js"
 	},
 	"files": [
-		"dist"
+		"onlineornot-dist",
+		"bin"
 	],
 	"scripts": {
 		"build": "npm run clean && npm run bundle",
