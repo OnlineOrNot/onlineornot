@@ -10,6 +10,7 @@ For example:
 
 ```bash
 export ONLINEORNOT_API_TOKEN=token-goes-here
+npx onlineornot checks --json
 ```
 
 ## Credit
