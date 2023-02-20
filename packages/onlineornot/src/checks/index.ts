@@ -1,7 +1,10 @@
 import { printBanner } from "../banner";
 import { fetchResult } from "../fetch";
 import { logger } from "../logger";
-import { CommonYargsArgv, StrictYargsOptionsToInterface } from "../yargs-types";
+import type {
+	CommonYargsArgv,
+	StrictYargsOptionsToInterface,
+} from "../yargs-types";
 
 interface Check {
 	id: string;
