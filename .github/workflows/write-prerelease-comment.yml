@@ -55,5 +55,5 @@ jobs:
             Or you can use `npx` with this latest build directly:
 
             ```sh
-            npx https://prerelease-registry.onlineornot.workers.dev/runs/${{ env.WORKFLOW_RUN_ID }}/npm-package-onlineornot-${{ env.WORKFLOW_RUN_PR }} dev path/to/script.js
+            npx https://prerelease-registry.onlineornot.workers.dev/runs/${{ env.WORKFLOW_RUN_ID }}/npm-package-onlineornot-${{ env.WORKFLOW_RUN_PR }} checks
             ```
