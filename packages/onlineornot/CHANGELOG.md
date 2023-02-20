@@ -1,5 +1,11 @@
 # onlineornot
 
+## 0.0.7
+
+### Patch Changes
+
+- [#6](https://github.com/OnlineOrNot/onlineornot/pull/6) [`451af20`](https://github.com/OnlineOrNot/onlineornot/commit/451af204412131e6998d43915f4d01e92ae58e75) Thanks [@rozenmd](https://github.com/rozenmd)! - feat: make it possible to fetch a list of uptime checks
+
 ## 0.0.6
 
 ### Patch Changes
