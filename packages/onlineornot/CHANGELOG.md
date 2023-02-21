@@ -1,5 +1,11 @@
 # onlineornot
 
+## 0.0.8
+
+### Patch Changes
+
+- [`9779fde`](https://github.com/OnlineOrNot/onlineornot/commit/9779fde153930817954bd1e29b96c86ebffce76e) Thanks [@rozenmd](https://github.com/rozenmd)! - feat: make it possible to fetch a specific uptime check via `onlineornot check <id>`
+
 ## 0.0.7
 
 ### Patch Changes
