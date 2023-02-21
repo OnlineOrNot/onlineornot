@@ -1,18 +1,12 @@
 import { printBanner } from "../banner";
 import { fetchResult } from "../fetch";
 import { logger } from "../logger";
+import type { Check } from "./types";
 import type {
 	CommonYargsArgv,
 	StrictYargsOptionsToInterface,
 } from "../yargs-types";
 
-interface Check {
-	id: string;
-	name: string;
-	url: string;
-	status: string;
-	lastQueued: string;
-}
 export function checksOptions(yargs: CommonYargsArgv) {
 	return yargs.option("json", {
 		describe: "Return output as JSON",

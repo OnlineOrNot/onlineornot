@@ -3,6 +3,7 @@ import makeCLI from "yargs";
 import { version as onlineornotVersion } from "../package.json";
 import { printBanner } from "./banner";
 import { checksHandler, checksOptions } from "./checks";
+import { checkHandler, checkOptions } from "./checks/individualCheck";
 import { logger } from "./logger";
 
 import { whoami } from "./whoami";
@@ -85,6 +86,14 @@ export function createCLIParser(argv: string[]) {
 		"🗒️  Review all of your uptime checks",
 		checksOptions,
 		checksHandler
+	);
+
+	// check
+	onlineornot.command(
+		"check <id>",
+		"🗒️  Review a specific uptime check",
+		checkOptions,
+		checkHandler
 	);
 
 	// whoami
