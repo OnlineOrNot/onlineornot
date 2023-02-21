@@ -90,7 +90,7 @@ export function createCLIParser(argv: string[]) {
 
 	// check
 	onlineornot.command(
-		"check [id]",
+		"check <id>",
 		"🗒️  Review a specific uptime check",
 		checkOptions,
 		checkHandler
