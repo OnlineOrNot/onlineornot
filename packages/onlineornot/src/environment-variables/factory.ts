@@ -1,4 +1,4 @@
-type VariableNames = "ONLINEORNOT_API_TOKEN";
+type VariableNames = "ONLINEORNOT_API_TOKEN" | "ONLINEORNOT_LOG";
 
 /**
  * Create a function used to access an environment variable, with a default value.

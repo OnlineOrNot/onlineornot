@@ -2,6 +2,7 @@ import { format } from "node:util";
 import chalk from "chalk";
 import CLITable from "cli-table3";
 import { formatMessagesSync } from "esbuild";
+import { getEnvironmentVariableFactory } from "./environment-variables/factory";
 
 export const LOGGER_LEVELS = {
 	none: -1,
@@ -23,12 +24,17 @@ const LOGGER_LEVEL_FORMAT_TYPE_MAP = {
 	debug: undefined,
 } as const;
 
+const getLogLevelFromEnv = getEnvironmentVariableFactory({
+	variableName: "ONLINEORNOT_LOG",
+	defaultValue: () => "log",
+});
+
 export type TableRow<Keys extends string> = Record<Keys, string>;
 
 class Logger {
 	constructor() {}
 
-	loggerLevel: LoggerLevel = "log";
+	loggerLevel: LoggerLevel = (getLogLevelFromEnv() as LoggerLevel) ?? "log";
 	columns = process.stdout.columns;
 
 	debug = (...args: unknown[]) => this.doLog("debug", args);
