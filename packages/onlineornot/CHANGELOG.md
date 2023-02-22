@@ -1,5 +1,23 @@
 # onlineornot
 
+## 0.0.11
+
+### Patch Changes
+
+- [#18](https://github.com/OnlineOrNot/onlineornot/pull/18) [`6214750`](https://github.com/OnlineOrNot/onlineornot/commit/6214750fc5b91f21d20b3f1704dafd2271516a0a) Thanks [@rozenmd](https://github.com/rozenmd)! - fix: improve whoami output
+
+  This PR adds permission scopes to `onlineornot whoami` output, so you know what your token can do:
+
+  ```bash
+   ✅ onlineornot 0.0.10
+  ----------------------
+  Getting User settings...
+  👋 You are logged in with an API Token.
+  🔓 Token Permissions:
+  Scope (Access)
+  - uptime_checks (read)
+  ```
+
 ## 0.0.10
 
 ### Patch Changes
