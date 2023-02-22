@@ -10,9 +10,22 @@ For example:
 
 ```bash
 export ONLINEORNOT_API_TOKEN=token-goes-here
-npx onlineornot checks --json
+npx onlineornot whoami
 ```
 
-## Credit
+If your token is valid, you should see:
 
-This is a fork of [wrangler2](https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler).
+```bash
+ ✅ onlineornot 0.0.10
+----------------------
+Getting User settings...
+👋 You are logged in with an API Token.
+```
+
+## Quick Start
+
+Once you've authenticated, you can run commands:
+
+```
+npx onlineornot checks
+```
