@@ -1,5 +1,5 @@
 import { printBanner } from "../banner";
-import { fetchResult } from "../fetch";
+import { fetchPagedResult } from "../fetch";
 import { logger } from "../logger";
 import type { Check } from "./types";
 import type {
@@ -17,7 +17,7 @@ export function checksOptions(yargs: CommonYargsArgv) {
 export async function checksHandler(
 	args: StrictYargsOptionsToInterface<typeof checksOptions>
 ) {
-	const results = (await fetchResult("/checks")) as Check[];
+	const results = (await fetchPagedResult("/checks")) as Check[];
 
 	if (args.json) {
 		logger.log(JSON.stringify(results, null, "  "));
