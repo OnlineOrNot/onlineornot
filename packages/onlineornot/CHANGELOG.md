@@ -1,5 +1,11 @@
 # onlineornot
 
+## 0.0.10
+
+### Patch Changes
+
+- [`507d3df`](https://github.com/OnlineOrNot/onlineornot/commit/507d3df1ef33c90b96f449d1918ddefa0905ab56) Thanks [@rozenmd](https://github.com/rozenmd)! - fix: make it possible to pick onlineornot's logLevel
+
 ## 0.0.9
 
 ### Patch Changes
