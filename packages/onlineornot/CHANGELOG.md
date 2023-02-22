@@ -1,5 +1,11 @@
 # onlineornot
 
+## 0.0.9
+
+### Patch Changes
+
+- [#12](https://github.com/OnlineOrNot/onlineornot/pull/12) [`994a3ef`](https://github.com/OnlineOrNot/onlineornot/commit/994a3ef3c4e022653178a41f9c7c815d042b99c9) Thanks [@rozenmd](https://github.com/rozenmd)! - fix: make `onlineornot checks` return the full result, even with pagination
+
 ## 0.0.8
 
 ### Patch Changes
