@@ -53,7 +53,6 @@ Any contributions you make will be via [Pull Requests](https://docs.github.com/e
 
 ### Install dependencies
 
-
 The Node.js dependencies of the project are managed by the [`npm`](https://www.npmjs.com/) tool.
 
 This repository is setup as a [mono-repo](https://docs.npmjs.com/cli/v7/using-npm/workspaces) of workspaces. The workspaces are stored in the [`packages`](https://github.com/onlineornot/onlineornot/tree/main/packages) directory.
