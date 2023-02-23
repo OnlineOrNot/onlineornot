@@ -1,38 +1,14 @@
-import { printBanner } from "../banner";
-import { fetchPagedResult } from "../fetch";
-import { logger } from "../logger";
-import { verifyToken } from "../user";
-import type { Check } from "./types";
-import type {
-	CommonYargsArgv,
-	StrictYargsOptionsToInterface,
-} from "../yargs-types";
+import * as View from "./individualCheck";
+import * as List from "./list";
+import type { CommonYargsArgv } from "../yargs-types";
 
-export function checksOptions(yargs: CommonYargsArgv) {
-	return yargs.option("json", {
-		describe: "Return output as JSON",
-		type: "boolean",
-		default: false,
-	});
-}
-export async function checksHandler(
-	args: StrictYargsOptionsToInterface<typeof checksOptions>
-) {
-	await verifyToken();
-	const results = (await fetchPagedResult("/checks")) as Check[];
-
-	if (args.json) {
-		logger.log(JSON.stringify(results, null, "  "));
-	} else {
-		await printBanner();
-		logger.table(
-			results.map((result) => ({
-				"Check ID": result.id,
-				Name: result.name,
-				URL: result.url,
-				Status: result.status,
-				"Last queued": result.lastQueued,
-			}))
+export function checks(yargs: CommonYargsArgv) {
+	return yargs
+		.command("list", "List uptime checks", List.options, List.handler)
+		.command(
+			"view <id>",
+			"View a specific uptime check",
+			View.options,
+			View.handler
 		);
-	}
 }
