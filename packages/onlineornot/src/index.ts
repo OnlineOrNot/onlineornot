@@ -2,7 +2,9 @@ import makeCLI from "yargs";
 
 import { version as onlineornotVersion } from "../package.json";
 import { printBanner } from "./banner";
+import { billingHandler, billingOptions } from "./billing";
 import { checks } from "./checks";
+import { docsHandler, docsOptions } from "./docs";
 import { logger } from "./logger";
 
 import { whoami } from "./whoami";
@@ -79,10 +81,26 @@ export function createCLIParser(argv: string[]) {
 		}
 	);
 
+	// docs
+	onlineornot.command(
+		"docs",
+		"📚 Open OnlineOrNot's docs in your browser",
+		docsOptions,
+		docsHandler
+	);
+
 	// checks
 	onlineornot.command("checks", "✅ Manage your uptime checks", (d1Yargs) => {
 		return checks(d1Yargs.command(subHelp));
 	});
+
+	// billing
+	onlineornot.command(
+		"billing",
+		"🧾 Open OnlineOrNot's billing in your browser",
+		billingOptions,
+		billingHandler
+	);
 
 	// whoami
 	onlineornot.command(

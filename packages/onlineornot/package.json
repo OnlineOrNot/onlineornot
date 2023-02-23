@@ -40,6 +40,7 @@
 		"chalk": "^5.2.0",
 		"cli-table3": "^0.6.3",
 		"esbuild": "^0.17.7",
+		"open": "^8.4.2",
 		"supports-color": "^9.3.1",
 		"undici": "^5.18.0",
 		"update-check": "^1.5.4",
