@@ -40,7 +40,7 @@ export async function getUserInfo() {
 			fetchResult("/tokens/permissions") as Promise<{ permissions: string[] }>,
 		]);
 
-		if (verifyResult.status !== "active") return;
+		if (verifyResult.status !== "active") return null;
 		permissions = permsResult.permissions;
 	} catch (e) {
 		//if this fails, token is invalid or expired
