@@ -1,5 +1,13 @@
 # onlineornot
 
+## 0.0.12
+
+### Patch Changes
+
+- [#20](https://github.com/OnlineOrNot/onlineornot/pull/20) [`5d75685`](https://github.com/OnlineOrNot/onlineornot/commit/5d75685e62f85a60b96733d00be60eb40f6118fd) Thanks [@rozenmd](https://github.com/rozenmd)! - fix: check API token before running commands
+
+  This PR makes the error more intuitive when you run commands that call the API without a valid API token.
+
 ## 0.0.11
 
 ### Patch Changes
