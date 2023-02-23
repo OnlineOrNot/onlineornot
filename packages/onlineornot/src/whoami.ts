@@ -1,15 +1,15 @@
 import { fetchResult } from "./fetch";
 import { logger } from "./logger";
-import { getToken } from "./user";
+import { NOT_LOGGED_IN_MSG, INVALID_TOKEN_MSG, getTokenQuietly } from "./user";
 
 export async function whoami() {
 	logger.log("Getting User settings...");
 	const user = await getUserInfo();
 
 	if (user === undefined) {
-		return void logger.log(
-			"You are not authenticated. Rerun this command with ONLINEORNOT_API_TOKEN set as an environment variable."
-		);
+		return void logger.log(NOT_LOGGED_IN_MSG);
+	} else if (user === null) {
+		return void logger.log(INVALID_TOKEN_MSG);
 	}
 
 	logger.log(`👋 You are logged in with an ${user.authType}.`);
@@ -29,9 +29,10 @@ export interface UserInfo {
 }
 
 export async function getUserInfo() {
-	const apiToken = getToken();
+	const apiToken = getTokenQuietly();
+	if (!apiToken) return undefined;
 	// verify the token is valid
-	// if not, return undefined
+	// if not, return null
 	let permissions: string[] = [];
 	try {
 		const [verifyResult, permsResult] = await Promise.all([
@@ -43,7 +44,7 @@ export async function getUserInfo() {
 		permissions = permsResult.permissions;
 	} catch (e) {
 		//if this fails, token is invalid or expired
-		return;
+		return null;
 	}
 	return {
 		apiToken: apiToken.apiToken,
