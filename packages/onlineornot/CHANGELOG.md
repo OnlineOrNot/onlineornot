@@ -1,5 +1,11 @@
 # onlineornot
 
+## 0.0.14
+
+### Patch Changes
+
+- [#24](https://github.com/OnlineOrNot/onlineornot/pull/24) [`b220c88`](https://github.com/OnlineOrNot/onlineornot/commit/b220c885c375bb7563b9ba88df494c5e2f0e94a0) Thanks [@rozenmd](https://github.com/rozenmd)! - feat: add docs and billing commands
+
 ## 0.0.13
 
 ### Patch Changes
