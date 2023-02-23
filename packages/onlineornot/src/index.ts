@@ -2,14 +2,12 @@ import makeCLI from "yargs";
 
 import { version as onlineornotVersion } from "../package.json";
 import { printBanner } from "./banner";
-import { checksHandler, checksOptions } from "./checks";
-import { checkHandler, checkOptions } from "./checks/individualCheck";
+import { checks } from "./checks";
 import { logger } from "./logger";
 
 import { whoami } from "./whoami";
-import type { CommonYargsArgv } from "./yargs-types";
-// import type { CommonYargsArgv, CommonYargsOptions } from "./yargs-types";
-// import type Yargs from "yargs";
+import type { CommonYargsArgv, CommonYargsOptions } from "./yargs-types";
+import type Yargs from "yargs";
 
 const resetColor = "\x1b[0m";
 const fgGreenColor = "\x1b[32m";
@@ -48,14 +46,15 @@ export function createCLIParser(argv: string[]) {
 	onlineornot.help().alias("h", "help");
 
 	// Default help command that supports the subcommands
-	// const subHelp: Yargs.CommandModule<CommonYargsOptions, CommonYargsOptions> = {
-	// 	command: ["*"],
-	// 	handler: async (args) => {
-	// 		setImmediate(() =>
-	// 			onlineornot.parse([...args._.map((a) => `${a}`), "--help"])
-	// 		);
-	// 	},
-	// };
+	const subHelp: Yargs.CommandModule<CommonYargsOptions, CommonYargsOptions> = {
+		command: ["*"],
+		handler: async (args) => {
+			setImmediate(() =>
+				onlineornot.parse([...args._.map((a) => `${a}`), "--help"])
+			);
+		},
+	};
+
 	onlineornot.command(
 		["*"],
 		false,
@@ -81,20 +80,9 @@ export function createCLIParser(argv: string[]) {
 	);
 
 	// checks
-	onlineornot.command(
-		"checks",
-		"🗒️  Review all of your uptime checks",
-		checksOptions,
-		checksHandler
-	);
-
-	// check
-	onlineornot.command(
-		"check <id>",
-		"🗒️  Review a specific uptime check",
-		checkOptions,
-		checkHandler
-	);
+	onlineornot.command("checks", "✅ Manage your uptime checks", (d1Yargs) => {
+		return checks(d1Yargs.command(subHelp));
+	});
 
 	// whoami
 	onlineornot.command(
