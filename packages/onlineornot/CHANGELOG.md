@@ -1,5 +1,13 @@
 # onlineornot
 
+## 0.0.13
+
+### Patch Changes
+
+- [#22](https://github.com/OnlineOrNot/onlineornot/pull/22) [`905d695`](https://github.com/OnlineOrNot/onlineornot/commit/905d695329031ca8b596c82b73d3ae9e301a61bb) Thanks [@rozenmd](https://github.com/rozenmd)! - chore: create a checks subcommand, move commands under it
+
+  BREAKING CHANGE: This PR moves `onlineornot checks` and `onlineornot check <id>` to `onlineornot checks list` and `onlineornot checks view <id>`
+
 ## 0.0.12
 
 ### Patch Changes
