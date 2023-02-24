@@ -21,6 +21,7 @@ export function options(yargs: CommonYargsArgv) {
 			default: false,
 		});
 }
+
 export async function handler(
 	args: StrictYargsOptionsToInterface<typeof options>
 ) {

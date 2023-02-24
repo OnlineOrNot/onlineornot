@@ -15,6 +15,7 @@ export function options(yargs: CommonYargsArgv) {
 		default: false,
 	});
 }
+
 export async function handler(
 	args: StrictYargsOptionsToInterface<typeof options>
 ) {
@@ -30,8 +31,10 @@ export async function handler(
 				"Check ID": result.id,
 				Name: result.name,
 				URL: result.url,
-				Status: result.status,
-				"Last queued": result.lastQueued,
+				Status: result.status ? result.status : "Pending",
+				"Last queued": result.lastQueued
+					? result.lastQueued
+					: "Waiting to be queued",
 			}))
 		);
 	}
