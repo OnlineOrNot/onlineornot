@@ -1,5 +1,13 @@
 # onlineornot
 
+## 0.0.15
+
+### Patch Changes
+
+- [#27](https://github.com/OnlineOrNot/onlineornot/pull/27) [`1786959`](https://github.com/OnlineOrNot/onlineornot/commit/1786959bf9c9112b4a392915947f6a22bbc40dc1) Thanks [@rozenmd](https://github.com/rozenmd)! - feat: implement `onlineornot checks delete <id>`
+
+- [#26](https://github.com/OnlineOrNot/onlineornot/pull/26) [`652b5a8`](https://github.com/OnlineOrNot/onlineornot/commit/652b5a8e039f8c38b82c28d8bf4abd50d91b948d) Thanks [@rozenmd](https://github.com/rozenmd)! - feat: implement login command
+
 ## 0.0.14
 
 ### Patch Changes
