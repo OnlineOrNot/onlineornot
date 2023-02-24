@@ -2,7 +2,6 @@ import { printBanner } from "../banner";
 import { fetchResult } from "../fetch";
 import { logger } from "../logger";
 import { verifyToken } from "../user";
-import type { Check } from "./types";
 import type {
 	CommonYargsArgv,
 	StrictYargsOptionsToInterface,
@@ -21,8 +20,8 @@ export async function handler(
 ) {
 	await printBanner();
 	await verifyToken();
-	const result = (await fetchResult(`/checks/${args.id}`, {
+	await fetchResult(`/checks/${args.id}`, {
 		method: "DELETE",
-	})) as Check;
-	logger.log(`Deleted check ${result.id} (${result.name})`);
+	});
+	logger.log(`Deleted check ${args.id}`);
 }
