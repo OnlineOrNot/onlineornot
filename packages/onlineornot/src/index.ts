@@ -1,12 +1,11 @@
 import makeCLI from "yargs";
-
 import { version as onlineornotVersion } from "../package.json";
 import { printBanner } from "./banner";
 import { billingHandler, billingOptions } from "./billing";
 import { checks } from "./checks";
 import { docsHandler, docsOptions } from "./docs";
 import { logger } from "./logger";
-
+import { loginHandler, loginOptions } from "./login";
 import { whoami } from "./whoami";
 import type { CommonYargsArgv, CommonYargsOptions } from "./yargs-types";
 import type Yargs from "yargs";
@@ -100,6 +99,14 @@ export function createCLIParser(argv: string[]) {
 		"🧾 Open OnlineOrNot's billing in your browser",
 		billingOptions,
 		billingHandler
+	);
+
+	// login
+	onlineornot.command(
+		"login",
+		"🔓 Opens your browser to OnlineOrNot's Developer settings",
+		loginOptions,
+		loginHandler
 	);
 
 	// whoami
