@@ -10,8 +10,13 @@ import type {
 
 export function options(yargs: CommonYargsArgv) {
 	return yargs
-		.positional("id", {
-			describe: "The ID of the check you wish to fetch",
+		.positional("name", {
+			describe: "The name of your new uptime check",
+			type: "string",
+			demandOption: true,
+		})
+		.positional("url", {
+			describe: "The URL of your new uptime check",
 			type: "string",
 			demandOption: true,
 		})
@@ -26,12 +31,17 @@ export async function handler(
 	args: StrictYargsOptionsToInterface<typeof options>
 ) {
 	await verifyToken();
-	const result = (await fetchResult(`/checks/${args.id}`)) as Check;
+	const result = (await fetchResult(`/checks/`, {
+		method: "POST",
+		headers: { "content-type": "application/json" },
+		body: JSON.stringify({ name: args.name, url: args.url }),
+	})) as Check;
 
 	if (args.json) {
 		logger.log(JSON.stringify(result, null, "  "));
 	} else {
 		await printBanner();
+		logger.log("Successfully created new check:");
 		logger.table([
 			{
 				"Check ID": result.id,
