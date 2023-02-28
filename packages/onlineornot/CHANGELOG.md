@@ -1,5 +1,11 @@
 # onlineornot
 
+## 0.0.16
+
+### Patch Changes
+
+- [#29](https://github.com/OnlineOrNot/onlineornot/pull/29) [`4a2a7e5`](https://github.com/OnlineOrNot/onlineornot/commit/4a2a7e5d369cc3f8f363b6b1ac994ff01edf6134) Thanks [@rozenmd](https://github.com/rozenmd)! - feat: make it possible to create uptime checks via `onlineornot checks create`
+
 ## 0.0.15
 
 ### Patch Changes
