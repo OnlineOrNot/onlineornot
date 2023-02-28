@@ -1,5 +1,19 @@
 # onlineornot
 
+## 1.0.0
+
+### Major Changes
+
+- [#35](https://github.com/OnlineOrNot/onlineornot/pull/35) [`472b104`](https://github.com/OnlineOrNot/onlineornot/commit/472b1046c5282aa43db55e4742bb3eac4fbcdd50) Thanks [@rozenmd](https://github.com/rozenmd)! - fix: make `onlineornot login` checked if you're logged in before doing anything
+
+  Releasing this as onlineornot v1.0.0 as it's ready for prime time.
+
+  Closes #34
+
+### Patch Changes
+
+- [#32](https://github.com/OnlineOrNot/onlineornot/pull/32) [`4f20e80`](https://github.com/OnlineOrNot/onlineornot/commit/4f20e8039885c9d1ead19f0acb20f35cee772bdd) Thanks [@rozenmd](https://github.com/rozenmd)! - fix: improve `onlineornot checks create` errors
+
 ## 0.0.16
 
 ### Patch Changes
