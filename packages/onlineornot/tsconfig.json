@@ -10,7 +10,6 @@
 		"emitted-types",
 		"node_modules",
 		"*-dist",
-		"src/miniflare-cli",
 		"templates",
 		"**/__tests__",
 		"**/*.test.ts"
