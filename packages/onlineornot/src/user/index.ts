@@ -2,9 +2,9 @@ import { getOnlineOrNotAPITokenFromEnv } from "../environment-variables/misc-var
 import { fetchResult } from "../fetch";
 
 export const NOT_LOGGED_IN_MSG =
-	"You are not logged in. Rerun this command with ONLINEORNOT_API_TOKEN set as an environment variable.";
+	"You are not logged in.\nRerun this command with ONLINEORNOT_API_TOKEN set as an environment variable.";
 export const INVALID_TOKEN_MSG =
-	"Your API token is invalid. Rerun this command with a different ONLINEORNOT_API_TOKEN set as an environment variable.";
+	"Your API token is invalid.\nRerun this command with a different ONLINEORNOT_API_TOKEN set as an environment variable.";
 
 export function getToken() {
 	const token = getOnlineOrNotAPITokenFromEnv();

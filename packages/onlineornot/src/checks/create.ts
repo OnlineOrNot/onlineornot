@@ -31,11 +31,28 @@ export async function handler(
 	args: StrictYargsOptionsToInterface<typeof options>
 ) {
 	await verifyToken();
-	const result = (await fetchResult(`/checks/`, {
-		method: "POST",
-		headers: { "content-type": "application/json" },
-		body: JSON.stringify({ name: args.name, url: args.url }),
-	})) as Check;
+	let result: Check;
+	try {
+		result = await fetchResult(`/checks/`, {
+			method: "POST",
+			headers: { "content-type": "application/json" },
+			body: JSON.stringify({ name: args.name, url: args.url }),
+		});
+	} catch (err) {
+		const errorWithCode = err as { code?: number; notes?: { text: string }[] };
+		if (errorWithCode.code === 10004) {
+			return logger.error(
+				"You have reached the maximum number of checks for your account. Please upgrade to a paid plan to add more checks."
+			);
+		} else if (errorWithCode.code === 10000) {
+			//validation error, need to check notes
+			return logger.error(
+				"Validation error: " + errorWithCode?.notes?.[0].text
+			);
+		} else {
+			return logger.error(err);
+		}
+	}
 
 	if (args.json) {
 		logger.log(JSON.stringify(result, null, "  "));
