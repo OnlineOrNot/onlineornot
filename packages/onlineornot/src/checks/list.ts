@@ -20,12 +20,14 @@ export async function handler(
 	args: StrictYargsOptionsToInterface<typeof options>
 ) {
 	await verifyToken();
+	if (!args.json) {
+		await printBanner();
+	}
 	const results = (await fetchPagedResult("/checks")) as Check[];
 
 	if (args.json) {
 		logger.log(JSON.stringify(results, null, "  "));
 	} else {
-		await printBanner();
 		logger.table(
 			results.map((result) => ({
 				"Check ID": result.id,

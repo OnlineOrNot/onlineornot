@@ -26,12 +26,14 @@ export async function handler(
 	args: StrictYargsOptionsToInterface<typeof options>
 ) {
 	await verifyToken();
+	if (!args.json) {
+		await printBanner();
+	}
 	const result = (await fetchResult(`/checks/${args.id}`)) as Check;
 
 	if (args.json) {
 		logger.log(JSON.stringify(result, null, "  "));
 	} else {
-		await printBanner();
 		logger.table([
 			{
 				"Check ID": result.id,

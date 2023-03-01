@@ -104,7 +104,7 @@ export function createCLIParser(argv: string[]) {
 	// login
 	onlineornot.command(
 		"login",
-		"🔓 Opens your browser to OnlineOrNot's Developer settings",
+		"🔓 Open OnlineOrNot's Developer Portal in your browser",
 		loginOptions,
 		loginHandler
 	);
