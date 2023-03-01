@@ -158,7 +158,7 @@ export async function main(argv: string[]): Promise<void> {
 			logger.error(e instanceof Error ? e.message : e);
 			logger.log(
 				`${fgGreenColor}%s${resetColor}`,
-				"If you think this is a bug then please create an issue at https://github.com/OnlineOrNot/onlineornot/issues/new/choose/new"
+				"If you think this is a bug then please create an issue at https://github.com/OnlineOrNot/onlineornot/issues/new/choose"
 			);
 		}
 		throw e;
