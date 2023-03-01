@@ -31,6 +31,9 @@ export async function handler(
 	args: StrictYargsOptionsToInterface<typeof options>
 ) {
 	await verifyToken();
+	if (!args.json) {
+		await printBanner();
+	}
 	let result: Check;
 	try {
 		result = await fetchResult(`/checks/`, {
@@ -57,7 +60,6 @@ export async function handler(
 	if (args.json) {
 		logger.log(JSON.stringify(result, null, "  "));
 	} else {
-		await printBanner();
 		logger.log("Successfully created new check:");
 		logger.table([
 			{
