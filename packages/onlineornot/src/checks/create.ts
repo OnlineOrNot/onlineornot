@@ -47,6 +47,11 @@ export async function handler(
 			return logger.error(
 				"You have reached the maximum number of checks for your account. Please upgrade to a paid plan to add more checks."
 			);
+		} else if (errorWithCode.code === 10003) {
+			//unauthorized
+			return logger.error(
+				"Your API token isn't allowed to create checks.\nPlease check your token with `onlineornot whoami` and try again."
+			);
 		} else if (errorWithCode.code === 10000) {
 			//validation error, need to check notes
 			return logger.error(
