@@ -1,5 +1,13 @@
 # onlineornot
 
+## 1.0.2
+
+### Patch Changes
+
+- [#42](https://github.com/OnlineOrNot/onlineornot/pull/42) [`380da57`](https://github.com/OnlineOrNot/onlineornot/commit/380da57b63a9c04a9e37da68a2418776191a63b6) Thanks [@rozenmd](https://github.com/rozenmd)! - fix: make it possible for `onlineornot checks delete` to output json
+
+  Closes #41
+
 ## 1.0.1
 
 ### Patch Changes
