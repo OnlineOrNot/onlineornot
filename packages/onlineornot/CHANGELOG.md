@@ -1,5 +1,13 @@
 # onlineornot
 
+## 1.0.1
+
+### Patch Changes
+
+- [#40](https://github.com/OnlineOrNot/onlineornot/pull/40) [`ae309ff`](https://github.com/OnlineOrNot/onlineornot/commit/ae309ff10c16293c82f622c120d9e5d51df59392) Thanks [@rozenmd](https://github.com/rozenmd)! - fix: improve error when token isn't authorized to create checks
+
+- [#37](https://github.com/OnlineOrNot/onlineornot/pull/37) [`c1d7f82`](https://github.com/OnlineOrNot/onlineornot/commit/c1d7f82d7298ef1bc49a2d08ae81489c2e112e3e) Thanks [@rozenmd](https://github.com/rozenmd)! - fix: print banner before fetching API
+
 ## 1.0.0
 
 ### Major Changes
