@@ -19,10 +19,10 @@ export function options(yargs: CommonYargsArgv) {
 export async function handler(
 	args: StrictYargsOptionsToInterface<typeof options>
 ) {
-	await verifyToken();
 	if (!args.json) {
 		await printBanner();
 	}
+	await verifyToken();
 	const results = (await fetchPagedResult("/checks")) as Check[];
 
 	if (args.json) {
