@@ -30,10 +30,10 @@ export function options(yargs: CommonYargsArgv) {
 export async function handler(
 	args: StrictYargsOptionsToInterface<typeof options>
 ) {
-	await verifyToken();
 	if (!args.json) {
 		await printBanner();
 	}
+	await verifyToken();
 	let result: Check;
 	try {
 		result = await fetchResult(`/checks/`, {
