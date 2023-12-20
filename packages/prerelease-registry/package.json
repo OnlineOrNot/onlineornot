@@ -1,21 +1,22 @@
 {
 	"name": "@onlineornot/prerelease-registry",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"private": true,
-	"main": "_worker.js",
+	"main": "dist/index.js",
 	"scripts": {
-		"build": "npx wrangler pages functions build --fallback-service='' ./functions/routes",
+		"build": "wrangler pages functions build --fallback-service='' ./functions/routes --outdir=dist",
 		"check:type": "tsc",
 		"prepublish": "npm run build",
-		"publish": "npx wrangler publish _worker.js",
+		"publish": "wrangler deploy dist/index.js",
 		"prestart": "npm run build",
-		"start": "npx wrangler dev _worker.js"
+		"start": "wrangler dev dist/index.js"
 	},
 	"dependencies": {
 		"jszip": "^3.7.1"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20221111.1",
-		"typescript": "^4.5.5"
+		"typescript": "^4.5.5",
+		"wrangler": "3.22.0"
 	}
 }
