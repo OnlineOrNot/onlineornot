@@ -9,7 +9,7 @@ jobs:
   release:
     if: ${{ github.repository_owner == 'onlineornot' }}
     name: Release
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
