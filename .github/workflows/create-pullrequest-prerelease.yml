@@ -36,7 +36,7 @@ jobs:
         working-directory: packages/onlineornot
 
       - name: Upload packaged onlineornot artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: npm-package-onlineornot-${{ github.event.number }} # encode the PR number into the artifact name
           path: packages/onlineornot/onlineornot-*.tgz
