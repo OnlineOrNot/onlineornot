@@ -15,8 +15,8 @@
 		"jszip": "^3.7.1"
 	},
 	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20221111.1",
+		"@cloudflare/workers-types": "^4.20241106.0",
 		"typescript": "^4.5.5",
-		"wrangler": "3.22.0"
+		"wrangler": "3.86.1"
 	}
 }
