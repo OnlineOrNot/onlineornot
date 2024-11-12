@@ -9,7 +9,7 @@ on:
 jobs:
   comment:
     if: ${{ github.repository_owner == 'onlineornot' }}
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     name: Write comment to the PR
     steps:
       - name: "Put PR and workflow ID on the environment"
