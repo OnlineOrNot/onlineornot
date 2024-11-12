@@ -182,3 +182,4 @@ _routes.generated.json
 
 onlineornot-dist/
 packages/prerelease-registry/_worker.js
+.wrangler

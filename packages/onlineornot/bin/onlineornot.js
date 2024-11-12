@@ -2,7 +2,7 @@
 const { spawn } = require("child_process");
 const path = require("path");
 
-const MIN_NODE_VERSION = "16.13.0";
+const MIN_NODE_VERSION = "16.17.0";
 
 let onlineornotProcess;
 

@@ -49,9 +49,9 @@
 		"@cloudflare/workers-types": "^4.20221111.1"
 	},
 	"engines": {
-		"node": ">=16.13.0"
+		"node": ">=16.17.0"
 	},
 	"volta": {
-		"node": "16.13.0"
+		"node": "16.17.0"
 	}
 }
