@@ -41,6 +41,9 @@
 		"*.{js,ts,tsx,jsx,mjs,cjs}": [
 			"oxfmt --write",
 			"oxlint --fix"
+		],
+		"*.{json,md,yaml,yml}": [
+			"oxfmt --write"
 		]
 	},
 	"engines": {
