@@ -9,19 +9,16 @@
 	},
 	"license": "MIT",
 	"author": "max@onlineornot.com",
-	"workspaces": [
-		"packages/*"
-	],
 	"scripts": {
-		"build": "npm run build --workspace=onlineornot",
+		"build": "pnpm --filter onlineornot run build",
 		"check": "run-p check:* --aggregate-output --continue-on-error",
 		"check:format": "prettier . --check --ignore-unknown",
 		"check:lint": "eslint \"packages/**/*.[tj]s?(x)\" --cache --cache-strategy content --max-warnings=0",
-		"check:type": "npm run check:type --workspaces --if-present",
-		"fix": "npm run prettify && npm run check:lint -- --fix",
+		"check:type": "pnpm -r --if-present run check:type",
+		"fix": "pnpm run prettify && pnpm run check:lint -- --fix",
 		"prettify": "prettier . --write --ignore-unknown",
-		"test": "npm run clean --workspace=onlineornot && npm run bundle --workspace=onlineornot && npm run test --workspace=packages/onlineornot",
-		"test:ci": "npm run test:ci --workspace=packages/onlineornot"
+		"test": "pnpm --filter onlineornot run clean && pnpm --filter onlineornot run bundle && pnpm --filter onlineornot run test",
+		"test:ci": "pnpm --filter onlineornot run test:ci"
 	},
 	"dependencies": {
 		"@changesets/changelog-github": "^0.4.5",
@@ -43,15 +40,15 @@
 		"prettier": "^2.6.2",
 		"prettier-plugin-packagejson": "^2.2.18",
 		"rimraf": "^3.0.2",
-		"typescript": "^4.8.4"
+		"typescript": "^5.9.3"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20221111.1"
 	},
 	"engines": {
-		"node": ">=16.17.0"
+		"node": ">=22"
 	},
 	"volta": {
-		"node": "16.17.0"
+		"node": "22.16.0"
 	}
 }

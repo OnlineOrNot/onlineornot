@@ -8,24 +8,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Use Node.js 16.17
-        uses: actions/setup-node@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: 16.17
-          cache: "npm" # cache ~/.npm in case 'npm ci' needs to run
+          version: 10
 
-      - name: Install NPM Dependencies
-        run: npm ci
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Check for errors
-        run: npm run check
+        run: pnpm run check
         env:
           NODE_OPTIONS: "--max_old_space_size=8192"
 
@@ -37,25 +42,30 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Use Node.js 16.17
-        uses: actions/setup-node@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: 16.17
-          cache: "npm" # cache ~/.npm in case 'npm ci' needs to run
+          version: 10
 
-      - name: Install NPM Dependencies
-        run: npm ci
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Run builds
-        run: npm run build
+        run: pnpm run build
         env:
           NODE_ENV: "production"
 
       - name: Run tests & collect coverage
-        run: npm run test:ci
+        run: pnpm run test:ci
         env:
           NODE_OPTIONS: "--max_old_space_size=8192"

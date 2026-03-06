@@ -20,12 +20,12 @@ packages/onlineornot/
 
 ## Where to Look
 
-| Task | Location |
-|------|----------|
-| Add new command | `src/<command>/index.ts` (export options + handler) |
-| Modify API calls | `src/fetch/index.ts` |
-| Change auth flow | `src/user/`, `src/login/` |
-| Update CLI help | `src/index.ts` (yargs config) |
+| Task             | Location                                            |
+| ---------------- | --------------------------------------------------- |
+| Add new command  | `src/<command>/index.ts` (export options + handler) |
+| Modify API calls | `src/fetch/index.ts`                                |
+| Change auth flow | `src/user/`, `src/login/`                           |
+| Update CLI help  | `src/index.ts` (yargs config)                       |
 
 ## CLI Commands
 

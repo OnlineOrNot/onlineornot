@@ -102,6 +102,9 @@ module.exports = {
 			},
 		},
 	],
-	ignorePatterns: ["packages/onlineornot/*-dist"],
+	ignorePatterns: [
+		"packages/onlineornot/*-dist",
+		"packages/prerelease-registry/dist",
+	],
 	root: true,
 };

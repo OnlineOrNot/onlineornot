@@ -12,32 +12,37 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Use Node.js 16.17
-        uses: actions/setup-node@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: 16.17
-          cache: "npm" # cache ~/.npm in case 'npm ci' needs to run
+          version: 10
 
-      - name: Install NPM Dependencies
-        run: npm ci
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Modify package.json version
         run: node .github/version-script.js
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Check for errors
-        run: npm run check
+        run: pnpm run check
         env:
           NODE_OPTIONS: "--max_old_space_size=8192"
 
       - name: Publish Beta to NPM
-        run: npm publish --tag beta
+        run: pnpm publish --tag beta --no-git-checks
         env:
           NPM_PUBLISH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
         working-directory: packages/onlineornot
@@ -54,26 +59,31 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Use Node.js 16.17
-        uses: actions/setup-node@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: 16.17
-          cache: "npm" # cache ~/.npm in case 'npm ci' needs to run
+          version: 10
 
-      - name: Install NPM Dependencies
-        run: npm ci
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Build onlineornot
-        run: npm run build
+        run: pnpm run build
         env:
           NODE_ENV: "production"
 
       - name: Build & Publish Prerelease Registry
-        run: npm run publish
+        run: pnpm run publish
         env:
           NODE_ENV: "production"
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

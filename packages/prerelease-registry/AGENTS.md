@@ -5,6 +5,7 @@ Cloudflare Pages Function serving CLI prerelease artifacts from GitHub Actions.
 ## Purpose
 
 Enables installing PR builds via npm:
+
 ```bash
 npm install https://prerelease-registry.onlineornot.workers.dev/prs/<PR#>/onlineornot
 ```
@@ -26,10 +27,10 @@ packages/prerelease-registry/
 
 ## Routes
 
-| Route | Purpose |
-|-------|---------|
-| `GET /` | HTML landing page |
-| `GET /prs/:prId/:name` | Fetch artifact by PR number |
+| Route                    | Purpose                           |
+| ------------------------ | --------------------------------- |
+| `GET /`                  | HTML landing page                 |
+| `GET /prs/:prId/:name`   | Fetch artifact by PR number       |
 | `GET /runs/:runId/:name` | Fetch artifact by workflow run ID |
 
 ## How It Works
@@ -43,10 +44,10 @@ packages/prerelease-registry/
 
 ## Environment
 
-| Variable | Source |
-|----------|--------|
-| `GITHUB_USER` | wrangler.toml ("onlineornot") |
-| `GITHUB_API_TOKEN` | Secret |
+| Variable           | Source                        |
+| ------------------ | ----------------------------- |
+| `GITHUB_USER`      | wrangler.toml ("onlineornot") |
+| `GITHUB_API_TOKEN` | Secret                        |
 
 ## Commands
 
