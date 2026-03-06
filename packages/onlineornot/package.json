@@ -5,15 +5,15 @@
 	"keywords": [
 		"uptime monitoring"
 	],
-	"homepage": "https://github.com/onlineornot/onlineornot#readme",
+	"homepage": "https://github.com/OnlineOrNot/onlineornot#readme",
 	"bugs": {
-		"url": "https://github.com/onlineornot/onlineornot/issues"
+		"url": "https://github.com/OnlineOrNot/onlineornot/issues"
 	},
 	"license": "MIT",
 	"author": "Max Rozen <max@onlineornot.com>",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/onlineornot/onlineornot.git"
+		"url": "https://github.com/OnlineOrNot/onlineornot.git"
 	},
 	"bin": {
 		"onlineornot": "./bin/onlineornot.js"
