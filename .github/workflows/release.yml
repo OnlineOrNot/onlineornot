@@ -7,7 +7,7 @@ on:
 
 jobs:
   release:
-    if: ${{ github.repository_owner == 'onlineornot' }}
+    if: ${{ github.repository_owner == 'OnlineOrNot' }}
     name: Release
     runs-on: ubuntu-latest
     permissions:
