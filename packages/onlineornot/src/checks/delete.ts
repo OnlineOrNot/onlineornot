@@ -33,11 +33,13 @@ export async function handler(args: StrictYargsOptionsToInterface<typeof options
 		if (errorWithCode.code === 10009 || errorWithCode.code === 10001) {
 			// 10009 = NOT_FOUND, 10001 = ISSUE_FETCHING_DATA (legacy, also means not found)
 			return logger.error(`Check "${args.id}" not found.`);
-		} else if (errorWithCode.code === 10002) {
+		} else if (errorWithCode.code === 10002 || errorWithCode.code === 10011) {
+			// 10002 = UNAUTHENTICATED, 10011 = UNAUTHENTICATED_TOKEN
 			return logger.error(
 				"You are not authenticated.\nPlease check your token with `onlineornot whoami` and try again.",
 			);
-		} else if (errorWithCode.code === 10003) {
+		} else if (errorWithCode.code === 10003 || errorWithCode.code === 10012) {
+			// 10003 = UNAUTHORIZED, 10012 = INSUFFICIENT_PERMISSIONS
 			return logger.error(
 				"Your API token isn't allowed to delete checks.\nPlease check your token with `onlineornot whoami` and try again.",
 			);
