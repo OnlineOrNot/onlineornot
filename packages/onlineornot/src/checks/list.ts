@@ -2,7 +2,7 @@ import { printBanner } from "../banner";
 import { fetchPagedResult } from "../fetch";
 import { logger } from "../logger";
 import { verifyToken } from "../user";
-import type { Check } from "./types";
+import type { CheckListItem } from "./types";
 import type { CommonYargsArgv, StrictYargsOptionsToInterface } from "../yargs-types";
 
 export function options(yargs: CommonYargsArgv) {
@@ -18,7 +18,7 @@ export async function handler(args: StrictYargsOptionsToInterface<typeof options
 		await printBanner();
 	}
 	await verifyToken();
-	const results = (await fetchPagedResult("/checks")) as Check[];
+	const results = (await fetchPagedResult("/checks")) as CheckListItem[];
 
 	if (args.json) {
 		logger.log(JSON.stringify(results, null, "  "));
@@ -29,7 +29,7 @@ export async function handler(args: StrictYargsOptionsToInterface<typeof options
 				Name: result.name,
 				URL: result.url,
 				Status: result.status ? result.status : "Pending",
-				"Last queued": result.lastQueued ? result.lastQueued : "Waiting to be queued",
+				"Last queued": result.last_queued ? result.last_queued : "Waiting to be queued",
 			})),
 		);
 	}

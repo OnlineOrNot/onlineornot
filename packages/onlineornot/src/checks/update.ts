@@ -2,19 +2,14 @@ import { printBanner } from "../banner";
 import { fetchResult } from "../fetch";
 import { logger } from "../logger";
 import { verifyToken } from "../user";
-import type { Check, CreateCheckParams } from "./types";
+import type { Check, UpdateCheckParams } from "./types";
 import { VALID_METHODS, VALID_REGIONS } from "./types";
 import type { CommonYargsArgv, StrictYargsOptionsToInterface } from "../yargs-types";
 
 export function options(yargs: CommonYargsArgv) {
 	return yargs
-		.positional("name", {
-			describe: "The name of your new uptime check",
-			type: "string",
-			demandOption: true,
-		})
-		.positional("url", {
-			describe: "The URL of your new uptime check",
+		.positional("id", {
+			describe: "The ID of the uptime check to update",
 			type: "string",
 			demandOption: true,
 		})
@@ -22,6 +17,14 @@ export function options(yargs: CommonYargsArgv) {
 			describe: "Return output as JSON",
 			type: "boolean",
 			default: false,
+		})
+		.option("name", {
+			describe: "Name of the check",
+			type: "string",
+		})
+		.option("url", {
+			describe: "URL to check",
+			type: "string",
 		})
 		.option("text-to-search-for", {
 			describe: "Text to search for in the response",
@@ -34,7 +37,6 @@ export function options(yargs: CommonYargsArgv) {
 		.option("reminder-alert-interval-minutes", {
 			describe: "Interval in minutes between reminders (-1 for never)",
 			type: "number",
-			default: 1440,
 		})
 		.option("test-regions", {
 			describe: `Regions to run checks from. Valid: ${VALID_REGIONS.join(", ")}`,
@@ -44,35 +46,29 @@ export function options(yargs: CommonYargsArgv) {
 		.option("confirmation-period-seconds", {
 			describe: "Confirmation period in seconds",
 			type: "number",
-			default: 60,
 		})
 		.option("recovery-period-seconds", {
 			describe: "Recovery period in seconds",
 			type: "number",
-			default: 180,
 		})
 		.option("timeout", {
 			describe: "Timeout in milliseconds",
 			type: "number",
-			default: 10000,
 		})
 		.option("type", {
 			describe: "Type of check",
 			type: "string",
 			choices: ["UPTIME_CHECK", "BROWSER_CHECK"] as const,
-			default: "UPTIME_CHECK",
 		})
 		.option("alert-priority", {
 			describe: "Alert Priority",
 			type: "string",
 			choices: ["LOW", "HIGH"] as const,
-			default: "LOW",
 		})
 		.option("method", {
 			describe: "HTTP Method",
 			type: "string",
 			choices: VALID_METHODS,
-			default: "GET",
 		})
 		.option("body", {
 			describe: "Request body (for POST/PUT/PATCH)",
@@ -86,12 +82,10 @@ export function options(yargs: CommonYargsArgv) {
 		.option("follow-redirects", {
 			describe: "Whether to follow redirects",
 			type: "boolean",
-			default: true,
 		})
 		.option("verify-ssl", {
 			describe: "Whether to fail a check if SSL verification fails",
 			type: "boolean",
-			default: false,
 		})
 		.option("auth-username", {
 			describe: "Username for HTTP Basic Auth",
@@ -115,6 +109,14 @@ export function options(yargs: CommonYargsArgv) {
 			describe: "IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)",
 			type: "array",
 			string: true,
+		})
+		.option("paused", {
+			describe: "Whether the check is paused (completely stops execution)",
+			type: "boolean",
+		})
+		.option("muted", {
+			describe: "Whether the check is muted (continues running but suppresses alerts)",
+			type: "boolean",
 		});
 }
 
@@ -139,13 +141,12 @@ export async function handler(args: StrictYargsOptionsToInterface<typeof options
 	}
 	await verifyToken();
 
-	const params: CreateCheckParams = {
-		name: args.name,
-		url: args.url,
-	};
+	const params: UpdateCheckParams = {};
 
+	if (args.name) params.name = args.name;
+	if (args.url) params.url = args.url;
 	if (args.textToSearchFor) params.text_to_search_for = args.textToSearchFor;
-	if (args.testInterval) params.test_interval = args.testInterval;
+	if (args.testInterval !== undefined) params.test_interval = args.testInterval;
 	if (args.reminderAlertIntervalMinutes !== undefined)
 		params.reminder_alert_interval_minutes = args.reminderAlertIntervalMinutes;
 	if (args.testRegions) params.test_regions = args.testRegions;
@@ -166,28 +167,30 @@ export async function handler(args: StrictYargsOptionsToInterface<typeof options
 	if (args.version) params.version = args.version;
 	if (args.webhookAlerts) params.webhook_alerts = args.webhookAlerts;
 	if (args.oncallAlerts) params.oncall_alerts = args.oncallAlerts;
+	if (args.paused !== undefined) params.paused = args.paused;
+	if (args.muted !== undefined) params.muted = args.muted;
+
+	if (Object.keys(params).length === 0) {
+		return logger.error("No update options provided. Use --help to see available options.");
+	}
 
 	let result: Check;
 	try {
-		result = await fetchResult(`/checks/`, {
-			method: "POST",
+		result = await fetchResult(`/checks/${args.id}`, {
+			method: "PATCH",
 			headers: { "content-type": "application/json" },
 			body: JSON.stringify(params),
 		});
 	} catch (err) {
 		const errorWithCode = err as { code?: number; notes?: { text: string }[] };
-		if (errorWithCode.code === 10004) {
+		if (errorWithCode.code === 10003) {
 			return logger.error(
-				"You have reached the maximum number of checks for your account. Please upgrade to a paid plan to add more checks.",
-			);
-		} else if (errorWithCode.code === 10003) {
-			//unauthorized
-			return logger.error(
-				"Your API token isn't allowed to create checks.\nPlease check your token with `onlineornot whoami` and try again.",
+				"Your API token isn't allowed to update checks.\nPlease check your token with `onlineornot whoami` and try again.",
 			);
 		} else if (errorWithCode.code === 10000) {
-			//validation error, need to check notes
 			return logger.error("Validation error: " + errorWithCode?.notes?.[0].text);
+		} else if (errorWithCode.code === 10001) {
+			return logger.error(`Check with ID "${args.id}" not found.`);
 		} else {
 			return logger.error(err);
 		}
@@ -202,7 +205,7 @@ export async function handler(args: StrictYargsOptionsToInterface<typeof options
 		const formatValue = <T>(val: T | null): string =>
 			val !== null && val !== undefined ? String(val) : "-";
 
-		logger.log("Successfully created new check:");
+		logger.log("Successfully updated check:");
 		logger.log("");
 		logger.log(`  Id:                      ${result.id}`);
 		logger.log(`  Name:                    ${result.name}`);
