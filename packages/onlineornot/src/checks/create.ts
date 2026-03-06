@@ -154,9 +154,10 @@ export async function handler(args: StrictYargsOptionsToInterface<typeof options
 	if (args.recoveryPeriodSeconds !== undefined)
 		params.recovery_period_seconds = args.recoveryPeriodSeconds;
 	if (args.timeout !== undefined) params.timeout = args.timeout;
-	if (args.type) params.type = args.type;
-	if (args.alertPriority) params.alert_priority = args.alertPriority;
-	if (args.method) params.method = args.method;
+	if (args.type) params.type = args.type as "UPTIME_CHECK" | "BROWSER_CHECK";
+	if (args.alertPriority) params.alert_priority = args.alertPriority as "LOW" | "HIGH";
+	if (args.method)
+		params.method = args.method as "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
 	if (args.body) params.body = args.body;
 	if (args.header) params.headers = parseHeaders(args.header);
 	if (args.followRedirects !== undefined) params.follow_redirects = args.followRedirects;

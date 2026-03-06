@@ -29,8 +29,9 @@
 		"clean": "rimraf dist",
 		"prepublishOnly": "SOURCEMAPS=false pnpm run build",
 		"start": "pnpm run bundle && cross-env NODE_OPTIONS=--enable-source-maps ./bin/onlineornot.js",
-		"test": "echo \"TODO: add tests\" && exit 0",
-		"test:ci": "echo \"TODO: add tests\" && exit 0"
+		"check:type": "tsgo --noEmit",
+		"test": "vitest",
+		"test:ci": "vitest run"
 	},
 	"dependencies": {
 		"chalk": "^5.2.0",
@@ -47,8 +48,7 @@
 		"@types/yargs": "^17.0.22",
 		"cross-env": "^7.0.3",
 		"esbuild-register": "^3.4.2",
-		"rimraf": "^4.1.2",
-		"typescript": "^5.9.3"
+		"rimraf": "^6.1.3"
 	},
 	"engines": {
 		"node": ">=22"
