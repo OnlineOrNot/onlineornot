@@ -53,8 +53,8 @@ export const handler = async (args: Args) => { ... };
 ## Build
 
 ```bash
-npm run build     # esbuild -> onlineornot-dist/cli.js
-npm run start     # Build + run with sourcemaps
+pnpm run build    # esbuild -> onlineornot-dist/cli.js
+pnpm run start    # Build + run with sourcemaps
 ./bin/onlineornot.js checks list  # Test locally
 ```
 

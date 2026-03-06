@@ -1,40 +1,38 @@
 # OnlineOrNot CLI
 
-**Generated:** 2026-03-06 | **Commit:** 76bf444 | **Branch:** main
+**Generated:** 2026-03-06 | **Commit:** 053e957 | **Branch:** main
 
 ## Overview
 
-CLI for OnlineOrNot uptime monitoring service. Monorepo with npm workspaces.
+CLI for OnlineOrNot uptime monitoring service. pnpm monorepo with single package.
 
 ## Structure
 
 ```
 onlineornot-cli/
 ├── packages/
-│   ├── onlineornot/          # Main CLI (npm: onlineornot) <- AGENTS.md
-│   └── prerelease-registry/  # CF Worker for PR artifacts <- AGENTS.md
+│   └── onlineornot/          # Main CLI (npm: onlineornot) <- AGENTS.md
 ├── .changeset/               # Changesets version management
-└── .github/workflows/        # CI/CD (5 workflows)
+└── .github/workflows/        # CI/CD (2 workflows)
 ```
 
 ## Build/Test/Lint
 
-| Command         | Description                          |
-| --------------- | ------------------------------------ |
-| `npm run build` | Build CLI with esbuild               |
-| `npm run check` | Format + lint + typecheck (parallel) |
-| `npm run fix`   | Auto-fix lint + format issues        |
-| `npm run test`  | (TODO) No tests implemented          |
+| Command          | Description                          |
+| ---------------- | ------------------------------------ |
+| `pnpm run build` | Build CLI with esbuild               |
+| `pnpm run check` | Format + lint + typecheck (parallel) |
+| `pnpm run fix`   | Auto-fix lint + format issues        |
+| `pnpm run test`  | (TODO) No tests implemented          |
 
 ## Where to Look
 
-| Task               | Location                                  | Notes                |
-| ------------------ | ----------------------------------------- | -------------------- |
-| CLI commands       | `packages/onlineornot/src/`               | yargs-based commands |
-| API client         | `packages/onlineornot/src/fetch/`         | undici + pagination  |
-| Prerelease hosting | `packages/prerelease-registry/functions/` | CF Pages Functions   |
-| CI workflows       | `.github/workflows/`                      | PR checks, releases  |
-| Version bumps      | `.changeset/`                             | Run `npx changeset`  |
+| Task           | Location                          | Notes                |
+| -------------- | --------------------------------- | -------------------- |
+| CLI commands   | `packages/onlineornot/src/`       | yargs-based commands |
+| API client     | `packages/onlineornot/src/fetch/` | undici + pagination  |
+| CI workflows   | `.github/workflows/`              | releases, previews   |
+| Version bumps  | `.changeset/`                     | Run `pnpm changeset` |
 
 ## Code Conventions
 
@@ -79,18 +77,26 @@ onlineornot-cli/
 
 ## Release Process
 
-1. Create changeset: `npx changeset`
+1. Create changeset: `pnpm changeset`
 2. Commit changeset file
 3. Push to main - CI creates "Version Packages" PR
-4. Merge PR - triggers npm publish
+4. Merge PR - triggers npm publish (Trusted Publishing)
+
+## CI Workflows
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| `release.yml` | push to main | Changesets versioning + npm publish with provenance |
+| `prereleases.yml` | push, pull_request | Preview releases via pkg.pr.new |
 
 ## Non-Standard Patterns
 
 - **Output dir**: `onlineornot-dist/` instead of `dist/`
 - **Node version check**: `bin/onlineornot.js` spawns cli.js with `--experimental-vm-modules`
-- **Prerelease registry**: Install PR builds via `npm install https://prerelease-registry.onlineornot.workers.dev/prs/<PR#>/onlineornot`
+- **Preview releases**: Via pkg.pr.new (`npm i https://pkg.pr.new/onlineornot@<sha>`)
 
 ## Environment
 
-- **Node**: >=16.17.0 (Volta pinned)
-- **Package manager**: npm workspaces
+- **Node**: >=22
+- **pnpm**: 10
+- **TypeScript**: 5.9
