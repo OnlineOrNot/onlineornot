@@ -50,7 +50,7 @@ export class ParseError extends Error implements Message {
  */
 export function parsePackageJSON<T extends PackageJSON = PackageJSON>(
 	input: string,
-	file?: string
+	file?: string,
 ): T {
 	return parseJSON<T>(input, file);
 }
@@ -68,9 +68,7 @@ export function parseJSON<T>(input: string, file?: string): T {
 			throw err;
 		}
 		const text = message.substring(0, index);
-		const position = parseInt(
-			message.substring(index + JSON_ERROR_SUFFIX.length)
-		);
+		const position = parseInt(message.substring(index + JSON_ERROR_SUFFIX.length));
 		const location = indexLocation({ file, fileText: input }, position);
 		throw new ParseError({ text, location });
 	}

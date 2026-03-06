@@ -13,6 +13,6 @@ export async function printBanner() {
 			"\n" +
 			(supportsColor.stdout
 				? chalk.hex("#FF8800")("-".repeat(text.length))
-				: "-".repeat(text.length))
+				: "-".repeat(text.length)),
 	);
 }

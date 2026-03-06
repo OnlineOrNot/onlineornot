@@ -16,7 +16,7 @@ function runOnlineornot() {
 		console.error(
 			`Onlineornot requires at least node.js v${MIN_NODE_VERSION}. You are using v${process.versions.node}. Please update your version of node.js.
 
-Consider using a Node.js version manager such as https://volta.sh/ or https://github.com/nvm-sh/nvm.`
+Consider using a Node.js version manager such as https://volta.sh/ or https://github.com/nvm-sh/nvm.`,
 		);
 		process.exitCode = 1;
 		return;
@@ -36,11 +36,9 @@ Consider using a Node.js version manager such as https://volta.sh/ or https://gi
 			env: {
 				...process.env,
 			},
-		}
+		},
 	)
-		.on("exit", (code) =>
-			process.exit(code === undefined || code === null ? 0 : code)
-		)
+		.on("exit", (code) => process.exit(code === undefined || code === null ? 0 : code))
 		.on("message", (message) => {
 			if (process.send) {
 				process.send(message);
@@ -53,10 +51,10 @@ async function main() {
 }
 
 process.on("SIGINT", () => {
-	onlineornotProcess && onlineornotProcess.kill();
+	if (onlineornotProcess) onlineornotProcess.kill();
 });
 process.on("SIGTERM", () => {
-	onlineornotProcess && onlineornotProcess.kill();
+	if (onlineornotProcess) onlineornotProcess.kill();
 });
 
 // semiver implementation via https://github.com/lukeed/semiver/blob/ae7eebe6053c96be63032b14fb0b68e2553fcac4/src/index.js

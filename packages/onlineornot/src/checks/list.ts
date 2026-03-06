@@ -3,10 +3,7 @@ import { fetchPagedResult } from "../fetch";
 import { logger } from "../logger";
 import { verifyToken } from "../user";
 import type { Check } from "./types";
-import type {
-	CommonYargsArgv,
-	StrictYargsOptionsToInterface,
-} from "../yargs-types";
+import type { CommonYargsArgv, StrictYargsOptionsToInterface } from "../yargs-types";
 
 export function options(yargs: CommonYargsArgv) {
 	return yargs.option("json", {
@@ -16,9 +13,7 @@ export function options(yargs: CommonYargsArgv) {
 	});
 }
 
-export async function handler(
-	args: StrictYargsOptionsToInterface<typeof options>
-) {
+export async function handler(args: StrictYargsOptionsToInterface<typeof options>) {
 	if (!args.json) {
 		await printBanner();
 	}
@@ -34,10 +29,8 @@ export async function handler(
 				Name: result.name,
 				URL: result.url,
 				Status: result.status ? result.status : "Pending",
-				"Last queued": result.lastQueued
-					? result.lastQueued
-					: "Waiting to be queued",
-			}))
+				"Last queued": result.lastQueued ? result.lastQueued : "Waiting to be queued",
+			})),
 		);
 	}
 }

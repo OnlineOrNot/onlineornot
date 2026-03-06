@@ -15,14 +15,12 @@ export async function loginHandler() {
 
 	if (apiToken) {
 		return logger.log(
-			`You are already logged in with an API token.\nYou can generate another token at ${urlToOpen}`
+			`You are already logged in with an API token.\nYou can generate another token at ${urlToOpen}`,
 		);
 	}
 
 	logger.log(`Opening a link in your default browser: ${urlToOpen}`);
-	logger.log(
-		`-----------------------------------------------------------------------`
-	);
+	logger.log(`-----------------------------------------------------------------------`);
 	logger.log(`Create an API token, then add it to your environment variables:`);
 	logger.log(`export ONLINEORNOT_API_TOKEN=your-api-token`);
 	await openInBrowser(urlToOpen);

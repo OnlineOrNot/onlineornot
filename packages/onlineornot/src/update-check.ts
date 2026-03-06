@@ -9,7 +9,7 @@ export async function updateCheck(): Promise<string> {
 		update = await checkForUpdate(pkg, {
 			distTag: pkg.version.startsWith("0.0.0") ? "beta" : "latest",
 		});
-	} catch (err) {
+	} catch {
 		// ignore error
 	}
 

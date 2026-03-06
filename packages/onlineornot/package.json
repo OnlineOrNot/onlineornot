@@ -9,13 +9,12 @@
 	"bugs": {
 		"url": "https://github.com/onlineornot/onlineornot/issues"
 	},
+	"license": "MIT",
+	"author": "Max Rozen <max@onlineornot.com>",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/onlineornot/onlineornot.git"
 	},
-	"license": "MIT",
-	"author": "Max Rozen <max@onlineornot.com>",
-	"main": "onlineornot-dist/cli.js",
 	"bin": {
 		"onlineornot": "./bin/onlineornot.js"
 	},
@@ -23,15 +22,12 @@
 		"onlineornot-dist",
 		"bin"
 	],
+	"main": "onlineornot-dist/cli.js",
 	"scripts": {
 		"build": "pnpm run clean && pnpm run bundle",
 		"bundle": "node -r esbuild-register scripts/bundle.ts",
-		"check": "run-p check:* --aggregate-output --continue-on-error",
-		"check:format": "prettier . --check --ignore-unknown",
-		"check:types": "tsc --noEmit",
 		"clean": "rimraf dist",
 		"prepublishOnly": "SOURCEMAPS=false pnpm run build",
-		"prettify": "prettier . --write --ignore-unknown",
 		"start": "pnpm run bundle && cross-env NODE_OPTIONS=--enable-source-maps ./bin/onlineornot.js",
 		"test": "echo \"TODO: add tests\" && exit 0",
 		"test:ci": "echo \"TODO: add tests\" && exit 0"
@@ -51,8 +47,6 @@
 		"@types/yargs": "^17.0.22",
 		"cross-env": "^7.0.3",
 		"esbuild-register": "^3.4.2",
-		"prettier": "^2.8.4",
-		"prettier-plugin-packagejson": "^2.4.2",
 		"rimraf": "^4.1.2",
 		"typescript": "^5.9.3"
 	},

@@ -2,10 +2,7 @@ import { printBanner } from "../banner";
 import { fetchResult } from "../fetch";
 import { logger } from "../logger";
 import { verifyToken } from "../user";
-import type {
-	CommonYargsArgv,
-	StrictYargsOptionsToInterface,
-} from "../yargs-types";
+import type { CommonYargsArgv, StrictYargsOptionsToInterface } from "../yargs-types";
 
 export function options(yargs: CommonYargsArgv) {
 	return yargs
@@ -21,9 +18,7 @@ export function options(yargs: CommonYargsArgv) {
 		});
 }
 
-export async function handler(
-	args: StrictYargsOptionsToInterface<typeof options>
-) {
+export async function handler(args: StrictYargsOptionsToInterface<typeof options>) {
 	if (!args.json) {
 		await printBanner();
 	}

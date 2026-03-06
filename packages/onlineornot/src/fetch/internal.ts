@@ -20,15 +20,10 @@ export async function fetchInternal<ResponseType>(
 	resource: string,
 	init: RequestInit = {},
 	queryParams?: URLSearchParams,
-	abortSignal?: AbortSignal
+	abortSignal?: AbortSignal,
 ): Promise<ResponseType> {
 	const method = init.method ?? "GET";
-	const response = await performApiFetch(
-		resource,
-		init,
-		queryParams,
-		abortSignal
-	);
+	const response = await performApiFetch(resource, init, queryParams, abortSignal);
 	const jsonText = await response.text();
 	logger.debug("-- START API RESPONSE:", response.statusText, response.status);
 	const logHeaders = cloneHeaders(response.headers);
@@ -39,7 +34,7 @@ export async function fetchInternal<ResponseType>(
 
 	try {
 		return parseJSON<ResponseType>(jsonText);
-	} catch (err) {
+	} catch {
 		throw new ParseError({
 			text: "Received a malformed response from the API",
 			notes: [
@@ -63,12 +58,12 @@ export async function performApiFetch(
 	resource: string,
 	init: RequestInit = {},
 	queryParams?: URLSearchParams,
-	abortSignal?: AbortSignal
+	abortSignal?: AbortSignal,
 ) {
 	const method = init.method ?? "GET";
 	assert(
 		resource.startsWith("/"),
-		`API fetch - resource path must start with a "/" but got "${resource}"`
+		`API fetch - resource path must start with a "/" but got "${resource}"`,
 	);
 
 	const apiToken = getToken();
@@ -77,16 +72,11 @@ export async function performApiFetch(
 	addUserAgent(headers);
 
 	const queryString = queryParams ? `?${queryParams.toString()}` : "";
-	logger.debug(
-		`-- START API REQUEST: ${method} ${API_BASE_URL}${resource}${queryString}`
-	);
+	logger.debug(`-- START API REQUEST: ${method} ${API_BASE_URL}${resource}${queryString}`);
 	const logHeaders = cloneHeaders(headers);
 	delete logHeaders["Authorization"];
 	logger.debug("HEADERS:", JSON.stringify(logHeaders, null, 2));
-	logger.debug(
-		"INIT:",
-		JSON.stringify({ ...init, headers: logHeaders }, null, 2)
-	);
+	logger.debug("INIT:", JSON.stringify({ ...init, headers: logHeaders }, null, 2));
 	logger.debug("-- END API REQUEST");
 	return await fetch(`${API_BASE_URL}${resource}${queryString}`, {
 		method,
@@ -104,14 +94,12 @@ function truncate(text: string, maxLength: number): string {
 	return `${text.substring(0, maxLength)}... (length = ${length})`;
 }
 
-function cloneHeaders(
-	headers: HeadersInit | undefined
-): Record<string, string> {
+function cloneHeaders(headers: HeadersInit | undefined): Record<string, string> {
 	return headers instanceof Headers
 		? Object.fromEntries(headers.entries())
 		: Array.isArray(headers)
-		? Object.fromEntries(headers)
-		: { ...headers };
+			? Object.fromEntries(headers)
+			: { ...headers };
 }
 
 export type ApiCredentials = {
@@ -120,7 +108,7 @@ export type ApiCredentials = {
 
 function addAuthorizationHeaderIfUnspecified(
 	headers: Record<string, string>,
-	auth: ApiCredentials
+	auth: ApiCredentials,
 ): void {
 	if (!("Authorization" in headers)) {
 		headers["Authorization"] = `Bearer ${auth.apiToken}`;

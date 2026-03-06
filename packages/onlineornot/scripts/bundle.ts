@@ -14,10 +14,7 @@ async function buildMain() {
 	 * This is exposed in the source via the `getBasePath()` function, which should be used
 	 * in place of `__dirname` and similar Node.js constants.
 	 */
-	const __RELATIVE_PACKAGE_PATH__ = `"${path.relative(
-		outdir,
-		onlineornotPackageDir
-	)}"`;
+	const __RELATIVE_PACKAGE_PATH__ = `"${path.relative(outdir, onlineornotPackageDir)}"`;
 	await build({
 		entryPoints: ["./src/cli.ts"],
 		bundle: true,
@@ -42,7 +39,7 @@ async function run() {
 	// After built once completely, rerun them both in watch mode
 	if (process.argv.includes("--watch")) {
 		console.log("Built. Watching for changes...");
-		await Promise.all([buildMain()]);
+		await buildMain();
 	}
 }
 

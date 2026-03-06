@@ -1,0 +1,53 @@
+{
+	"$schema": "./node_modules/oxlint/configuration_schema.json",
+	"plugins": ["typescript", "import", "unicorn"],
+	"categories": {
+		"correctness": "error"
+	},
+	"rules": {
+		"no-empty": "off",
+		"no-empty-function": "off",
+		"no-shadow": "error",
+		"require-yield": "off",
+		"typescript/consistent-type-imports": "error",
+		"typescript/no-empty-function": "off",
+		"typescript/no-explicit-any": "error",
+		"import/order": [
+			"warn",
+			{
+				"groups": [
+					"builtin",
+					"external",
+					"internal",
+					"parent",
+					"sibling",
+					"index",
+					"object",
+					"type"
+				],
+				"alphabetize": {
+					"order": "asc"
+				}
+			}
+		]
+	},
+	"overrides": [
+		{
+			"files": ["packages/onlineornot/src/**/*.ts"],
+			"rules": {
+				"no-restricted-globals": [
+					"error",
+					{
+						"name": "__dirname",
+						"message": "Use `getBasePath()` instead."
+					},
+					{
+						"name": "__filename",
+						"message": "Use `getBasePath()` instead."
+					}
+				]
+			}
+		}
+	],
+	"ignorePatterns": ["packages/onlineornot/*-dist", "node_modules"]
+}

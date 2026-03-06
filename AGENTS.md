@@ -27,12 +27,12 @@ onlineornot-cli/
 
 ## Where to Look
 
-| Task           | Location                          | Notes                |
-| -------------- | --------------------------------- | -------------------- |
-| CLI commands   | `packages/onlineornot/src/`       | yargs-based commands |
-| API client     | `packages/onlineornot/src/fetch/` | undici + pagination  |
-| CI workflows   | `.github/workflows/`              | releases, previews   |
-| Version bumps  | `.changeset/`                     | Run `pnpm changeset` |
+| Task          | Location                          | Notes                |
+| ------------- | --------------------------------- | -------------------- |
+| CLI commands  | `packages/onlineornot/src/`       | yargs-based commands |
+| API client    | `packages/onlineornot/src/fetch/` | undici + pagination  |
+| CI workflows  | `.github/workflows/`              | releases, previews   |
+| Version bumps | `.changeset/`                     | Run `pnpm changeset` |
 
 ## Code Conventions
 
@@ -84,10 +84,10 @@ onlineornot-cli/
 
 ## CI Workflows
 
-| Workflow | Trigger | Purpose |
-|----------|---------|---------|
-| `release.yml` | push to main | Changesets versioning + npm publish with provenance |
-| `prereleases.yml` | push, pull_request | Preview releases via pkg.pr.new |
+| Workflow          | Trigger            | Purpose                                             |
+| ----------------- | ------------------ | --------------------------------------------------- |
+| `release.yml`     | push to main       | Changesets versioning + npm publish with provenance |
+| `prereleases.yml` | push, pull_request | Preview releases via pkg.pr.new                     |
 
 ## Non-Standard Patterns
 

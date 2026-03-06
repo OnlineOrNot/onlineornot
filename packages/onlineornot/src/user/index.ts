@@ -32,7 +32,7 @@ export async function verifyToken() {
 	try {
 		const result = (await fetchResult("/tokens/verify")) as { status: string };
 		if (result.status !== "active") throw new Error(INVALID_TOKEN_MSG);
-	} catch (e) {
+	} catch {
 		//if this fails, token is invalid or expired
 		throw new Error(INVALID_TOKEN_MSG);
 	}

@@ -10,8 +10,7 @@ for (const artifact of allArtifacts.data.artifacts) {
 	if (match) {
 		fs.appendFileSync(
 			process.env.GITHUB_ENV,
-			`\nWORKFLOW_RUN_PR=${match[1]}` +
-				`\nWORKFLOW_RUN_ID=${context.payload.workflow_run.id}`
+			`\nWORKFLOW_RUN_PR=${match[1]}` + `\nWORKFLOW_RUN_ID=${context.payload.workflow_run.id}`,
 		);
 		break;
 	}

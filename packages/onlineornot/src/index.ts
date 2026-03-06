@@ -50,9 +50,7 @@ export function createCLIParser(argv: string[]) {
 	const subHelp: Yargs.CommandModule<CommonYargsOptions, CommonYargsOptions> = {
 		command: ["*"],
 		handler: async (args) => {
-			setImmediate(() =>
-				onlineornot.parse([...args._.map((a) => `${a}`), "--help"])
-			);
+			setImmediate(() => onlineornot.parse([...args._.map((a) => `${a}`), "--help"]));
 		},
 	};
 
@@ -77,7 +75,7 @@ export function createCLIParser(argv: string[]) {
 					onlineornot.showHelp("log");
 				}
 			}
-		}
+		},
 	);
 
 	// docs
@@ -85,7 +83,7 @@ export function createCLIParser(argv: string[]) {
 		"docs",
 		"📚 Open OnlineOrNot's docs in your browser",
 		docsOptions,
-		docsHandler
+		docsHandler,
 	);
 
 	// checks
@@ -98,7 +96,7 @@ export function createCLIParser(argv: string[]) {
 		"billing",
 		"🧾 Open OnlineOrNot's billing in your browser",
 		billingOptions,
-		billingHandler
+		billingHandler,
 	);
 
 	// login
@@ -106,7 +104,7 @@ export function createCLIParser(argv: string[]) {
 		"login",
 		"🔓 Open OnlineOrNot's Developer Portal in your browser",
 		loginOptions,
-		loginHandler
+		loginHandler,
 	);
 
 	// whoami
@@ -117,7 +115,7 @@ export function createCLIParser(argv: string[]) {
 		async () => {
 			await printBanner();
 			await whoami();
-		}
+		},
 	);
 
 	// This set to false to allow overwrite of default behaviour
@@ -134,7 +132,7 @@ export function createCLIParser(argv: string[]) {
 			} else {
 				logger.log(onlineornotVersion);
 			}
-		}
+		},
 	);
 
 	onlineornot.exitProcess(false);
@@ -158,7 +156,7 @@ export async function main(argv: string[]): Promise<void> {
 			logger.error(e instanceof Error ? e.message : e);
 			logger.log(
 				`${fgGreenColor}%s${resetColor}`,
-				"If you think this is a bug then please create an issue at https://github.com/OnlineOrNot/onlineornot/issues/new/choose"
+				"If you think this is a bug then please create an issue at https://github.com/OnlineOrNot/onlineornot/issues/new/choose",
 			);
 		}
 		throw e;

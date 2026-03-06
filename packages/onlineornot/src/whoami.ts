@@ -42,7 +42,7 @@ export async function getUserInfo() {
 
 		if (verifyResult.status !== "active") return null;
 		permissions = permsResult.permissions;
-	} catch (e) {
+	} catch {
 		//if this fails, token is invalid or expired
 		return null;
 	}
