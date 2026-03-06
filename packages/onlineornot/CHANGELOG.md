@@ -1,5 +1,20 @@
 # onlineornot
 
+## 1.1.0
+
+### Minor Changes
+
+- [#49](https://github.com/OnlineOrNot/onlineornot/pull/49) [`fe00959b501a049d2655e6941436687331feeb30`](https://github.com/OnlineOrNot/onlineornot/commit/fe00959b501a049d2655e6941436687331feeb30) Thanks [@rozenmd](https://github.com/rozenmd)! - Add `checks update` command and display all API fields in check output
+
+  - Add new `checks update <id>` command with all API options (test-interval, timeout, headers, regions, alerts, etc.)
+  - Update `checks create`, `checks view`, and `checks update` to display all fields returned by the API
+  - Fix Check type to use snake_case matching actual API response format
+  - Add CheckListItem type for list endpoint which returns fewer fields
+
+### Patch Changes
+
+- [#50](https://github.com/OnlineOrNot/onlineornot/pull/50) [`f4f0141ccbb8692ec9790986909dd911b87ec636`](https://github.com/OnlineOrNot/onlineornot/commit/f4f0141ccbb8692ec9790986909dd911b87ec636) Thanks [@rozenmd](https://github.com/rozenmd)! - Fix `checks delete` error handling to show clear "not found" message instead of generic error
+
 ## 1.0.2
 
 ### Patch Changes
