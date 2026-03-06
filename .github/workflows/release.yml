@@ -25,18 +25,15 @@ jobs:
         with:
           version: 10
 
-      - name: Use Node.js 22
+      - name: Use Node.js 24
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: "pnpm"
           registry-url: "https://registry.npmjs.org"
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Update npm to latest
-        run: npm install -g npm@latest
 
       - name: Check the build
         run: pnpm run build
