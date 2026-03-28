@@ -6,9 +6,10 @@ import { checks } from "./checks";
 import { docsHandler, docsOptions } from "./docs";
 import { logger } from "./logger";
 import { loginHandler, loginOptions } from "./login";
+import { logoutHandler, logoutOptions } from "./logout";
 import { whoami } from "./whoami";
 import type { CommonYargsArgv, CommonYargsOptions } from "./yargs-types";
-import type Yargs from "yargs";
+import type { CommandModule } from "yargs";
 
 const resetColor = "\x1b[0m";
 const fgGreenColor = "\x1b[32m";
@@ -47,11 +48,14 @@ export function createCLIParser(argv: string[]) {
 	onlineornot.help().alias("h", "help");
 
 	// Default help command that supports the subcommands
-	const subHelp: Yargs.CommandModule<CommonYargsOptions, CommonYargsOptions> = {
+	const subHelp: CommandModule<CommonYargsOptions, CommonYargsOptions> = {
 		command: ["*"],
 		handler: async (args) => {
 			setImmediate(() =>
-				onlineornot.parse([...args._.map((a) => `${a}`), "--help"]),
+				onlineornot.parse([
+					...args._.map((a: string | number) => `${a}`),
+					"--help",
+				]),
 			);
 		},
 	};
@@ -104,9 +108,17 @@ export function createCLIParser(argv: string[]) {
 	// login
 	onlineornot.command(
 		"login",
-		"🔓 Open OnlineOrNot's Developer Portal in your browser",
+		"🔓 Login to OnlineOrNot via OAuth",
 		loginOptions,
 		loginHandler,
+	);
+
+	// logout
+	onlineornot.command(
+		"logout",
+		"🔒 Logout from OnlineOrNot",
+		logoutOptions,
+		logoutHandler,
 	);
 
 	// whoami

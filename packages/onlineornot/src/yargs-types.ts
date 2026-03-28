@@ -1,4 +1,21 @@
-import type { ArgumentsCamelCase, Argv, CamelCaseKey } from "yargs";
+import type { ArgumentsCamelCase, Argv } from "yargs";
+
+// Recreate CamelCaseKey since it's not exported from @types/yargs
+type PascalCase<S extends string> = string extends S
+	? string
+	: S extends `${infer T}-${infer U}`
+		? `${Capitalize<T>}${PascalCase<U>}`
+		: Capitalize<S>;
+
+type CamelCase<S extends string> = string extends S
+	? string
+	: S extends `${infer T}-${infer U}`
+		? `${T}${PascalCase<U>}`
+		: S;
+
+type CamelCaseKey<K extends PropertyKey> = K extends string
+	? Exclude<CamelCase<K>, "">
+	: K;
 
 /**
  * Yargs options included in every onlineornot command.
