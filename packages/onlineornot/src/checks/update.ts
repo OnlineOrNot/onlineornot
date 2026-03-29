@@ -4,7 +4,10 @@ import { logger } from "../logger";
 import { verifyToken } from "../user";
 import type { Check, UpdateCheckParams } from "./types";
 import { VALID_METHODS, VALID_REGIONS } from "./types";
-import type { CommonYargsArgv, StrictYargsOptionsToInterface } from "../yargs-types";
+import type {
+	CommonYargsArgv,
+	StrictYargsOptionsToInterface,
+} from "../yargs-types";
 
 export function options(yargs: CommonYargsArgv) {
 	return yargs
@@ -75,7 +78,8 @@ export function options(yargs: CommonYargsArgv) {
 			type: "string",
 		})
 		.option("header", {
-			describe: "HTTP headers (format: 'Key: Value', can be specified multiple times)",
+			describe:
+				"HTTP headers (format: 'Key: Value', can be specified multiple times)",
 			type: "array",
 			string: true,
 		})
@@ -106,7 +110,8 @@ export function options(yargs: CommonYargsArgv) {
 			string: true,
 		})
 		.option("oncall-alerts", {
-			describe: "IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)",
+			describe:
+				"IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)",
 			type: "array",
 			string: true,
 		})
@@ -115,18 +120,23 @@ export function options(yargs: CommonYargsArgv) {
 			type: "boolean",
 		})
 		.option("muted", {
-			describe: "Whether the check is muted (continues running but suppresses alerts)",
+			describe:
+				"Whether the check is muted (continues running but suppresses alerts)",
 			type: "boolean",
 		});
 }
 
-function parseHeaders(headerArgs?: string[]): Record<string, string> | undefined {
+function parseHeaders(
+	headerArgs?: string[],
+): Record<string, string> | undefined {
 	if (!headerArgs || headerArgs.length === 0) return undefined;
 	const headers: Record<string, string> = {};
 	for (const header of headerArgs) {
 		const colonIndex = header.indexOf(":");
 		if (colonIndex === -1) {
-			throw new Error(`Invalid header format: "${header}". Expected "Key: Value"`);
+			throw new Error(
+				`Invalid header format: "${header}". Expected "Key: Value"`,
+			);
 		}
 		const key = header.slice(0, colonIndex).trim();
 		const value = header.slice(colonIndex + 1).trim();
@@ -135,7 +145,9 @@ function parseHeaders(headerArgs?: string[]): Record<string, string> | undefined
 	return headers;
 }
 
-export async function handler(args: StrictYargsOptionsToInterface<typeof options>) {
+export async function handler(
+	args: StrictYargsOptionsToInterface<typeof options>,
+) {
 	if (!args.json) {
 		await printBanner();
 	}
@@ -160,7 +172,8 @@ export async function handler(args: StrictYargsOptionsToInterface<typeof options
 	if (args.method) params.method = args.method;
 	if (args.body) params.body = args.body;
 	if (args.header) params.headers = parseHeaders(args.header);
-	if (args.followRedirects !== undefined) params.follow_redirects = args.followRedirects;
+	if (args.followRedirects !== undefined)
+		params.follow_redirects = args.followRedirects;
 	if (args.verifySsl !== undefined) params.verify_ssl = args.verifySsl;
 	if (args.authUsername) params.auth_username = args.authUsername;
 	if (args.authPassword) params.auth_password = args.authPassword;
@@ -171,7 +184,9 @@ export async function handler(args: StrictYargsOptionsToInterface<typeof options
 	if (args.muted !== undefined) params.muted = args.muted;
 
 	if (Object.keys(params).length === 0) {
-		return logger.error("No update options provided. Use --help to see available options.");
+		return logger.error(
+			"No update options provided. Use --help to see available options.",
+		);
 	}
 
 	let result: Check;
@@ -188,7 +203,9 @@ export async function handler(args: StrictYargsOptionsToInterface<typeof options
 				"Your API token isn't allowed to update checks.\nPlease check your token with `onlineornot whoami` and try again.",
 			);
 		} else if (errorWithCode.code === 10000) {
-			return logger.error("Validation error: " + errorWithCode?.notes?.[0].text);
+			return logger.error(
+				"Validation error: " + errorWithCode?.notes?.[0].text,
+			);
 		} else if (errorWithCode.code === 10001) {
 			return logger.error(`Check with ID "${args.id}" not found.`);
 		} else {
@@ -221,33 +238,55 @@ export async function handler(args: StrictYargsOptionsToInterface<typeof options
 		logger.log(`  Follow redirects:        ${result.follow_redirects}`);
 		logger.log(`  Verify SSL:              ${result.verify_ssl}`);
 		logger.log(`  Alert priority:          ${result.alert_priority}`);
-		logger.log(`  Confirmation period:     ${result.confirmation_period_seconds}s`);
+		logger.log(
+			`  Confirmation period:     ${result.confirmation_period_seconds}s`,
+		);
 		logger.log(`  Recovery period:         ${result.recovery_period_seconds}s`);
 		logger.log(
 			`  Reminder interval:       ${result.reminder_alert_interval_minutes === -1 ? "Never" : `${result.reminder_alert_interval_minutes}m`}`,
 		);
-		logger.log(`  Regions:                 ${formatArray(result.test_regions)}`);
+		logger.log(
+			`  Regions:                 ${formatArray(result.test_regions)}`,
+		);
 		logger.log("");
 		logger.log("Request options:");
 		logger.log(
 			`  Headers:                 ${result.headers ? JSON.stringify(result.headers) : "-"}`,
 		);
 		logger.log(`  Body:                    ${formatValue(result.body)}`);
-		logger.log(`  Text to search:          ${formatValue(result.text_to_search_for)}`);
+		logger.log(
+			`  Text to search:          ${formatValue(result.text_to_search_for)}`,
+		);
 		logger.log(
 			`  Assertions:              ${result.assertions ? JSON.stringify(result.assertions) : "-"}`,
 		);
-		logger.log(`  Auth username:           ${formatValue(result.auth_username)}`);
-		logger.log(`  Auth password:           ${result.auth_password ? "********" : "-"}`);
+		logger.log(
+			`  Auth username:           ${formatValue(result.auth_username)}`,
+		);
+		logger.log(
+			`  Auth password:           ${result.auth_password ? "********" : "-"}`,
+		);
 		logger.log(`  Version:                 ${formatValue(result.version)}`);
 		logger.log("");
 		logger.log("Notifications:");
 		logger.log(`  User alerts:             ${formatArray(result.user_alerts)}`);
-		logger.log(`  Slack alerts:            ${formatArray(result.slack_alerts)}`);
-		logger.log(`  Discord alerts:          ${formatArray(result.discord_alerts)}`);
-		logger.log(`  Teams alerts:            ${formatArray(result.microsoft_teams_alerts)}`);
-		logger.log(`  Incident.io alerts:      ${formatArray(result.incident_io_alerts)}`);
-		logger.log(`  On-call alerts:          ${formatArray(result.oncall_alerts)}`);
-		logger.log(`  Webhook alerts:          ${formatArray(result.webhook_alerts)}`);
+		logger.log(
+			`  Slack alerts:            ${formatArray(result.slack_alerts)}`,
+		);
+		logger.log(
+			`  Discord alerts:          ${formatArray(result.discord_alerts)}`,
+		);
+		logger.log(
+			`  Teams alerts:            ${formatArray(result.microsoft_teams_alerts)}`,
+		);
+		logger.log(
+			`  Incident.io alerts:      ${formatArray(result.incident_io_alerts)}`,
+		);
+		logger.log(
+			`  On-call alerts:          ${formatArray(result.oncall_alerts)}`,
+		);
+		logger.log(
+			`  Webhook alerts:          ${formatArray(result.webhook_alerts)}`,
+		);
 	}
 }

@@ -38,7 +38,9 @@ Consider using a Node.js version manager such as https://volta.sh/ or https://gi
 			},
 		},
 	)
-		.on("exit", (code) => process.exit(code === undefined || code === null ? 0 : code))
+		.on("exit", (code) =>
+			process.exit(code === undefined || code === null ? 0 : code),
+		)
 		.on("message", (message) => {
 			if (process.send) {
 				process.send(message);

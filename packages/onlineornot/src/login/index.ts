@@ -20,7 +20,9 @@ export async function loginHandler() {
 	}
 
 	logger.log(`Opening a link in your default browser: ${urlToOpen}`);
-	logger.log(`-----------------------------------------------------------------------`);
+	logger.log(
+		`-----------------------------------------------------------------------`,
+	);
 	logger.log(`Create an API token, then add it to your environment variables:`);
 	logger.log(`export ONLINEORNOT_API_TOKEN=your-api-token`);
 	await openInBrowser(urlToOpen);

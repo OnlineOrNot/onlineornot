@@ -105,7 +105,14 @@ export const VALID_REGIONS: CheckRegion[] = [
 	"aws:ap-northeast-1",
 ];
 
-export const VALID_METHODS = ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"] as const;
+export const VALID_METHODS = [
+	"GET",
+	"HEAD",
+	"POST",
+	"PUT",
+	"PATCH",
+	"DELETE",
+] as const;
 
 // Request body types - these use snake_case for API requests
 export interface CreateCheckParams {

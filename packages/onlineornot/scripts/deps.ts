@@ -5,11 +5,19 @@ import { parsePackageJSON } from "../src/parse";
 /**
  * Dependencies that _are not_ bundled along with onlineornot
  */
-export const EXTERNAL_DEPENDENCIES = ["fsevents", "esbuild", "source-map", "chokidar"];
+export const EXTERNAL_DEPENDENCIES = [
+	"fsevents",
+	"esbuild",
+	"source-map",
+	"chokidar",
+];
 
 const pathToPackageJson = path.resolve(__dirname, "..", "package.json");
 const packageJson = fs.readFileSync(pathToPackageJson, { encoding: "utf-8" });
-const { dependencies, devDependencies } = parsePackageJSON(packageJson, pathToPackageJson);
+const { dependencies, devDependencies } = parsePackageJSON(
+	packageJson,
+	pathToPackageJson,
+);
 
 /**
  * Dependencies that _are_ bundled along with onlineornot

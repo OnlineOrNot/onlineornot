@@ -59,7 +59,11 @@ export async function fetchListResult<ResponseType>(
 			queryParams = new URLSearchParams(queryParams);
 			queryParams.set("cursor", cursor);
 		}
-		const json = await fetchInternal<FetchResult<ResponseType[]>>(resource, init, queryParams);
+		const json = await fetchInternal<FetchResult<ResponseType[]>>(
+			resource,
+			init,
+			queryParams,
+		);
 		if (json.success) {
 			results.push(...json.result);
 			if (hasCursor(json.result_info)) {
@@ -86,7 +90,11 @@ export async function fetchPagedResult<ResponseType>(
 		queryParams = new URLSearchParams(queryParams);
 		queryParams.set("page", String(page));
 
-		const json = await fetchInternal<FetchResult<ResponseType[]>>(resource, init, queryParams);
+		const json = await fetchInternal<FetchResult<ResponseType[]>>(
+			resource,
+			init,
+			queryParams,
+		);
 		if (json.success) {
 			results.push(...json.result);
 			if (hasMorePages(json.result_info)) {
@@ -101,7 +109,10 @@ export async function fetchPagedResult<ResponseType>(
 	return results;
 }
 
-function throwFetchError(resource: string, response: FetchResult<unknown>): never {
+function throwFetchError(
+	resource: string,
+	response: FetchResult<unknown>,
+): never {
 	const error = new ParseError({
 		text: `A request to the OnlineOrNot API (${resource}) failed.`,
 		notes: response.errors.map((err) => ({
@@ -131,7 +142,10 @@ function hasMorePages(result_info: unknown): result_info is PageResultInfo {
 	const total = (result_info as PageResultInfo | undefined)?.total_count;
 
 	return (
-		page !== undefined && per_page !== undefined && total !== undefined && page * per_page < total
+		page !== undefined &&
+		per_page !== undefined &&
+		total !== undefined &&
+		page * per_page < total
 	);
 }
 
@@ -143,7 +157,13 @@ function hasCursor(result_info: unknown): result_info is { cursor: string } {
 function renderError(err: FetchError, level = 0): string {
 	const chainedMessages =
 		err.error_chain
-			?.map((chainedError) => `\n${"  ".repeat(level)}- ${renderError(chainedError, level + 1)}`)
+			?.map(
+				(chainedError) =>
+					`\n${"  ".repeat(level)}- ${renderError(chainedError, level + 1)}`,
+			)
 			.join("\n") ?? "";
-	return (err.code ? `${err.message} [code: ${err.code}]` : err.message) + chainedMessages;
+	return (
+		(err.code ? `${err.message} [code: ${err.code}]` : err.message) +
+		chainedMessages
+	);
 }

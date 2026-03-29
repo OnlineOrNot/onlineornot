@@ -50,7 +50,9 @@ export function createCLIParser(argv: string[]) {
 	const subHelp: Yargs.CommandModule<CommonYargsOptions, CommonYargsOptions> = {
 		command: ["*"],
 		handler: async (args) => {
-			setImmediate(() => onlineornot.parse([...args._.map((a) => `${a}`), "--help"]));
+			setImmediate(() =>
+				onlineornot.parse([...args._.map((a) => `${a}`), "--help"]),
+			);
 		},
 	};
 

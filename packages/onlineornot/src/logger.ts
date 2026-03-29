@@ -43,7 +43,8 @@ class Logger {
 	warn = (...args: unknown[]) => this.doLog("warn", args);
 	error = (...args: unknown[]) => this.doLog("error", args);
 	table<Keys extends string>(data: TableRow<Keys>[]) {
-		const keys: Keys[] = data.length === 0 ? [] : (Object.keys(data[0]) as Keys[]);
+		const keys: Keys[] =
+			data.length === 0 ? [] : (Object.keys(data[0]) as Keys[]);
 		const t = new CLITable({
 			head: keys.map((k) => chalk.bold.blue(k)),
 		});
@@ -57,14 +58,20 @@ class Logger {
 		}
 	}
 
-	private formatMessage(level: Exclude<LoggerLevel, "none">, message: string): string {
+	private formatMessage(
+		level: Exclude<LoggerLevel, "none">,
+		message: string,
+	): string {
 		const kind = LOGGER_LEVEL_FORMAT_TYPE_MAP[level];
 		if (kind) {
 			// Format the message using the esbuild formatter.
 			// The first line of the message is the main `text`,
 			// subsequent lines are put into the `notes`.
 			const [firstLine, ...otherLines] = message.split("\n");
-			const notes = otherLines.length > 0 ? otherLines.map((text) => ({ text })) : undefined;
+			const notes =
+				otherLines.length > 0
+					? otherLines.map((text) => ({ text }))
+					: undefined;
 			return formatMessagesSync([{ text: firstLine, notes }], {
 				color: true,
 				kind,

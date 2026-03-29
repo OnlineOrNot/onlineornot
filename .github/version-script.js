@@ -2,7 +2,9 @@ const fs = require("fs");
 const { exec } = require("child_process");
 
 try {
-	const package = JSON.parse(fs.readFileSync("./packages/onlineornot/package.json"));
+	const package = JSON.parse(
+		fs.readFileSync("./packages/onlineornot/package.json"),
+	);
 	exec("git rev-parse --short HEAD", (err, stdout) => {
 		if (err) {
 			console.log(err);

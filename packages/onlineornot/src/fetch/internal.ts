@@ -23,7 +23,12 @@ export async function fetchInternal<ResponseType>(
 	abortSignal?: AbortSignal,
 ): Promise<ResponseType> {
 	const method = init.method ?? "GET";
-	const response = await performApiFetch(resource, init, queryParams, abortSignal);
+	const response = await performApiFetch(
+		resource,
+		init,
+		queryParams,
+		abortSignal,
+	);
 	const jsonText = await response.text();
 	logger.debug("-- START API RESPONSE:", response.statusText, response.status);
 	const logHeaders = cloneHeaders(response.headers);
@@ -72,11 +77,16 @@ export async function performApiFetch(
 	addUserAgent(headers);
 
 	const queryString = queryParams ? `?${queryParams.toString()}` : "";
-	logger.debug(`-- START API REQUEST: ${method} ${API_BASE_URL}${resource}${queryString}`);
+	logger.debug(
+		`-- START API REQUEST: ${method} ${API_BASE_URL}${resource}${queryString}`,
+	);
 	const logHeaders = cloneHeaders(headers);
 	delete logHeaders["Authorization"];
 	logger.debug("HEADERS:", JSON.stringify(logHeaders, null, 2));
-	logger.debug("INIT:", JSON.stringify({ ...init, headers: logHeaders }, null, 2));
+	logger.debug(
+		"INIT:",
+		JSON.stringify({ ...init, headers: logHeaders }, null, 2),
+	);
 	logger.debug("-- END API REQUEST");
 	return await fetch(`${API_BASE_URL}${resource}${queryString}`, {
 		method,
@@ -94,7 +104,9 @@ function truncate(text: string, maxLength: number): string {
 	return `${text.substring(0, maxLength)}... (length = ${length})`;
 }
 
-function cloneHeaders(headers: HeadersInit | undefined): Record<string, string> {
+function cloneHeaders(
+	headers: HeadersInit | undefined,
+): Record<string, string> {
 	if (headers instanceof Headers) {
 		return Object.fromEntries(headers.entries());
 	}

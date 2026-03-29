@@ -4,7 +4,10 @@ import { logger } from "../logger";
 import { verifyToken } from "../user";
 import type { Check, CreateCheckParams } from "./types";
 import { VALID_METHODS, VALID_REGIONS } from "./types";
-import type { CommonYargsArgv, StrictYargsOptionsToInterface } from "../yargs-types";
+import type {
+	CommonYargsArgv,
+	StrictYargsOptionsToInterface,
+} from "../yargs-types";
 
 export function options(yargs: CommonYargsArgv) {
 	return yargs
@@ -79,7 +82,8 @@ export function options(yargs: CommonYargsArgv) {
 			type: "string",
 		})
 		.option("header", {
-			describe: "HTTP headers (format: 'Key: Value', can be specified multiple times)",
+			describe:
+				"HTTP headers (format: 'Key: Value', can be specified multiple times)",
 			type: "array",
 			string: true,
 		})
@@ -112,19 +116,24 @@ export function options(yargs: CommonYargsArgv) {
 			string: true,
 		})
 		.option("oncall-alerts", {
-			describe: "IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)",
+			describe:
+				"IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)",
 			type: "array",
 			string: true,
 		});
 }
 
-function parseHeaders(headerArgs?: string[]): Record<string, string> | undefined {
+function parseHeaders(
+	headerArgs?: string[],
+): Record<string, string> | undefined {
 	if (!headerArgs || headerArgs.length === 0) return undefined;
 	const headers: Record<string, string> = {};
 	for (const header of headerArgs) {
 		const colonIndex = header.indexOf(":");
 		if (colonIndex === -1) {
-			throw new Error(`Invalid header format: "${header}". Expected "Key: Value"`);
+			throw new Error(
+				`Invalid header format: "${header}". Expected "Key: Value"`,
+			);
 		}
 		const key = header.slice(0, colonIndex).trim();
 		const value = header.slice(colonIndex + 1).trim();
@@ -133,7 +142,9 @@ function parseHeaders(headerArgs?: string[]): Record<string, string> | undefined
 	return headers;
 }
 
-export async function handler(args: StrictYargsOptionsToInterface<typeof options>) {
+export async function handler(
+	args: StrictYargsOptionsToInterface<typeof options>,
+) {
 	if (!args.json) {
 		await printBanner();
 	}
@@ -155,12 +166,20 @@ export async function handler(args: StrictYargsOptionsToInterface<typeof options
 		params.recovery_period_seconds = args.recoveryPeriodSeconds;
 	if (args.timeout !== undefined) params.timeout = args.timeout;
 	if (args.type) params.type = args.type as "UPTIME_CHECK" | "BROWSER_CHECK";
-	if (args.alertPriority) params.alert_priority = args.alertPriority as "LOW" | "HIGH";
+	if (args.alertPriority)
+		params.alert_priority = args.alertPriority as "LOW" | "HIGH";
 	if (args.method)
-		params.method = args.method as "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
+		params.method = args.method as
+			| "GET"
+			| "HEAD"
+			| "POST"
+			| "PUT"
+			| "PATCH"
+			| "DELETE";
 	if (args.body) params.body = args.body;
 	if (args.header) params.headers = parseHeaders(args.header);
-	if (args.followRedirects !== undefined) params.follow_redirects = args.followRedirects;
+	if (args.followRedirects !== undefined)
+		params.follow_redirects = args.followRedirects;
 	if (args.verifySsl !== undefined) params.verify_ssl = args.verifySsl;
 	if (args.authUsername) params.auth_username = args.authUsername;
 	if (args.authPassword) params.auth_password = args.authPassword;
@@ -188,7 +207,9 @@ export async function handler(args: StrictYargsOptionsToInterface<typeof options
 			);
 		} else if (errorWithCode.code === 10000) {
 			//validation error, need to check notes
-			return logger.error("Validation error: " + errorWithCode?.notes?.[0].text);
+			return logger.error(
+				"Validation error: " + errorWithCode?.notes?.[0].text,
+			);
 		} else {
 			return logger.error(err);
 		}
@@ -219,33 +240,55 @@ export async function handler(args: StrictYargsOptionsToInterface<typeof options
 		logger.log(`  Follow redirects:        ${result.follow_redirects}`);
 		logger.log(`  Verify SSL:              ${result.verify_ssl}`);
 		logger.log(`  Alert priority:          ${result.alert_priority}`);
-		logger.log(`  Confirmation period:     ${result.confirmation_period_seconds}s`);
+		logger.log(
+			`  Confirmation period:     ${result.confirmation_period_seconds}s`,
+		);
 		logger.log(`  Recovery period:         ${result.recovery_period_seconds}s`);
 		logger.log(
 			`  Reminder interval:       ${result.reminder_alert_interval_minutes === -1 ? "Never" : `${result.reminder_alert_interval_minutes}m`}`,
 		);
-		logger.log(`  Regions:                 ${formatArray(result.test_regions)}`);
+		logger.log(
+			`  Regions:                 ${formatArray(result.test_regions)}`,
+		);
 		logger.log("");
 		logger.log("Request options:");
 		logger.log(
 			`  Headers:                 ${result.headers ? JSON.stringify(result.headers) : "-"}`,
 		);
 		logger.log(`  Body:                    ${formatValue(result.body)}`);
-		logger.log(`  Text to search:          ${formatValue(result.text_to_search_for)}`);
+		logger.log(
+			`  Text to search:          ${formatValue(result.text_to_search_for)}`,
+		);
 		logger.log(
 			`  Assertions:              ${result.assertions ? JSON.stringify(result.assertions) : "-"}`,
 		);
-		logger.log(`  Auth username:           ${formatValue(result.auth_username)}`);
-		logger.log(`  Auth password:           ${result.auth_password ? "********" : "-"}`);
+		logger.log(
+			`  Auth username:           ${formatValue(result.auth_username)}`,
+		);
+		logger.log(
+			`  Auth password:           ${result.auth_password ? "********" : "-"}`,
+		);
 		logger.log(`  Version:                 ${formatValue(result.version)}`);
 		logger.log("");
 		logger.log("Notifications:");
 		logger.log(`  User alerts:             ${formatArray(result.user_alerts)}`);
-		logger.log(`  Slack alerts:            ${formatArray(result.slack_alerts)}`);
-		logger.log(`  Discord alerts:          ${formatArray(result.discord_alerts)}`);
-		logger.log(`  Teams alerts:            ${formatArray(result.microsoft_teams_alerts)}`);
-		logger.log(`  Incident.io alerts:      ${formatArray(result.incident_io_alerts)}`);
-		logger.log(`  On-call alerts:          ${formatArray(result.oncall_alerts)}`);
-		logger.log(`  Webhook alerts:          ${formatArray(result.webhook_alerts)}`);
+		logger.log(
+			`  Slack alerts:            ${formatArray(result.slack_alerts)}`,
+		);
+		logger.log(
+			`  Discord alerts:          ${formatArray(result.discord_alerts)}`,
+		);
+		logger.log(
+			`  Teams alerts:            ${formatArray(result.microsoft_teams_alerts)}`,
+		);
+		logger.log(
+			`  Incident.io alerts:      ${formatArray(result.incident_io_alerts)}`,
+		);
+		logger.log(
+			`  On-call alerts:          ${formatArray(result.oncall_alerts)}`,
+		);
+		logger.log(
+			`  Webhook alerts:          ${formatArray(result.webhook_alerts)}`,
+		);
 	}
 }
