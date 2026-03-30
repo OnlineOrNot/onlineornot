@@ -54,9 +54,16 @@ jobs:
           NPM_CONFIG_PROVENANCE: true
           NODE_ENV: "production"
 
+      - name: Extract version from published packages
+        id: extract-version
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          VERSION=$(echo '${{ steps.changesets.outputs.publishedPackages }}' | jq -r '.[0].version')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
     outputs:
       published: ${{ steps.changesets.outputs.published }}
-      version: ${{ steps.changesets.outputs.publishedPackages[0].version }}
+      version: ${{ steps.extract-version.outputs.version }}
 
   build-binaries:
     needs: release
