@@ -78,13 +78,13 @@ add_to_path() {
 	local command=$2
 
 	if grep -Fxq "$command" "$config_file" 2>/dev/null; then
-		return 0
+		echo -e "${DIM}Command already exists in $config_file, skipping write.${NC}"
 	elif [[ -w $config_file ]]; then
 		echo -e "\n# onlineornot" >> "$config_file"
 		echo "$command" >> "$config_file"
+		echo -e "${DIM}Successfully added ${NC}onlineornot ${DIM}to \$PATH in ${NC}$config_file"
 	else
-		echo -e "${ORANGE}Warning: Could not write to $config_file${NC}" >&2
-		echo -e "${ORANGE}Manually add the directory to $config_file (or similar):${NC}" >&2
+		echo -e "${ORANGE}Warning: Manually add the directory to $config_file (or similar):${NC}" >&2
 		echo -e "  $command" >&2
 	fi
 }
