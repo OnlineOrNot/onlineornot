@@ -37,6 +37,8 @@ jobs:
 
       - name: Check the build
         run: pnpm run build
+        env:
+          SOURCEMAPS: "false"
 
       - name: Check for other errors
         run: pnpm run check
@@ -53,6 +55,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
           NODE_ENV: "production"
+          SOURCEMAPS: "false"
 
       - name: Extract version from published packages
         id: extract-version
