@@ -1,5 +1,16 @@
 # onlineornot
 
+## 1.2.0
+
+### Minor Changes
+
+- [`a0725f3bd52e21ef8bff38b42eb945ee725934f2`](https://github.com/OnlineOrNot/onlineornot/commit/a0725f3bd52e21ef8bff38b42eb945ee725934f2) Thanks [@rozenmd](https://github.com/rozenmd)! - feat: add OAuth login support
+  - Added `onlineornot login` command with OAuth 2.0 + PKCE authentication flow
+  - Added `onlineornot logout` command to revoke tokens and clear credentials
+  - Credentials are stored locally with automatic token refresh
+  - `onlineornot whoami` updated to handle OAuth
+  - Existing `ONLINEORNOT_API_TOKEN` environment variable still works and takes precedence
+
 ## 1.1.0
 
 ### Minor Changes
