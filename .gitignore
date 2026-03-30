@@ -183,3 +183,8 @@ _routes.generated.json
 onlineornot-dist/
 packages/prerelease-registry/_worker.js
 .wrangler
+
+# SEA build artifacts
+sea/
+packages/onlineornot/onlineornot
+packages/onlineornot/onlineornot-*

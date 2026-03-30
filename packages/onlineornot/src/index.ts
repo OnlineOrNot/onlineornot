@@ -7,6 +7,7 @@ import { docsHandler, docsOptions } from "./docs";
 import { logger } from "./logger";
 import { loginHandler, loginOptions } from "./login";
 import { logoutHandler, logoutOptions } from "./logout";
+import { updateHandler, updateOptions } from "./update";
 import { whoami } from "./whoami";
 import type { CommonYargsArgv, CommonYargsOptions } from "./yargs-types";
 import type { CommandModule } from "yargs";
@@ -147,6 +148,14 @@ export function createCLIParser(argv: string[]) {
 				logger.log(onlineornotVersion);
 			}
 		},
+	);
+
+	// update
+	onlineornot.command(
+		"update",
+		"⬆️  Update OnlineOrNot CLI to the latest version",
+		updateOptions,
+		updateHandler,
 	);
 
 	onlineornot.exitProcess(false);

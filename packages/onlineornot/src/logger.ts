@@ -1,8 +1,18 @@
 import { format } from "node:util";
 import chalk from "chalk";
 import CLITable from "cli-table3";
-import { formatMessagesSync } from "esbuild";
 import { getEnvironmentVariableFactory } from "./environment-variables/factory";
+
+import type { formatMessagesSync as FormatMessagesSyncType } from "esbuild";
+
+// Dynamically import esbuild formatter - not available in SEA builds
+let formatMessagesSync: typeof FormatMessagesSyncType | undefined;
+try {
+	// eslint-disable-next-line @typescript-eslint/no-require-imports
+	formatMessagesSync = require("esbuild").formatMessagesSync;
+} catch {
+	// esbuild not available (e.g., in SEA build)
+}
 
 export const LOGGER_LEVELS = {
 	none: -1,
@@ -63,7 +73,7 @@ class Logger {
 		message: string,
 	): string {
 		const kind = LOGGER_LEVEL_FORMAT_TYPE_MAP[level];
-		if (kind) {
+		if (kind && formatMessagesSync) {
 			// Format the message using the esbuild formatter.
 			// The first line of the message is the main `text`,
 			// subsequent lines are put into the `notes`.
@@ -77,6 +87,10 @@ class Logger {
 				kind,
 				terminalWidth: this.columns,
 			})[0];
+		} else if (kind) {
+			// Fallback formatting without esbuild
+			const prefix = kind === "error" ? chalk.red("✘") : chalk.yellow("⚠");
+			return `${prefix} ${message}`;
 		} else {
 			return message;
 		}

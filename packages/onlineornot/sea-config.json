@@ -1,0 +1,7 @@
+{
+	"main": "sea/onlineornot.cjs",
+	"output": "onlineornot",
+	"disableExperimentalSEAWarning": true,
+	"useCodeCache": true,
+	"execArgv": ["--no-warnings"]
+}

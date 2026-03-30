@@ -29,8 +29,9 @@
 	},
 	"scripts": {
 		"build": "pnpm run clean && pnpm run bundle",
+		"build:sea": "bash scripts/build-sea.sh",
 		"bundle": "node -r esbuild-register scripts/bundle.ts",
-		"clean": "rimraf dist",
+		"clean": "rimraf dist sea",
 		"prepublishOnly": "SOURCEMAPS=false pnpm run build",
 		"start": "pnpm run bundle && cross-env NODE_OPTIONS=--enable-source-maps ./bin/onlineornot.js",
 		"check:type": "tsgo --noEmit",
@@ -57,6 +58,6 @@
 		"vitest": "^4.0.0"
 	},
 	"engines": {
-		"node": ">=22"
+		"node": ">=25"
 	}
 }
