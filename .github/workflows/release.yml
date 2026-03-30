@@ -70,7 +70,7 @@ jobs:
             name: linux-arm64
           - os: macos-latest
             name: darwin-arm64
-          - os: macos-13
+          - os: macos-15-intel
             name: darwin-amd64
 
     runs-on: ${{ matrix.os }}
