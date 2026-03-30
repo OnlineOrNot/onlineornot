@@ -4,7 +4,7 @@ import { version as onlineornotVersion } from "../../package.json";
 import { API_BASE_URL } from "../constants";
 import { logger } from "../logger";
 import { ParseError, parseJSON } from "../parse";
-import { getToken } from "../user";
+import { getTokenAsync } from "../user";
 import type { RequestInit, HeadersInit } from "undici";
 
 /**
@@ -71,7 +71,7 @@ export async function performApiFetch(
 		`API fetch - resource path must start with a "/" but got "${resource}"`,
 	);
 
-	const apiToken = getToken();
+	const apiToken = await getTokenAsync();
 	const headers = cloneHeaders(init.headers);
 	addAuthorizationHeaderIfUnspecified(headers, apiToken);
 	addUserAgent(headers);

@@ -23,6 +23,7 @@
 	"dependencies": {
 		"@changesets/changelog-github": "^0.4.5",
 		"@changesets/cli": "^2.22.0",
+		"@types/conf": "^3.0.3",
 		"@types/node": "^22",
 		"cross-env": "^7.0.3",
 		"esbuild-register": "^3.3.2",
