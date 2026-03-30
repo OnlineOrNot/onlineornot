@@ -1,5 +1,11 @@
 # onlineornot
 
+## 1.3.0
+
+### Minor Changes
+
+- [`b1ea4a7a5bc6ab1c44a750d836cfe6f975ee88e6`](https://github.com/OnlineOrNot/onlineornot/commit/b1ea4a7a5bc6ab1c44a750d836cfe6f975ee88e6) Thanks [@rozenmd](https://github.com/rozenmd)! - feat: add uninstall command to CLI
+
 ## 1.2.5
 
 ### Patch Changes
