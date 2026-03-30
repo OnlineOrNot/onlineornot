@@ -10,9 +10,7 @@ REPO="OnlineOrNot/onlineornot"
 
 # Colors
 RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[0;33m'
-CYAN='\033[0;36m'
+ORANGE='\033[38;5;214m'
 DIM='\033[0;2m'
 NC='\033[0m' # No Color
 
@@ -26,6 +24,7 @@ while [[ $# -gt 0 ]]; do
 			shift
 			;;
 		*)
+			echo -e "${ORANGE}Warning: Unknown option '$1'${NC}" >&2
 			shift
 			;;
 	esac
@@ -64,20 +63,29 @@ get_latest_version() {
 		sed -E 's/.*"onlineornot@([^"]+)".*/\1/'
 }
 
+# Get currently installed version
+get_installed_version() {
+	if [[ -f "$INSTALL_DIR/version" ]]; then
+		cat "$INSTALL_DIR/version"
+	else
+		echo ""
+	fi
+}
+
 # Add to PATH by modifying shell config
 add_to_path() {
 	local config_file=$1
 	local command=$2
 
 	if grep -Fxq "$command" "$config_file" 2>/dev/null; then
-		echo -e "${DIM}PATH already configured in $config_file${NC}"
+		return 0
 	elif [[ -w $config_file ]]; then
 		echo -e "\n# onlineornot" >> "$config_file"
 		echo "$command" >> "$config_file"
-		echo -e "${GREEN}✓${NC} Added to PATH in ${CYAN}$config_file${NC}"
 	else
-		echo -e "${YELLOW}⚠${NC} Could not write to $config_file"
-		echo -e "  Manually add: ${CYAN}$command${NC}"
+		echo -e "${ORANGE}Warning: Could not write to $config_file${NC}" >&2
+		echo -e "${ORANGE}Manually add the directory to $config_file (or similar):${NC}" >&2
+		echo -e "  $command" >&2
 	fi
 }
 
@@ -88,7 +96,6 @@ configure_path() {
 
 	# Check if already in PATH
 	if [[ ":$PATH:" == *":$BIN_DIR:"* ]]; then
-		echo -e "${DIM}Already in PATH${NC}"
 		return
 	fi
 
@@ -126,16 +133,9 @@ configure_path() {
 	done
 
 	if [[ -z $config_file ]]; then
-		# Create default config file
-		case $current_shell in
-			zsh)  config_file="$HOME/.zshrc" ;;
-			fish) 
-				mkdir -p "$HOME/.config/fish"
-				config_file="$HOME/.config/fish/config.fish" 
-				;;
-			*)    config_file="$HOME/.bashrc" ;;
-		esac
-		touch "$config_file"
+		echo -e "${ORANGE}Warning: No config file found for $current_shell. You may need to manually add to PATH:${NC}" >&2
+		echo -e "  export PATH=\"$BIN_DIR:\$PATH\"" >&2
+		return
 	fi
 
 	case $current_shell in
@@ -149,33 +149,40 @@ configure_path() {
 }
 
 main() {
-	local OS ARCH VERSION BINARY_NAME DOWNLOAD_URL
+	local OS ARCH VERSION BINARY_NAME DOWNLOAD_URL INSTALLED_VERSION
 
 	OS=$(detect_os)
 	ARCH=$(detect_arch)
 
 	if [[ "$OS" == "unsupported" ]] || [[ "$ARCH" == "unsupported" ]]; then
-		echo -e "${RED}✗${NC} Unsupported platform: $(uname -s) $(uname -m)"
+		echo -e "${RED}Error: Unsupported platform: $(uname -s) $(uname -m)${NC}"
 		exit 1
 	fi
 
-	echo -e "${DIM}Detecting latest version...${NC}"
 	VERSION=$(get_latest_version)
 	
 	if [[ -z "$VERSION" ]]; then
-		echo -e "${RED}✗${NC} Failed to detect latest version"
+		echo -e "${RED}Error: Failed to detect latest version${NC}"
 		exit 1
 	fi
 
-	BINARY_NAME="onlineornot-${OS}-${ARCH}"
-	DOWNLOAD_URL="https://github.com/$REPO/releases/download/onlineornot%40${VERSION}/${BINARY_NAME}"
+	# Check if already installed
+	INSTALLED_VERSION=$(get_installed_version)
+	if [[ "$INSTALLED_VERSION" == "$VERSION" ]]; then
+		echo -e "${DIM}Version ${NC}${VERSION}${DIM} already installed${NC}"
+		exit 0
+	fi
 
-	echo -e "Installing OnlineOrNot CLI ${CYAN}v${VERSION}${NC} for ${OS}/${ARCH}"
+	echo ""
+	echo -e "${DIM}Installing ${NC}onlineornot ${DIM}version: ${NC}${VERSION}"
 	
 	mkdir -p "$BIN_DIR"
 	
-	if ! curl -fSL "$DOWNLOAD_URL" -o "$BIN_DIR/onlineornot" 2>/dev/null; then
-		echo -e "${RED}✗${NC} Download failed"
+	BINARY_NAME="onlineornot-${OS}-${ARCH}"
+	DOWNLOAD_URL="https://github.com/$REPO/releases/download/onlineornot%40${VERSION}/${BINARY_NAME}"
+
+	if ! curl -#fSL "$DOWNLOAD_URL" -o "$BIN_DIR/onlineornot" 2>&1; then
+		echo -e "${RED}Error: Download failed${NC}"
 		exit 1
 	fi
 
@@ -184,19 +191,23 @@ main() {
 	# Store version info
 	echo "$VERSION" > "$INSTALL_DIR/version"
 
-	echo -e "${GREEN}✓${NC} Installed to ${CYAN}$BIN_DIR/onlineornot${NC}"
-	echo ""
-
-	# Configure PATH
+	# Configure PATH (silently)
 	configure_path
 
+	# Print success message
 	echo ""
-	echo -e "${GREEN}✓${NC} Installation complete!"
+	echo -e "${DIM}█▀▀█ █▀▀▄ █   ▀ █▀▀▄ █▀▀ ${NC}█▀▀█ █▀▀█ ${DIM}█▀▀▄ █▀▀█ ▀▀█▀▀${NC}"
+	echo -e "${DIM}█░░█ █░░█ █   █ █░░█ █▀▀ ${NC}█░░█ █▄▄▀ ${DIM}█░░█ █░░█   █${NC}"
+	echo -e "${DIM}▀▀▀▀ ▀  ▀ ▀▀▀ ▀ ▀  ▀ ▀▀▀ ${NC}▀▀▀▀ ▀ ▀▀ ${DIM}▀  ▀ ▀▀▀▀   ▀${NC}"
 	echo ""
-	echo -e "${DIM}Restart your terminal, then run:${NC}"
 	echo ""
-	echo -e "  onlineornot login"
-	echo -e "  onlineornot checks list"
+	echo -e "${DIM}To get started:${NC}"
+	echo ""
+	echo -e "onlineornot login   ${DIM}# Authenticate${NC}"
+	echo -e "onlineornot checks  ${DIM}# Manage checks${NC}"
+	echo ""
+	echo -e "${DIM}For more information visit ${NC}https://onlineornot.com/docs"
+	echo ""
 	echo ""
 }
 
