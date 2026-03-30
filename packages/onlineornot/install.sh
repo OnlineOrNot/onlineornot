@@ -15,10 +15,20 @@ DIM='\033[0;2m'
 NC='\033[0m' # No Color
 
 no_modify_path=false
+requested_version=""
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
 	case "$1" in
+		-v|--version)
+			if [[ -n "${2:-}" ]]; then
+				requested_version="$2"
+				shift 2
+			else
+				echo -e "${RED}Error: --version requires a version argument${NC}" >&2
+				exit 1
+			fi
+			;;
 		--no-modify-path)
 			no_modify_path=true
 			shift
@@ -159,18 +169,22 @@ main() {
 		exit 1
 	fi
 
-	VERSION=$(get_latest_version)
-	
-	if [[ -z "$VERSION" ]]; then
-		echo -e "${RED}Error: Failed to detect latest version${NC}"
-		exit 1
-	fi
+	if [[ -n "$requested_version" ]]; then
+		VERSION="$requested_version"
+	else
+		VERSION=$(get_latest_version)
+		
+		if [[ -z "$VERSION" ]]; then
+			echo -e "${RED}Error: Failed to detect latest version${NC}"
+			exit 1
+		fi
 
-	# Check if already installed
-	INSTALLED_VERSION=$(get_installed_version)
-	if [[ "$INSTALLED_VERSION" == "$VERSION" ]]; then
-		echo -e "${DIM}Version ${NC}${VERSION}${DIM} already installed${NC}"
-		exit 0
+		# Check if already installed (only for latest)
+		INSTALLED_VERSION=$(get_installed_version)
+		if [[ "$INSTALLED_VERSION" == "$VERSION" ]]; then
+			echo -e "${DIM}Version ${NC}${VERSION}${DIM} already installed${NC}"
+			exit 0
+		fi
 	fi
 
 	echo ""
