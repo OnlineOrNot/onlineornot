@@ -55,8 +55,9 @@ export async function fetchListResult<ResponseType>(
 	let getMoreResults = true;
 	let cursor: string | undefined;
 	while (getMoreResults) {
+		queryParams = new URLSearchParams(queryParams);
+		queryParams.set("page_size", "100");
 		if (cursor) {
-			queryParams = new URLSearchParams(queryParams);
 			queryParams.set("cursor", cursor);
 		}
 		const json = await fetchInternal<FetchResult<ResponseType[]>>(
@@ -89,6 +90,7 @@ export async function fetchPagedResult<ResponseType>(
 	while (getMoreResults) {
 		queryParams = new URLSearchParams(queryParams);
 		queryParams.set("page", String(page));
+		queryParams.set("page_size", "100");
 
 		const json = await fetchInternal<FetchResult<ResponseType[]>>(
 			resource,
