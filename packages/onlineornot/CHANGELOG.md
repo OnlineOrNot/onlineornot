@@ -1,5 +1,15 @@
 # onlineornot
 
+## 1.4.0
+
+### Minor Changes
+
+- [`ce3254a3dafccb7bc6b53fbfb6c343816ab7f0fa`](https://github.com/OnlineOrNot/onlineornot/commit/ce3254a3dafccb7bc6b53fbfb6c343816ab7f0fa) Thanks [@rozenmd](https://github.com/rozenmd)! - feat: add the ability to install specific versions of the cli
+
+### Patch Changes
+
+- [`80652ef9d277b1c459ffe6280f94efb966cfea8b`](https://github.com/OnlineOrNot/onlineornot/commit/80652ef9d277b1c459ffe6280f94efb966cfea8b) Thanks [@rozenmd](https://github.com/rozenmd)! - fix: show a progress bar when updating the cli
+
 ## 1.3.0
 
 ### Minor Changes
