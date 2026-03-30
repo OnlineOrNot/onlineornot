@@ -1,5 +1,11 @@
 # onlineornot
 
+## 1.2.4
+
+### Patch Changes
+
+- [#61](https://github.com/OnlineOrNot/onlineornot/pull/61) [`0a947d1ff16ebd54ea77911347105d708b28dcf6`](https://github.com/OnlineOrNot/onlineornot/commit/0a947d1ff16ebd54ea77911347105d708b28dcf6) Thanks [@rozenmd](https://github.com/rozenmd)! - fix: publish releases to the right version number
+
 ## 1.2.3
 
 ### Patch Changes
