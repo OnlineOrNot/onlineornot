@@ -1,5 +1,11 @@
 # onlineornot
 
+## 1.4.1
+
+### Patch Changes
+
+- [`776317f248d8d5350d0ed0b55d139fe7ee77165a`](https://github.com/OnlineOrNot/onlineornot/commit/776317f248d8d5350d0ed0b55d139fe7ee77165a) Thanks [@rozenmd](https://github.com/rozenmd)! - fix: stop sending sourcemaps to npm
+
 ## 1.4.0
 
 ### Minor Changes
