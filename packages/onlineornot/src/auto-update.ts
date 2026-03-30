@@ -9,7 +9,7 @@ const INSTALL_DIR =
 	path.join(os.homedir(), ".onlineornot");
 const PENDING_DIR = path.join(INSTALL_DIR, "pending");
 const VERSION_FILE = path.join(INSTALL_DIR, "version");
-const REPO = "OnlineOrNot/onlineornot-cli";
+const REPO = "OnlineOrNot/onlineornot";
 
 /**
  * Check if we're running as a SEA binary (not via npm)

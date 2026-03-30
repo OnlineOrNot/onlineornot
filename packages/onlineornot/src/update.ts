@@ -10,7 +10,7 @@ import type { Argv } from "yargs";
 const INSTALL_DIR =
 	process.env.ONLINEORNOT_INSTALL_DIR ||
 	path.join(os.homedir(), ".onlineornot");
-const REPO = "OnlineOrNot/onlineornot-cli";
+const REPO = "OnlineOrNot/onlineornot";
 
 interface GitHubRelease {
 	tag_name: string;

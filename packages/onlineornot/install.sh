@@ -6,7 +6,7 @@ set -euo pipefail
 
 INSTALL_DIR="${ONLINEORNOT_INSTALL_DIR:-$HOME/.onlineornot}"
 BIN_DIR="$INSTALL_DIR/bin"
-REPO="OnlineOrNot/onlineornot-cli"
+REPO="OnlineOrNot/onlineornot"
 
 # Colors
 RED='\033[0;31m'
