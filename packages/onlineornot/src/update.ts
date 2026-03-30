@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -78,8 +79,7 @@ export async function updateHandler(args: {
 		return;
 	}
 
-	logger.log(`Current version: ${chalk.cyan(currentVersion)}`);
-	logger.log("Checking for updates...");
+	logger.log(chalk.dim(`Current version: ${currentVersion}`));
 
 	// Fetch releases (changesets uses onlineornot@x.x.x tags)
 	const response = await fetch(
@@ -112,7 +112,13 @@ export async function updateHandler(args: {
 		return;
 	}
 
-	logger.log(`Latest version:  ${chalk.green(latestVersion)}`);
+	logger.log("");
+	logger.log(
+		chalk.dim("Installing ") +
+			"onlineornot" +
+			chalk.dim(" version: ") +
+			latestVersion,
+	);
 
 	if (args.check) {
 		if (isNewerVersion(latestVersion, currentVersion)) {
@@ -136,20 +142,20 @@ export async function updateHandler(args: {
 	}
 
 	logger.log("");
-	logger.log(`Downloading ${chalk.cyan(binaryName)}...`);
 
-	const binaryResponse = await fetch(asset.browser_download_url);
-	if (!binaryResponse.ok) {
+	const currentBinary = process.execPath;
+	const tempPath = `${currentBinary}.new`;
+
+	// Download with progress bar using curl
+	try {
+		execSync(`curl -#fSL "${asset.browser_download_url}" -o "${tempPath}"`, {
+			stdio: "inherit",
+		});
+	} catch {
 		logger.error("Failed to download update. Please try again later.");
 		return;
 	}
 
-	const buffer = await binaryResponse.arrayBuffer();
-	const currentBinary = process.execPath;
-
-	// Write to a temp file first
-	const tempPath = `${currentBinary}.new`;
-	await fs.writeFile(tempPath, Buffer.from(buffer));
 	await fs.chmod(tempPath, 0o755);
 
 	// Replace current binary
@@ -175,14 +181,31 @@ export async function updateHandler(args: {
 	await fs.mkdir(INSTALL_DIR, { recursive: true });
 	await fs.writeFile(path.join(INSTALL_DIR, "version"), latestVersion);
 
+	// Print success message with ASCII art
 	logger.log("");
 	logger.log(
-		chalk.green("✓") + ` Updated to version ${chalk.cyan(latestVersion)}!`,
+		chalk.dim("█▀▀█ █▀▀▄ █   ▀ █▀▀▄ █▀▀ ") +
+			"█▀▀█ █▀▀█ " +
+			chalk.dim("█▀▀▄ █▀▀█ ▀▀█▀▀"),
+	);
+	logger.log(
+		chalk.dim("█░░█ █░░█ █   █ █░░█ █▀▀ ") +
+			"█░░█ █▄▄▀ " +
+			chalk.dim("█░░█ █░░█   █"),
+	);
+	logger.log(
+		chalk.dim("▀▀▀▀ ▀  ▀ ▀▀▀ ▀ ▀  ▀ ▀▀▀ ") +
+			"▀▀▀▀ ▀ ▀▀ " +
+			chalk.dim("▀  ▀ ▀▀▀▀   ▀"),
 	);
 	logger.log("");
+	logger.log("");
+	logger.log(chalk.dim(`Updated to version ${latestVersion}`));
+	logger.log("");
+	logger.log("onlineornot checks  " + chalk.dim("# Manage checks"));
+	logger.log("");
 	logger.log(
-		chalk.dim(
-			"Restart your terminal or run a new command to use the new version.",
-		),
+		chalk.dim("For more information visit ") + "https://onlineornot.com/docs",
 	);
+	logger.log("");
 }
