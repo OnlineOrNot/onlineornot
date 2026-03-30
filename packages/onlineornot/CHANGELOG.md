@@ -1,5 +1,11 @@
 # onlineornot
 
+## 1.2.3
+
+### Patch Changes
+
+- [`df1fe2f8453d3f66e07ac6cfc865c5f59e4fbc62`](https://github.com/OnlineOrNot/onlineornot/commit/df1fe2f8453d3f66e07ac6cfc865c5f59e4fbc62) Thanks [@rozenmd](https://github.com/rozenmd)! - fix: make the build work for intel-based macs
+
 ## 1.2.2
 
 ### Patch Changes
