@@ -1,5 +1,13 @@
 # onlineornot
 
+## 1.2.1
+
+### Patch Changes
+
+- [#55](https://github.com/OnlineOrNot/onlineornot/pull/55) [`ffc625bd8602523e207ea912c44533330e285e33`](https://github.com/OnlineOrNot/onlineornot/commit/ffc625bd8602523e207ea912c44533330e285e33) Thanks [@rozenmd](https://github.com/rozenmd)! - fix: minimise roundtrips for list commands
+
+  This PR ensures all list endpoints now request 100 items per page instead of the API default, reducing the number of API calls needed for large datasets.
+
 ## 1.2.0
 
 ### Minor Changes
