@@ -1,5 +1,11 @@
 # onlineornot
 
+## 1.2.2
+
+### Patch Changes
+
+- [#57](https://github.com/OnlineOrNot/onlineornot/pull/57) [`ed6b614d473e18101b69c7017adef6d6c5e7dabc`](https://github.com/OnlineOrNot/onlineornot/commit/ed6b614d473e18101b69c7017adef6d6c5e7dabc) Thanks [@rozenmd](https://github.com/rozenmd)! - chore: set-up CI-based auto-updating
+
 ## 1.2.1
 
 ### Patch Changes
