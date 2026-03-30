@@ -1,5 +1,13 @@
 # onlineornot
 
+## 1.2.5
+
+### Patch Changes
+
+- [`05063b92dfc8c34c78431dd35abe8a1c0e714886`](https://github.com/OnlineOrNot/onlineornot/commit/05063b92dfc8c34c78431dd35abe8a1c0e714886) Thanks [@rozenmd](https://github.com/rozenmd)! - fix: tweak install script
+
+- [`4093274b53c20088321b222ca1b6f35e6a68c891`](https://github.com/OnlineOrNot/onlineornot/commit/4093274b53c20088321b222ca1b6f35e6a68c891) Thanks [@rozenmd](https://github.com/rozenmd)! - fix: make the installer work for real this time
+
 ## 1.2.4
 
 ### Patch Changes
