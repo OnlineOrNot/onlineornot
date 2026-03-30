@@ -73,7 +73,7 @@ export async function updateHandler(args: {
 		logger.log("");
 		logger.log(`Or install the standalone binary for auto-updates:`);
 		logger.log(
-			chalk.dim("  curl -fsSL https://onlineornot.com/install.sh | bash"),
+			chalk.dim("  curl -fsSL https://onlineornot.com/install | bash"),
 		);
 		return;
 	}
