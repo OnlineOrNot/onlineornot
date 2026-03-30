@@ -7,6 +7,7 @@ import { docsHandler, docsOptions } from "./docs";
 import { logger } from "./logger";
 import { loginHandler, loginOptions } from "./login";
 import { logoutHandler, logoutOptions } from "./logout";
+import { uninstallHandler, uninstallOptions } from "./uninstall";
 import { updateHandler, updateOptions } from "./update";
 import { whoami } from "./whoami";
 import type { CommonYargsArgv, CommonYargsOptions } from "./yargs-types";
@@ -156,6 +157,14 @@ export function createCLIParser(argv: string[]) {
 		"⬆️  Update OnlineOrNot CLI to the latest version",
 		updateOptions,
 		updateHandler,
+	);
+
+	// uninstall
+	onlineornot.command(
+		"uninstall",
+		"🗑️  Uninstall OnlineOrNot CLI and remove all related files",
+		uninstallOptions,
+		uninstallHandler,
 	);
 
 	onlineornot.exitProcess(false);
