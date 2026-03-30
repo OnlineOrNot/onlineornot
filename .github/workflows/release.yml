@@ -25,10 +25,10 @@ jobs:
         with:
           version: 10
 
-      - name: Use Node.js 24
+      - name: Use Node.js 25
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: 25
           cache: "pnpm"
           registry-url: "https://registry.npmjs.org"
 
@@ -53,3 +53,60 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
           NODE_ENV: "production"
+
+    outputs:
+      published: ${{ steps.changesets.outputs.published }}
+      version: ${{ steps.changesets.outputs.publishedPackages[0].version }}
+
+  build-binaries:
+    needs: release
+    if: needs.release.outputs.published == 'true'
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            name: linux-amd64
+          - os: ubuntu-24.04-arm
+            name: linux-arm64
+          - os: macos-latest
+            name: darwin-arm64
+          - os: macos-13
+            name: darwin-amd64
+
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Use Node.js 25
+        uses: actions/setup-node@v6
+        with:
+          node-version: 25
+          cache: "pnpm"
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build SEA binary
+        working-directory: packages/onlineornot
+        run: pnpm run build:sea
+
+      - name: Rename binary
+        working-directory: packages/onlineornot
+        run: mv onlineornot onlineornot-${{ matrix.name }}
+
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: onlineornot@${{ needs.release.outputs.version }}
+          files: packages/onlineornot/onlineornot-${{ matrix.name }}

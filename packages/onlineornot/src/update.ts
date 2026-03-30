@@ -81,9 +81,9 @@ export async function updateHandler(args: {
 	logger.log(`Current version: ${chalk.cyan(currentVersion)}`);
 	logger.log("Checking for updates...");
 
-	// Fetch latest release
+	// Fetch releases (changesets uses onlineornot@x.x.x tags)
 	const response = await fetch(
-		`https://api.github.com/repos/${REPO}/releases/latest`,
+		`https://api.github.com/repos/${REPO}/releases`,
 		{
 			headers: {
 				"User-Agent": "onlineornot-cli",
@@ -96,8 +96,15 @@ export async function updateHandler(args: {
 		return;
 	}
 
-	const release = (await response.json()) as GitHubRelease;
-	const latestVersion = release.tag_name.replace(/^v/, "");
+	const releases = (await response.json()) as GitHubRelease[];
+	const release = releases.find((r) => r.tag_name.startsWith("onlineornot@"));
+
+	if (!release) {
+		logger.error("No releases found.");
+		return;
+	}
+
+	const latestVersion = release.tag_name.replace(/^onlineornot@/, "");
 
 	if (!args.force && !isNewerVersion(latestVersion, currentVersion)) {
 		logger.log("");

@@ -71,9 +71,9 @@ export async function performUpdateCheck(): Promise<void> {
 	try {
 		const currentVersion = pkg.version;
 
-		// Get latest release from GitHub
+		// Get releases from GitHub (changesets uses onlineornot@x.x.x tags)
 		const response = await fetch(
-			`https://api.github.com/repos/${REPO}/releases/latest`,
+			`https://api.github.com/repos/${REPO}/releases`,
 			{
 				headers: {
 					"User-Agent": "onlineornot-cli",
@@ -83,11 +83,15 @@ export async function performUpdateCheck(): Promise<void> {
 
 		if (!response.ok) return;
 
-		const release = (await response.json()) as {
+		const releases = (await response.json()) as Array<{
 			tag_name: string;
 			assets: Array<{ name: string; browser_download_url: string }>;
-		};
-		const latestVersion = release.tag_name.replace(/^v/, "");
+		}>;
+
+		// Find latest onlineornot release
+		const release = releases.find((r) => r.tag_name.startsWith("onlineornot@"));
+		if (!release) return;
+		const latestVersion = release.tag_name.replace(/^onlineornot@/, "");
 
 		// Compare versions (simple semver comparison)
 		if (!isNewerVersion(latestVersion, currentVersion)) return;

@@ -24,10 +24,10 @@ jobs:
         with:
           version: 10
 
-      - name: Use Node.js 22
+      - name: Use Node.js 25
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 25
           cache: "pnpm"
 
       - name: Install dependencies
@@ -35,6 +35,10 @@ jobs:
 
       - name: Build
         run: pnpm run build
+
+      - name: Build SEA binary (verify)
+        working-directory: packages/onlineornot
+        run: pnpm run build:sea
 
       - name: Publish to pkg.pr.new
         run: pnpm dlx pkg-pr-new publish './packages/onlineornot'

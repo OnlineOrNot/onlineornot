@@ -29,10 +29,13 @@ detect_arch() {
 }
 
 # Get latest version from GitHub
+# Changesets uses tags like "onlineornot@1.2.3"
 get_latest_version() {
-	curl -sL "https://api.github.com/repos/$REPO/releases/latest" | 
+	curl -sL "https://api.github.com/repos/$REPO/releases" | 
 		grep '"tag_name":' | 
-		sed -E 's/.*"([^"]+)".*/\1/'
+		grep 'onlineornot@' | 
+		head -1 | 
+		sed -E 's/.*"onlineornot@([^"]+)".*/\1/'
 }
 
 main() {
@@ -53,7 +56,7 @@ main() {
 	fi
 
 	BINARY_NAME="onlineornot-${OS}-${ARCH}"
-	DOWNLOAD_URL="https://github.com/$REPO/releases/download/${VERSION}/${BINARY_NAME}"
+	DOWNLOAD_URL="https://github.com/$REPO/releases/download/onlineornot%40${VERSION}/${BINARY_NAME}"
 
 	echo "📥 Downloading OnlineOrNot CLI ${VERSION} for ${OS}/${ARCH}..."
 	
