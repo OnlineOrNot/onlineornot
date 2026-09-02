@@ -1,5 +1,15 @@
 # onlineornot
 
+## 1.6.0
+
+### Minor Changes
+
+- [#69](https://github.com/OnlineOrNot/onlineornot/pull/69) [`0c89d0c5ec30e4a2d96223158f9bf1bf64273262`](https://github.com/OnlineOrNot/onlineornot/commit/0c89d0c5ec30e4a2d96223158f9bf1bf64273262) Thanks [@rozenmd](https://github.com/rozenmd)! - Use verified binary delta patches for standalone CLI updates, with a checksum-verified full download fallback. npm installations continue to support Node.js 22; Node.js 25 is only required when building standalone executables.
+
+### Patch Changes
+
+- [#71](https://github.com/OnlineOrNot/onlineornot/pull/71) [`2064d5476b7bd5f92fc35b3ae0bf9c3364993710`](https://github.com/OnlineOrNot/onlineornot/commit/2064d5476b7bd5f92fc35b3ae0bf9c3364993710) Thanks [@rozenmd](https://github.com/rozenmd)! - Open guided setup on account creation while keeping the login command focused on existing accounts.
+
 ## 1.5.0
 
 ### Minor Changes
