@@ -31,9 +31,13 @@ afterEach(async () => {
 
 describe("OAuth authorization URL", () => {
 	it("requests account creation for guided setup", async () => {
-		const { url } = await buildAuthUrl({ prompt: "create" });
+		const { url } = await buildAuthUrl({
+			prompt: "create",
+			provider: "github",
+		});
 
 		expect(new URL(url).searchParams.get("prompt")).toBe("create");
+		expect(new URL(url).searchParams.get("oon_provider")).toBe("github");
 	});
 });
 

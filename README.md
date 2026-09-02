@@ -14,9 +14,10 @@
 curl -fsSL https://onlineornot.com/install | bash
 ```
 
-When run from a terminal, the installer opens browser-based signup or login and
-then asks for the URL of your first uptime check. Passwords and social-provider
-credentials are entered only in the browser.
+When run from a terminal, the installer asks you to choose Google or GitHub,
+opens browser-based sign in or signup, and then asks for the URL of your first
+uptime check. Passwords and social-provider credentials are entered only in the
+browser.
 
 Install from npm instead with `npm install -g onlineornot`, then run
 `onlineornot setup`. For automation, use
@@ -36,7 +37,7 @@ Commands:
     onlineornot checks delete <id>          Delete a specific uptime check
   onlineornot billing  🧾 Open OnlineOrNot's billing in your browser
   onlineornot login    🔓 Login to OnlineOrNot via OAuth
-  onlineornot setup    🚀 Log in and create your first uptime check
+  onlineornot setup    🚀 Sign in or sign up and create your first uptime check
   onlineornot whoami   🕵️  Retrieve your user info and test your auth config
 
 Flags:
