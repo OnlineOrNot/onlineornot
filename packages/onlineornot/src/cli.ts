@@ -1,7 +1,6 @@
 import process from "process";
 import { hideBin } from "yargs/helpers";
 import {
-	applyPendingUpdate,
 	checkForUpdateInBackground,
 	handleUpdateCheckFlag,
 } from "./auto-update";
@@ -14,20 +13,19 @@ import { main } from ".";
  */
 
 async function run() {
+	const argv = hideBin(process.argv);
+
 	// Handle background update check process
 	if (await handleUpdateCheckFlag()) {
 		return;
 	}
 
-	// Apply any pending updates (SEA only)
-	await applyPendingUpdate();
-
 	// Check for updates in background (SEA only)
-	checkForUpdateInBackground();
+	checkForUpdateInBackground(argv);
 
 	// Run the main CLI
 	try {
-		await main(hideBin(process.argv));
+		await main(argv);
 	} catch (e) {
 		// The logging of any error that was thrown from `main()` is handled in the `yargs.fail()` handler.
 		// Here we just want to ensure that the process exits with a non-zero code.

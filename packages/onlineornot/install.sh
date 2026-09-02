@@ -106,10 +106,8 @@ detect_arch() {
 # Get latest version from GitHub
 # Changesets uses tags like "onlineornot@1.2.3"
 get_latest_version() {
-	curl -sL "https://api.github.com/repos/$REPO/releases" | 
-		grep '"tag_name":' | 
-		grep 'onlineornot@' | 
-		head -1 | 
+	curl -fsSL "https://api.github.com/repos/$REPO/releases/latest" |
+		grep '"tag_name": *"onlineornot@' |
 		sed -E 's/.*"onlineornot@([^"]+)".*/\1/'
 }
 
@@ -214,10 +212,8 @@ main() {
 	if [[ -n "$requested_version" ]]; then
 		VERSION="$requested_version"
 	else
-		VERSION=$(get_latest_version)
-		
-		if [[ -z "$VERSION" ]]; then
-			echo -e "${RED}Error: Failed to detect latest version${NC}"
+		if ! VERSION=$(get_latest_version) || [[ -z "$VERSION" ]]; then
+			echo -e "${RED}Error: Failed to detect latest version${NC}" >&2
 			exit 1
 		fi
 

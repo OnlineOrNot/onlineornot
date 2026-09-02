@@ -54,6 +54,9 @@ importers:
 
   packages/onlineornot:
     dependencies:
+      binpatch:
+        specifier: 0.4.2
+        version: 0.4.2
       chalk:
         specifier: ^5.2.0
         version: 5.6.2
@@ -1028,6 +1031,10 @@ packages:
   better-path-resolve@1.0.0:
     resolution: {integrity: sha512-pbnl5XzGBdrFU/wT4jqmJVPn2B6UHPBOhzMQkY/SPUPB6QtUXtmBHBIwCbXJol93mOpGMnQyP/+BB19q04xj7g==}
     engines: {node: '>=4'}
+
+  binpatch@0.4.2:
+    resolution: {integrity: sha512-aShVdFVzDrqVRlyhDQabzKV6b9suWegARr0IPTer58eNQoo1KqpuCr+VtbwwuirmfXqmWuuxsoZlXJN1tTZBcw==}
+    engines: {node: '>=22.15.0'}
 
   brace-expansion@1.1.12:
     resolution: {integrity: sha512-9T9UjW3r0UW5c1Q7GTwllptXwhvYmEzFhzMfZ9H7FQWt+uZePjZPjBP/W1ZEyZ1twGWom5/56TF4lPcqjnDHcg==}
@@ -3031,6 +3038,8 @@ snapshots:
   better-path-resolve@1.0.0:
     dependencies:
       is-windows: 1.0.2
+
+  binpatch@0.4.2: {}
 
   brace-expansion@1.1.12:
     dependencies:

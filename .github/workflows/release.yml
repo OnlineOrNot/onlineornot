@@ -5,34 +5,39 @@ on:
     branches:
       - main
 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   release:
     if: ${{ github.repository_owner == 'OnlineOrNot' }}
-    name: Release
+    name: Version or publish to npm
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
       id-token: write
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v6
+      - name: Checkout exact release commit
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
+          ref: ${{ github.sha }}
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
           version: 10
 
       - name: Use Node.js 25
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: 25
           cache: "pnpm"
           registry-url: "https://registry.npmjs.org"
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Check the build
@@ -45,33 +50,67 @@ jobs:
         env:
           NODE_OPTIONS: "--max_old_space_size=8192"
 
-      - name: Create Version PR or Publish to NPM
+      - name: Create version PR or publish to npm
         id: changesets
-        uses: changesets/action@v1.7.0
+        uses: changesets/action@6a0a831ff30acef54f2c6aa1cbbc1096b066edaf # v1.7.0
         with:
           version: node .github/changeset-version.js
           publish: pnpm changeset publish
+          createGithubReleases: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
           NODE_ENV: "production"
           SOURCEMAPS: "false"
 
-      - name: Extract version from published packages
-        id: extract-version
-        if: steps.changesets.outputs.published == 'true'
+      - name: Inspect pending binary release
+        id: inspect-release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JUST_PUBLISHED: ${{ steps.changesets.outputs.published }}
         run: |
-          VERSION=$(echo '${{ steps.changesets.outputs.publishedPackages }}' | jq -r '.[0].version')
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          VERSION=$(node -p 'require("./packages/onlineornot/package.json").version')
+          TAG="onlineornot@$VERSION"
+          PACKAGE_EXISTS=false
+          NPM_LATEST=""
+          if [[ "$JUST_PUBLISHED" == "true" ]]; then
+            PACKAGE_EXISTS=true
+            NPM_LATEST="$VERSION"
+          elif PUBLISHED_VERSION=$(npm view "onlineornot@$VERSION" version 2>/dev/null); then
+            if [[ "$PUBLISHED_VERSION" == "$VERSION" ]]; then
+              PACKAGE_EXISTS=true
+              NPM_LATEST=$(npm view onlineornot dist-tags.latest)
+            fi
+          fi
+          RELEASE_EXISTS=$(gh api --paginate "repos/$GITHUB_REPOSITORY/releases?per_page=100" \
+            --jq ".[] | select(.tag_name == \"$TAG\" and .draft == false) | .tag_name")
+          RELEASE_PENDING=false
+          if [[ "$PACKAGE_EXISTS" == "true" && "$NPM_LATEST" == "$VERSION" && -z "$RELEASE_EXISTS" ]]; then
+            RELEASE_PENDING=true
+          fi
+          if [[ "$RELEASE_PENDING" == "true" ]]; then
+            if ! git rev-parse --verify "refs/tags/$TAG" >/dev/null 2>&1; then
+              if [[ "$JUST_PUBLISHED" != "true" ]]; then
+                echo "::error::Published package $VERSION has no immutable release tag"
+                exit 1
+              fi
+              git tag "$TAG" "$GITHUB_SHA"
+            fi
+            git push origin "refs/tags/$TAG"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "release_pending=$RELEASE_PENDING" >> "$GITHUB_OUTPUT"
 
     outputs:
-      published: ${{ steps.changesets.outputs.published }}
-      version: ${{ steps.extract-version.outputs.version }}
+      release_pending: ${{ steps.inspect-release.outputs.release_pending }}
+      version: ${{ steps.inspect-release.outputs.version }}
 
   build-binaries:
+    name: Build ${{ matrix.name }}
     needs: release
-    if: needs.release.outputs.published == 'true'
+    if: needs.release.outputs.release_pending == 'true'
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: ubuntu-latest
@@ -82,49 +121,148 @@ jobs:
             name: darwin-arm64
           - os: macos-15-intel
             name: darwin-amd64
-
     runs-on: ${{ matrix.os }}
     permissions:
-      contents: write
-
+      contents: read
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v6
+      - name: Checkout exact release commit
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          ref: main
+          ref: onlineornot@${{ needs.release.outputs.version }}
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
           version: 10
 
       - name: Use Node.js 25
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: 25
           cache: "pnpm"
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Build SEA binary
         working-directory: packages/onlineornot
         run: pnpm run build:sea
 
-      - name: Rename binary
+      - name: Prepare immutable release assets
         working-directory: packages/onlineornot
+        env:
+          BINARY_NAME: onlineornot-${{ matrix.name }}
+          EXPECTED_VERSION: ${{ needs.release.outputs.version }}
         run: |
-          mv onlineornot onlineornot-${{ matrix.name }}
+          mv onlineornot "$BINARY_NAME"
+          test "$(./"$BINARY_NAME" --version)" = "$EXPECTED_VERSION"
+          gzip -9 -n -c "$BINARY_NAME" > "$BINARY_NAME.gz"
           if command -v sha256sum >/dev/null 2>&1; then
-            sha256sum onlineornot-${{ matrix.name }} > onlineornot-${{ matrix.name }}.sha256
+            sha256sum "$BINARY_NAME" > "$BINARY_NAME.sha256"
           else
-            shasum -a 256 onlineornot-${{ matrix.name }} > onlineornot-${{ matrix.name }}.sha256
+            shasum -a 256 "$BINARY_NAME" > "$BINARY_NAME.sha256"
           fi
 
-      - name: Upload to release
-        uses: softprops/action-gh-release@v2
+      - name: Upload prepared binary
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: release-${{ matrix.name }}
+          path: |
+            packages/onlineornot/onlineornot-${{ matrix.name }}
+            packages/onlineornot/onlineornot-${{ matrix.name }}.gz
+            packages/onlineornot/onlineornot-${{ matrix.name }}.sha256
+          if-no-files-found: error
+          retention-days: 7
+
+  publish-release:
+    name: Verify and publish GitHub release
+    needs: [release, build-binaries]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout exact release commit
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          ref: onlineornot@${{ needs.release.outputs.version }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          version: 10
+
+      - name: Use Node.js 25
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 25
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download prepared binaries
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: release-*
+          path: release-assets
+          merge-multiple: true
+
+      - name: Generate delta patches from previous release
+        id: delta
+        uses: BYK/binpatch/action@9ba6bbb8227fcbd2521852d2311c82afac5e9573
+        with:
+          mode: generate-release
+          github-repo: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          new-binaries-dir: release-assets
+          new-gz-dir: release-assets
+          patches-dir: .delta-patches
+          binary-glob: onlineornot-*
+
+      - name: Report unavailable delta patches
+        if: steps.delta.outputs['from-version'] != '' && steps.delta.outputs['has-patches'] != 'true'
+        env:
+          PREVIOUS_VERSION: ${{ steps.delta.outputs['from-version'] }}
+        run: echo "::warning::No delta patches survived generation from $PREVIOUS_VERSION; clients will use verified full downloads"
+
+      - name: Verify generated patches
+        run: pnpm --filter onlineornot run verify:release-patches -- "$PWD/old-binaries" "$PWD/release-assets" "$PWD/.delta-patches"
+
+      - name: Add verified patches to release assets
+        run: |
+          shopt -s nullglob
+          patches=(.delta-patches/*.patch)
+          if (( ${#patches[@]} > 0 )); then
+            cp "${patches[@]}" release-assets/
+          fi
+
+      - name: Validate release asset matrix
+        run: |
+          for platform in linux-amd64 linux-arm64 darwin-arm64 darwin-amd64; do
+            test -f "release-assets/onlineornot-$platform"
+            test -f "release-assets/onlineornot-$platform.gz"
+            test -f "release-assets/onlineornot-$platform.sha256"
+          done
+
+      - name: Extract release notes
+        env:
+          VERSION: ${{ needs.release.outputs.version }}
+        run: node -r esbuild-register packages/onlineornot/scripts/extract-release-notes.ts "$VERSION" packages/onlineornot/CHANGELOG.md release-notes.md
+
+      - name: Create draft release and upload complete asset set
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65
         with:
           tag_name: onlineornot@${{ needs.release.outputs.version }}
-          files: |
-            packages/onlineornot/onlineornot-${{ matrix.name }}
-            packages/onlineornot/onlineornot-${{ matrix.name }}.sha256
+          name: onlineornot@${{ needs.release.outputs.version }}
+          body_path: release-notes.md
+          draft: true
+          fail_on_unmatched_files: true
+          overwrite_files: true
+          files: release-assets/*
+
+      - name: Publish completed release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: onlineornot@${{ needs.release.outputs.version }}
+        run: gh release edit "$RELEASE_TAG" --draft=false --latest

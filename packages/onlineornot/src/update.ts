@@ -1,44 +1,16 @@
-import { execSync } from "node:child_process";
-import fs from "node:fs/promises";
-import os from "node:os";
-import path from "node:path";
 import chalk from "chalk";
 import pkg from "../package.json";
 import { logger } from "./logger";
+import { runStandaloneUpdate } from "./standalone-update";
+import type { StandaloneUpdateProgress } from "./standalone-update";
 import type { CommonYargsOptions } from "./yargs-types";
 import type { Argv } from "yargs";
-
-const INSTALL_DIR =
-	process.env.ONLINEORNOT_INSTALL_DIR ||
-	path.join(os.homedir(), ".onlineornot");
-const REPO = "OnlineOrNot/onlineornot";
-
-interface GitHubRelease {
-	tag_name: string;
-	assets: Array<{
-		name: string;
-		browser_download_url: string;
-	}>;
-}
 
 function isSEA(): boolean {
 	return process.env.ONLINEORNOT_SEA === "true";
 }
 
-function isNewerVersion(a: string, b: string): boolean {
-	const partsA = a.replace(/^v/, "").split(".").map(Number);
-	const partsB = b.replace(/^v/, "").split(".").map(Number);
-
-	for (let i = 0; i < 3; i++) {
-		const numA = partsA[i] || 0;
-		const numB = partsB[i] || 0;
-		if (numA > numB) return true;
-		if (numA < numB) return false;
-	}
-
-	return false;
-}
-
+/** Configure flags for the standalone CLI update command. */
 export function updateOptions(yargs: Argv<CommonYargsOptions>) {
 	return yargs
 		.option("force", {
@@ -55,133 +27,23 @@ export function updateOptions(yargs: Argv<CommonYargsOptions>) {
 		});
 }
 
-export async function updateHandler(args: {
-	force: boolean;
-	check: boolean;
-}): Promise<void> {
-	const currentVersion = pkg.version;
+function reportUpdateProgress(): (progress: StandaloneUpdateProgress) => void {
+	let lastPhase: StandaloneUpdateProgress["type"] | string | null = null;
+	return (progress) => {
+		if (progress.type !== "phase" || progress.phase === lastPhase) return;
+		lastPhase = progress.phase;
+		if (progress.phase === "check")
+			logger.log(chalk.dim("Checking for updates..."));
+		if (progress.phase === "patch")
+			logger.log(chalk.dim("Looking for a delta update..."));
+		if (progress.phase === "download")
+			logger.log(chalk.dim("Downloading the full update..."));
+		if (progress.phase === "install")
+			logger.log(chalk.dim("Installing the verified update..."));
+	};
+}
 
-	if (!isSEA()) {
-		logger.log("");
-		logger.log(
-			`You're running OnlineOrNot CLI via ${chalk.cyan("npm/pnpm")}, not as a standalone binary.`,
-		);
-		logger.log("");
-		logger.log("To update, run:");
-		logger.log(chalk.dim("  npm update -g onlineornot"));
-		logger.log(chalk.dim("  # or"));
-		logger.log(chalk.dim("  pnpm update -g onlineornot"));
-		logger.log("");
-		logger.log(`Or install the standalone binary for auto-updates:`);
-		logger.log(
-			chalk.dim("  curl -fsSL https://onlineornot.com/install | bash"),
-		);
-		return;
-	}
-
-	logger.log(chalk.dim(`Current version: ${currentVersion}`));
-
-	// Fetch releases (changesets uses onlineornot@x.x.x tags)
-	const response = await fetch(
-		`https://api.github.com/repos/${REPO}/releases`,
-		{
-			headers: {
-				"User-Agent": "onlineornot-cli",
-			},
-		},
-	);
-
-	if (!response.ok) {
-		logger.error("Failed to check for updates. Please try again later.");
-		return;
-	}
-
-	const releases = (await response.json()) as GitHubRelease[];
-	const release = releases.find((r) => r.tag_name.startsWith("onlineornot@"));
-
-	if (!release) {
-		logger.error("No releases found.");
-		return;
-	}
-
-	const latestVersion = release.tag_name.replace(/^onlineornot@/, "");
-
-	if (!args.force && !isNewerVersion(latestVersion, currentVersion)) {
-		logger.log("");
-		logger.log(chalk.green("✓") + " You're already on the latest version!");
-		return;
-	}
-
-	logger.log("");
-	logger.log(
-		chalk.dim("Installing ") +
-			"onlineornot" +
-			chalk.dim(" version: ") +
-			latestVersion,
-	);
-
-	if (args.check) {
-		if (isNewerVersion(latestVersion, currentVersion)) {
-			logger.log("");
-			logger.log(
-				`Run ${chalk.cyan("onlineornot update")} to install the latest version.`,
-			);
-		}
-		return;
-	}
-
-	// Determine binary name for this platform
-	const osName = process.platform === "darwin" ? "darwin" : "linux";
-	const arch = process.arch === "arm64" ? "arm64" : "amd64";
-	const binaryName = `onlineornot-${osName}-${arch}`;
-
-	const asset = release.assets.find((a) => a.name === binaryName);
-	if (!asset) {
-		logger.error(`No binary available for your platform (${osName}-${arch})`);
-		return;
-	}
-
-	logger.log("");
-
-	const currentBinary = process.execPath;
-	const tempPath = `${currentBinary}.new`;
-
-	// Download with progress bar using curl
-	try {
-		execSync(`curl -#fSL "${asset.browser_download_url}" -o "${tempPath}"`, {
-			stdio: "inherit",
-		});
-	} catch {
-		logger.error("Failed to download update. Please try again later.");
-		return;
-	}
-
-	await fs.chmod(tempPath, 0o755);
-
-	// Replace current binary
-	const backupPath = `${currentBinary}.backup`;
-	try {
-		// Backup current binary
-		await fs.copyFile(currentBinary, backupPath);
-		// Replace with new binary
-		await fs.rename(tempPath, currentBinary);
-		// Remove backup
-		await fs.rm(backupPath, { force: true });
-	} catch (error) {
-		// Restore backup if something went wrong
-		try {
-			await fs.rename(backupPath, currentBinary);
-		} catch {
-			// Ignore restore errors
-		}
-		throw error;
-	}
-
-	// Update version file
-	await fs.mkdir(INSTALL_DIR, { recursive: true });
-	await fs.writeFile(path.join(INSTALL_DIR, "version"), latestVersion);
-
-	// Print success message with ASCII art
+function printUpdateSuccess(version: string, method: "patch" | "full"): void {
 	logger.log("");
 	logger.log(
 		chalk.dim("█▀▀█ █▀▀▄ █   ▀ █▀▀▄ █▀▀ ") +
@@ -199,8 +61,11 @@ export async function updateHandler(args: {
 			chalk.dim("▀  ▀ ▀▀▀▀   ▀"),
 	);
 	logger.log("");
-	logger.log("");
-	logger.log(chalk.dim(`Updated to version ${latestVersion}`));
+	logger.log(
+		chalk.dim(
+			`Updated to version ${version} using a ${method === "patch" ? "delta patch" : "full download"}.`,
+		),
+	);
 	logger.log("");
 	logger.log("onlineornot checks  " + chalk.dim("# Manage checks"));
 	logger.log("");
@@ -208,4 +73,60 @@ export async function updateHandler(args: {
 		chalk.dim("For more information visit ") + "https://onlineornot.com/docs",
 	);
 	logger.log("");
+}
+
+/** Check for or install the latest CLI release. */
+export async function updateHandler(args: {
+	force: boolean;
+	check: boolean;
+}): Promise<void> {
+	if (!isSEA()) {
+		logger.log("");
+		logger.log(
+			`You're running OnlineOrNot CLI via ${chalk.cyan("npm/pnpm")}, not as a standalone binary.`,
+		);
+		logger.log("");
+		logger.log("To update, run:");
+		logger.log(chalk.dim("  npm update -g onlineornot"));
+		logger.log(chalk.dim("  # or"));
+		logger.log(chalk.dim("  pnpm update -g onlineornot"));
+		logger.log("");
+		logger.log("Or install the standalone binary for automatic updates:");
+		logger.log(
+			chalk.dim("  curl -fsSL https://onlineornot.com/install | bash"),
+		);
+		logger.log("");
+		return;
+	}
+
+	logger.log(chalk.dim(`Current version: ${pkg.version}`));
+	const result = await runStandaloneUpdate({
+		currentVersion: pkg.version,
+		checkOnly: args.check,
+		force: args.force,
+		onProgress: reportUpdateProgress(),
+	});
+
+	if (result.status === "current") {
+		logger.log("");
+		logger.log(chalk.green("✓") + " You're already on the latest version!");
+		return;
+	}
+	if (result.status === "available") {
+		logger.log("");
+		logger.log(`Version ${chalk.cyan(result.version)} is available.`);
+		logger.log(`Run ${chalk.cyan("onlineornot update")} to install it.`);
+		return;
+	}
+	if (result.status === "busy") {
+		logger.log(chalk.dim("Another OnlineOrNot update is already running."));
+		return;
+	}
+	if (result.status === "failed") {
+		logger.error(result.message);
+		process.exitCode = 1;
+		return;
+	}
+
+	printUpdateSuccess(result.version, result.method);
 }
