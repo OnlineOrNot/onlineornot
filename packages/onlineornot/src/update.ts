@@ -1,14 +1,11 @@
 import chalk from "chalk";
 import pkg from "../package.json";
 import { logger } from "./logger";
+import { isStandaloneExecutable } from "./runtime-environment";
 import { runStandaloneUpdate } from "./standalone-update";
 import type { StandaloneUpdateProgress } from "./standalone-update";
 import type { CommonYargsOptions } from "./yargs-types";
 import type { Argv } from "yargs";
-
-function isSEA(): boolean {
-	return process.env.ONLINEORNOT_SEA === "true";
-}
 
 /** Configure flags for the standalone CLI update command. */
 export function updateOptions(yargs: Argv<CommonYargsOptions>) {
@@ -80,7 +77,7 @@ export async function updateHandler(args: {
 	force: boolean;
 	check: boolean;
 }): Promise<void> {
-	if (!isSEA()) {
+	if (!isStandaloneExecutable()) {
 		logger.log("");
 		logger.log(
 			`You're running OnlineOrNot CLI via ${chalk.cyan("npm/pnpm")}, not as a standalone binary.`,

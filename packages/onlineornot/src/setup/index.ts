@@ -118,7 +118,7 @@ export async function runSetup(
 	dependencies: Partial<SetupDependencies> = {},
 ): Promise<SetupCheck> {
 	const deps = { ...defaultDependencies, ...dependencies };
-	const login = await deps.authenticate();
+	const login = await deps.authenticate({ prompt: "create" });
 	if (login.status === "authenticated") {
 		deps.log(`Logged in as ${login.email}.`);
 	} else if (login.status === "existing") {

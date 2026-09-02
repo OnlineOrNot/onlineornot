@@ -57,7 +57,9 @@ interface CallbackServerOptions {
 /**
  * Build the OAuth authorization URL
  */
-export async function buildAuthUrl(): Promise<{
+export async function buildAuthUrl(
+	options: { prompt?: "create" } = {},
+): Promise<{
 	url: string;
 	codeVerifier: string;
 	state: string;
@@ -73,6 +75,9 @@ export async function buildAuthUrl(): Promise<{
 	authUrl.searchParams.set("state", state);
 	authUrl.searchParams.set("code_challenge", codeChallenge);
 	authUrl.searchParams.set("code_challenge_method", "S256");
+	if (options.prompt) {
+		authUrl.searchParams.set("prompt", options.prompt);
+	}
 
 	return { url: authUrl.toString(), codeVerifier, state };
 }

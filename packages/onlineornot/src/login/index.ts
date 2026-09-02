@@ -17,7 +17,9 @@ export type LoginResult =
 	| { status: "existing"; email: string }
 	| { status: "authenticated"; email: string };
 
-export async function authenticateWithBrowser(): Promise<LoginResult> {
+export async function authenticateWithBrowser(
+	options: { prompt?: "create" } = {},
+): Promise<LoginResult> {
 	// Check for env var override
 	if (getOnlineOrNotAPITokenFromEnv()) {
 		return { status: "environment" };
@@ -30,7 +32,7 @@ export async function authenticateWithBrowser(): Promise<LoginResult> {
 	}
 
 	// Build auth URL with PKCE
-	const { url: authUrl, codeVerifier, state } = await buildAuthUrl();
+	const { url: authUrl, codeVerifier, state } = await buildAuthUrl(options);
 	const callbackServer = await startOAuthCallbackServer(codeVerifier, state);
 	try {
 		await openInBrowser(authUrl);
