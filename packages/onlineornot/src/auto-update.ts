@@ -17,8 +17,21 @@ const AUTO_UPDATE_STATE_PATH = path.join(
 const AUTO_UPDATE_SUCCESS_INTERVAL_MS = 24 * 60 * 60 * 1000;
 const AUTO_UPDATE_FAILURE_INTERVAL_MS = 60 * 60 * 1000;
 
+interface AutoUpdateDependencies {
+	spawn: typeof spawn;
+	runStandaloneUpdate: typeof runStandaloneUpdate;
+}
+
+const defaultAutoUpdateDependencies: AutoUpdateDependencies = {
+	spawn,
+	runStandaloneUpdate,
+};
+
 /** Start a detached, non-blocking standalone update check. */
-export function checkForUpdateInBackground(argv: readonly string[]): void {
+export function checkForUpdateInBackground(
+	argv: readonly string[],
+	dependencies: AutoUpdateDependencies = defaultAutoUpdateDependencies,
+): void {
 	if (
 		!isStandaloneExecutable() ||
 		process.env.ONLINEORNOT_DISABLE_AUTO_UPDATE === "true" ||
@@ -30,14 +43,18 @@ export function checkForUpdateInBackground(argv: readonly string[]): void {
 	}
 
 	// Spawn detached process to check for updates
-	const child = spawn(process.execPath, ["--onlineornot-check-update"], {
-		detached: true,
-		stdio: "ignore",
-		env: {
-			...process.env,
-			ONLINEORNOT_UPDATE_CHECK: "true",
+	const child = dependencies.spawn(
+		process.execPath,
+		["--onlineornot-check-update"],
+		{
+			detached: true,
+			stdio: "ignore",
+			env: {
+				...process.env,
+				ONLINEORNOT_UPDATE_CHECK: "true",
+			},
 		},
-	});
+	);
 	child.on("error", () => {
 		// Automatic updates are best-effort and must never interrupt the CLI.
 	});
@@ -74,8 +91,12 @@ async function scheduleNextAutomaticUpdateCheck(
 }
 
 /** Check for and atomically install a verified standalone update. */
-export async function performUpdateCheck(): Promise<void> {
-	const result = await runStandaloneUpdate({ currentVersion: pkg.version });
+export async function performUpdateCheck(
+	dependencies: AutoUpdateDependencies = defaultAutoUpdateDependencies,
+): Promise<void> {
+	const result = await dependencies.runStandaloneUpdate({
+		currentVersion: pkg.version,
+	});
 	if (result.status === "busy") return;
 	await scheduleNextAutomaticUpdateCheck(
 		result.status === "failed"

@@ -5,5 +5,5 @@
 	"semi": true,
 	"useTabs": true,
 	"sortPackageJson": false,
-	"ignorePatterns": []
+	"ignorePatterns": ["tools/oxlint/anti-slop/**"]
 }

@@ -1,4 +1,5 @@
 import http from "node:http";
+import type { AddressInfo } from "node:net";
 import { generatePKCECodes, generateState } from "./pkce";
 
 const CLIENT_ID = "onlineornot-cli";
@@ -32,6 +33,87 @@ export interface TokenResponse {
 	expires_in: number;
 	token_type: string;
 	scope: string;
+}
+
+export interface RefreshTokenResponse {
+	access_token: string;
+	refresh_token?: string;
+	expires_in: number;
+	token_type: string;
+	scope: string;
+}
+
+interface OAuthErrorResponse {
+	error?: string;
+	error_description?: string;
+}
+
+function isOAuthErrorResponse(value: unknown): value is OAuthErrorResponse {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		(!("error" in value) ||
+			value.error === undefined ||
+			typeof value.error === "string") &&
+		(!("error_description" in value) ||
+			value.error_description === undefined ||
+			typeof value.error_description === "string")
+	);
+}
+
+function isTokenResponse(value: unknown): value is TokenResponse {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		"access_token" in value &&
+		typeof value.access_token === "string" &&
+		"refresh_token" in value &&
+		typeof value.refresh_token === "string" &&
+		"expires_in" in value &&
+		typeof value.expires_in === "number" &&
+		"token_type" in value &&
+		typeof value.token_type === "string" &&
+		"scope" in value &&
+		typeof value.scope === "string"
+	);
+}
+
+function isRefreshTokenResponse(value: unknown): value is RefreshTokenResponse {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		"access_token" in value &&
+		typeof value.access_token === "string" &&
+		(!("refresh_token" in value) ||
+			value.refresh_token === undefined ||
+			typeof value.refresh_token === "string") &&
+		"expires_in" in value &&
+		typeof value.expires_in === "number" &&
+		"token_type" in value &&
+		typeof value.token_type === "string" &&
+		"scope" in value &&
+		typeof value.scope === "string"
+	);
+}
+
+function isAddressInfo(
+	value: string | AddressInfo | null,
+): value is AddressInfo {
+	return typeof value === "object" && value !== null;
+}
+
+function getCallbackPort(
+	address: string | AddressInfo | null,
+	requestedPort: number,
+): number {
+	return isAddressInfo(address) ? address.port : requestedPort;
+}
+
+function hasNodeErrorCode(
+	error: unknown,
+	code: string,
+): error is NodeJS.ErrnoException {
+	return error instanceof Error && "code" in error && error.code === code;
 }
 
 export interface OAuthResult {
@@ -110,21 +192,15 @@ async function exchangeAuthorizationCode(
 	});
 
 	if (!tokenResponse.ok) {
-		const error = (await tokenResponse.json()) as {
-			error?: string;
-			error_description?: string;
-		};
+		const errorPayload: unknown = await tokenResponse.json();
+		const error = isOAuthErrorResponse(errorPayload) ? errorPayload : {};
 		throw new Error(
 			error.error_description || error.error || "Token exchange failed",
 		);
 	}
 
-	const tokens = (await tokenResponse.json()) as TokenResponse;
-	if (
-		!tokens.access_token ||
-		!tokens.refresh_token ||
-		typeof tokens.expires_in !== "number"
-	) {
+	const tokens: unknown = await tokenResponse.json();
+	if (!isTokenResponse(tokens)) {
 		throw new Error("Invalid token response: missing required fields");
 	}
 
@@ -213,8 +289,7 @@ export async function startOAuthCallbackServer(
 
 		try {
 			const address = server.address();
-			const callbackPort =
-				typeof address === "object" && address ? address.port : requestedPort;
+			const callbackPort = getCallbackPort(address, requestedPort);
 			const callbackUrl = `http://localhost:${callbackPort}/oauth/callback`;
 			const tokens = await exchangeCode(code, codeVerifier, callbackUrl);
 			res.writeHead(302, {
@@ -244,8 +319,7 @@ export async function startOAuthCallbackServer(
 			});
 		});
 	} catch (error) {
-		const nodeError = error as NodeJS.ErrnoException;
-		if (nodeError.code === "EADDRINUSE") {
+		if (hasNodeErrorCode(error, "EADDRINUSE")) {
 			throw new Error(
 				`Local OAuth callback port ${requestedPort} is already in use. Close the other process and try again.`,
 			);
@@ -261,8 +335,7 @@ export async function startOAuthCallbackServer(
 	}, options.timeoutMs ?? CALLBACK_TIMEOUT_MS);
 
 	const address = server.address();
-	const callbackPort =
-		typeof address === "object" && address ? address.port : requestedPort;
+	const callbackPort = getCallbackPort(address, requestedPort);
 	return {
 		callbackUrl: `http://localhost:${callbackPort}/oauth/callback`,
 		result,
@@ -286,7 +359,7 @@ export async function waitForCallback(
  */
 export async function refreshAccessToken(
 	refreshToken: string,
-): Promise<TokenResponse> {
+): Promise<RefreshTokenResponse> {
 	const response = await fetch(`${AUTH_BASE_URL}/oauth2/token`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -302,7 +375,11 @@ export async function refreshAccessToken(
 		throw new Error("Failed to refresh token");
 	}
 
-	return (await response.json()) as TokenResponse;
+	const tokens: unknown = await response.json();
+	if (!isRefreshTokenResponse(tokens)) {
+		throw new Error("Invalid token response: missing required fields");
+	}
+	return tokens;
 }
 
 /**

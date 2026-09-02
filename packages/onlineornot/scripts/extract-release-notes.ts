@@ -30,7 +30,7 @@ async function extractReleaseNotes(): Promise<void> {
 	await fs.writeFile(outputPath, `${releaseNotes}\n`);
 }
 
-extractReleaseNotes().catch((error: unknown) => {
+extractReleaseNotes().catch((error) => {
 	console.error(error instanceof Error ? error.message : error);
 	process.exitCode = 1;
 });

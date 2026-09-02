@@ -3,26 +3,21 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const mocks = vi.hoisted(() => ({
-	spawn: vi.fn(),
-	runStandaloneUpdate: vi.fn(),
-}));
-
-vi.mock("node:child_process", () => ({ spawn: mocks.spawn }));
-vi.mock("./standalone-update", () => ({
-	runStandaloneUpdate: mocks.runStandaloneUpdate,
-}));
-
 const temporaryDirectories: string[] = [];
 const originalEnvironment = {
 	installDirectory: process.env.ONLINEORNOT_INSTALL_DIR,
 	sea: process.env.ONLINEORNOT_SEA,
 };
 
+const dependencies = {
+	spawn: vi.fn(),
+	runStandaloneUpdate: vi.fn(),
+};
+
 beforeEach(() => {
 	vi.resetModules();
-	mocks.spawn.mockReset();
-	mocks.runStandaloneUpdate.mockReset();
+	dependencies.spawn.mockReset();
+	dependencies.runStandaloneUpdate.mockReset();
 	process.env.ONLINEORNOT_SEA = "true";
 });
 
@@ -60,10 +55,10 @@ describe("automatic updates", () => {
 	it("does not start for explicit update or uninstall commands", async () => {
 		const { module } = await loadAutoUpdate();
 
-		module.checkForUpdateInBackground(["--help", "update"]);
-		module.checkForUpdateInBackground(["--force", "uninstall"]);
+		module.checkForUpdateInBackground(["--help", "update"], dependencies);
+		module.checkForUpdateInBackground(["--force", "uninstall"], dependencies);
 
-		expect(mocks.spawn).not.toHaveBeenCalled();
+		expect(dependencies.spawn).not.toHaveBeenCalled();
 	});
 
 	it("does not start before the persisted next-check time", async () => {
@@ -73,38 +68,38 @@ describe("automatic updates", () => {
 			`${Date.now() + 60_000}\n`,
 		);
 
-		module.checkForUpdateInBackground([]);
+		module.checkForUpdateInBackground([], dependencies);
 
-		expect(mocks.spawn).not.toHaveBeenCalled();
+		expect(dependencies.spawn).not.toHaveBeenCalled();
 	});
 
 	it("ignores an implausibly distant next-check time", async () => {
 		const child = { on: vi.fn(), unref: vi.fn() };
-		mocks.spawn.mockReturnValue(child);
+		dependencies.spawn.mockReturnValue(child);
 		const { installDirectory, module } = await loadAutoUpdate();
 		await writeFile(
 			path.join(installDirectory, "auto-update-next-check"),
 			`${Date.now() + 48 * 60 * 60 * 1000}\n`,
 		);
 
-		module.checkForUpdateInBackground([]);
+		module.checkForUpdateInBackground([], dependencies);
 
-		expect(mocks.spawn).toHaveBeenCalledOnce();
+		expect(dependencies.spawn).toHaveBeenCalledOnce();
 	});
 
 	it("handles background process spawn errors", async () => {
 		const child = { on: vi.fn(), unref: vi.fn() };
-		mocks.spawn.mockReturnValue(child);
+		dependencies.spawn.mockReturnValue(child);
 		const { module } = await loadAutoUpdate();
 
-		module.checkForUpdateInBackground([]);
+		module.checkForUpdateInBackground([], dependencies);
 
 		expect(child.on).toHaveBeenCalledWith("error", expect.any(Function));
 		expect(child.unref).toHaveBeenCalledOnce();
 	});
 
 	it("persists a successful automatic-check interval", async () => {
-		mocks.runStandaloneUpdate.mockResolvedValue({
+		dependencies.runStandaloneUpdate.mockResolvedValue({
 			status: "current",
 			version: "1.5.0",
 		});
@@ -112,7 +107,7 @@ describe("automatic updates", () => {
 		await mkdir(installDirectory, { recursive: true });
 		const beforeCheck = Date.now();
 
-		await module.performUpdateCheck();
+		await module.performUpdateCheck(dependencies);
 
 		const nextCheckAt = Number(
 			await readFile(

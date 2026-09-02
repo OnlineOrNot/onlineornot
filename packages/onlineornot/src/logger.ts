@@ -39,12 +39,26 @@ const getLogLevelFromEnv = getEnvironmentVariableFactory({
 	defaultValue: () => "log",
 });
 
+function parseLoggerLevel(value: string | undefined): LoggerLevel {
+	switch (value) {
+		case "none":
+		case "error":
+		case "warn":
+		case "info":
+		case "log":
+		case "debug":
+			return value;
+		default:
+			return "log";
+	}
+}
+
 export type TableRow<Keys extends string> = Record<Keys, string>;
 
 class Logger {
 	constructor() {}
 
-	loggerLevel: LoggerLevel = (getLogLevelFromEnv() as LoggerLevel) ?? "log";
+	loggerLevel: LoggerLevel = parseLoggerLevel(getLogLevelFromEnv());
 	columns = process.stdout.columns;
 
 	debug = (...args: unknown[]) => this.doLog("debug", args);
@@ -53,6 +67,7 @@ class Logger {
 	warn = (...args: unknown[]) => this.doLog("warn", args);
 	error = (...args: unknown[]) => this.doLog("error", args);
 	table<Keys extends string>(data: TableRow<Keys>[]) {
+		// SAFETY: TableRow<Keys> guarantees Object.keys returns only keys from Keys.
 		const keys: Keys[] =
 			data.length === 0 ? [] : (Object.keys(data[0]) as Keys[]);
 		const t = new CLITable({

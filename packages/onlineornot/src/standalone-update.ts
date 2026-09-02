@@ -28,6 +28,20 @@ interface StableRelease {
 	readonly assets: readonly ReleaseAsset[];
 }
 
+interface GitHubReleaseAssetResponse {
+	readonly name: string;
+	readonly size: number;
+	readonly digest?: string | null;
+	readonly browser_download_url: string;
+}
+
+interface GitHubReleaseResponse {
+	readonly tag_name: string;
+	readonly draft?: boolean;
+	readonly prerelease?: boolean;
+	readonly assets: readonly unknown[];
+}
+
 /** Progress reported while checking, downloading, verifying, and installing a standalone update. */
 export type StandaloneUpdateProgress =
 	| {
@@ -90,17 +104,41 @@ type DownloadResult =
 	| { readonly ok: true }
 	| { readonly ok: false; readonly result: StandaloneUpdateResult };
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-	return typeof value === "object" && value !== null;
+function isGitHubReleaseResponse(
+	value: unknown,
+): value is GitHubReleaseResponse {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		"tag_name" in value &&
+		typeof value.tag_name === "string" &&
+		"assets" in value &&
+		Array.isArray(value.assets)
+	);
 }
 
-function parseStableRelease(value: unknown): StableRelease | null {
-	if (!isRecord(value) || value.draft === true || value.prerelease === true) {
-		return null;
-	}
-	if (typeof value.tag_name !== "string" || !Array.isArray(value.assets)) {
-		return null;
-	}
+function isGitHubReleaseAssetResponse(
+	value: unknown,
+): value is GitHubReleaseAssetResponse {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		"name" in value &&
+		typeof value.name === "string" &&
+		"size" in value &&
+		typeof value.size === "number" &&
+		"browser_download_url" in value &&
+		typeof value.browser_download_url === "string" &&
+		(!("digest" in value) ||
+			value.digest === null ||
+			typeof value.digest === "string")
+	);
+}
+
+function parseStableRelease(
+	value: GitHubReleaseResponse,
+): StableRelease | null {
+	if (value.draft === true || value.prerelease === true) return null;
 
 	const versionMatch = RELEASE_TAG_PATTERN.exec(value.tag_name);
 	if (!versionMatch) return null;
@@ -110,18 +148,11 @@ function parseStableRelease(value: unknown): StableRelease | null {
 	const assets: ReleaseAsset[] = [];
 
 	for (const candidate of value.assets) {
-		if (
-			!isRecord(candidate) ||
-			typeof candidate.name !== "string" ||
-			typeof candidate.size !== "number" ||
-			typeof candidate.browser_download_url !== "string"
-		) {
-			continue;
-		}
+		if (!isGitHubReleaseAssetResponse(candidate)) continue;
 		assets.push({
 			name: candidate.name,
 			size: candidate.size,
-			digest: typeof candidate.digest === "string" ? candidate.digest : null,
+			digest: candidate.digest ?? null,
 			downloadUrl: candidate.browser_download_url,
 		});
 	}
@@ -216,6 +247,7 @@ async function fetchLatestStableRelease(
 	}
 
 	const releases = payload
+		.filter(isGitHubReleaseResponse)
 		.map(parseStableRelease)
 		.filter((release): release is StableRelease => release !== null)
 		.sort((a, b) => compareVersionParts(b.versionParts, a.versionParts));
@@ -262,8 +294,16 @@ function reportProgress(
 	}
 }
 
-function hasErrorCode(error: unknown, code: string): boolean {
-	return error instanceof Error && "code" in error && error.code === code;
+function hasErrorCode(
+	error: unknown,
+	code: string,
+): error is Error & { code: string } {
+	return (
+		error instanceof Error &&
+		"code" in error &&
+		typeof error.code === "string" &&
+		error.code === code
+	);
 }
 
 async function acquireStandaloneUpdateLock(

@@ -6,6 +6,13 @@ import { zstdCompressSync } from "node:zlib";
 import { afterEach, describe, expect, it } from "vitest";
 import { runStandaloneUpdate } from "./standalone-update";
 
+interface ReleaseAssetFixture {
+	name: string;
+	size: number;
+	digest: string | null;
+	browser_download_url: string;
+}
+
 const temporaryDirectories: string[] = [];
 
 afterEach(async () => {
@@ -68,7 +75,7 @@ function releaseList(
 	patch?: Buffer,
 	digest = sha256(targetBinary),
 ) {
-	const targetAssets: Array<Record<string, unknown>> = [
+	const targetAssets: ReleaseAssetFixture[] = [
 		{
 			name: "onlineornot-linux-amd64",
 			size: targetBinary.byteLength,
@@ -111,17 +118,12 @@ function releaseList(
 }
 
 function fixtureFetch(
-	releases: unknown,
+	releases: ReturnType<typeof releaseList>,
 	targetBinary: Buffer,
 	patch?: Buffer,
 ): typeof fetch {
 	return async (input) => {
-		const url =
-			typeof input === "string"
-				? input
-				: input instanceof URL
-					? input.href
-					: input.url;
+		const url = requestUrl(input);
 		if (url.startsWith("https://api.test/releases")) {
 			return Response.json(releases);
 		}
@@ -137,6 +139,12 @@ function fixtureFetch(
 		}
 		return new Response(null, { status: 404 });
 	};
+}
+
+function requestUrl(input: string | URL | Request): string {
+	if (input instanceof URL) return input.href;
+	if (input instanceof Request) return input.url;
+	return input;
 }
 
 describe("standalone update", () => {
@@ -297,7 +305,7 @@ describe("standalone update", () => {
 			architecture: "x64",
 			releasesUrl: "https://api.test/releases",
 			fetch: async (input, init) => {
-				const url = typeof input === "string" ? input : input.toString();
+				const url = requestUrl(input);
 				if (!url.startsWith("https://api.test/releases")) assetDownloads++;
 				return fetchImplementation(input, init);
 			},
@@ -331,7 +339,7 @@ describe("standalone update", () => {
 				architecture: "x64",
 				releasesUrl: "https://api.test/releases",
 				fetch: async (input, init) => {
-					const url = typeof input === "string" ? input : input.toString();
+					const url = requestUrl(input);
 					if (url.startsWith("https://api.test/releases")) {
 						releaseFetchStarted?.();
 						await releaseFetchGate;

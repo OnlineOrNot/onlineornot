@@ -59,7 +59,7 @@ async function refreshToken(creds: Credentials): Promise<string> {
 		const tokens = await refreshAccessToken(creds.refreshToken);
 
 		// Validate response
-		if (!tokens.access_token || typeof tokens.expires_in !== "number") {
+		if (!tokens.access_token || !Number.isFinite(tokens.expires_in)) {
 			throw new Error("Invalid token response from server");
 		}
 

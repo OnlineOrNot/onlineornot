@@ -20,9 +20,8 @@ describe("parseJSON", () => {
 		try {
 			parseJSON("{invalid}", "test.json");
 		} catch (err) {
-			expect(err).toBeInstanceOf(ParseError);
-			const parseErr = err as ParseError;
-			expect(parseErr.location?.file).toBe("test.json");
+			if (!(err instanceof ParseError)) throw err;
+			expect(err.location?.file).toBe("test.json");
 		}
 	});
 });

@@ -58,26 +58,32 @@ async function getShellConfigFile(): Promise<string | null> {
 	const home = os.homedir();
 	const xdgConfig = process.env.XDG_CONFIG_HOME || path.join(home, ".config");
 
-	const configFiles: Record<string, string[]> = {
-		fish: [path.join(xdgConfig, "fish", "config.fish")],
-		zsh: [
-			path.join(home, ".zshrc"),
-			path.join(home, ".zshenv"),
-			path.join(xdgConfig, "zsh", ".zshrc"),
-			path.join(xdgConfig, "zsh", ".zshenv"),
+	const configFiles = new Map<string, string[]>([
+		["fish", [path.join(xdgConfig, "fish", "config.fish")]],
+		[
+			"zsh",
+			[
+				path.join(home, ".zshrc"),
+				path.join(home, ".zshenv"),
+				path.join(xdgConfig, "zsh", ".zshrc"),
+				path.join(xdgConfig, "zsh", ".zshenv"),
+			],
 		],
-		bash: [
-			path.join(home, ".bashrc"),
-			path.join(home, ".bash_profile"),
-			path.join(home, ".profile"),
-			path.join(xdgConfig, "bash", ".bashrc"),
-			path.join(xdgConfig, "bash", ".bash_profile"),
+		[
+			"bash",
+			[
+				path.join(home, ".bashrc"),
+				path.join(home, ".bash_profile"),
+				path.join(home, ".profile"),
+				path.join(xdgConfig, "bash", ".bashrc"),
+				path.join(xdgConfig, "bash", ".bash_profile"),
+			],
 		],
-		ash: [path.join(home, ".ashrc"), path.join(home, ".profile")],
-		sh: [path.join(home, ".profile")],
-	};
+		["ash", [path.join(home, ".ashrc"), path.join(home, ".profile")]],
+		["sh", [path.join(home, ".profile")]],
+	]);
 
-	const candidates = configFiles[shell] || configFiles.bash;
+	const candidates = configFiles.get(shell) ?? configFiles.get("bash") ?? [];
 
 	for (const file of candidates) {
 		const exists = await fs

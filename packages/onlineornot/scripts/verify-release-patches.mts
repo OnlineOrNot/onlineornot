@@ -50,7 +50,7 @@ async function verifyReleasePatches(): Promise<void> {
 	console.log(`Verified ${patchNames.length} release patch(es).`);
 }
 
-verifyReleasePatches().catch((error: unknown) => {
+verifyReleasePatches().catch((error) => {
 	console.error(error instanceof Error ? error.message : error);
 	process.exitCode = 1;
 });

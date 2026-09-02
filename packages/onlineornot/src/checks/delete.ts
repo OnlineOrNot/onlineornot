@@ -1,6 +1,7 @@
 import { printBanner } from "../banner";
 import { fetchResult } from "../fetch";
 import { logger } from "../logger";
+import { ParseError } from "../parse";
 import { verifyToken } from "../user";
 import type {
 	CommonYargsArgv,
@@ -34,16 +35,24 @@ export async function handler(
 			method: "DELETE",
 		});
 	} catch (err) {
-		const errorWithCode = err as { code?: number; notes?: { text: string }[] };
-		if (errorWithCode.code === 10009 || errorWithCode.code === 10001) {
+		if (
+			err instanceof ParseError &&
+			(err.code === 10009 || err.code === 10001)
+		) {
 			// 10009 = NOT_FOUND, 10001 = ISSUE_FETCHING_DATA (legacy, also means not found)
 			return logger.error(`Check "${args.id}" not found.`);
-		} else if (errorWithCode.code === 10002 || errorWithCode.code === 10011) {
+		} else if (
+			err instanceof ParseError &&
+			(err.code === 10002 || err.code === 10011)
+		) {
 			// 10002 = UNAUTHENTICATED, 10011 = UNAUTHENTICATED_TOKEN
 			return logger.error(
 				"You are not authenticated.\nPlease check your token with `onlineornot whoami` and try again.",
 			);
-		} else if (errorWithCode.code === 10003 || errorWithCode.code === 10012) {
+		} else if (
+			err instanceof ParseError &&
+			(err.code === 10003 || err.code === 10012)
+		) {
 			// 10003 = UNAUTHORIZED, 10012 = INSUFFICIENT_PERMISSIONS
 			return logger.error(
 				"Your API token isn't allowed to delete checks.\nPlease check your token with `onlineornot whoami` and try again.",

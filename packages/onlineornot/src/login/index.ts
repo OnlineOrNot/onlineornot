@@ -24,17 +24,53 @@ export interface BrowserAuthenticationOptions {
 	selectProvider?: () => Promise<OAuthProvider>;
 }
 
+interface BrowserAuthenticationDependencies {
+	buildAuthUrl: typeof buildAuthUrl;
+	getCredentials: typeof getCredentials;
+	getEnvironmentToken: typeof getOnlineOrNotAPITokenFromEnv;
+	log: (...values: unknown[]) => void;
+	now: () => number;
+	openInBrowser: typeof openInBrowser;
+	saveCredentials: typeof saveCredentials;
+	startOAuthCallbackServer: typeof startOAuthCallbackServer;
+	fetch: typeof fetch;
+}
+
+const defaultBrowserAuthenticationDependencies: BrowserAuthenticationDependencies =
+	{
+		buildAuthUrl,
+		getCredentials,
+		getEnvironmentToken: getOnlineOrNotAPITokenFromEnv,
+		log: (...values) => logger.log(...values),
+		now: Date.now,
+		openInBrowser,
+		saveCredentials,
+		startOAuthCallbackServer,
+		fetch,
+	};
+
+function isUserInfo(value: unknown): value is { email?: string } {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		(!("email" in value) ||
+			value.email === undefined ||
+			typeof value.email === "string")
+	);
+}
+
 export async function authenticateWithBrowser(
 	options: BrowserAuthenticationOptions = {},
+	dependencies: BrowserAuthenticationDependencies = defaultBrowserAuthenticationDependencies,
 ): Promise<LoginResult> {
 	// Check for env var override
-	if (getOnlineOrNotAPITokenFromEnv()) {
+	if (dependencies.getEnvironmentToken()) {
 		return { status: "environment" };
 	}
 
 	// Check if already logged in with OAuth
-	const existing = getCredentials();
-	if (existing && existing.expiresAt > Date.now()) {
+	const existing = dependencies.getCredentials();
+	if (existing && existing.expiresAt > dependencies.now()) {
 		return { status: "existing", email: existing.user.email };
 	}
 
@@ -43,11 +79,14 @@ export async function authenticateWithBrowser(
 		url: authUrl,
 		codeVerifier,
 		state,
-	} = await buildAuthUrl({
+	} = await dependencies.buildAuthUrl({
 		prompt: options.prompt,
 		provider,
 	});
-	const callbackServer = await startOAuthCallbackServer(codeVerifier, state);
+	const callbackServer = await dependencies.startOAuthCallbackServer(
+		codeVerifier,
+		state,
+	);
 	try {
 		const providerName =
 			provider === "github"
@@ -55,15 +94,15 @@ export async function authenticateWithBrowser(
 				: provider === "google"
 					? "Google"
 					: null;
-		logger.log(
+		dependencies.log(
 			providerName
 				? `Opening ${providerName} in your browser...`
 				: options.prompt === "create"
 					? "Opening your browser to sign in or create an account."
 					: "Opening your browser to sign in.",
 		);
-		logger.log(`If it doesn't open, use this link:\n  ${authUrl}`);
-		await openInBrowser(authUrl);
+		dependencies.log(`If it doesn't open, use this link:\n  ${authUrl}`);
+		await dependencies.openInBrowser(authUrl);
 		const tokens = await callbackServer.result;
 
 		// Validate tokens before saving
@@ -74,7 +113,7 @@ export async function authenticateWithBrowser(
 		// Get user info from userinfo endpoint
 		let email = "unknown";
 		try {
-			const userResponse = await fetch(
+			const userResponse = await dependencies.fetch(
 				"https://onlineornot.com/api/auth/oauth2/userinfo",
 				{
 					headers: { Authorization: `Bearer ${tokens.access_token}` },
@@ -82,18 +121,18 @@ export async function authenticateWithBrowser(
 			);
 
 			if (userResponse.ok) {
-				const userInfo = (await userResponse.json()) as { email?: string };
-				email = userInfo.email || "unknown";
+				const userInfo: unknown = await userResponse.json();
+				if (isUserInfo(userInfo)) email = userInfo.email || "unknown";
 			}
 		} catch {
 			// Ignore - we'll use "unknown"
 		}
 
 		// Save credentials
-		saveCredentials({
+		dependencies.saveCredentials({
 			accessToken: tokens.access_token,
 			refreshToken: tokens.refresh_token,
-			expiresAt: Date.now() + tokens.expires_in * 1000,
+			expiresAt: dependencies.now() + tokens.expires_in * 1000,
 			scopes: tokens.scope.split(" "),
 			user: { email },
 		});

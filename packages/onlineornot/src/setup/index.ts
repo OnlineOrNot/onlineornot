@@ -1,10 +1,12 @@
 import { createInterface } from "node:readline/promises";
 import { stdin, stdout } from "node:process";
-import { authenticateWithBrowser } from "../login";
+import {
+	authenticateWithBrowser,
+	type BrowserAuthenticationOptions,
+} from "../login";
 import { fetchPagedResult, fetchResult } from "../fetch";
 import { logger } from "../logger";
 import type { OAuthProvider } from "../auth";
-import type { Check, CheckListItem } from "../checks/types";
 import type {
 	CommonYargsArgv,
 	StrictYargsOptionsToInterface,
@@ -63,8 +65,8 @@ interface SetupCheck {
 
 interface SetupDependencies {
 	authenticate: typeof authenticateWithBrowser;
-	listChecks: () => Promise<CheckListItem[]>;
-	createCheck: (name: string, url: string) => Promise<Check>;
+	listChecks: () => Promise<SetupCheck[]>;
+	createCheck: (name: string, url: string) => Promise<SetupCheck>;
 	getState: () => SetupCheckState | null;
 	saveState: (state: SetupCheckState) => void;
 	prompt: (question: string) => Promise<string>;
@@ -74,9 +76,9 @@ interface SetupDependencies {
 
 const defaultDependencies: SetupDependencies = {
 	authenticate: authenticateWithBrowser,
-	listChecks: () => fetchPagedResult<CheckListItem>("/checks"),
+	listChecks: () => fetchPagedResult<SetupCheck>("/checks"),
 	createCheck: (name, url) =>
-		fetchResult<Check>("/checks/", {
+		fetchResult<SetupCheck>("/checks/", {
 			method: "POST",
 			headers: { "content-type": "application/json" },
 			body: JSON.stringify({ name, url }),
@@ -99,11 +101,11 @@ function normalizedUrl(value: string): string | null {
 }
 
 function matchingCheck(
-	checks: CheckListItem[],
+	checks: SetupCheck[],
 	state: SetupCheckState,
-): CheckListItem | undefined {
+): SetupCheck | undefined {
 	const expectedUrl = normalizedUrl(state.url);
-	const sameTarget = (check: CheckListItem) =>
+	const sameTarget = (check: SetupCheck) =>
 		check.name === state.name && normalizedUrl(check.url) === expectedUrl;
 	return (
 		checks.find((check) => check.id === state.checkId && sameTarget(check)) ??
@@ -138,13 +140,15 @@ export async function runSetup(
 	dependencies: Partial<SetupDependencies> = {},
 ): Promise<SetupCheck> {
 	const deps = { ...defaultDependencies, ...dependencies };
-	const login = await deps.authenticate({
+	const authenticationOptions: BrowserAuthenticationOptions = {
 		prompt: "create",
-		...(args.provider ? { provider: args.provider } : {}),
-		...(deps.isInteractive
-			? { selectProvider: () => selectAuthProvider(deps.prompt) }
-			: {}),
-	});
+	};
+	if (args.provider) authenticationOptions.provider = args.provider;
+	if (deps.isInteractive) {
+		authenticationOptions.selectProvider = () =>
+			selectAuthProvider(deps.prompt);
+	}
+	const login = await deps.authenticate(authenticationOptions);
 	if (login.status === "authenticated") {
 		deps.log(`Logged in as ${login.email}.`);
 	} else if (login.status === "existing") {

@@ -18,16 +18,20 @@ const config = new Conf<SetupState>({
 	configName: "setup",
 });
 
-export function getSetupCheckState(): SetupCheckState | null {
-	const check = config.get("check");
-	if (
+function isSetupCheckState(
+	check: SetupCheckState | undefined,
+): check is SetupCheckState {
+	return !(
 		!check ||
 		typeof check.url !== "string" ||
 		typeof check.name !== "string" ||
 		(check.checkId !== undefined && typeof check.checkId !== "string")
-	) {
-		return null;
-	}
+	);
+}
+
+export function getSetupCheckState(): SetupCheckState | null {
+	const check = config.get("check");
+	if (!isSetupCheckState(check)) return null;
 	return check;
 }
 

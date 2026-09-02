@@ -29,7 +29,7 @@ export async function handler(
 		await printBanner();
 	}
 	await verifyToken();
-	const result = (await fetchResult(`/checks/${args.id}`)) as Check;
+	const result = await fetchResult<Check>(`/checks/${args.id}`);
 
 	if (args.json) {
 		logger.log(JSON.stringify(result, null, "  "));

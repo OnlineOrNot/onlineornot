@@ -3,12 +3,13 @@ const JSON_ERROR_SUFFIX = " in JSON at position ";
  * A minimal type describing a package.json file.
  */
 export type PackageJSON = {
-	devDependencies?: Record<string, unknown>;
-	dependencies?: Record<string, unknown>;
-	scripts?: Record<string, unknown>;
+	devDependencies?: Record<string, string>;
+	dependencies?: Record<string, string>;
+	scripts?: Record<string, string>;
 };
 export type Message = {
 	text: string;
+	code?: number;
 	location?: Location;
 	notes?: Message[];
 	kind?: "warning" | "error";
@@ -32,14 +33,16 @@ export type File = {
  */
 export class ParseError extends Error implements Message {
 	readonly text: string;
+	readonly code?: number;
 	readonly notes: Message[];
 	readonly location?: Location;
 	readonly kind: "warning" | "error";
 
-	constructor({ text, notes, location, kind }: Message) {
+	constructor({ text, code, notes, location, kind }: Message) {
 		super(text);
 		this.name = this.constructor.name;
 		this.text = text;
+		this.code = code;
 		this.notes = notes ?? [];
 		this.location = location;
 		this.kind = kind ?? "error";
@@ -62,7 +65,8 @@ export function parseJSON<T>(input: string, file?: string): T {
 	try {
 		return JSON.parse(input);
 	} catch (err) {
-		const { message } = err as Error;
+		if (!(err instanceof Error)) throw err;
+		const { message } = err;
 		const index = message.lastIndexOf(JSON_ERROR_SUFFIX);
 		if (index < 0) {
 			throw err;

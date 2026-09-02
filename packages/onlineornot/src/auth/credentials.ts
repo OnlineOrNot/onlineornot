@@ -21,48 +21,39 @@ const config = new Conf<Credentials>({
 	configName: "credentials",
 });
 
+function isString(value: string): value is string {
+	return typeof value === "string";
+}
+
 /**
  * Validate that stored credentials have the expected shape.
  * Returns null if validation fails (corrupted/tampered storage).
  */
-function validateCredentials(data: Partial<Credentials>): Credentials | null {
-	if (
+function isValidCredentials(data: Partial<Credentials>): data is Credentials {
+	return !(
 		typeof data.accessToken !== "string" ||
 		typeof data.refreshToken !== "string" ||
 		typeof data.expiresAt !== "number" ||
 		!Array.isArray(data.scopes) ||
-		!data.scopes.every((s) => typeof s === "string") ||
+		!data.scopes.every(isString) ||
 		typeof data.user !== "object" ||
 		data.user === null ||
-		typeof data.user.email !== "string"
-	) {
-		return null;
-	}
-
-	return {
-		accessToken: data.accessToken,
-		refreshToken: data.refreshToken,
-		expiresAt: data.expiresAt,
-		scopes: data.scopes,
-		user: {
-			email: data.user.email,
-			name: typeof data.user.name === "string" ? data.user.name : undefined,
-		},
-	};
+		typeof data.user.email !== "string" ||
+		(data.user.name !== undefined && typeof data.user.name !== "string")
+	);
 }
 
 export function saveCredentials(creds: Credentials): void {
 	// Validate before saving
-	const validated = validateCredentials(creds);
-	if (!validated) {
+	if (!isValidCredentials(creds)) {
 		throw new Error("Invalid credentials format");
 	}
 
-	config.set("accessToken", validated.accessToken);
-	config.set("refreshToken", validated.refreshToken);
-	config.set("expiresAt", validated.expiresAt);
-	config.set("scopes", validated.scopes);
-	config.set("user", validated.user);
+	config.set("accessToken", creds.accessToken);
+	config.set("refreshToken", creds.refreshToken);
+	config.set("expiresAt", creds.expiresAt);
+	config.set("scopes", creds.scopes);
+	config.set("user", creds.user);
 }
 
 /**
@@ -82,14 +73,13 @@ export function getCredentials(): Credentials | null {
 		user: config.get("user"),
 	};
 
-	const validated = validateCredentials(data);
-	if (!validated) {
+	if (!isValidCredentials(data)) {
 		// Corrupted credentials - clear them
 		clearCredentials();
 		return null;
 	}
 
-	return validated;
+	return data;
 }
 
 /**

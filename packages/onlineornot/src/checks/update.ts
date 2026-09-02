@@ -1,6 +1,7 @@
 import { printBanner } from "../banner";
 import { fetchResult } from "../fetch";
 import { logger } from "../logger";
+import { ParseError } from "../parse";
 import { verifyToken } from "../user";
 import type { Check, UpdateCheckParams } from "./types";
 import { VALID_METHODS, VALID_REGIONS } from "./types";
@@ -197,16 +198,13 @@ export async function handler(
 			body: JSON.stringify(params),
 		});
 	} catch (err) {
-		const errorWithCode = err as { code?: number; notes?: { text: string }[] };
-		if (errorWithCode.code === 10003) {
+		if (err instanceof ParseError && err.code === 10003) {
 			return logger.error(
 				"Your API token isn't allowed to update checks.\nPlease check your token with `onlineornot whoami` and try again.",
 			);
-		} else if (errorWithCode.code === 10000) {
-			return logger.error(
-				"Validation error: " + errorWithCode?.notes?.[0].text,
-			);
-		} else if (errorWithCode.code === 10001) {
+		} else if (err instanceof ParseError && err.code === 10000) {
+			return logger.error("Validation error: " + err.notes[0]?.text);
+		} else if (err instanceof ParseError && err.code === 10001) {
 			return logger.error(`Check with ID "${args.id}" not found.`);
 		} else {
 			return logger.error(err);

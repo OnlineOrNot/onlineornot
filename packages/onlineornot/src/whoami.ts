@@ -67,6 +67,16 @@ interface JWTPayload {
 	azp?: string;
 }
 
+function isJwtPayload(value: unknown): value is JWTPayload {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		(!("email" in value) ||
+			value.email === undefined ||
+			typeof value.email === "string")
+	);
+}
+
 /**
  * Decode a JWT and extract the payload (no signature verification - server already issued it)
  */
@@ -77,7 +87,8 @@ function decodeJWT(token: string): JWTPayload | null {
 
 		const payload = parts[1];
 		const decoded = Buffer.from(payload, "base64url").toString("utf-8");
-		return JSON.parse(decoded) as JWTPayload;
+		const parsed: unknown = JSON.parse(decoded);
+		return isJwtPayload(parsed) ? parsed : null;
 	} catch {
 		return null;
 	}
@@ -108,7 +119,7 @@ async function showOAuthInfo() {
  */
 async function verifyTokenWithServer(): Promise<boolean> {
 	try {
-		const result = (await fetchResult("/tokens/verify")) as TokenVerifyResponse;
+		const result = await fetchResult<TokenVerifyResponse>("/tokens/verify");
 		return result.status === "active";
 	} catch {
 		return false;
@@ -120,9 +131,9 @@ async function verifyTokenWithServer(): Promise<boolean> {
  */
 async function getServerPermissions(): Promise<string[] | null> {
 	try {
-		const result = (await fetchResult(
+		const result = await fetchResult<TokenPermissionsResponse>(
 			"/tokens/permissions",
-		)) as TokenPermissionsResponse;
+		);
 		return result.permissions;
 	} catch {
 		return null;

@@ -107,24 +107,7 @@ function truncate(text: string, maxLength: number): string {
 function cloneHeaders(
 	headers: HeadersInit | undefined,
 ): Record<string, string> {
-	if (headers instanceof Headers) {
-		return Object.fromEntries(headers.entries());
-	}
-	if (Array.isArray(headers)) {
-		return Object.fromEntries(headers);
-	}
-	if (headers) {
-		const result: Record<string, string> = {};
-		for (const [key, value] of Object.entries(headers)) {
-			if (Array.isArray(value)) {
-				result[key] = value.join(", ");
-			} else {
-				result[key] = value as string;
-			}
-		}
-		return result;
-	}
-	return {};
+	return Object.fromEntries(new Headers(headers).entries());
 }
 
 export type ApiCredentials = {

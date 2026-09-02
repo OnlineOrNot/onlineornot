@@ -94,7 +94,7 @@ export async function verifyToken(): Promise<TokenInfo> {
 
 	// API tokens need server verification
 	try {
-		const result = (await fetchResult("/tokens/verify")) as TokenVerifyResponse;
+		const result = await fetchResult<TokenVerifyResponse>("/tokens/verify");
 
 		if (result.status !== "active") {
 			throw new Error(INVALID_TOKEN_MSG);

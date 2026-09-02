@@ -1,6 +1,7 @@
 import { printBanner } from "../banner";
 import { fetchResult } from "../fetch";
 import { logger } from "../logger";
+import { ParseError } from "../parse";
 import { verifyToken } from "../user";
 import type { Check, CreateCheckParams } from "./types";
 import { VALID_METHODS, VALID_REGIONS } from "./types";
@@ -142,6 +143,14 @@ function parseHeaders(
 	return headers;
 }
 
+function isValidMethod(
+	method: string | undefined,
+): method is NonNullable<CreateCheckParams["method"]> {
+	return (
+		method !== undefined && VALID_METHODS.some((value) => value === method)
+	);
+}
+
 export async function handler(
 	args: StrictYargsOptionsToInterface<typeof options>,
 ) {
@@ -165,17 +174,15 @@ export async function handler(
 	if (args.recoveryPeriodSeconds !== undefined)
 		params.recovery_period_seconds = args.recoveryPeriodSeconds;
 	if (args.timeout !== undefined) params.timeout = args.timeout;
-	if (args.type) params.type = args.type as "UPTIME_CHECK" | "BROWSER_CHECK";
-	if (args.alertPriority)
-		params.alert_priority = args.alertPriority as "LOW" | "HIGH";
-	if (args.method)
-		params.method = args.method as
-			| "GET"
-			| "HEAD"
-			| "POST"
-			| "PUT"
-			| "PATCH"
-			| "DELETE";
+	if (args.type === "UPTIME_CHECK" || args.type === "BROWSER_CHECK") {
+		params.type = args.type;
+	}
+	if (args.alertPriority === "LOW" || args.alertPriority === "HIGH") {
+		params.alert_priority = args.alertPriority;
+	}
+	if (isValidMethod(args.method)) {
+		params.method = args.method;
+	}
 	if (args.body) params.body = args.body;
 	if (args.header) params.headers = parseHeaders(args.header);
 	if (args.followRedirects !== undefined)
@@ -195,21 +202,18 @@ export async function handler(
 			body: JSON.stringify(params),
 		});
 	} catch (err) {
-		const errorWithCode = err as { code?: number; notes?: { text: string }[] };
-		if (errorWithCode.code === 10004) {
+		if (err instanceof ParseError && err.code === 10004) {
 			return logger.error(
 				"You have reached the maximum number of checks for your account. Please upgrade to a paid plan to add more checks.",
 			);
-		} else if (errorWithCode.code === 10003) {
+		} else if (err instanceof ParseError && err.code === 10003) {
 			//unauthorized
 			return logger.error(
 				"Your API token isn't allowed to create checks.\nPlease check your token with `onlineornot whoami` and try again.",
 			);
-		} else if (errorWithCode.code === 10000) {
+		} else if (err instanceof ParseError && err.code === 10000) {
 			//validation error, need to check notes
-			return logger.error(
-				"Validation error: " + errorWithCode?.notes?.[0].text,
-			);
+			return logger.error("Validation error: " + err.notes[0]?.text);
 		} else {
 			return logger.error(err);
 		}

@@ -23,7 +23,7 @@ export async function handler(
 		await printBanner();
 	}
 	await verifyToken();
-	const results = (await fetchPagedResult("/checks")) as CheckListItem[];
+	const results = await fetchPagedResult<CheckListItem>("/checks");
 
 	if (args.json) {
 		logger.log(JSON.stringify(results, null, "  "));

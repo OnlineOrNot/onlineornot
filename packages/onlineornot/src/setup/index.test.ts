@@ -1,18 +1,17 @@
 import { describe, expect, it, vi } from "vitest";
 import { runSetup, validateCheckUrl } from ".";
 import type { BrowserAuthenticationOptions } from "../login";
-import type { Check, CheckListItem } from "../checks/types";
 import type { SetupCheckState } from "./state";
 
 const createdCheck = {
 	id: "public-check-id",
 	name: "Example",
 	url: "https://example.com/",
-} as Check;
+};
 
 function dependencies(options: {
 	state?: SetupCheckState | null;
-	checks?: CheckListItem[];
+	checks?: Array<typeof createdCheck>;
 }) {
 	let state = options.state ?? null;
 	return {
@@ -129,7 +128,7 @@ describe("setup", () => {
 		const pending = { url: "https://example.com/", name: "Example" };
 		const deps = dependencies({
 			state: pending,
-			checks: [createdCheck as CheckListItem],
+			checks: [createdCheck],
 		});
 
 		await runSetup({}, deps);
@@ -149,7 +148,7 @@ describe("setup", () => {
 		};
 		const deps = dependencies({
 			state: completed,
-			checks: [createdCheck as CheckListItem],
+			checks: [createdCheck],
 		});
 
 		await runSetup({}, deps);

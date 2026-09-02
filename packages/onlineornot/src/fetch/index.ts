@@ -117,17 +117,11 @@ function throwFetchError(
 ): never {
 	const error = new ParseError({
 		text: `A request to the OnlineOrNot API (${resource}) failed.`,
+		code: response.errors[0]?.code,
 		notes: response.errors.map((err) => ({
 			text: renderError(err),
 		})),
 	});
-	// add the first error code directly to this error
-	// so consumers can use it for specific behaviour
-	const code = response.errors[0]?.code;
-	if (code) {
-		//@ts-expect-error non-standard property on Error
-		error.code = code;
-	}
 	throw error;
 }
 
@@ -139,21 +133,27 @@ interface PageResultInfo {
 }
 
 function hasMorePages(result_info: unknown): result_info is PageResultInfo {
-	const page = (result_info as PageResultInfo | undefined)?.page;
-	const per_page = (result_info as PageResultInfo | undefined)?.per_page;
-	const total = (result_info as PageResultInfo | undefined)?.total_count;
-
 	return (
-		page !== undefined &&
-		per_page !== undefined &&
-		total !== undefined &&
-		page * per_page < total
+		typeof result_info === "object" &&
+		result_info !== null &&
+		"page" in result_info &&
+		typeof result_info.page === "number" &&
+		"per_page" in result_info &&
+		typeof result_info.per_page === "number" &&
+		"total_count" in result_info &&
+		typeof result_info.total_count === "number" &&
+		result_info.page * result_info.per_page < result_info.total_count
 	);
 }
 
 function hasCursor(result_info: unknown): result_info is { cursor: string } {
-	const cursor = (result_info as { cursor: string } | undefined)?.cursor;
-	return cursor !== undefined && cursor !== null && cursor !== "";
+	return (
+		typeof result_info === "object" &&
+		result_info !== null &&
+		"cursor" in result_info &&
+		typeof result_info.cursor === "string" &&
+		result_info.cursor !== ""
+	);
 }
 
 function renderError(err: FetchError, level = 0): string {
