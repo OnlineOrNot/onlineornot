@@ -11,6 +11,7 @@ const installer = fileURLToPath(new URL("../install.sh", import.meta.url));
 const platform = process.platform === "darwin" ? "darwin" : "linux";
 const architecture = process.arch === "arm64" ? "arm64" : "amd64";
 const binaryName = `onlineornot-${platform}-${architecture}`;
+const installerBehaviorTest = it.skipIf(process.platform === "win32");
 
 function runInstaller(args: string[], env: Record<string, string>) {
 	return spawnSync("bash", [installer, ...args], {
@@ -79,33 +80,39 @@ describe("installer", () => {
 		expect(result.status, result.stderr).toBe(0);
 	});
 
-	it("prints a dry run without changing the install directory", async () => {
-		const fixture = await installerFixture("matches");
-		const result = runInstaller(
-			["--version", "1.2.3", "--dry-run", "--no-setup"],
-			fixture.env,
-		);
+	installerBehaviorTest(
+		"prints a dry run without changing the install directory",
+		async () => {
+			const fixture = await installerFixture("matches");
+			const result = runInstaller(
+				["--version", "1.2.3", "--dry-run", "--no-setup"],
+				fixture.env,
+			);
 
-		expect(result.status, result.stderr).toBe(0);
-		expect(result.stdout).toContain("Dry run: no files will be changed.");
-		expect(result.stdout).toContain(`${binaryName}.sha256`);
-		await expect(readFile(fixture.installDir)).rejects.toThrow();
-	});
+			expect(result.status, result.stderr).toBe(0);
+			expect(result.stdout).toContain("Dry run: no files will be changed.");
+			expect(result.stdout).toContain(`${binaryName}.sha256`);
+			await expect(readFile(fixture.installDir)).rejects.toThrow();
+		},
+	);
 
-	it("installs only after verifying the release checksum", async () => {
-		const fixture = await installerFixture("matches");
-		const result = runInstaller(
-			["--version", "1.2.3", "--no-setup", "--no-modify-path"],
-			fixture.env,
-		);
+	installerBehaviorTest(
+		"installs only after verifying the release checksum",
+		async () => {
+			const fixture = await installerFixture("matches");
+			const result = runInstaller(
+				["--version", "1.2.3", "--no-setup", "--no-modify-path"],
+				fixture.env,
+			);
 
-		expect(result.status, result.stderr).toBe(0);
-		await expect(
-			readFile(path.join(fixture.installDir, "bin", "onlineornot"), "utf8"),
-		).resolves.toBe("verified onlineornot binary\n");
-	});
+			expect(result.status, result.stderr).toBe(0);
+			await expect(
+				readFile(path.join(fixture.installDir, "bin", "onlineornot"), "utf8"),
+			).resolves.toBe("verified onlineornot binary\n");
+		},
+	);
 
-	it("fails closed on a checksum mismatch", async () => {
+	installerBehaviorTest("fails closed on a checksum mismatch", async () => {
 		const fixture = await installerFixture("mismatch");
 		const result = runInstaller(
 			["--version", "1.2.3", "--no-setup", "--no-modify-path"],
@@ -119,16 +126,19 @@ describe("installer", () => {
 		).rejects.toThrow();
 	});
 
-	it("fails closed when the release checksum is unavailable", async () => {
-		const fixture = await installerFixture("unavailable");
-		const result = runInstaller(
-			["--version", "1.2.3", "--no-setup", "--no-modify-path"],
-			fixture.env,
-		);
+	installerBehaviorTest(
+		"fails closed when the release checksum is unavailable",
+		async () => {
+			const fixture = await installerFixture("unavailable");
+			const result = runInstaller(
+				["--version", "1.2.3", "--no-setup", "--no-modify-path"],
+				fixture.env,
+			);
 
-		expect(result.status).not.toBe(0);
-		await expect(
-			readFile(path.join(fixture.installDir, "bin", "onlineornot")),
-		).rejects.toThrow();
-	});
+			expect(result.status).not.toBe(0);
+			await expect(
+				readFile(path.join(fixture.installDir, "bin", "onlineornot")),
+			).rejects.toThrow();
+		},
+	);
 });
