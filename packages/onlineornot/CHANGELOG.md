@@ -1,5 +1,11 @@
 # onlineornot
 
+## 1.6.2
+
+### Patch Changes
+
+- [#75](https://github.com/OnlineOrNot/onlineornot/pull/75) [`a048244c23144307c99e8a82851bbf5f67411f72`](https://github.com/OnlineOrNot/onlineornot/commit/a048244c23144307c99e8a82851bbf5f67411f72) Thanks [@rozenmd](https://github.com/rozenmd)! - Build standalone release binaries with Node.js 26.
+
 ## 1.6.1
 
 ### Patch Changes
