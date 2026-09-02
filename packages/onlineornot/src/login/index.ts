@@ -2,7 +2,7 @@ import { logger } from "../logger";
 import openInBrowser from "../open-in-browser";
 import {
 	buildAuthUrl,
-	waitForCallback,
+	startOAuthCallbackServer,
 	saveCredentials,
 	getCredentials,
 } from "../auth";
@@ -12,31 +12,29 @@ export function loginOptions() {
 	return {};
 }
 
-export async function loginHandler() {
+export type LoginResult =
+	| { status: "environment" }
+	| { status: "existing"; email: string }
+	| { status: "authenticated"; email: string };
+
+export async function authenticateWithBrowser(): Promise<LoginResult> {
 	// Check for env var override
 	if (getOnlineOrNotAPITokenFromEnv()) {
-		logger.log(
-			"You are logged in with an API Token via ONLINEORNOT_API_TOKEN environment variable. Unset it to log in via OAuth.",
-		);
-		return;
+		return { status: "environment" };
 	}
 
 	// Check if already logged in with OAuth
 	const existing = getCredentials();
 	if (existing && existing.expiresAt > Date.now()) {
-		logger.log(
-			`Already logged in as ${existing.user.email}. Run \`onlineornot logout\` first to log in as a different user.`,
-		);
-		return;
+		return { status: "existing", email: existing.user.email };
 	}
 
 	// Build auth URL with PKCE
 	const { url: authUrl, codeVerifier, state } = await buildAuthUrl();
-
-	await openInBrowser(authUrl);
-
+	const callbackServer = await startOAuthCallbackServer(codeVerifier, state);
 	try {
-		const tokens = await waitForCallback(codeVerifier, state);
+		await openInBrowser(authUrl);
+		const tokens = await callbackServer.result;
 
 		// Validate tokens before saving
 		if (!tokens.access_token || !tokens.refresh_token || !tokens.expires_in) {
@@ -70,9 +68,30 @@ export async function loginHandler() {
 			user: { email },
 		});
 
-		logger.log("Successfully logged in.");
-	} catch (err) {
-		logger.error(`Login failed: ${(err as Error).message}`);
-		process.exit(1);
+		return { status: "authenticated", email };
+	} finally {
+		await callbackServer.close();
+	}
+}
+
+export async function loginHandler() {
+	try {
+		const result = await authenticateWithBrowser();
+		if (result.status === "environment") {
+			logger.log(
+				"You are logged in with an API Token via ONLINEORNOT_API_TOKEN environment variable. Unset it to log in via OAuth.",
+			);
+		} else if (result.status === "existing") {
+			logger.log(
+				`Already logged in as ${result.email}. Run \`onlineornot logout\` first to log in as a different user.`,
+			);
+		} else {
+			logger.log("Successfully logged in.");
+		}
+	} catch (error) {
+		logger.error(
+			`Login failed: ${error instanceof Error ? error.message : String(error)}`,
+		);
+		process.exitCode = 1;
 	}
 }

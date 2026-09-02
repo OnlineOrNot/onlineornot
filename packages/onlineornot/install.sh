@@ -15,6 +15,8 @@ DIM='\033[0;2m'
 NC='\033[0m' # No Color
 
 no_modify_path=false
+no_setup=false
+dry_run=false
 requested_version=""
 
 # Parse arguments
@@ -33,6 +35,14 @@ while [[ $# -gt 0 ]]; do
 			no_modify_path=true
 			shift
 			;;
+		--no-setup)
+			no_setup=true
+			shift
+			;;
+		--dry-run)
+			dry_run=true
+			shift
+			;;
 		*)
 			echo -e "${ORANGE}Warning: Unknown option '$1'${NC}" >&2
 			shift
@@ -47,6 +57,36 @@ detect_os() {
 		Darwin*) echo "darwin" ;;
 		*)       echo "unsupported" ;;
 	esac
+}
+
+verify_checksum() {
+	local binary_path=$1
+	local checksum_path=$2
+	local expected actual
+
+	expected=$(cut -d ' ' -f 1 < "$checksum_path" | tr -d '\r\n')
+	if [[ ! "$expected" =~ ^[a-fA-F0-9]{64}$ ]]; then
+		echo -e "${RED}Error: Release checksum is missing or malformed${NC}" >&2
+		return 1
+	fi
+
+	if command -v sha256sum >/dev/null 2>&1; then
+		actual=$(sha256sum "$binary_path" | cut -d ' ' -f 1)
+	elif command -v shasum >/dev/null 2>&1; then
+		actual=$(shasum -a 256 "$binary_path" | cut -d ' ' -f 1)
+	else
+		echo -e "${RED}Error: SHA-256 verification is unavailable on this system${NC}" >&2
+		return 1
+	fi
+
+	if [[ "$actual" != "$expected" ]]; then
+		echo -e "${RED}Error: Downloaded binary checksum does not match the release checksum${NC}" >&2
+		return 1
+	fi
+}
+
+can_run_setup() {
+	[[ -t 1 && -r /dev/tty && -w /dev/tty ]]
 }
 
 # Detect architecture
@@ -159,7 +199,9 @@ configure_path() {
 }
 
 main() {
-	local OS ARCH VERSION BINARY_NAME DOWNLOAD_URL INSTALLED_VERSION
+	local OS ARCH VERSION BINARY_NAME DOWNLOAD_URL CHECKSUM_URL
+	local INSTALLED_VERSION=""
+	local TEMP_DIR TEMP_BINARY TEMP_CHECKSUM
 
 	OS=$(detect_os)
 	ARCH=$(detect_arch)
@@ -181,29 +223,53 @@ main() {
 
 		# Check if already installed (only for latest)
 		INSTALLED_VERSION=$(get_installed_version)
-		if [[ "$INSTALLED_VERSION" == "$VERSION" ]]; then
+		if [[ "$INSTALLED_VERSION" == "$VERSION" && -x "$BIN_DIR/onlineornot" ]]; then
 			echo -e "${DIM}Version ${NC}${VERSION}${DIM} already installed${NC}"
-			exit 0
 		fi
 	fi
 
-	echo ""
-	echo -e "${DIM}Installing ${NC}onlineornot ${DIM}version: ${NC}${VERSION}"
-	
-	mkdir -p "$BIN_DIR"
-	
 	BINARY_NAME="onlineornot-${OS}-${ARCH}"
 	DOWNLOAD_URL="https://github.com/$REPO/releases/download/onlineornot%40${VERSION}/${BINARY_NAME}"
+	CHECKSUM_URL="${DOWNLOAD_URL}.sha256"
 
-	if ! curl -#fSL "$DOWNLOAD_URL" -o "$BIN_DIR/onlineornot" 2>&1; then
-		echo -e "${RED}Error: Download failed${NC}"
-		exit 1
+	if [[ "$dry_run" == "true" ]]; then
+		echo ""
+		echo "Dry run: no files will be changed."
+		echo "Version:  $VERSION"
+		echo "Binary:   $DOWNLOAD_URL"
+		echo "Checksum: $CHECKSUM_URL"
+		echo "Install:  $BIN_DIR/onlineornot"
+		if [[ "$no_setup" == "false" ]]; then
+			echo "Setup:    $BIN_DIR/onlineornot setup (TTY only)"
+		fi
+		return
 	fi
 
-	chmod +x "$BIN_DIR/onlineornot"
-	
-	# Store version info
-	echo "$VERSION" > "$INSTALL_DIR/version"
+	if [[ "$INSTALLED_VERSION" != "$VERSION" || ! -x "$BIN_DIR/onlineornot" ]]; then
+		echo ""
+		echo -e "${DIM}Installing ${NC}onlineornot ${DIM}version: ${NC}${VERSION}"
+
+		mkdir -p "$BIN_DIR"
+		TEMP_DIR=$(mktemp -d "$INSTALL_DIR/.install.XXXXXX")
+		TEMP_BINARY="$TEMP_DIR/$BINARY_NAME"
+		TEMP_CHECKSUM="$TEMP_DIR/$BINARY_NAME.sha256"
+		trap 'rm -rf "${TEMP_DIR:-}"' EXIT
+
+		if ! curl -#fSL "$DOWNLOAD_URL" -o "$TEMP_BINARY" 2>&1; then
+			echo -e "${RED}Error: Binary download failed${NC}"
+			exit 1
+		fi
+		if ! curl -#fSL "$CHECKSUM_URL" -o "$TEMP_CHECKSUM" 2>&1; then
+			echo -e "${RED}Error: Release checksum download failed; refusing to install${NC}"
+			exit 1
+		fi
+		verify_checksum "$TEMP_BINARY" "$TEMP_CHECKSUM"
+		chmod +x "$TEMP_BINARY"
+		mv "$TEMP_BINARY" "$BIN_DIR/onlineornot"
+
+		# Store version info only after the verified binary is in place.
+		echo "$VERSION" > "$INSTALL_DIR/version"
+	fi
 
 	# Configure PATH (silently)
 	configure_path
@@ -215,10 +281,16 @@ main() {
 	echo -e "${DIM}▀▀▀▀ ▀  ▀ ▀▀▀ ▀ ▀  ▀ ▀▀▀ ${NC}▀▀▀▀ ▀ ▀▀ ${DIM}▀  ▀ ▀▀▀▀   ▀${NC}"
 	echo ""
 	echo ""
-	echo -e "${DIM}To get started:${NC}"
-	echo ""
-	echo -e "onlineornot login   ${DIM}# Authenticate${NC}"
-	echo -e "onlineornot checks  ${DIM}# Manage checks${NC}"
+	if [[ "$no_setup" == "false" ]] && can_run_setup; then
+		echo -e "${DIM}Let's create your first uptime check.${NC}"
+		echo ""
+		"$BIN_DIR/onlineornot" setup < /dev/tty
+	else
+		echo -e "${DIM}To get started:${NC}"
+		echo ""
+		echo -e "onlineornot setup  ${DIM}# Log in and create your first check${NC}"
+		echo -e "onlineornot checks  ${DIM}# Manage checks${NC}"
+	fi
 	echo ""
 	echo -e "${DIM}For more information visit ${NC}https://onlineornot.com/docs"
 	echo ""
