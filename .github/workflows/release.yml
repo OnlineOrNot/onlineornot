@@ -144,18 +144,38 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build SEA binary
+      - name: Build and validate SEA binary
         working-directory: packages/onlineornot
-        run: pnpm run build:sea
+        env:
+          EXPECTED_VERSION: ${{ needs.release.outputs.version }}
+        run: |
+          for attempt in 1 2 3; do
+            rm -f onlineornot
+            if pnpm run build:sea; then
+              set +e
+              ACTUAL_VERSION=$(./onlineornot --version)
+              STATUS=$?
+              set -e
+              if [[ "$STATUS" -eq 0 && "$ACTUAL_VERSION" == "$EXPECTED_VERSION" ]]; then
+                exit 0
+              fi
+              echo "::warning::SEA validation attempt $attempt/3 failed (exit $STATUS, output: ${ACTUAL_VERSION:-<empty>})"
+            else
+              echo "::warning::SEA build attempt $attempt/3 failed"
+            fi
+            if [[ "$attempt" -lt 3 ]]; then
+              sleep 2
+            fi
+          done
+          echo "::error::Unable to build and validate the SEA binary after 3 attempts"
+          exit 1
 
       - name: Prepare immutable release assets
         working-directory: packages/onlineornot
         env:
           BINARY_NAME: onlineornot-${{ matrix.name }}
-          EXPECTED_VERSION: ${{ needs.release.outputs.version }}
         run: |
           mv onlineornot "$BINARY_NAME"
-          test "$(./"$BINARY_NAME" --version)" = "$EXPECTED_VERSION"
           gzip -9 -n -c "$BINARY_NAME" > "$BINARY_NAME.gz"
           if command -v sha256sum >/dev/null 2>&1; then
             sha256sum "$BINARY_NAME" > "$BINARY_NAME.sha256"
