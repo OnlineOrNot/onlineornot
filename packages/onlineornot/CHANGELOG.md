@@ -1,5 +1,11 @@
 # onlineornot
 
+## 1.5.0
+
+### Minor Changes
+
+- [#67](https://github.com/OnlineOrNot/onlineornot/pull/67) [`6dc492c6a4956def1d98bdf8e0bdfbefbde5e4e9`](https://github.com/OnlineOrNot/onlineornot/commit/6dc492c6a4956def1d98bdf8e0bdfbefbde5e4e9) Thanks [@rozenmd](https://github.com/rozenmd)! - Add browser-assisted setup, resumable first-check creation, and checksum-verified standalone installation.
+
 ## 1.4.1
 
 ### Patch Changes
