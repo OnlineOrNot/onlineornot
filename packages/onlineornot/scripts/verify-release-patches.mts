@@ -15,7 +15,6 @@ async function verifyReleasePatches(): Promise<void> {
 			"Release patch verification failed: expected old-binaries, new-binaries, and patches directory arguments.",
 		);
 	}
-
 	const patchNames = (await fs.readdir(patchesDirectory).catch(() => []))
 		.filter((name) => name.endsWith(".patch"))
 		.sort();
