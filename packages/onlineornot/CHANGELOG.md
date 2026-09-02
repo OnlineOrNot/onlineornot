@@ -1,5 +1,13 @@
 # onlineornot
 
+## 1.6.1
+
+### Patch Changes
+
+- [#72](https://github.com/OnlineOrNot/onlineornot/pull/72) [`0aab41be0f4a7876483c26db9c1f1d6398e83d47`](https://github.com/OnlineOrNot/onlineornot/commit/0aab41be0f4a7876483c26db9c1f1d6398e83d47) Thanks [@rozenmd](https://github.com/rozenmd)! - Retry flaky standalone binary builds before publishing a release.
+
+- [#74](https://github.com/OnlineOrNot/onlineornot/pull/74) [`e92ac835629f622823285e5f49e4e036d8dfe8ef`](https://github.com/OnlineOrNot/onlineornot/commit/e92ac835629f622823285e5f49e4e036d8dfe8ef) Thanks [@rozenmd](https://github.com/rozenmd)! - Let guided setup choose Google or GitHub in the terminal, then open that provider automatically while preserving account creation and CLI authorization.
+
 ## 1.6.0
 
 ### Minor Changes
