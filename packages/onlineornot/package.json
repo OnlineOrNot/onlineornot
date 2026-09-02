@@ -34,7 +34,7 @@
 		"clean": "rimraf dist sea",
 		"prepublishOnly": "SOURCEMAPS=false pnpm run build",
 		"start": "pnpm run bundle && cross-env NODE_OPTIONS=--enable-source-maps ./bin/onlineornot.js",
-		"check:type": "tsgo --noEmit",
+		"check:type": "tsc --noEmit",
 		"test": "vitest",
 		"test:ci": "vitest run",
 		"verify:release-patches": "tsx scripts/verify-release-patches.mts"
