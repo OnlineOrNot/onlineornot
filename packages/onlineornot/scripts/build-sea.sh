@@ -3,6 +3,12 @@ set -e
 
 cd "$(dirname "$0")/.."
 
+NODE_MAJOR=$(node -p 'process.versions.node.split(".")[0]')
+if (( NODE_MAJOR < 25 )); then
+	echo "Error: SEA builds require Node.js 25 or newer (current: $(node --version))" >&2
+	exit 1
+fi
+
 echo "📦 Building SEA bundle..."
 mkdir -p sea
 node -r esbuild-register scripts/bundle-sea.ts

@@ -28,6 +28,7 @@ async function buildMain() {
 		define: {
 			__RELATIVE_PACKAGE_PATH__,
 			"process.env.NODE_ENV": `'${process.env.NODE_ENV || "production"}'`,
+			"process.env.ONLINEORNOT_SEA": '"false"',
 		},
 	});
 }

@@ -46,6 +46,7 @@ describe("setup", () => {
 		await expect(
 			runSetup({ url: "https://example.com", name: "Example" }, deps),
 		).resolves.toMatchObject(createdCheck);
+		expect(deps.authenticate).toHaveBeenCalledWith({ prompt: "create" });
 		expect(deps.createCheck).toHaveBeenCalledOnce();
 		expect(deps.saveState).toHaveBeenLastCalledWith({
 			url: "https://example.com/",

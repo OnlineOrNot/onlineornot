@@ -1,6 +1,7 @@
 import http from "node:http";
 import { afterEach, describe, expect, it } from "vitest";
 import {
+	buildAuthUrl,
 	CALLBACK_PORT,
 	startOAuthCallbackServer,
 	type TokenResponse,
@@ -26,6 +27,14 @@ afterEach(async () => {
 				}),
 		),
 	);
+});
+
+describe("OAuth authorization URL", () => {
+	it("requests account creation for guided setup", async () => {
+		const { url } = await buildAuthUrl({ prompt: "create" });
+
+		expect(new URL(url).searchParams.get("prompt")).toBe("create");
+	});
 });
 
 describe("OAuth callback server", () => {

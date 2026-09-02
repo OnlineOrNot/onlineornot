@@ -4,6 +4,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import pkg from "../package.json";
+import { isStandaloneExecutable } from "./runtime-environment";
 import { runStandaloneUpdate } from "./standalone-update";
 
 const INSTALL_DIRECTORY =
@@ -16,17 +17,10 @@ const AUTO_UPDATE_STATE_PATH = path.join(
 const AUTO_UPDATE_SUCCESS_INTERVAL_MS = 24 * 60 * 60 * 1000;
 const AUTO_UPDATE_FAILURE_INTERVAL_MS = 60 * 60 * 1000;
 
-/**
- * Check if we're running as a SEA binary (not via npm)
- */
-function isSEA(): boolean {
-	return process.env.ONLINEORNOT_SEA === "true";
-}
-
 /** Start a detached, non-blocking standalone update check. */
 export function checkForUpdateInBackground(argv: readonly string[]): void {
 	if (
-		!isSEA() ||
+		!isStandaloneExecutable() ||
 		process.env.ONLINEORNOT_DISABLE_AUTO_UPDATE === "true" ||
 		argv.includes("update") ||
 		argv.includes("uninstall") ||
@@ -92,7 +86,10 @@ export async function performUpdateCheck(): Promise<void> {
 
 /** Handle the private detached-update process flag. */
 export async function handleUpdateCheckFlag(): Promise<boolean> {
-	if (process.env.ONLINEORNOT_UPDATE_CHECK === "true") {
+	if (
+		isStandaloneExecutable() &&
+		process.env.ONLINEORNOT_UPDATE_CHECK === "true"
+	) {
 		await performUpdateCheck();
 		return true;
 	}

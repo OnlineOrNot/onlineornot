@@ -3,6 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import chalk from "chalk";
 import { logger } from "./logger";
+import { isStandaloneExecutable } from "./runtime-environment";
 import type { CommonYargsOptions } from "./yargs-types";
 import type { Argv } from "yargs";
 
@@ -13,10 +14,6 @@ const CONFIG_DIR = path.join(
 	process.env.XDG_CONFIG_HOME || path.join(os.homedir(), ".config"),
 	"onlineornot",
 );
-
-function isSEA(): boolean {
-	return process.env.ONLINEORNOT_SEA === "true";
-}
 
 function shortenPath(p: string): string {
 	const home = os.homedir();
@@ -183,7 +180,7 @@ export async function uninstallHandler(args: {
 	logger.log(chalk.bold("Uninstall OnlineOrNot CLI"));
 	logger.log("");
 
-	const installMethod = isSEA() ? "curl" : "npm";
+	const installMethod = isStandaloneExecutable() ? "curl" : "npm";
 	logger.log(chalk.dim(`Installation method: ${installMethod}`));
 	logger.log("");
 
