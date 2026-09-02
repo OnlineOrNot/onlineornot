@@ -8,6 +8,7 @@ const AUTH_BASE_URL =
 	process.env.NODE_ENV === "development"
 		? LOCAL_AUTH_BASE_URL
 		: PROD_AUTH_BASE_URL;
+const OAUTH_PROVIDER_PARAM = "oon_provider";
 export const CALLBACK_PORT = 8976;
 export const CALLBACK_URL = `http://localhost:${CALLBACK_PORT}/oauth/callback`;
 export const CALLBACK_TIMEOUT_MS = 10 * 60 * 1000;
@@ -44,6 +45,8 @@ export interface OAuthCallbackServer {
 	close: () => Promise<void>;
 }
 
+export type OAuthProvider = "google" | "github";
+
 interface CallbackServerOptions {
 	port?: number;
 	timeoutMs?: number;
@@ -58,7 +61,7 @@ interface CallbackServerOptions {
  * Build the OAuth authorization URL
  */
 export async function buildAuthUrl(
-	options: { prompt?: "create" } = {},
+	options: { prompt?: "create"; provider?: OAuthProvider } = {},
 ): Promise<{
 	url: string;
 	codeVerifier: string;
@@ -77,6 +80,9 @@ export async function buildAuthUrl(
 	authUrl.searchParams.set("code_challenge_method", "S256");
 	if (options.prompt) {
 		authUrl.searchParams.set("prompt", options.prompt);
+	}
+	if (options.provider) {
+		authUrl.searchParams.set(OAUTH_PROVIDER_PARAM, options.provider);
 	}
 
 	return { url: authUrl.toString(), codeVerifier, state };

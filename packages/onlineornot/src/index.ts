@@ -119,7 +119,7 @@ export function createCLIParser(argv: string[]) {
 	// setup
 	onlineornot.command(
 		"setup",
-		"🚀 Log in and create your first uptime check",
+		"🚀 Sign in or sign up and create your first uptime check",
 		setupOptions,
 		setupHandler,
 	);

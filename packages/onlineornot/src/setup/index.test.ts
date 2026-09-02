@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { runSetup, validateCheckUrl } from ".";
+import type { BrowserAuthenticationOptions } from "../login";
 import type { Check, CheckListItem } from "../checks/types";
 import type { SetupCheckState } from "./state";
 
@@ -15,7 +16,7 @@ function dependencies(options: {
 }) {
 	let state = options.state ?? null;
 	return {
-		authenticate: vi.fn(async () => ({
+		authenticate: vi.fn(async (_options?: BrowserAuthenticationOptions) => ({
 			status: "existing" as const,
 			email: "user@example.com",
 		})),
@@ -53,6 +54,40 @@ describe("setup", () => {
 			name: "Example",
 			checkId: "public-check-id",
 		});
+	});
+
+	it("passes an explicit provider into account creation", async () => {
+		const deps = dependencies({});
+
+		await runSetup(
+			{
+				url: "https://example.com",
+				name: "Example",
+				provider: "github",
+			},
+			deps,
+		);
+
+		expect(deps.authenticate).toHaveBeenCalledWith({
+			prompt: "create",
+			provider: "github",
+		});
+	});
+
+	it("asks an interactive user which provider to use", async () => {
+		const deps = dependencies({});
+		deps.isInteractive = true;
+		deps.prompt.mockResolvedValueOnce("2");
+		deps.authenticate.mockImplementation(async (options) => {
+			expect(await options?.selectProvider?.()).toBe("github");
+			return { status: "existing", email: "user@example.com" };
+		});
+
+		await runSetup({ url: "https://example.com", name: "Example" }, deps);
+
+		expect(deps.prompt).toHaveBeenCalledWith(
+			expect.stringContaining("Sign in (or sign up) with"),
+		);
 	});
 
 	it("resumes an interrupted creation without making a duplicate", async () => {

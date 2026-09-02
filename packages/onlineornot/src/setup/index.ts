@@ -3,6 +3,7 @@ import { stdin, stdout } from "node:process";
 import { authenticateWithBrowser } from "../login";
 import { fetchPagedResult, fetchResult } from "../fetch";
 import { logger } from "../logger";
+import type { OAuthProvider } from "../auth";
 import type { Check, CheckListItem } from "../checks/types";
 import type {
 	CommonYargsArgv,
@@ -25,6 +26,10 @@ export function setupOptions(yargs: CommonYargsArgv) {
 		.option("name", {
 			describe: "Optional name for the first uptime check",
 			type: "string",
+		})
+		.option("provider", {
+			choices: ["google", "github"] as const,
+			describe: "Sign in or sign up with this provider",
 		});
 }
 
@@ -113,12 +118,31 @@ function printCheck(check: SetupCheck, log: (...values: unknown[]) => void) {
 	log(`Dashboard: ${DASHBOARD_BASE_URL}/${encodeURIComponent(check.id)}`);
 }
 
+async function selectAuthProvider(
+	prompt: (question: string) => Promise<string>,
+): Promise<OAuthProvider> {
+	let question =
+		"Sign in (or sign up) with:\n  1. Google\n  2. GitHub\nChoose [1]: ";
+	while (true) {
+		const answer = (await prompt(question)).trim().toLowerCase();
+		if (["", "1", "google", "g"].includes(answer)) return "google";
+		if (["2", "github", "gh"].includes(answer)) return "github";
+		question = "Choose 1 for Google or 2 for GitHub: ";
+	}
+}
+
 export async function runSetup(
-	args: { url?: string; name?: string },
+	args: { url?: string; name?: string; provider?: OAuthProvider },
 	dependencies: Partial<SetupDependencies> = {},
 ): Promise<SetupCheck> {
 	const deps = { ...defaultDependencies, ...dependencies };
-	const login = await deps.authenticate({ prompt: "create" });
+	const login = await deps.authenticate({
+		prompt: "create",
+		...(args.provider ? { provider: args.provider } : {}),
+		...(deps.isInteractive
+			? { selectProvider: () => selectAuthProvider(deps.prompt) }
+			: {}),
+	});
 	if (login.status === "authenticated") {
 		deps.log(`Logged in as ${login.email}.`);
 	} else if (login.status === "existing") {

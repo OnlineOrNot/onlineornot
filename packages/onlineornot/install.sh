@@ -284,7 +284,7 @@ main() {
 	else
 		echo -e "${DIM}To get started:${NC}"
 		echo ""
-		echo -e "onlineornot setup  ${DIM}# Log in and create your first check${NC}"
+		echo -e "onlineornot setup  ${DIM}# Sign in or sign up and create your first check${NC}"
 		echo -e "onlineornot checks  ${DIM}# Manage checks${NC}"
 	fi
 	echo ""

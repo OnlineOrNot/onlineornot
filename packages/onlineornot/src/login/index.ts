@@ -5,6 +5,7 @@ import {
 	startOAuthCallbackServer,
 	saveCredentials,
 	getCredentials,
+	type OAuthProvider,
 } from "../auth";
 import { getOnlineOrNotAPITokenFromEnv } from "../environment-variables/misc-variables";
 
@@ -17,8 +18,14 @@ export type LoginResult =
 	| { status: "existing"; email: string }
 	| { status: "authenticated"; email: string };
 
+export interface BrowserAuthenticationOptions {
+	prompt?: "create";
+	provider?: OAuthProvider;
+	selectProvider?: () => Promise<OAuthProvider>;
+}
+
 export async function authenticateWithBrowser(
-	options: { prompt?: "create" } = {},
+	options: BrowserAuthenticationOptions = {},
 ): Promise<LoginResult> {
 	// Check for env var override
 	if (getOnlineOrNotAPITokenFromEnv()) {
@@ -31,10 +38,31 @@ export async function authenticateWithBrowser(
 		return { status: "existing", email: existing.user.email };
 	}
 
-	// Build auth URL with PKCE
-	const { url: authUrl, codeVerifier, state } = await buildAuthUrl(options);
+	const provider = options.provider ?? (await options.selectProvider?.());
+	const {
+		url: authUrl,
+		codeVerifier,
+		state,
+	} = await buildAuthUrl({
+		prompt: options.prompt,
+		provider,
+	});
 	const callbackServer = await startOAuthCallbackServer(codeVerifier, state);
 	try {
+		const providerName =
+			provider === "github"
+				? "GitHub"
+				: provider === "google"
+					? "Google"
+					: null;
+		logger.log(
+			providerName
+				? `Opening ${providerName} in your browser...`
+				: options.prompt === "create"
+					? "Opening your browser to sign in or create an account."
+					: "Opening your browser to sign in.",
+		);
+		logger.log(`If it doesn't open, use this link:\n  ${authUrl}`);
 		await openInBrowser(authUrl);
 		const tokens = await callbackServer.result;
 
