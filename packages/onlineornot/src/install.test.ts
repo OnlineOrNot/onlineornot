@@ -51,6 +51,14 @@ while [[ $# -gt 0 ]]; do
     *) shift ;;
   esac
 done
+printf '%s\n' "$url" >> "$FIXTURE_CURL_LOG"
+if [[ "$url" == */releases/latest ]]; then
+  if [[ "$FIXTURE_RELEASE_LOOKUP_FAIL" == "true" ]]; then
+    exit 22
+  fi
+  printf '{"tag_name":"onlineornot@%s"}\n' "$FIXTURE_LATEST_VERSION"
+  exit 0
+fi
 if [[ "$url" == *.sha256 ]]; then
   if [[ "$FIXTURE_CHECKSUM_STATUS" == "unavailable" ]]; then
     exit 22
@@ -66,9 +74,12 @@ fi
 		installDir,
 		env: {
 			ONLINEORNOT_INSTALL_DIR: installDir,
+			FIXTURE_LATEST_VERSION: "1.2.3",
+			FIXTURE_RELEASE_LOOKUP_FAIL: "false",
 			FIXTURE_BINARY: binary,
 			FIXTURE_CHECKSUM: checksum,
 			FIXTURE_CHECKSUM_STATUS: checksumStatus,
+			FIXTURE_CURL_LOG: path.join(root, "curl.log"),
 			PATH: `${commands}:${process.env.PATH}`,
 		},
 	};
@@ -111,6 +122,38 @@ describe("installer", () => {
 			).resolves.toBe("verified onlineornot binary\n");
 		},
 	);
+
+	installerBehaviorTest(
+		"installs the release designated latest by GitHub",
+		async () => {
+			const fixture = await installerFixture("matches");
+			const result = runInstaller(
+				["--no-setup", "--no-modify-path"],
+				fixture.env,
+			);
+
+			expect(result.status, result.stderr).toBe(0);
+			await expect(
+				readFile(fixture.env.FIXTURE_CURL_LOG, "utf8"),
+			).resolves.toContain(
+				"https://api.github.com/repos/OnlineOrNot/onlineornot/releases/latest",
+			);
+			await expect(
+				readFile(path.join(fixture.installDir, "version"), "utf8"),
+			).resolves.toBe("1.2.3\n");
+		},
+	);
+
+	installerBehaviorTest("reports a latest-release lookup failure", async () => {
+		const fixture = await installerFixture("matches");
+		const result = runInstaller([], {
+			...fixture.env,
+			FIXTURE_RELEASE_LOOKUP_FAIL: "true",
+		});
+
+		expect(result.status).not.toBe(0);
+		expect(result.stderr).toContain("Failed to detect latest version");
+	});
 
 	installerBehaviorTest("fails closed on a checksum mismatch", async () => {
 		const fixture = await installerFixture("mismatch");
