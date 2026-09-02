@@ -1,5 +1,11 @@
 # onlineornot
 
+## 1.6.3
+
+### Patch Changes
+
+- [`cf5be4e59b89c3c76ffe41c58634d3519a04cfd4`](https://github.com/OnlineOrNot/onlineornot/commit/cf5be4e59b89c3c76ffe41c58634d3519a04cfd4) Thanks [@rozenmd](https://github.com/rozenmd)! - Fix standalone binary releases for Intel macOS.
+
 ## 1.6.2
 
 ### Patch Changes
