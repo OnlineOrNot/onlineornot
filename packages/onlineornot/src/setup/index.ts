@@ -34,13 +34,15 @@ export function setupOptions(yargs: CommonYargsArgv) {
 }
 
 export function validateCheckUrl(value: string): string {
+	const withoutSpaces = value.replace(/\s+/g, "");
+	const normalizedValue = /^[a-z][a-z0-9+.-]*:\/\//i.test(withoutSpaces)
+		? withoutSpaces
+		: `https://${withoutSpaces}`;
 	let parsed: URL;
 	try {
-		parsed = new URL(value.trim());
+		parsed = new URL(normalizedValue);
 	} catch {
-		throw new Error(
-			"Enter a valid absolute URL, including http:// or https://.",
-		);
+		throw new Error("Enter a valid URL, like example.com.");
 	}
 
 	if (!["http:", "https:"].includes(parsed.protocol)) {
@@ -160,16 +162,25 @@ export async function runSetup(
 		name = name || savedState.name;
 	}
 
+	let validatedUrl: string;
 	if (!url) {
 		if (!deps.isInteractive) {
 			throw new Error(
 				"A URL is required in non-interactive mode. Run `onlineornot setup --url https://example.com`.",
 			);
 		}
-		url = await deps.prompt("URL to monitor: ");
+		while (true) {
+			try {
+				validatedUrl = validateCheckUrl(await deps.prompt("URL to monitor: "));
+				break;
+			} catch (error) {
+				deps.log(error instanceof Error ? error.message : error);
+			}
+		}
+	} else {
+		validatedUrl = validateCheckUrl(url);
 	}
 
-	const validatedUrl = validateCheckUrl(url);
 	if (!name) {
 		const defaultName = new URL(validatedUrl).hostname;
 		if (deps.isInteractive && !savedState) {

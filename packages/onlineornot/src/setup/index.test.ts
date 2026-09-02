@@ -33,12 +33,47 @@ function dependencies(options: {
 }
 
 describe("setup", () => {
-	it.each([
-		"example.com",
-		"ftp://example.com",
-		"https://user:pass@example.com",
-	])("rejects an unsafe or incomplete URL: %s", (value) => {
-		expect(() => validateCheckUrl(value)).toThrow();
+	it.each(["ftp://example.com", "https://user:pass@example.com"])(
+		"rejects an unsafe or incomplete URL: %s",
+		(value) => {
+			expect(() => validateCheckUrl(value)).toThrow();
+		},
+	);
+
+	it("defaults a hostname to HTTPS", () => {
+		expect(validateCheckUrl("example.com")).toBe("https://example.com/");
+	});
+
+	it("creates a check from an interactive hostname", async () => {
+		const deps = dependencies({});
+		deps.isInteractive = true;
+		deps.prompt.mockResolvedValueOnce("example.com");
+
+		await runSetup({ name: "Example" }, deps);
+
+		expect(deps.createCheck).toHaveBeenCalledWith(
+			"Example",
+			"https://example.com/",
+		);
+	});
+
+	it("re-prompts after an invalid interactive URL", async () => {
+		const deps = dependencies({});
+		deps.isInteractive = true;
+		deps.prompt
+			.mockResolvedValueOnce("ftp://example.com")
+			.mockResolvedValueOnce("example.com");
+
+		await runSetup({ name: "Example" }, deps);
+
+		expect(deps.log).toHaveBeenCalledWith(
+			"Only http:// and https:// URLs can be monitored.",
+		);
+		expect(deps.prompt).toHaveBeenCalledTimes(2);
+		expect(deps.createCheck).toHaveBeenCalledWith(
+			"Example",
+			"https://example.com/",
+		);
 	});
 
 	it("creates a first check from non-interactive flags", async () => {
