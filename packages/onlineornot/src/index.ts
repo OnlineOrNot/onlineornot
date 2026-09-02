@@ -7,6 +7,7 @@ import { docsHandler, docsOptions } from "./docs";
 import { logger } from "./logger";
 import { loginHandler, loginOptions } from "./login";
 import { logoutHandler, logoutOptions } from "./logout";
+import { setupHandler, setupOptions } from "./setup";
 import { uninstallHandler, uninstallOptions } from "./uninstall";
 import { updateHandler, updateOptions } from "./update";
 import { whoami } from "./whoami";
@@ -113,6 +114,14 @@ export function createCLIParser(argv: string[]) {
 		"🔓 Login to OnlineOrNot via OAuth",
 		loginOptions,
 		loginHandler,
+	);
+
+	// setup
+	onlineornot.command(
+		"setup",
+		"🚀 Log in and create your first uptime check",
+		setupOptions,
+		setupHandler,
 	);
 
 	// logout

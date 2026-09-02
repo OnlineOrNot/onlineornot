@@ -1,5 +1,4 @@
 import http from "node:http";
-import url from "node:url";
 import { generatePKCECodes, generateState } from "./pkce";
 
 const CLIENT_ID = "onlineornot-cli";
@@ -9,8 +8,9 @@ const AUTH_BASE_URL =
 	process.env.NODE_ENV === "development"
 		? LOCAL_AUTH_BASE_URL
 		: PROD_AUTH_BASE_URL;
-const CALLBACK_PORT = 8976;
-const CALLBACK_URL = `http://localhost:${CALLBACK_PORT}/oauth/callback`;
+export const CALLBACK_PORT = 8976;
+export const CALLBACK_URL = `http://localhost:${CALLBACK_PORT}/oauth/callback`;
+export const CALLBACK_TIMEOUT_MS = 10 * 60 * 1000;
 
 // Use same scopes as API tokens + email for userinfo
 const SCOPES = [
@@ -36,6 +36,22 @@ export interface TokenResponse {
 export interface OAuthResult {
 	tokens: TokenResponse;
 	authUrl: string;
+}
+
+export interface OAuthCallbackServer {
+	callbackUrl: string;
+	result: Promise<TokenResponse>;
+	close: () => Promise<void>;
+}
+
+interface CallbackServerOptions {
+	port?: number;
+	timeoutMs?: number;
+	exchangeCode?: (
+		code: string,
+		codeVerifier: string,
+		callbackUrl: string,
+	) => Promise<TokenResponse>;
 }
 
 /**
@@ -64,126 +80,194 @@ export async function buildAuthUrl(): Promise<{
 /**
  * Start local callback server and wait for OAuth callback
  */
+async function exchangeAuthorizationCode(
+	code: string,
+	codeVerifier: string,
+	callbackUrl: string,
+): Promise<TokenResponse> {
+	const tokenResponse = await fetch(`${AUTH_BASE_URL}/oauth2/token`, {
+		method: "POST",
+		headers: { "Content-Type": "application/x-www-form-urlencoded" },
+		body: new URLSearchParams({
+			grant_type: "authorization_code",
+			code,
+			redirect_uri: callbackUrl,
+			client_id: CLIENT_ID,
+			code_verifier: codeVerifier,
+			resource: "https://onlineornot.com",
+		}),
+	});
+
+	if (!tokenResponse.ok) {
+		const error = (await tokenResponse.json()) as {
+			error?: string;
+			error_description?: string;
+		};
+		throw new Error(
+			error.error_description || error.error || "Token exchange failed",
+		);
+	}
+
+	const tokens = (await tokenResponse.json()) as TokenResponse;
+	if (
+		!tokens.access_token ||
+		!tokens.refresh_token ||
+		typeof tokens.expires_in !== "number"
+	) {
+		throw new Error("Invalid token response: missing required fields");
+	}
+
+	return tokens;
+}
+
+export async function startOAuthCallbackServer(
+	codeVerifier: string,
+	expectedState: string,
+	options: CallbackServerOptions = {},
+): Promise<OAuthCallbackServer> {
+	const requestedPort = options.port ?? CALLBACK_PORT;
+	const exchangeCode = options.exchangeCode ?? exchangeAuthorizationCode;
+	let timeout: NodeJS.Timeout | undefined;
+	let settled = false;
+	let resolveResult!: (tokens: TokenResponse) => void;
+	let rejectResult!: (error: Error) => void;
+	const result = new Promise<TokenResponse>((resolve, reject) => {
+		resolveResult = resolve;
+		rejectResult = reject;
+	});
+
+	const server = http.createServer();
+	const close = async () => {
+		if (timeout) clearTimeout(timeout);
+		if (!server.listening) return;
+		await new Promise<void>((resolve) => server.close(() => resolve()));
+	};
+	const rejectOnce = (error: Error) => {
+		if (settled) return;
+		settled = true;
+		void close();
+		rejectResult(error);
+	};
+	const resolveOnce = (tokens: TokenResponse) => {
+		if (settled) return;
+		settled = true;
+		void close();
+		resolveResult(tokens);
+	};
+
+	server.on("request", async (req, res) => {
+		const callbackRequest = new URL(req.url || "/", "http://localhost");
+		const { pathname, searchParams } = callbackRequest;
+
+		if (pathname !== "/oauth/callback") {
+			res.writeHead(404);
+			res.end("Not found");
+			return;
+		}
+
+		// Validate state to prevent CSRF
+		if (searchParams.get("state") !== expectedState) {
+			res.writeHead(302, {
+				Location:
+					"https://onlineornot.com/oauth/error?error=Invalid+state+parameter",
+			});
+			res.end();
+			rejectOnce(new Error("Invalid state parameter. Possible CSRF attack."));
+			return;
+		}
+
+		// Check for errors
+		if (searchParams.has("error")) {
+			const errorDesc =
+				searchParams.get("error_description") || searchParams.get("error");
+			res.writeHead(302, {
+				Location: `https://onlineornot.com/oauth/error?error=${encodeURIComponent(String(errorDesc))}`,
+			});
+			res.end();
+			rejectOnce(new Error(`Authorization denied: ${errorDesc}`));
+			return;
+		}
+
+		// Exchange code for tokens
+		const code = searchParams.get("code");
+		if (!code) {
+			res.writeHead(302, {
+				Location:
+					"https://onlineornot.com/oauth/error?error=No+authorization+code",
+			});
+			res.end();
+			rejectOnce(new Error("No authorization code received"));
+			return;
+		}
+
+		try {
+			const address = server.address();
+			const callbackPort =
+				typeof address === "object" && address ? address.port : requestedPort;
+			const callbackUrl = `http://localhost:${callbackPort}/oauth/callback`;
+			const tokens = await exchangeCode(code, codeVerifier, callbackUrl);
+			res.writeHead(302, {
+				Location: "https://onlineornot.com/oauth/success",
+			});
+			res.end();
+			resolveOnce(tokens);
+		} catch (err) {
+			res.writeHead(302, {
+				Location:
+					"https://onlineornot.com/oauth/error?error=Token+exchange+failed",
+			});
+			res.end();
+			rejectOnce(
+				err instanceof Error ? err : new Error("Token exchange failed"),
+			);
+		}
+	});
+
+	try {
+		await new Promise<void>((resolve, reject) => {
+			const onError = (error: Error) => reject(error);
+			server.once("error", onError);
+			server.listen(requestedPort, "localhost", () => {
+				server.off("error", onError);
+				resolve();
+			});
+		});
+	} catch (error) {
+		const nodeError = error as NodeJS.ErrnoException;
+		if (nodeError.code === "EADDRINUSE") {
+			throw new Error(
+				`Local OAuth callback port ${requestedPort} is already in use. Close the other process and try again.`,
+			);
+		}
+		throw error;
+	}
+
+	server.on("error", (error) => rejectOnce(error));
+	timeout = setTimeout(() => {
+		rejectOnce(
+			new Error("Timed out waiting for authorization. Please try again."),
+		);
+	}, options.timeoutMs ?? CALLBACK_TIMEOUT_MS);
+
+	const address = server.address();
+	const callbackPort =
+		typeof address === "object" && address ? address.port : requestedPort;
+	return {
+		callbackUrl: `http://localhost:${callbackPort}/oauth/callback`,
+		result,
+		close,
+	};
+}
+
 export async function waitForCallback(
 	codeVerifier: string,
 	expectedState: string,
 ): Promise<TokenResponse> {
-	return new Promise((resolve, reject) => {
-		let server: http.Server;
-
-		// Timeout after 2 minutes
-		const timeout = setTimeout(() => {
-			server?.close();
-			reject(
-				new Error("Timed out waiting for authorization. Please try again."),
-			);
-		}, 120_000);
-
-		server = http.createServer(async (req, res) => {
-			const { pathname, query } = url.parse(req.url || "", true);
-
-			if (pathname !== "/oauth/callback") {
-				res.writeHead(404);
-				res.end("Not found");
-				return;
-			}
-
-			// Validate state to prevent CSRF
-			if (query.state !== expectedState) {
-				clearTimeout(timeout);
-				res.writeHead(302, {
-					Location:
-						"https://onlineornot.com/oauth/error?error=Invalid+state+parameter",
-				});
-				res.end();
-				server.close();
-				reject(new Error("Invalid state parameter. Possible CSRF attack."));
-				return;
-			}
-
-			// Check for errors
-			if (query.error) {
-				clearTimeout(timeout);
-				const errorDesc = query.error_description || query.error;
-				res.writeHead(302, {
-					Location: `https://onlineornot.com/oauth/error?error=${encodeURIComponent(String(errorDesc))}`,
-				});
-				res.end();
-				server.close();
-				reject(new Error(`Authorization denied: ${errorDesc}`));
-				return;
-			}
-
-			// Exchange code for tokens
-			const code = query.code as string;
-			if (!code) {
-				clearTimeout(timeout);
-				res.writeHead(302, {
-					Location:
-						"https://onlineornot.com/oauth/error?error=No+authorization+code",
-				});
-				res.end();
-				server.close();
-				reject(new Error("No authorization code received"));
-				return;
-			}
-
-			try {
-				const tokenResponse = await fetch(`${AUTH_BASE_URL}/oauth2/token`, {
-					method: "POST",
-					headers: { "Content-Type": "application/x-www-form-urlencoded" },
-					body: new URLSearchParams({
-						grant_type: "authorization_code",
-						code,
-						redirect_uri: CALLBACK_URL,
-						client_id: CLIENT_ID,
-						code_verifier: codeVerifier,
-						resource: "https://onlineornot.com",
-					}),
-				});
-
-				if (!tokenResponse.ok) {
-					const error = (await tokenResponse.json()) as {
-						error?: string;
-						error_description?: string;
-					};
-					throw new Error(
-						error.error_description || error.error || "Token exchange failed",
-					);
-				}
-
-				const tokens = (await tokenResponse.json()) as TokenResponse;
-
-				// Validate token response has required fields
-				if (
-					!tokens.access_token ||
-					!tokens.refresh_token ||
-					typeof tokens.expires_in !== "number"
-				) {
-					throw new Error("Invalid token response: missing required fields");
-				}
-
-				clearTimeout(timeout);
-				res.writeHead(302, {
-					Location: "https://onlineornot.com/oauth/success",
-				});
-				res.end();
-				server.close();
-				resolve(tokens);
-			} catch (err) {
-				clearTimeout(timeout);
-				res.writeHead(302, {
-					Location:
-						"https://onlineornot.com/oauth/error?error=Token+exchange+failed",
-				});
-				res.end();
-				server.close();
-				reject(err);
-			}
-		});
-
-		server.listen(CALLBACK_PORT, "localhost");
-	});
+	const callbackServer = await startOAuthCallbackServer(
+		codeVerifier,
+		expectedState,
+	);
+	return callbackServer.result;
 }
 
 /**
