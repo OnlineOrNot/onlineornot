@@ -1,5 +1,11 @@
 # onlineornot
 
+## 1.6.4
+
+### Patch Changes
+
+- [`e0f7ebad7553b45ef00d79f194eb7a0d8a8178b5`](https://github.com/OnlineOrNot/onlineornot/commit/e0f7ebad7553b45ef00d79f194eb7a0d8a8178b5) Thanks [@rozenmd](https://github.com/rozenmd)! - Fix release patch verification on Node.js 26.
+
 ## 1.6.3
 
 ### Patch Changes
