@@ -1,5 +1,11 @@
 # onlineornot
 
+## 1.6.5
+
+### Patch Changes
+
+- [`292136d3c53cb4299725169dd6e1cf9797736cc1`](https://github.com/OnlineOrNot/onlineornot/commit/292136d3c53cb4299725169dd6e1cf9797736cc1) Thanks [@rozenmd](https://github.com/rozenmd)! - Accept check URLs without an explicit scheme by defaulting to HTTPS.
+
 ## 1.6.4
 
 ### Patch Changes
