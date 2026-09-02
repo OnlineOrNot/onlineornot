@@ -1,6 +1,6 @@
 {
 	"name": "onlineornot",
-	"version": "1.4.1",
+	"version": "1.5.0",
 	"description": "Command-line interface for OnlineOrNot",
 	"keywords": [
 		"uptime monitoring"
