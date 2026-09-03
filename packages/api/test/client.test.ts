@@ -6,8 +6,8 @@ import {
 	listChecks,
 	pingHeartbeat,
 	type CheckListResponse,
-	type GetV1TokensVerifyErrors,
 	type ListChecksResponses,
+	type VerifyTokenErrors,
 } from "../src/index";
 
 interface MockResponseBody {
@@ -106,7 +106,7 @@ describe("generated client", () => {
 
 	it("retains generated success and documented error types", () => {
 		expectTypeOf<ListChecksResponses[200]>().toEqualTypeOf<CheckListResponse>();
-		expectTypeOf<GetV1TokensVerifyErrors[401]>().toMatchTypeOf<{
+		expectTypeOf<VerifyTokenErrors[401]>().toMatchTypeOf<{
 			errors: Array<{ code: number; message: string }>;
 			result: null;
 			success: boolean;

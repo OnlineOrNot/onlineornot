@@ -18,8 +18,9 @@ it("imports the built package root", async () => {
 });
 
 it("packs only intended public files", () => {
+	const npm = process.platform === "win32" ? "npm.cmd" : "npm";
 	const result = execFileSync(
-		"npm",
+		npm,
 		["pack", "--dry-run", "--json", "--ignore-scripts"],
 		{
 			cwd: packageDirectory,
@@ -47,5 +48,5 @@ it("keeps public operation names unique and pinned", () => {
 	);
 	expect(manifest.operations).toHaveLength(manifest.count);
 	expect(new Set(manifest.operations).size).toBe(manifest.count);
-	expect(manifest.count).toBe(85);
+	expect(manifest.count).toBe(93);
 });

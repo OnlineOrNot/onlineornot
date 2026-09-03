@@ -1633,6 +1633,220 @@ export type BrowserCheckPatch = {
 	script?: string;
 };
 
+export type PublicCheckIncident = {
+	id: string;
+	check_id: string;
+	started_at: string;
+	ended_at: string | null;
+};
+
+export type PublicCheckIncidentResultInfo = {
+	page: number;
+	per_page: number;
+	count: number;
+	total_count: number;
+};
+
+export type PublicCheckIncidentListResponse = {
+	success: true;
+	result: Array<PublicCheckIncident>;
+	result_info: PublicCheckIncidentResultInfo;
+	errors: Array<unknown>;
+	messages: Array<unknown>;
+};
+
+export type PublicCheckIncidentErrorResponse = {
+	success: false;
+	result: null;
+	errors: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+	messages: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+};
+
+export type PublicCheckResultWindow = {
+	/**
+	 * Inclusive start of the returned result window
+	 */
+	from: string;
+	/**
+	 * Exclusive end of the returned result window
+	 */
+	to: string;
+};
+
+export type PublicCheckResultBodyAvailability =
+	| "AVAILABLE"
+	| "NOT_RECORDED"
+	| "EXPIRED"
+	| "TRACE_ONLY";
+
+export type PublicHttpCheckResult = {
+	id: string;
+	checked_at: string;
+	/**
+	 * Region identifier in format aws:{region}
+	 */
+	checked_from:
+		| "aws:us-east-1"
+		| "aws:us-east-2"
+		| "aws:us-west-1"
+		| "aws:eu-central-1"
+		| "aws:eu-west-2"
+		| "aws:ap-south-1"
+		| "aws:ap-southeast-2"
+		| "aws:ap-northeast-1";
+	passing: boolean | null;
+	response_time_ms: number;
+	attempt_number: number | null;
+	is_final_attempt: boolean | null;
+	dispatched_at_ms: number | null;
+	response_body: string | null;
+	body_availability: PublicCheckResultBodyAvailability;
+	response_code: number | null;
+	result_summary: string | null;
+	has_stored_response: boolean;
+};
+
+export type PublicCheckResultsResultInfo = {
+	page: number;
+	per_page: number;
+	count: number;
+	total_count: number;
+};
+
+export type PublicUptimeCheckResultsResponse = {
+	success: true;
+	result: {
+		check_id: string;
+		check_type: "UPTIME";
+		window: PublicCheckResultWindow;
+		results: Array<PublicHttpCheckResult>;
+		result_info: PublicCheckResultsResultInfo;
+	};
+	errors: Array<unknown>;
+	messages: Array<unknown>;
+};
+
+export type PublicCheckResultsErrorResponse = {
+	success: false;
+	result: null;
+	errors: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+	messages: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+};
+
+export type PublicBrowserCheckResultsResponse = {
+	success: true;
+	result: {
+		check_id: string;
+		check_type: "BROWSER";
+		window: PublicCheckResultWindow;
+		results: Array<PublicHttpCheckResult>;
+		result_info: PublicCheckResultsResultInfo;
+	};
+	errors: Array<unknown>;
+	messages: Array<unknown>;
+};
+
+export type PublicDnsCheckResult = {
+	id: string;
+	checked_at: string;
+	/**
+	 * Region identifier in format aws:{region}
+	 */
+	checked_from:
+		| "aws:us-east-1"
+		| "aws:us-east-2"
+		| "aws:us-west-1"
+		| "aws:eu-central-1"
+		| "aws:eu-west-2"
+		| "aws:ap-south-1"
+		| "aws:ap-southeast-2"
+		| "aws:ap-northeast-1";
+	passing: boolean | null;
+	response_time_ms: number;
+	attempt_number: number | null;
+	is_final_attempt: boolean | null;
+	dispatched_at_ms: number | null;
+	response_body: string | null;
+	body_availability: PublicCheckResultBodyAvailability;
+	dns_status: string | null;
+	failure_source: "TRANSPORT" | "ASSERTION";
+	failure_type: string | null;
+	resolver: string | null;
+	parsed_response: string | null;
+};
+
+export type PublicDnsCheckResultsResponse = {
+	success: true;
+	result: {
+		check_id: string;
+		check_type: "DNS";
+		window: PublicCheckResultWindow;
+		results: Array<PublicDnsCheckResult>;
+		result_info: PublicCheckResultsResultInfo;
+	};
+	errors: Array<unknown>;
+	messages: Array<unknown>;
+};
+
+export type PublicTcpCheckResult = {
+	id: string;
+	checked_at: string;
+	/**
+	 * Region identifier in format aws:{region}
+	 */
+	checked_from:
+		| "aws:us-east-1"
+		| "aws:us-east-2"
+		| "aws:us-west-1"
+		| "aws:eu-central-1"
+		| "aws:eu-west-2"
+		| "aws:ap-south-1"
+		| "aws:ap-southeast-2"
+		| "aws:ap-northeast-1";
+	passing: boolean | null;
+	response_time_ms: number;
+	attempt_number: number | null;
+	is_final_attempt: boolean | null;
+	dispatched_at_ms: number | null;
+	response_body: string | null;
+	body_availability: PublicCheckResultBodyAvailability;
+	tcp_status: string | null;
+	failure_source: "TRANSPORT" | "ASSERTION";
+	failure_type: string | null;
+	dns_time_ms: number | null;
+	connect_time_ms: number | null;
+	data_time_ms: number | null;
+};
+
+export type PublicTcpCheckResultsResponse = {
+	success: true;
+	result: {
+		check_id: string;
+		check_type: "TCP";
+		window: PublicCheckResultWindow;
+		results: Array<PublicTcpCheckResult>;
+		result_info: PublicCheckResultsResultInfo;
+	};
+	errors: Array<unknown>;
+	messages: Array<unknown>;
+};
+
 export type CheckListItem = {
 	/**
 	 * Uptime Check ID
@@ -2992,14 +3206,14 @@ export type ListAuditLogsResponses = {
 export type ListAuditLogsResponse =
 	ListAuditLogsResponses[keyof ListAuditLogsResponses];
 
-export type GetV1TokensVerifyData = {
+export type VerifyTokenData = {
 	body?: never;
 	path?: never;
 	query?: never;
 	url: "/v1/tokens/verify";
 };
 
-export type GetV1TokensVerifyErrors = {
+export type VerifyTokenErrors = {
 	/**
 	 * Returns an error message if the token is invalid
 	 */
@@ -3031,10 +3245,9 @@ export type GetV1TokensVerifyErrors = {
 	500: unknown;
 };
 
-export type GetV1TokensVerifyError =
-	GetV1TokensVerifyErrors[keyof GetV1TokensVerifyErrors];
+export type VerifyTokenError = VerifyTokenErrors[keyof VerifyTokenErrors];
 
-export type GetV1TokensVerifyResponses = {
+export type VerifyTokenResponses = {
 	/**
 	 * Returns that the given API token is valid
 	 */
@@ -3066,24 +3279,24 @@ export type GetV1TokensVerifyResponses = {
 	};
 };
 
-export type GetV1TokensVerifyResponse =
-	GetV1TokensVerifyResponses[keyof GetV1TokensVerifyResponses];
+export type VerifyTokenResponse =
+	VerifyTokenResponses[keyof VerifyTokenResponses];
 
-export type GetV1TokensPermissionsData = {
+export type GetTokenPermissionsData = {
 	body?: never;
 	path?: never;
 	query?: never;
 	url: "/v1/tokens/permissions";
 };
 
-export type GetV1TokensPermissionsErrors = {
+export type GetTokenPermissionsErrors = {
 	/**
 	 * Internal Server Error
 	 */
 	500: unknown;
 };
 
-export type GetV1TokensPermissionsResponses = {
+export type GetTokenPermissionsResponses = {
 	/**
 	 * Returns the permissions of a given API token
 	 */
@@ -3108,8 +3321,8 @@ export type GetV1TokensPermissionsResponses = {
 	};
 };
 
-export type GetV1TokensPermissionsResponse =
-	GetV1TokensPermissionsResponses[keyof GetV1TokensPermissionsResponses];
+export type GetTokenPermissionsResponse =
+	GetTokenPermissionsResponses[keyof GetTokenPermissionsResponses];
 
 export type ListTokensData = {
 	body?: never;
@@ -4096,6 +4309,542 @@ export type UpdateBrowserCheckResponses = {
 
 export type UpdateBrowserCheckResponse =
 	UpdateBrowserCheckResponses[keyof UpdateBrowserCheckResponses];
+
+export type ListUptimeCheckIncidentsData = {
+	body?: never;
+	path: {
+		/**
+		 * Public check ID
+		 */
+		check_id: string;
+	};
+	query?: {
+		/**
+		 * Page number of paginated results
+		 */
+		page?: string;
+		/**
+		 * Number of records per page, from 1 through 100
+		 */
+		per_page?: string;
+		/**
+		 * Inclusive start of the requested time range
+		 */
+		from?: string;
+		/**
+		 * Exclusive end of the requested time range. Must be later than from when both are provided.
+		 */
+		to?: string;
+	};
+	url: "/v1/checks/uptime/{check_id}/incidents";
+};
+
+export type ListUptimeCheckIncidentsErrors = {
+	/**
+	 * Invalid query parameters
+	 */
+	400: PublicCheckIncidentErrorResponse;
+	/**
+	 * Unauthenticated
+	 */
+	401: PublicCheckIncidentErrorResponse;
+	/**
+	 * Forbidden
+	 */
+	403: PublicCheckIncidentErrorResponse;
+	/**
+	 * Check not found
+	 */
+	404: PublicCheckIncidentErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicCheckIncidentErrorResponse;
+};
+
+export type ListUptimeCheckIncidentsError =
+	ListUptimeCheckIncidentsErrors[keyof ListUptimeCheckIncidentsErrors];
+
+export type ListUptimeCheckIncidentsResponses = {
+	/**
+	 * A page of incidents for the check
+	 */
+	200: PublicCheckIncidentListResponse;
+};
+
+export type ListUptimeCheckIncidentsResponse =
+	ListUptimeCheckIncidentsResponses[keyof ListUptimeCheckIncidentsResponses];
+
+export type ListBrowserCheckIncidentsData = {
+	body?: never;
+	path: {
+		/**
+		 * Public check ID
+		 */
+		check_id: string;
+	};
+	query?: {
+		/**
+		 * Page number of paginated results
+		 */
+		page?: string;
+		/**
+		 * Number of records per page, from 1 through 100
+		 */
+		per_page?: string;
+		/**
+		 * Inclusive start of the requested time range
+		 */
+		from?: string;
+		/**
+		 * Exclusive end of the requested time range. Must be later than from when both are provided.
+		 */
+		to?: string;
+	};
+	url: "/v1/checks/browser/{check_id}/incidents";
+};
+
+export type ListBrowserCheckIncidentsErrors = {
+	/**
+	 * Invalid query parameters
+	 */
+	400: PublicCheckIncidentErrorResponse;
+	/**
+	 * Unauthenticated
+	 */
+	401: PublicCheckIncidentErrorResponse;
+	/**
+	 * Forbidden
+	 */
+	403: PublicCheckIncidentErrorResponse;
+	/**
+	 * Check not found
+	 */
+	404: PublicCheckIncidentErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicCheckIncidentErrorResponse;
+};
+
+export type ListBrowserCheckIncidentsError =
+	ListBrowserCheckIncidentsErrors[keyof ListBrowserCheckIncidentsErrors];
+
+export type ListBrowserCheckIncidentsResponses = {
+	/**
+	 * A page of incidents for the check
+	 */
+	200: PublicCheckIncidentListResponse;
+};
+
+export type ListBrowserCheckIncidentsResponse =
+	ListBrowserCheckIncidentsResponses[keyof ListBrowserCheckIncidentsResponses];
+
+export type ListDnsCheckIncidentsData = {
+	body?: never;
+	path: {
+		/**
+		 * Public check ID
+		 */
+		check_id: string;
+	};
+	query?: {
+		/**
+		 * Page number of paginated results
+		 */
+		page?: string;
+		/**
+		 * Number of records per page, from 1 through 100
+		 */
+		per_page?: string;
+		/**
+		 * Inclusive start of the requested time range
+		 */
+		from?: string;
+		/**
+		 * Exclusive end of the requested time range. Must be later than from when both are provided.
+		 */
+		to?: string;
+	};
+	url: "/v1/checks/dns/{check_id}/incidents";
+};
+
+export type ListDnsCheckIncidentsErrors = {
+	/**
+	 * Invalid query parameters
+	 */
+	400: PublicCheckIncidentErrorResponse;
+	/**
+	 * Unauthenticated
+	 */
+	401: PublicCheckIncidentErrorResponse;
+	/**
+	 * Forbidden
+	 */
+	403: PublicCheckIncidentErrorResponse;
+	/**
+	 * Check not found
+	 */
+	404: PublicCheckIncidentErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicCheckIncidentErrorResponse;
+};
+
+export type ListDnsCheckIncidentsError =
+	ListDnsCheckIncidentsErrors[keyof ListDnsCheckIncidentsErrors];
+
+export type ListDnsCheckIncidentsResponses = {
+	/**
+	 * A page of incidents for the check
+	 */
+	200: PublicCheckIncidentListResponse;
+};
+
+export type ListDnsCheckIncidentsResponse =
+	ListDnsCheckIncidentsResponses[keyof ListDnsCheckIncidentsResponses];
+
+export type ListTcpCheckIncidentsData = {
+	body?: never;
+	path: {
+		/**
+		 * Public check ID
+		 */
+		check_id: string;
+	};
+	query?: {
+		/**
+		 * Page number of paginated results
+		 */
+		page?: string;
+		/**
+		 * Number of records per page, from 1 through 100
+		 */
+		per_page?: string;
+		/**
+		 * Inclusive start of the requested time range
+		 */
+		from?: string;
+		/**
+		 * Exclusive end of the requested time range. Must be later than from when both are provided.
+		 */
+		to?: string;
+	};
+	url: "/v1/checks/tcp/{check_id}/incidents";
+};
+
+export type ListTcpCheckIncidentsErrors = {
+	/**
+	 * Invalid query parameters
+	 */
+	400: PublicCheckIncidentErrorResponse;
+	/**
+	 * Unauthenticated
+	 */
+	401: PublicCheckIncidentErrorResponse;
+	/**
+	 * Forbidden
+	 */
+	403: PublicCheckIncidentErrorResponse;
+	/**
+	 * Check not found
+	 */
+	404: PublicCheckIncidentErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicCheckIncidentErrorResponse;
+};
+
+export type ListTcpCheckIncidentsError =
+	ListTcpCheckIncidentsErrors[keyof ListTcpCheckIncidentsErrors];
+
+export type ListTcpCheckIncidentsResponses = {
+	/**
+	 * A page of incidents for the check
+	 */
+	200: PublicCheckIncidentListResponse;
+};
+
+export type ListTcpCheckIncidentsResponse =
+	ListTcpCheckIncidentsResponses[keyof ListTcpCheckIncidentsResponses];
+
+export type ListUptimeCheckResultsData = {
+	body?: never;
+	path: {
+		/**
+		 * Public check ID
+		 */
+		check_id: string;
+	};
+	query: {
+		/**
+		 * Page number of paginated results
+		 */
+		page?: string;
+		/**
+		 * Number of records per page, from 1 through 100
+		 */
+		per_page?: string;
+		/**
+		 * Inclusive start of the requested time range
+		 */
+		from: string;
+		/**
+		 * Exclusive end of the requested time range
+		 */
+		to: string;
+	};
+	url: "/v1/checks/uptime/{check_id}/results";
+};
+
+export type ListUptimeCheckResultsErrors = {
+	/**
+	 * Invalid query parameters
+	 */
+	400: PublicCheckResultsErrorResponse;
+	/**
+	 * Unauthenticated
+	 */
+	401: PublicCheckResultsErrorResponse;
+	/**
+	 * Forbidden
+	 */
+	403: PublicCheckResultsErrorResponse;
+	/**
+	 * Check not found
+	 */
+	404: PublicCheckResultsErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicCheckResultsErrorResponse;
+	/**
+	 * Required result storage unavailable
+	 */
+	503: PublicCheckResultsErrorResponse;
+};
+
+export type ListUptimeCheckResultsError =
+	ListUptimeCheckResultsErrors[keyof ListUptimeCheckResultsErrors];
+
+export type ListUptimeCheckResultsResponses = {
+	/**
+	 * A chronological page of raw check results
+	 */
+	200: PublicUptimeCheckResultsResponse;
+};
+
+export type ListUptimeCheckResultsResponse =
+	ListUptimeCheckResultsResponses[keyof ListUptimeCheckResultsResponses];
+
+export type ListBrowserCheckResultsData = {
+	body?: never;
+	path: {
+		/**
+		 * Public check ID
+		 */
+		check_id: string;
+	};
+	query: {
+		/**
+		 * Page number of paginated results
+		 */
+		page?: string;
+		/**
+		 * Number of records per page, from 1 through 100
+		 */
+		per_page?: string;
+		/**
+		 * Inclusive start of the requested time range
+		 */
+		from: string;
+		/**
+		 * Exclusive end of the requested time range
+		 */
+		to: string;
+	};
+	url: "/v1/checks/browser/{check_id}/results";
+};
+
+export type ListBrowserCheckResultsErrors = {
+	/**
+	 * Invalid query parameters
+	 */
+	400: PublicCheckResultsErrorResponse;
+	/**
+	 * Unauthenticated
+	 */
+	401: PublicCheckResultsErrorResponse;
+	/**
+	 * Forbidden
+	 */
+	403: PublicCheckResultsErrorResponse;
+	/**
+	 * Check not found
+	 */
+	404: PublicCheckResultsErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicCheckResultsErrorResponse;
+	/**
+	 * Required result storage unavailable
+	 */
+	503: PublicCheckResultsErrorResponse;
+};
+
+export type ListBrowserCheckResultsError =
+	ListBrowserCheckResultsErrors[keyof ListBrowserCheckResultsErrors];
+
+export type ListBrowserCheckResultsResponses = {
+	/**
+	 * A chronological page of raw check results
+	 */
+	200: PublicBrowserCheckResultsResponse;
+};
+
+export type ListBrowserCheckResultsResponse =
+	ListBrowserCheckResultsResponses[keyof ListBrowserCheckResultsResponses];
+
+export type ListDnsCheckResultsData = {
+	body?: never;
+	path: {
+		/**
+		 * Public check ID
+		 */
+		check_id: string;
+	};
+	query: {
+		/**
+		 * Page number of paginated results
+		 */
+		page?: string;
+		/**
+		 * Number of records per page, from 1 through 100
+		 */
+		per_page?: string;
+		/**
+		 * Inclusive start of the requested time range
+		 */
+		from: string;
+		/**
+		 * Exclusive end of the requested time range
+		 */
+		to: string;
+	};
+	url: "/v1/checks/dns/{check_id}/results";
+};
+
+export type ListDnsCheckResultsErrors = {
+	/**
+	 * Invalid query parameters
+	 */
+	400: PublicCheckResultsErrorResponse;
+	/**
+	 * Unauthenticated
+	 */
+	401: PublicCheckResultsErrorResponse;
+	/**
+	 * Forbidden
+	 */
+	403: PublicCheckResultsErrorResponse;
+	/**
+	 * Check not found
+	 */
+	404: PublicCheckResultsErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicCheckResultsErrorResponse;
+	/**
+	 * Required result storage unavailable
+	 */
+	503: PublicCheckResultsErrorResponse;
+};
+
+export type ListDnsCheckResultsError =
+	ListDnsCheckResultsErrors[keyof ListDnsCheckResultsErrors];
+
+export type ListDnsCheckResultsResponses = {
+	/**
+	 * A chronological page of raw check results
+	 */
+	200: PublicDnsCheckResultsResponse;
+};
+
+export type ListDnsCheckResultsResponse =
+	ListDnsCheckResultsResponses[keyof ListDnsCheckResultsResponses];
+
+export type ListTcpCheckResultsData = {
+	body?: never;
+	path: {
+		/**
+		 * Public check ID
+		 */
+		check_id: string;
+	};
+	query: {
+		/**
+		 * Page number of paginated results
+		 */
+		page?: string;
+		/**
+		 * Number of records per page, from 1 through 100
+		 */
+		per_page?: string;
+		/**
+		 * Inclusive start of the requested time range
+		 */
+		from: string;
+		/**
+		 * Exclusive end of the requested time range
+		 */
+		to: string;
+	};
+	url: "/v1/checks/tcp/{check_id}/results";
+};
+
+export type ListTcpCheckResultsErrors = {
+	/**
+	 * Invalid query parameters
+	 */
+	400: PublicCheckResultsErrorResponse;
+	/**
+	 * Unauthenticated
+	 */
+	401: PublicCheckResultsErrorResponse;
+	/**
+	 * Forbidden
+	 */
+	403: PublicCheckResultsErrorResponse;
+	/**
+	 * Check not found
+	 */
+	404: PublicCheckResultsErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicCheckResultsErrorResponse;
+	/**
+	 * Required result storage unavailable
+	 */
+	503: PublicCheckResultsErrorResponse;
+};
+
+export type ListTcpCheckResultsError =
+	ListTcpCheckResultsErrors[keyof ListTcpCheckResultsErrors];
+
+export type ListTcpCheckResultsResponses = {
+	/**
+	 * A chronological page of raw check results
+	 */
+	200: PublicTcpCheckResultsResponse;
+};
+
+export type ListTcpCheckResultsResponse =
+	ListTcpCheckResultsResponses[keyof ListTcpCheckResultsResponses];
 
 export type ListChecksData = {
 	body?: never;
@@ -5344,7 +6093,7 @@ export type CreateInvitationResponses = {
 export type CreateInvitationResponse =
 	CreateInvitationResponses[keyof CreateInvitationResponses];
 
-export type DeleteV1StatusPagesByStatusPageIdData = {
+export type DeleteStatusPageData = {
 	body?: never;
 	path: {
 		/**
@@ -5356,14 +6105,14 @@ export type DeleteV1StatusPagesByStatusPageIdData = {
 	url: "/v1/status_pages/{status_page_id}";
 };
 
-export type DeleteV1StatusPagesByStatusPageIdErrors = {
+export type DeleteStatusPageErrors = {
 	/**
 	 * Internal Server Error
 	 */
 	500: unknown;
 };
 
-export type DeleteV1StatusPagesByStatusPageIdResponses = {
+export type DeleteStatusPageResponses = {
 	/**
 	 * Returns the deleted OnlineOrNot Check's ID
 	 */
@@ -5391,10 +6140,10 @@ export type DeleteV1StatusPagesByStatusPageIdResponses = {
 	};
 };
 
-export type DeleteV1StatusPagesByStatusPageIdResponse =
-	DeleteV1StatusPagesByStatusPageIdResponses[keyof DeleteV1StatusPagesByStatusPageIdResponses];
+export type DeleteStatusPageResponse =
+	DeleteStatusPageResponses[keyof DeleteStatusPageResponses];
 
-export type GetV1StatusPagesByStatusPageIdData = {
+export type GetStatusPageData = {
 	body?: never;
 	path: {
 		/**
@@ -5406,14 +6155,14 @@ export type GetV1StatusPagesByStatusPageIdData = {
 	url: "/v1/status_pages/{status_page_id}";
 };
 
-export type GetV1StatusPagesByStatusPageIdErrors = {
+export type GetStatusPageErrors = {
 	/**
 	 * Internal Server Error
 	 */
 	500: unknown;
 };
 
-export type GetV1StatusPagesByStatusPageIdResponses = {
+export type GetStatusPageResponses = {
 	/**
 	 * Retrieve the specified OnlineOrNot Status Page
 	 */
@@ -5436,10 +6185,10 @@ export type GetV1StatusPagesByStatusPageIdResponses = {
 	};
 };
 
-export type GetV1StatusPagesByStatusPageIdResponse =
-	GetV1StatusPagesByStatusPageIdResponses[keyof GetV1StatusPagesByStatusPageIdResponses];
+export type GetStatusPageResponse =
+	GetStatusPageResponses[keyof GetStatusPageResponses];
 
-export type PostV1StatusPagesByStatusPageIdData = {
+export type UpdateStatusPageData = {
 	body: {
 		/**
 		 * Name of the Status Page
@@ -5480,14 +6229,14 @@ export type PostV1StatusPagesByStatusPageIdData = {
 	url: "/v1/status_pages/{status_page_id}";
 };
 
-export type PostV1StatusPagesByStatusPageIdErrors = {
+export type UpdateStatusPageErrors = {
 	/**
 	 * Internal Server Error
 	 */
 	500: unknown;
 };
 
-export type PostV1StatusPagesByStatusPageIdResponses = {
+export type UpdateStatusPageResponses = {
 	/**
 	 * Update an existing OnlineOrNot Status Page
 	 */
@@ -5510,10 +6259,10 @@ export type PostV1StatusPagesByStatusPageIdResponses = {
 	};
 };
 
-export type PostV1StatusPagesByStatusPageIdResponse =
-	PostV1StatusPagesByStatusPageIdResponses[keyof PostV1StatusPagesByStatusPageIdResponses];
+export type UpdateStatusPageResponse =
+	UpdateStatusPageResponses[keyof UpdateStatusPageResponses];
 
-export type GetV1StatusPagesByStatusPageSubdomainSummaryData = {
+export type GetStatusPageSummaryData = {
 	body?: never;
 	path: {
 		/**
@@ -5525,7 +6274,7 @@ export type GetV1StatusPagesByStatusPageSubdomainSummaryData = {
 	url: "/v1/status_pages/{status_page_subdomain}/summary";
 };
 
-export type GetV1StatusPagesByStatusPageSubdomainSummaryErrors = {
+export type GetStatusPageSummaryErrors = {
 	/**
 	 * Not found
 	 */
@@ -5536,7 +6285,7 @@ export type GetV1StatusPagesByStatusPageSubdomainSummaryErrors = {
 	500: unknown;
 };
 
-export type GetV1StatusPagesByStatusPageSubdomainSummaryResponses = {
+export type GetStatusPageSummaryResponses = {
 	/**
 	 * Retrieve the specified OnlineOrNot status page summary
 	 */
@@ -5575,10 +6324,10 @@ export type GetV1StatusPagesByStatusPageSubdomainSummaryResponses = {
 	};
 };
 
-export type GetV1StatusPagesByStatusPageSubdomainSummaryResponse =
-	GetV1StatusPagesByStatusPageSubdomainSummaryResponses[keyof GetV1StatusPagesByStatusPageSubdomainSummaryResponses];
+export type GetStatusPageSummaryResponse =
+	GetStatusPageSummaryResponses[keyof GetStatusPageSummaryResponses];
 
-export type GetV1StatusPagesData = {
+export type ListStatusPagesData = {
 	body?: never;
 	path?: never;
 	query?: {
@@ -5598,14 +6347,14 @@ export type GetV1StatusPagesData = {
 	url: "/v1/status_pages";
 };
 
-export type GetV1StatusPagesErrors = {
+export type ListStatusPagesErrors = {
 	/**
 	 * Internal Server Error
 	 */
 	500: unknown;
 };
 
-export type GetV1StatusPagesResponses = {
+export type ListStatusPagesResponses = {
 	/**
 	 * Returns a list of OnlineOrNot Status Pages
 	 */
@@ -5646,10 +6395,10 @@ export type GetV1StatusPagesResponses = {
 	};
 };
 
-export type GetV1StatusPagesResponse =
-	GetV1StatusPagesResponses[keyof GetV1StatusPagesResponses];
+export type ListStatusPagesResponse =
+	ListStatusPagesResponses[keyof ListStatusPagesResponses];
 
-export type PostV1StatusPagesData = {
+export type CreateStatusPageData = {
 	body: {
 		/**
 		 * Name of the Status Page
@@ -5685,14 +6434,14 @@ export type PostV1StatusPagesData = {
 	url: "/v1/status_pages";
 };
 
-export type PostV1StatusPagesErrors = {
+export type CreateStatusPageErrors = {
 	/**
 	 * Internal Server Error
 	 */
 	500: unknown;
 };
 
-export type PostV1StatusPagesResponses = {
+export type CreateStatusPageResponses = {
 	/**
 	 * Create a new OnlineOrNot Status Page
 	 */
@@ -5715,10 +6464,10 @@ export type PostV1StatusPagesResponses = {
 	};
 };
 
-export type PostV1StatusPagesResponse =
-	PostV1StatusPagesResponses[keyof PostV1StatusPagesResponses];
+export type CreateStatusPageResponse =
+	CreateStatusPageResponses[keyof CreateStatusPageResponses];
 
-export type GetV1StatusPagesByStatusPageIdComponentsData = {
+export type ListStatusPageComponentsData = {
 	body?: never;
 	path: {
 		/**
@@ -5743,14 +6492,14 @@ export type GetV1StatusPagesByStatusPageIdComponentsData = {
 	url: "/v1/status_pages/{status_page_id}/components";
 };
 
-export type GetV1StatusPagesByStatusPageIdComponentsErrors = {
+export type ListStatusPageComponentsErrors = {
 	/**
 	 * Internal Server Error
 	 */
 	500: unknown;
 };
 
-export type GetV1StatusPagesByStatusPageIdComponentsResponses = {
+export type ListStatusPageComponentsResponses = {
 	/**
 	 * Returns a list of components for a status page
 	 */
@@ -5791,10 +6540,10 @@ export type GetV1StatusPagesByStatusPageIdComponentsResponses = {
 	};
 };
 
-export type GetV1StatusPagesByStatusPageIdComponentsResponse =
-	GetV1StatusPagesByStatusPageIdComponentsResponses[keyof GetV1StatusPagesByStatusPageIdComponentsResponses];
+export type ListStatusPageComponentsResponse =
+	ListStatusPageComponentsResponses[keyof ListStatusPageComponentsResponses];
 
-export type PostV1StatusPagesByStatusPageIdComponentsData = {
+export type CreateStatusPageComponentData = {
 	body: {
 		/**
 		 * a name for the component
@@ -5829,14 +6578,14 @@ export type PostV1StatusPagesByStatusPageIdComponentsData = {
 	url: "/v1/status_pages/{status_page_id}/components";
 };
 
-export type PostV1StatusPagesByStatusPageIdComponentsErrors = {
+export type CreateStatusPageComponentErrors = {
 	/**
 	 * Internal Server Error
 	 */
 	500: unknown;
 };
 
-export type PostV1StatusPagesByStatusPageIdComponentsResponses = {
+export type CreateStatusPageComponentResponses = {
 	/**
 	 * Returns the newly created status page component
 	 */
@@ -5859,210 +6608,201 @@ export type PostV1StatusPagesByStatusPageIdComponentsResponses = {
 	};
 };
 
-export type PostV1StatusPagesByStatusPageIdComponentsResponse =
-	PostV1StatusPagesByStatusPageIdComponentsResponses[keyof PostV1StatusPagesByStatusPageIdComponentsResponses];
+export type CreateStatusPageComponentResponse =
+	CreateStatusPageComponentResponses[keyof CreateStatusPageComponentResponses];
 
-export type DeleteV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdData =
-	{
-		body?: never;
-		path: {
-			/**
-			 * Status Page ID
-			 */
-			status_page_id: string;
+export type DeleteStatusPageComponentData = {
+	body?: never;
+	path: {
+		/**
+		 * Status Page ID
+		 */
+		status_page_id: string;
+		/**
+		 * Status Page Component ID
+		 */
+		status_page_component_id: string;
+	};
+	query?: never;
+	url: "/v1/status_pages/{status_page_id}/components/{status_page_component_id}";
+};
+
+export type DeleteStatusPageComponentErrors = {
+	/**
+	 * Internal Server Error
+	 */
+	500: unknown;
+};
+
+export type DeleteStatusPageComponentResponses = {
+	/**
+	 * Returns the deleted component's ID
+	 */
+	200: {
+		result: {
 			/**
 			 * Status Page Component ID
 			 */
-			status_page_component_id: string;
+			id: string;
 		};
-		query?: never;
-		url: "/v1/status_pages/{status_page_id}/components/{status_page_component_id}";
-	};
-
-export type DeleteV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdErrors =
-	{
 		/**
-		 * Internal Server Error
+		 * Whether the API call was successful
 		 */
-		500: unknown;
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
 	};
+};
 
-export type DeleteV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponses =
-	{
+export type DeleteStatusPageComponentResponse =
+	DeleteStatusPageComponentResponses[keyof DeleteStatusPageComponentResponses];
+
+export type GetStatusPageComponentData = {
+	body?: never;
+	path: {
 		/**
-		 * Returns the deleted component's ID
+		 * Status Page ID
 		 */
-		200: {
-			result: {
-				/**
-				 * Status Page Component ID
-				 */
-				id: string;
-			};
-			/**
-			 * Whether the API call was successful
-			 */
-			success: boolean;
-			errors: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-			messages: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-		};
-	};
-
-export type DeleteV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponse =
-	DeleteV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponses[keyof DeleteV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponses];
-
-export type GetV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdData =
-	{
-		body?: never;
-		path: {
-			/**
-			 * Status Page ID
-			 */
-			status_page_id: string;
-			/**
-			 * Status Page Component ID
-			 */
-			status_page_component_id: string;
-		};
-		query?: never;
-		url: "/v1/status_pages/{status_page_id}/components/{status_page_component_id}";
-	};
-
-export type GetV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdErrors =
-	{
+		status_page_id: string;
 		/**
-		 * Internal Server Error
+		 * Status Page Component ID
 		 */
-		500: unknown;
+		status_page_component_id: string;
 	};
+	query?: never;
+	url: "/v1/status_pages/{status_page_id}/components/{status_page_component_id}";
+};
 
-export type GetV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponses =
-	{
+export type GetStatusPageComponentErrors = {
+	/**
+	 * Internal Server Error
+	 */
+	500: unknown;
+};
+
+export type GetStatusPageComponentResponses = {
+	/**
+	 * Returns a status page component
+	 */
+	200: {
+		result: StatusPageComponent;
 		/**
-		 * Returns a status page component
+		 * Whether the API call was successful
 		 */
-		200: {
-			result: StatusPageComponent;
-			/**
-			 * Whether the API call was successful
-			 */
-			success: boolean;
-			errors: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-			messages: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-		};
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
 	};
+};
 
-export type GetV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponse =
-	GetV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponses[keyof GetV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponses];
+export type GetStatusPageComponentResponse =
+	GetStatusPageComponentResponses[keyof GetStatusPageComponentResponses];
 
-export type PatchV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdData =
-	{
-		body: {
-			/**
-			 * a name for the component
-			 */
-			name?: string;
-			/**
-			 * Status of the component
-			 */
-			status?:
-				| "OPERATIONAL"
-				| "MAJOR_OUTAGE"
-				| "PARTIAL_OUTAGE"
-				| "DEGRADED_PERFORMANCE"
-				| "NO_IMPACT"
-				| "MAINTENANCE";
-			/**
-			 * Show this component's uptime and historical incidents on the status page.
-			 */
-			display_uptime?: boolean;
-			/**
-			 * Show this component's response time metrics on the status page.
-			 */
-			display_metrics?: boolean;
-			/**
-			 * Component group ID to associate this component with. Set to null to remove from group.
-			 */
-			group_id?: string | null;
-			/**
-			 * Array of uptime check IDs to associate with this component
-			 */
-			check_ids?: Array<string>;
-			/**
-			 * Heartbeat ID to associate with this component. Set to null to remove.
-			 */
-			heartbeat_id?: string | null;
-			/**
-			 * Override the automatic status from external status page. When true, status can be manually set.
-			 */
-			override_status?: boolean;
-		};
-		path: {
-			/**
-			 * Status Page ID
-			 */
-			status_page_id: string;
-			/**
-			 * Status Page Component ID
-			 */
-			status_page_component_id: string;
-		};
-		query?: never;
-		url: "/v1/status_pages/{status_page_id}/components/{status_page_component_id}";
-	};
-
-export type PatchV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdErrors =
-	{
+export type UpdateStatusPageComponentData = {
+	body: {
 		/**
-		 * Internal Server Error
+		 * a name for the component
 		 */
-		500: unknown;
-	};
-
-export type PatchV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponses =
-	{
+		name?: string;
 		/**
-		 * Returns the updated status page component
+		 * Status of the component
 		 */
-		200: {
-			result: StatusPageComponent;
-			/**
-			 * Whether the API call was successful
-			 */
-			success: boolean;
-			errors: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-			messages: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-		};
+		status?:
+			| "OPERATIONAL"
+			| "MAJOR_OUTAGE"
+			| "PARTIAL_OUTAGE"
+			| "DEGRADED_PERFORMANCE"
+			| "NO_IMPACT"
+			| "MAINTENANCE";
+		/**
+		 * Show this component's uptime and historical incidents on the status page.
+		 */
+		display_uptime?: boolean;
+		/**
+		 * Show this component's response time metrics on the status page.
+		 */
+		display_metrics?: boolean;
+		/**
+		 * Component group ID to associate this component with. Set to null to remove from group.
+		 */
+		group_id?: string | null;
+		/**
+		 * Array of uptime check IDs to associate with this component
+		 */
+		check_ids?: Array<string>;
+		/**
+		 * Heartbeat ID to associate with this component. Set to null to remove.
+		 */
+		heartbeat_id?: string | null;
+		/**
+		 * Override the automatic status from external status page. When true, status can be manually set.
+		 */
+		override_status?: boolean;
 	};
+	path: {
+		/**
+		 * Status Page ID
+		 */
+		status_page_id: string;
+		/**
+		 * Status Page Component ID
+		 */
+		status_page_component_id: string;
+	};
+	query?: never;
+	url: "/v1/status_pages/{status_page_id}/components/{status_page_component_id}";
+};
 
-export type PatchV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponse =
-	PatchV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponses[keyof PatchV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponses];
+export type UpdateStatusPageComponentErrors = {
+	/**
+	 * Internal Server Error
+	 */
+	500: unknown;
+};
 
-export type PutV1StatusPagesByStatusPageIdComponentsSortOrderData = {
+export type UpdateStatusPageComponentResponses = {
+	/**
+	 * Returns the updated status page component
+	 */
+	200: {
+		result: StatusPageComponent;
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
+	};
+};
+
+export type UpdateStatusPageComponentResponse =
+	UpdateStatusPageComponentResponses[keyof UpdateStatusPageComponentResponses];
+
+export type UpdateStatusPageComponentSortOrderData = {
 	body: {
 		/**
 		 * Ordered list of ungrouped component IDs
@@ -6079,14 +6819,14 @@ export type PutV1StatusPagesByStatusPageIdComponentsSortOrderData = {
 	url: "/v1/status_pages/{status_page_id}/components/sort-order";
 };
 
-export type PutV1StatusPagesByStatusPageIdComponentsSortOrderErrors = {
+export type UpdateStatusPageComponentSortOrderErrors = {
 	/**
 	 * Internal Server Error
 	 */
 	500: unknown;
 };
 
-export type PutV1StatusPagesByStatusPageIdComponentsSortOrderResponses = {
+export type UpdateStatusPageComponentSortOrderResponses = {
 	/**
 	 * Sort order updated successfully
 	 */
@@ -6114,10 +6854,10 @@ export type PutV1StatusPagesByStatusPageIdComponentsSortOrderResponses = {
 	};
 };
 
-export type PutV1StatusPagesByStatusPageIdComponentsSortOrderResponse =
-	PutV1StatusPagesByStatusPageIdComponentsSortOrderResponses[keyof PutV1StatusPagesByStatusPageIdComponentsSortOrderResponses];
+export type UpdateStatusPageComponentSortOrderResponse =
+	UpdateStatusPageComponentSortOrderResponses[keyof UpdateStatusPageComponentSortOrderResponses];
 
-export type GetV1StatusPagesByStatusPageIdGroupsData = {
+export type ListStatusPageComponentGroupsData = {
 	body?: never;
 	path: {
 		/**
@@ -6142,14 +6882,14 @@ export type GetV1StatusPagesByStatusPageIdGroupsData = {
 	url: "/v1/status_pages/{status_page_id}/groups";
 };
 
-export type GetV1StatusPagesByStatusPageIdGroupsErrors = {
+export type ListStatusPageComponentGroupsErrors = {
 	/**
 	 * Internal Server Error
 	 */
 	500: unknown;
 };
 
-export type GetV1StatusPagesByStatusPageIdGroupsResponses = {
+export type ListStatusPageComponentGroupsResponses = {
 	/**
 	 * Returns a list of component groups for a status page
 	 */
@@ -6190,10 +6930,10 @@ export type GetV1StatusPagesByStatusPageIdGroupsResponses = {
 	};
 };
 
-export type GetV1StatusPagesByStatusPageIdGroupsResponse =
-	GetV1StatusPagesByStatusPageIdGroupsResponses[keyof GetV1StatusPagesByStatusPageIdGroupsResponses];
+export type ListStatusPageComponentGroupsResponse =
+	ListStatusPageComponentGroupsResponses[keyof ListStatusPageComponentGroupsResponses];
 
-export type PostV1StatusPagesByStatusPageIdGroupsData = {
+export type CreateStatusPageComponentGroupData = {
 	body: {
 		/**
 		 * Name of the component group
@@ -6214,14 +6954,14 @@ export type PostV1StatusPagesByStatusPageIdGroupsData = {
 	url: "/v1/status_pages/{status_page_id}/groups";
 };
 
-export type PostV1StatusPagesByStatusPageIdGroupsErrors = {
+export type CreateStatusPageComponentGroupErrors = {
 	/**
 	 * Internal Server Error
 	 */
 	500: unknown;
 };
 
-export type PostV1StatusPagesByStatusPageIdGroupsResponses = {
+export type CreateStatusPageComponentGroupResponses = {
 	/**
 	 * Returns the newly created component group
 	 */
@@ -6244,10 +6984,10 @@ export type PostV1StatusPagesByStatusPageIdGroupsResponses = {
 	};
 };
 
-export type PostV1StatusPagesByStatusPageIdGroupsResponse =
-	PostV1StatusPagesByStatusPageIdGroupsResponses[keyof PostV1StatusPagesByStatusPageIdGroupsResponses];
+export type CreateStatusPageComponentGroupResponse =
+	CreateStatusPageComponentGroupResponses[keyof CreateStatusPageComponentGroupResponses];
 
-export type DeleteV1StatusPagesByStatusPageIdGroupsByGroupIdData = {
+export type DeleteStatusPageComponentGroupData = {
 	body?: never;
 	path: {
 		/**
@@ -6263,14 +7003,14 @@ export type DeleteV1StatusPagesByStatusPageIdGroupsByGroupIdData = {
 	url: "/v1/status_pages/{status_page_id}/groups/{group_id}";
 };
 
-export type DeleteV1StatusPagesByStatusPageIdGroupsByGroupIdErrors = {
+export type DeleteStatusPageComponentGroupErrors = {
 	/**
 	 * Internal Server Error
 	 */
 	500: unknown;
 };
 
-export type DeleteV1StatusPagesByStatusPageIdGroupsByGroupIdResponses = {
+export type DeleteStatusPageComponentGroupResponses = {
 	/**
 	 * Returns the deleted group's ID
 	 */
@@ -6298,10 +7038,10 @@ export type DeleteV1StatusPagesByStatusPageIdGroupsByGroupIdResponses = {
 	};
 };
 
-export type DeleteV1StatusPagesByStatusPageIdGroupsByGroupIdResponse =
-	DeleteV1StatusPagesByStatusPageIdGroupsByGroupIdResponses[keyof DeleteV1StatusPagesByStatusPageIdGroupsByGroupIdResponses];
+export type DeleteStatusPageComponentGroupResponse =
+	DeleteStatusPageComponentGroupResponses[keyof DeleteStatusPageComponentGroupResponses];
 
-export type GetV1StatusPagesByStatusPageIdGroupsByGroupIdData = {
+export type GetStatusPageComponentGroupData = {
 	body?: never;
 	path: {
 		/**
@@ -6317,14 +7057,14 @@ export type GetV1StatusPagesByStatusPageIdGroupsByGroupIdData = {
 	url: "/v1/status_pages/{status_page_id}/groups/{group_id}";
 };
 
-export type GetV1StatusPagesByStatusPageIdGroupsByGroupIdErrors = {
+export type GetStatusPageComponentGroupErrors = {
 	/**
 	 * Internal Server Error
 	 */
 	500: unknown;
 };
 
-export type GetV1StatusPagesByStatusPageIdGroupsByGroupIdResponses = {
+export type GetStatusPageComponentGroupResponses = {
 	/**
 	 * Returns a component group
 	 */
@@ -6347,10 +7087,10 @@ export type GetV1StatusPagesByStatusPageIdGroupsByGroupIdResponses = {
 	};
 };
 
-export type GetV1StatusPagesByStatusPageIdGroupsByGroupIdResponse =
-	GetV1StatusPagesByStatusPageIdGroupsByGroupIdResponses[keyof GetV1StatusPagesByStatusPageIdGroupsByGroupIdResponses];
+export type GetStatusPageComponentGroupResponse =
+	GetStatusPageComponentGroupResponses[keyof GetStatusPageComponentGroupResponses];
 
-export type PatchV1StatusPagesByStatusPageIdGroupsByGroupIdData = {
+export type UpdateStatusPageComponentGroupData = {
 	body: {
 		/**
 		 * Name of the component group
@@ -6375,14 +7115,14 @@ export type PatchV1StatusPagesByStatusPageIdGroupsByGroupIdData = {
 	url: "/v1/status_pages/{status_page_id}/groups/{group_id}";
 };
 
-export type PatchV1StatusPagesByStatusPageIdGroupsByGroupIdErrors = {
+export type UpdateStatusPageComponentGroupErrors = {
 	/**
 	 * Internal Server Error
 	 */
 	500: unknown;
 };
 
-export type PatchV1StatusPagesByStatusPageIdGroupsByGroupIdResponses = {
+export type UpdateStatusPageComponentGroupResponses = {
 	/**
 	 * Returns the updated component group
 	 */
@@ -6405,10 +7145,10 @@ export type PatchV1StatusPagesByStatusPageIdGroupsByGroupIdResponses = {
 	};
 };
 
-export type PatchV1StatusPagesByStatusPageIdGroupsByGroupIdResponse =
-	PatchV1StatusPagesByStatusPageIdGroupsByGroupIdResponses[keyof PatchV1StatusPagesByStatusPageIdGroupsByGroupIdResponses];
+export type UpdateStatusPageComponentGroupResponse =
+	UpdateStatusPageComponentGroupResponses[keyof UpdateStatusPageComponentGroupResponses];
 
-export type PutV1StatusPagesByStatusPageIdGroupsSortOrderData = {
+export type UpdateStatusPageComponentGroupSortOrderData = {
 	body: {
 		/**
 		 * Ordered list of component group IDs
@@ -6425,14 +7165,14 @@ export type PutV1StatusPagesByStatusPageIdGroupsSortOrderData = {
 	url: "/v1/status_pages/{status_page_id}/groups/sort-order";
 };
 
-export type PutV1StatusPagesByStatusPageIdGroupsSortOrderErrors = {
+export type UpdateStatusPageComponentGroupSortOrderErrors = {
 	/**
 	 * Internal Server Error
 	 */
 	500: unknown;
 };
 
-export type PutV1StatusPagesByStatusPageIdGroupsSortOrderResponses = {
+export type UpdateStatusPageComponentGroupSortOrderResponses = {
 	/**
 	 * Sort order updated successfully
 	 */
@@ -6460,10 +7200,10 @@ export type PutV1StatusPagesByStatusPageIdGroupsSortOrderResponses = {
 	};
 };
 
-export type PutV1StatusPagesByStatusPageIdGroupsSortOrderResponse =
-	PutV1StatusPagesByStatusPageIdGroupsSortOrderResponses[keyof PutV1StatusPagesByStatusPageIdGroupsSortOrderResponses];
+export type UpdateStatusPageComponentGroupSortOrderResponse =
+	UpdateStatusPageComponentGroupSortOrderResponses[keyof UpdateStatusPageComponentGroupSortOrderResponses];
 
-export type PutV1StatusPagesByStatusPageIdGroupsByGroupIdSortOrderData = {
+export type UpdateStatusPageGroupComponentSortOrderData = {
 	body: {
 		/**
 		 * Ordered list of component IDs within the group
@@ -6484,14 +7224,14 @@ export type PutV1StatusPagesByStatusPageIdGroupsByGroupIdSortOrderData = {
 	url: "/v1/status_pages/{status_page_id}/groups/{group_id}/sort-order";
 };
 
-export type PutV1StatusPagesByStatusPageIdGroupsByGroupIdSortOrderErrors = {
+export type UpdateStatusPageGroupComponentSortOrderErrors = {
 	/**
 	 * Internal Server Error
 	 */
 	500: unknown;
 };
 
-export type PutV1StatusPagesByStatusPageIdGroupsByGroupIdSortOrderResponses = {
+export type UpdateStatusPageGroupComponentSortOrderResponses = {
 	/**
 	 * Sort order updated successfully
 	 */
@@ -6519,10 +7259,10 @@ export type PutV1StatusPagesByStatusPageIdGroupsByGroupIdSortOrderResponses = {
 	};
 };
 
-export type PutV1StatusPagesByStatusPageIdGroupsByGroupIdSortOrderResponse =
-	PutV1StatusPagesByStatusPageIdGroupsByGroupIdSortOrderResponses[keyof PutV1StatusPagesByStatusPageIdGroupsByGroupIdSortOrderResponses];
+export type UpdateStatusPageGroupComponentSortOrderResponse =
+	UpdateStatusPageGroupComponentSortOrderResponses[keyof UpdateStatusPageGroupComponentSortOrderResponses];
 
-export type GetV1StatusPagesByStatusPageIdSubscribersData = {
+export type ListStatusPageSubscribersData = {
 	body?: never;
 	path: {
 		/**
@@ -6547,7 +7287,7 @@ export type GetV1StatusPagesByStatusPageIdSubscribersData = {
 	url: "/v1/status_pages/{status_page_id}/subscribers";
 };
 
-export type GetV1StatusPagesByStatusPageIdSubscribersErrors = {
+export type ListStatusPageSubscribersErrors = {
 	/**
 	 * Unauthenticated
 	 */
@@ -6562,7 +7302,7 @@ export type GetV1StatusPagesByStatusPageIdSubscribersErrors = {
 	500: unknown;
 };
 
-export type GetV1StatusPagesByStatusPageIdSubscribersResponses = {
+export type ListStatusPageSubscribersResponses = {
 	/**
 	 * Returns a list of subscribers for a status page
 	 */
@@ -6603,10 +7343,10 @@ export type GetV1StatusPagesByStatusPageIdSubscribersResponses = {
 	};
 };
 
-export type GetV1StatusPagesByStatusPageIdSubscribersResponse =
-	GetV1StatusPagesByStatusPageIdSubscribersResponses[keyof GetV1StatusPagesByStatusPageIdSubscribersResponses];
+export type ListStatusPageSubscribersResponse =
+	ListStatusPageSubscribersResponses[keyof ListStatusPageSubscribersResponses];
 
-export type PostV1StatusPagesByStatusPageIdSubscribersData = {
+export type CreateStatusPageSubscriberData = {
 	body: {
 		/**
 		 * Email address of the subscriber
@@ -6631,7 +7371,7 @@ export type PostV1StatusPagesByStatusPageIdSubscribersData = {
 	url: "/v1/status_pages/{status_page_id}/subscribers";
 };
 
-export type PostV1StatusPagesByStatusPageIdSubscribersErrors = {
+export type CreateStatusPageSubscriberErrors = {
 	/**
 	 * Invalid email address
 	 */
@@ -6654,7 +7394,7 @@ export type PostV1StatusPagesByStatusPageIdSubscribersErrors = {
 	500: unknown;
 };
 
-export type PostV1StatusPagesByStatusPageIdSubscribersResponses = {
+export type CreateStatusPageSubscriberResponses = {
 	/**
 	 * Returns the newly created subscriber
 	 */
@@ -6677,10 +7417,10 @@ export type PostV1StatusPagesByStatusPageIdSubscribersResponses = {
 	};
 };
 
-export type PostV1StatusPagesByStatusPageIdSubscribersResponse =
-	PostV1StatusPagesByStatusPageIdSubscribersResponses[keyof PostV1StatusPagesByStatusPageIdSubscribersResponses];
+export type CreateStatusPageSubscriberResponse =
+	CreateStatusPageSubscriberResponses[keyof CreateStatusPageSubscriberResponses];
 
-export type DeleteV1StatusPagesByStatusPageIdSubscribersBySubscriberIdData = {
+export type DeleteStatusPageSubscriberData = {
 	body?: never;
 	path: {
 		/**
@@ -6696,7 +7436,7 @@ export type DeleteV1StatusPagesByStatusPageIdSubscribersBySubscriberIdData = {
 	url: "/v1/status_pages/{status_page_id}/subscribers/{subscriber_id}";
 };
 
-export type DeleteV1StatusPagesByStatusPageIdSubscribersBySubscriberIdErrors = {
+export type DeleteStatusPageSubscriberErrors = {
 	/**
 	 * Unauthenticated
 	 */
@@ -6715,39 +7455,38 @@ export type DeleteV1StatusPagesByStatusPageIdSubscribersBySubscriberIdErrors = {
 	500: unknown;
 };
 
-export type DeleteV1StatusPagesByStatusPageIdSubscribersBySubscriberIdResponses =
-	{
-		/**
-		 * Returns the deleted subscriber's ID
-		 */
-		200: {
-			result: {
-				/**
-				 * Status Page Subscriber ID
-				 */
-				id: string;
-			};
+export type DeleteStatusPageSubscriberResponses = {
+	/**
+	 * Returns the deleted subscriber's ID
+	 */
+	200: {
+		result: {
 			/**
-			 * Whether the API call was successful
+			 * Status Page Subscriber ID
 			 */
-			success: boolean;
-			errors: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-			messages: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
+			id: string;
 		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
 	};
+};
 
-export type DeleteV1StatusPagesByStatusPageIdSubscribersBySubscriberIdResponse =
-	DeleteV1StatusPagesByStatusPageIdSubscribersBySubscriberIdResponses[keyof DeleteV1StatusPagesByStatusPageIdSubscribersBySubscriberIdResponses];
+export type DeleteStatusPageSubscriberResponse =
+	DeleteStatusPageSubscriberResponses[keyof DeleteStatusPageSubscriberResponses];
 
-export type GetV1StatusPagesByStatusPageIdIncidentsData = {
+export type ListStatusPageIncidentsData = {
 	body?: never;
 	path: {
 		/**
@@ -6772,14 +7511,14 @@ export type GetV1StatusPagesByStatusPageIdIncidentsData = {
 	url: "/v1/status_pages/{status_page_id}/incidents";
 };
 
-export type GetV1StatusPagesByStatusPageIdIncidentsErrors = {
+export type ListStatusPageIncidentsErrors = {
 	/**
 	 * Internal Server Error
 	 */
 	500: unknown;
 };
 
-export type GetV1StatusPagesByStatusPageIdIncidentsResponses = {
+export type ListStatusPageIncidentsResponses = {
 	/**
 	 * Returns a list of incidents for a status page
 	 */
@@ -6820,10 +7559,10 @@ export type GetV1StatusPagesByStatusPageIdIncidentsResponses = {
 	};
 };
 
-export type GetV1StatusPagesByStatusPageIdIncidentsResponse =
-	GetV1StatusPagesByStatusPageIdIncidentsResponses[keyof GetV1StatusPagesByStatusPageIdIncidentsResponses];
+export type ListStatusPageIncidentsResponse =
+	ListStatusPageIncidentsResponses[keyof ListStatusPageIncidentsResponses];
 
-export type PostV1StatusPagesByStatusPageIdIncidentsData = {
+export type CreateStatusPageIncidentData = {
 	body: {
 		/**
 		 * a title for the incident
@@ -6876,14 +7615,14 @@ export type PostV1StatusPagesByStatusPageIdIncidentsData = {
 	url: "/v1/status_pages/{status_page_id}/incidents";
 };
 
-export type PostV1StatusPagesByStatusPageIdIncidentsErrors = {
+export type CreateStatusPageIncidentErrors = {
 	/**
 	 * Internal Server Error
 	 */
 	500: unknown;
 };
 
-export type PostV1StatusPagesByStatusPageIdIncidentsResponses = {
+export type CreateStatusPageIncidentResponses = {
 	/**
 	 * Returns the newly created status page incident
 	 */
@@ -6906,620 +7645,596 @@ export type PostV1StatusPagesByStatusPageIdIncidentsResponses = {
 	};
 };
 
-export type PostV1StatusPagesByStatusPageIdIncidentsResponse =
-	PostV1StatusPagesByStatusPageIdIncidentsResponses[keyof PostV1StatusPagesByStatusPageIdIncidentsResponses];
+export type CreateStatusPageIncidentResponse =
+	CreateStatusPageIncidentResponses[keyof CreateStatusPageIncidentResponses];
 
-export type DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdData =
-	{
-		body?: never;
-		path: {
-			/**
-			 * Status Page ID
-			 */
-			status_page_id: string;
+export type DeleteStatusPageIncidentData = {
+	body?: never;
+	path: {
+		/**
+		 * Status Page ID
+		 */
+		status_page_id: string;
+		/**
+		 * Status Page Incident ID
+		 */
+		status_page_incident_id: string;
+	};
+	query?: never;
+	url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}";
+};
+
+export type DeleteStatusPageIncidentErrors = {
+	/**
+	 * Internal Server Error
+	 */
+	500: unknown;
+};
+
+export type DeleteStatusPageIncidentResponses = {
+	/**
+	 * Returns the deleted incident's ID
+	 */
+	200: {
+		result: {
 			/**
 			 * Status Page Incident ID
 			 */
-			status_page_incident_id: string;
+			id: string;
 		};
-		query?: never;
-		url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}";
-	};
-
-export type DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdErrors =
-	{
 		/**
-		 * Internal Server Error
+		 * Whether the API call was successful
 		 */
-		500: unknown;
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
 	};
+};
 
-export type DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponses =
-	{
+export type DeleteStatusPageIncidentResponse =
+	DeleteStatusPageIncidentResponses[keyof DeleteStatusPageIncidentResponses];
+
+export type GetStatusPageIncidentData = {
+	body?: never;
+	path: {
 		/**
-		 * Returns the deleted incident's ID
+		 * Status Page ID
 		 */
-		200: {
-			result: {
-				/**
-				 * Status Page Incident ID
-				 */
-				id: string;
-			};
-			/**
-			 * Whether the API call was successful
-			 */
-			success: boolean;
-			errors: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-			messages: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-		};
-	};
-
-export type DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponse =
-	DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponses[keyof DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponses];
-
-export type GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdData =
-	{
-		body?: never;
-		path: {
-			/**
-			 * Status Page ID
-			 */
-			status_page_id: string;
-			/**
-			 * Status Page Incident ID
-			 */
-			status_page_incident_id: string;
-		};
-		query?: never;
-		url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}";
-	};
-
-export type GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdErrors =
-	{
+		status_page_id: string;
 		/**
-		 * Internal Server Error
+		 * Status Page Incident ID
 		 */
-		500: unknown;
+		status_page_incident_id: string;
 	};
+	query?: never;
+	url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}";
+};
 
-export type GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponses =
-	{
+export type GetStatusPageIncidentErrors = {
+	/**
+	 * Internal Server Error
+	 */
+	500: unknown;
+};
+
+export type GetStatusPageIncidentResponses = {
+	/**
+	 * Returns a status page incident
+	 */
+	200: {
+		result: StatusPageIncidentDetail;
 		/**
-		 * Returns a status page incident
+		 * Whether the API call was successful
 		 */
-		200: {
-			result: StatusPageIncidentDetail;
-			/**
-			 * Whether the API call was successful
-			 */
-			success: boolean;
-			errors: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-			messages: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-		};
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
 	};
+};
 
-export type GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponse =
-	GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponses[keyof GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponses];
+export type GetStatusPageIncidentResponse =
+	GetStatusPageIncidentResponses[keyof GetStatusPageIncidentResponses];
 
-export type PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdData =
-	{
-		body: {
-			/**
-			 * a title for the incident
-			 */
-			title: string;
-			/**
-			 * Impact of the incident
-			 */
-			impact:
-				| "MAJOR_OUTAGE"
-				| "PARTIAL_OUTAGE"
-				| "DEGRADED_PERFORMANCE"
-				| "NO_IMPACT"
-				| "MAINTENANCE";
-		};
-		path: {
-			/**
-			 * Status Page ID
-			 */
-			status_page_id: string;
-			/**
-			 * Status Page Incident ID
-			 */
-			status_page_incident_id: string;
-		};
-		query?: never;
-		url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}";
-	};
-
-export type PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdErrors =
-	{
+export type UpdateStatusPageIncidentData = {
+	body: {
 		/**
-		 * Internal Server Error
+		 * a title for the incident
 		 */
-		500: unknown;
-	};
-
-export type PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponses =
-	{
+		title: string;
 		/**
-		 * Returns the updated status page incident
+		 * Impact of the incident
 		 */
-		200: {
-			result: StatusPageIncidentDetail;
-			/**
-			 * Whether the API call was successful
-			 */
-			success: boolean;
-			errors: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-			messages: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-		};
+		impact:
+			| "MAJOR_OUTAGE"
+			| "PARTIAL_OUTAGE"
+			| "DEGRADED_PERFORMANCE"
+			| "NO_IMPACT"
+			| "MAINTENANCE";
 	};
+	path: {
+		/**
+		 * Status Page ID
+		 */
+		status_page_id: string;
+		/**
+		 * Status Page Incident ID
+		 */
+		status_page_incident_id: string;
+	};
+	query?: never;
+	url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}";
+};
 
-export type PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponse =
-	PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponses[keyof PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponses];
+export type UpdateStatusPageIncidentErrors = {
+	/**
+	 * Internal Server Error
+	 */
+	500: unknown;
+};
 
-export type GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesData =
-	{
-		body?: never;
-		path: {
-			/**
-			 * Status Page ID
-			 */
-			status_page_id: string;
-			/**
-			 * Status Page Incident ID
-			 */
-			status_page_incident_id: string;
-		};
-		query?: {
+export type UpdateStatusPageIncidentResponses = {
+	/**
+	 * Returns the updated status page incident
+	 */
+	200: {
+		result: StatusPageIncidentDetail;
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
+	};
+};
+
+export type UpdateStatusPageIncidentResponse =
+	UpdateStatusPageIncidentResponses[keyof UpdateStatusPageIncidentResponses];
+
+export type ListStatusPageIncidentUpdatesData = {
+	body?: never;
+	path: {
+		/**
+		 * Status Page ID
+		 */
+		status_page_id: string;
+		/**
+		 * Status Page Incident ID
+		 */
+		status_page_incident_id: string;
+	};
+	query?: {
+		/**
+		 * Page number of paginated results.
+		 */
+		page?: string;
+		/**
+		 * Number of items per page.
+		 */
+		per_page?: string;
+		/**
+		 * Search term to filter results.
+		 */
+		search?: string;
+	};
+	url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates";
+};
+
+export type ListStatusPageIncidentUpdatesErrors = {
+	/**
+	 * Unauthenticated
+	 */
+	401: unknown;
+	/**
+	 * Unauthorized
+	 */
+	403: unknown;
+	/**
+	 * Internal Server Error
+	 */
+	500: unknown;
+};
+
+export type ListStatusPageIncidentUpdatesResponses = {
+	/**
+	 * Returns a list of updates for the incident
+	 */
+	200: {
+		result: Array<IncidentUpdate>;
+		result_info: {
 			/**
 			 * Page number of paginated results.
 			 */
-			page?: string;
+			page?: number;
 			/**
 			 * Number of items per page.
 			 */
-			per_page?: string;
+			per_page?: number;
 			/**
-			 * Search term to filter results.
+			 * Number of items on the current page.
 			 */
-			search?: string;
-		};
-		url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates";
-	};
-
-export type GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesErrors =
-	{
-		/**
-		 * Unauthenticated
-		 */
-		401: unknown;
-		/**
-		 * Unauthorized
-		 */
-		403: unknown;
-		/**
-		 * Internal Server Error
-		 */
-		500: unknown;
-	};
-
-export type GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesResponses =
-	{
-		/**
-		 * Returns a list of updates for the incident
-		 */
-		200: {
-			result: Array<IncidentUpdate>;
-			result_info: {
-				/**
-				 * Page number of paginated results.
-				 */
-				page?: number;
-				/**
-				 * Number of items per page.
-				 */
-				per_page?: number;
-				/**
-				 * Number of items on the current page.
-				 */
-				count: number;
-				/**
-				 * Total number of items.
-				 */
-				total_count: number;
-			};
+			count: number;
 			/**
-			 * Whether the API call was successful
+			 * Total number of items.
 			 */
-			success: boolean;
-			errors: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-			messages: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
+			total_count: number;
 		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
 	};
+};
 
-export type GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesResponse =
-	GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesResponses[keyof GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesResponses];
+export type ListStatusPageIncidentUpdatesResponse =
+	ListStatusPageIncidentUpdatesResponses[keyof ListStatusPageIncidentUpdatesResponses];
 
-export type PostV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesData =
-	{
-		body: {
+export type CreateStatusPageIncidentUpdateData = {
+	body: {
+		/**
+		 * Status for this update
+		 */
+		status:
+			| "INVESTIGATING"
+			| "IDENTIFIED"
+			| "MONITORING"
+			| "RESOLVED"
+			| "UPDATE"
+			| "SCHEDULED"
+			| "IN_PROGRESS"
+			| "VERIFYING"
+			| "COMPLETED";
+		/**
+		 * Update message
+		 */
+		description: string;
+		/**
+		 * Whether to notify status page subscribers
+		 */
+		notify_subscribers?: boolean;
+		/**
+		 * Components affected by this update with their new status
+		 */
+		components_affected?: Array<{
 			/**
-			 * Status for this update
+			 * Status Page Component ID
+			 */
+			id: string;
+			/**
+			 * New status for the component
 			 */
 			status:
-				| "INVESTIGATING"
-				| "IDENTIFIED"
-				| "MONITORING"
-				| "RESOLVED"
-				| "UPDATE"
-				| "SCHEDULED"
-				| "IN_PROGRESS"
-				| "VERIFYING"
-				| "COMPLETED";
-			/**
-			 * Update message
-			 */
-			description: string;
-			/**
-			 * Whether to notify status page subscribers
-			 */
-			notify_subscribers?: boolean;
-			/**
-			 * Components affected by this update with their new status
-			 */
-			components_affected?: Array<{
-				/**
-				 * Status Page Component ID
-				 */
-				id: string;
-				/**
-				 * New status for the component
-				 */
-				status:
-					| "OPERATIONAL"
-					| "MAJOR_OUTAGE"
-					| "PARTIAL_OUTAGE"
-					| "DEGRADED_PERFORMANCE"
-					| "MAINTENANCE"
-					| "NO_IMPACT";
-			}>;
-			/**
-			 * When this update occurred (defaults to now)
-			 */
-			date_happened?: string;
-		};
-		path: {
-			/**
-			 * Status Page ID
-			 */
-			status_page_id: string;
-			/**
-			 * Status Page Incident ID
-			 */
-			status_page_incident_id: string;
-		};
-		query?: never;
-		url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates";
+				| "OPERATIONAL"
+				| "MAJOR_OUTAGE"
+				| "PARTIAL_OUTAGE"
+				| "DEGRADED_PERFORMANCE"
+				| "MAINTENANCE"
+				| "NO_IMPACT";
+		}>;
+		/**
+		 * When this update occurred (defaults to now)
+		 */
+		date_happened?: string;
 	};
-
-export type PostV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesErrors =
-	{
+	path: {
 		/**
-		 * Bad Request
+		 * Status Page ID
 		 */
-		400: unknown;
+		status_page_id: string;
 		/**
-		 * Unauthenticated
+		 * Status Page Incident ID
 		 */
-		401: unknown;
-		/**
-		 * Unauthorized
-		 */
-		403: unknown;
-		/**
-		 * Internal Server Error
-		 */
-		500: unknown;
+		status_page_incident_id: string;
 	};
+	query?: never;
+	url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates";
+};
 
-export type PostV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesResponses =
-	{
+export type CreateStatusPageIncidentUpdateErrors = {
+	/**
+	 * Bad Request
+	 */
+	400: unknown;
+	/**
+	 * Unauthenticated
+	 */
+	401: unknown;
+	/**
+	 * Unauthorized
+	 */
+	403: unknown;
+	/**
+	 * Internal Server Error
+	 */
+	500: unknown;
+};
+
+export type CreateStatusPageIncidentUpdateResponses = {
+	/**
+	 * Returns the newly created incident update
+	 */
+	201: {
+		result: IncidentUpdate;
 		/**
-		 * Returns the newly created incident update
+		 * Whether the API call was successful
 		 */
-		201: {
-			result: IncidentUpdate;
-			/**
-			 * Whether the API call was successful
-			 */
-			success: boolean;
-			errors: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-			messages: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-		};
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
 	};
+};
 
-export type PostV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesResponse =
-	PostV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesResponses[keyof PostV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesResponses];
+export type CreateStatusPageIncidentUpdateResponse =
+	CreateStatusPageIncidentUpdateResponses[keyof CreateStatusPageIncidentUpdateResponses];
 
-export type DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdData =
-	{
-		body?: never;
-		path: {
-			/**
-			 * Status Page ID
-			 */
-			status_page_id: string;
-			/**
-			 * Status Page Incident ID
-			 */
-			status_page_incident_id: string;
+export type DeleteStatusPageIncidentUpdateData = {
+	body?: never;
+	path: {
+		/**
+		 * Status Page ID
+		 */
+		status_page_id: string;
+		/**
+		 * Status Page Incident ID
+		 */
+		status_page_incident_id: string;
+		/**
+		 * Incident Update ID
+		 */
+		incident_update_id: string;
+	};
+	query?: never;
+	url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates/{incident_update_id}";
+};
+
+export type DeleteStatusPageIncidentUpdateErrors = {
+	/**
+	 * Unauthenticated
+	 */
+	401: unknown;
+	/**
+	 * Unauthorized
+	 */
+	403: unknown;
+	/**
+	 * Not Found
+	 */
+	404: unknown;
+	/**
+	 * Internal Server Error
+	 */
+	500: unknown;
+};
+
+export type DeleteStatusPageIncidentUpdateResponses = {
+	/**
+	 * Returns the deleted incident update's ID
+	 */
+	200: {
+		result: {
 			/**
 			 * Incident Update ID
 			 */
-			incident_update_id: string;
+			id: string;
 		};
-		query?: never;
-		url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates/{incident_update_id}";
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
 	};
+};
 
-export type DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdErrors =
-	{
+export type DeleteStatusPageIncidentUpdateResponse =
+	DeleteStatusPageIncidentUpdateResponses[keyof DeleteStatusPageIncidentUpdateResponses];
+
+export type GetStatusPageIncidentUpdateData = {
+	body?: never;
+	path: {
 		/**
-		 * Unauthenticated
+		 * Status Page ID
 		 */
-		401: unknown;
+		status_page_id: string;
 		/**
-		 * Unauthorized
+		 * Status Page Incident ID
 		 */
-		403: unknown;
+		status_page_incident_id: string;
 		/**
-		 * Not Found
+		 * Incident Update ID
 		 */
-		404: unknown;
-		/**
-		 * Internal Server Error
-		 */
-		500: unknown;
+		incident_update_id: string;
 	};
+	query?: never;
+	url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates/{incident_update_id}";
+};
 
-export type DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponses =
-	{
+export type GetStatusPageIncidentUpdateErrors = {
+	/**
+	 * Unauthenticated
+	 */
+	401: unknown;
+	/**
+	 * Unauthorized
+	 */
+	403: unknown;
+	/**
+	 * Not Found
+	 */
+	404: unknown;
+	/**
+	 * Internal Server Error
+	 */
+	500: unknown;
+};
+
+export type GetStatusPageIncidentUpdateResponses = {
+	/**
+	 * Returns the incident update
+	 */
+	200: {
+		result: IncidentUpdate;
 		/**
-		 * Returns the deleted incident update's ID
+		 * Whether the API call was successful
 		 */
-		200: {
-			result: {
-				/**
-				 * Incident Update ID
-				 */
-				id: string;
-			};
-			/**
-			 * Whether the API call was successful
-			 */
-			success: boolean;
-			errors: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-			messages: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-		};
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
 	};
+};
 
-export type DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponse =
-	DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponses[keyof DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponses];
+export type GetStatusPageIncidentUpdateResponse =
+	GetStatusPageIncidentUpdateResponses[keyof GetStatusPageIncidentUpdateResponses];
 
-export type GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdData =
-	{
-		body?: never;
-		path: {
-			/**
-			 * Status Page ID
-			 */
-			status_page_id: string;
-			/**
-			 * Status Page Incident ID
-			 */
-			status_page_incident_id: string;
-			/**
-			 * Incident Update ID
-			 */
-			incident_update_id: string;
-		};
-		query?: never;
-		url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates/{incident_update_id}";
+export type UpdateStatusPageIncidentUpdateData = {
+	body: {
+		/**
+		 * Updated status
+		 */
+		status?:
+			| "INVESTIGATING"
+			| "IDENTIFIED"
+			| "MONITORING"
+			| "RESOLVED"
+			| "UPDATE"
+			| "SCHEDULED"
+			| "IN_PROGRESS"
+			| "VERIFYING"
+			| "COMPLETED";
+		/**
+		 * Updated message
+		 */
+		description?: string;
+		/**
+		 * Updated timestamp
+		 */
+		date_happened?: string;
 	};
-
-export type GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdErrors =
-	{
+	path: {
 		/**
-		 * Unauthenticated
+		 * Status Page ID
 		 */
-		401: unknown;
+		status_page_id: string;
 		/**
-		 * Unauthorized
+		 * Status Page Incident ID
 		 */
-		403: unknown;
+		status_page_incident_id: string;
 		/**
-		 * Not Found
+		 * Incident Update ID
 		 */
-		404: unknown;
-		/**
-		 * Internal Server Error
-		 */
-		500: unknown;
+		incident_update_id: string;
 	};
+	query?: never;
+	url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates/{incident_update_id}";
+};
 
-export type GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponses =
-	{
+export type UpdateStatusPageIncidentUpdateErrors = {
+	/**
+	 * Bad Request
+	 */
+	400: unknown;
+	/**
+	 * Unauthenticated
+	 */
+	401: unknown;
+	/**
+	 * Unauthorized
+	 */
+	403: unknown;
+	/**
+	 * Not Found
+	 */
+	404: unknown;
+	/**
+	 * Internal Server Error
+	 */
+	500: unknown;
+};
+
+export type UpdateStatusPageIncidentUpdateResponses = {
+	/**
+	 * Returns the updated incident update
+	 */
+	200: {
+		result: IncidentUpdate;
 		/**
-		 * Returns the incident update
+		 * Whether the API call was successful
 		 */
-		200: {
-			result: IncidentUpdate;
-			/**
-			 * Whether the API call was successful
-			 */
-			success: boolean;
-			errors: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-			messages: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-		};
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
 	};
+};
 
-export type GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponse =
-	GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponses[keyof GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponses];
+export type UpdateStatusPageIncidentUpdateResponse =
+	UpdateStatusPageIncidentUpdateResponses[keyof UpdateStatusPageIncidentUpdateResponses];
 
-export type PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdData =
-	{
-		body: {
-			/**
-			 * Updated status
-			 */
-			status?:
-				| "INVESTIGATING"
-				| "IDENTIFIED"
-				| "MONITORING"
-				| "RESOLVED"
-				| "UPDATE"
-				| "SCHEDULED"
-				| "IN_PROGRESS"
-				| "VERIFYING"
-				| "COMPLETED";
-			/**
-			 * Updated message
-			 */
-			description?: string;
-			/**
-			 * Updated timestamp
-			 */
-			date_happened?: string;
-		};
-		path: {
-			/**
-			 * Status Page ID
-			 */
-			status_page_id: string;
-			/**
-			 * Status Page Incident ID
-			 */
-			status_page_incident_id: string;
-			/**
-			 * Incident Update ID
-			 */
-			incident_update_id: string;
-		};
-		query?: never;
-		url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates/{incident_update_id}";
-	};
-
-export type PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdErrors =
-	{
-		/**
-		 * Bad Request
-		 */
-		400: unknown;
-		/**
-		 * Unauthenticated
-		 */
-		401: unknown;
-		/**
-		 * Unauthorized
-		 */
-		403: unknown;
-		/**
-		 * Not Found
-		 */
-		404: unknown;
-		/**
-		 * Internal Server Error
-		 */
-		500: unknown;
-	};
-
-export type PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponses =
-	{
-		/**
-		 * Returns the updated incident update
-		 */
-		200: {
-			result: IncidentUpdate;
-			/**
-			 * Whether the API call was successful
-			 */
-			success: boolean;
-			errors: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-			messages: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-		};
-	};
-
-export type PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponse =
-	PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponses[keyof PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponses];
-
-export type PostV1StatusPagesByStatusPageIdScheduledMaintenanceData = {
+export type CreateStatusPageScheduledMaintenanceData = {
 	body: {
 		/**
 		 * Title of the scheduled maintenance
@@ -7569,7 +8284,7 @@ export type PostV1StatusPagesByStatusPageIdScheduledMaintenanceData = {
 	url: "/v1/status_pages/{status_page_id}/scheduled_maintenance";
 };
 
-export type PostV1StatusPagesByStatusPageIdScheduledMaintenanceErrors = {
+export type CreateStatusPageScheduledMaintenanceErrors = {
 	/**
 	 * Bad Request - validation error
 	 */
@@ -7580,7 +8295,7 @@ export type PostV1StatusPagesByStatusPageIdScheduledMaintenanceErrors = {
 	500: unknown;
 };
 
-export type PostV1StatusPagesByStatusPageIdScheduledMaintenanceResponses = {
+export type CreateStatusPageScheduledMaintenanceResponses = {
 	/**
 	 * Returns the newly created scheduled maintenance
 	 */
@@ -7603,198 +8318,189 @@ export type PostV1StatusPagesByStatusPageIdScheduledMaintenanceResponses = {
 	};
 };
 
-export type PostV1StatusPagesByStatusPageIdScheduledMaintenanceResponse =
-	PostV1StatusPagesByStatusPageIdScheduledMaintenanceResponses[keyof PostV1StatusPagesByStatusPageIdScheduledMaintenanceResponses];
+export type CreateStatusPageScheduledMaintenanceResponse =
+	CreateStatusPageScheduledMaintenanceResponses[keyof CreateStatusPageScheduledMaintenanceResponses];
 
-export type DeleteV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdData =
-	{
-		body?: never;
-		path: {
+export type DeleteStatusPageScheduledMaintenanceData = {
+	body?: never;
+	path: {
+		/**
+		 * Status Page ID
+		 */
+		status_page_id: string;
+		/**
+		 * Scheduled Maintenance ID
+		 */
+		scheduled_maintenance_id: string;
+	};
+	query?: never;
+	url: "/v1/status_pages/{status_page_id}/scheduled_maintenance/{scheduled_maintenance_id}";
+};
+
+export type DeleteStatusPageScheduledMaintenanceErrors = {
+	/**
+	 * Not found
+	 */
+	404: unknown;
+	/**
+	 * Internal Server Error
+	 */
+	500: unknown;
+};
+
+export type DeleteStatusPageScheduledMaintenanceResponses = {
+	/**
+	 * Returns the deleted scheduled maintenance's ID
+	 */
+	200: {
+		result: {
 			/**
-			 * Status Page ID
+			 * Deleted scheduled maintenance ID
 			 */
-			status_page_id: string;
-			/**
-			 * Scheduled Maintenance ID
-			 */
-			scheduled_maintenance_id: string;
+			id: string;
 		};
-		query?: never;
-		url: "/v1/status_pages/{status_page_id}/scheduled_maintenance/{scheduled_maintenance_id}";
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
 	};
+};
 
-export type DeleteV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdErrors =
-	{
+export type DeleteStatusPageScheduledMaintenanceResponse =
+	DeleteStatusPageScheduledMaintenanceResponses[keyof DeleteStatusPageScheduledMaintenanceResponses];
+
+export type GetStatusPageScheduledMaintenanceData = {
+	body?: never;
+	path: {
 		/**
-		 * Not found
+		 * Status Page ID
 		 */
-		404: unknown;
+		status_page_id: string;
 		/**
-		 * Internal Server Error
+		 * Scheduled Maintenance ID
 		 */
-		500: unknown;
+		scheduled_maintenance_id: string;
 	};
+	query?: never;
+	url: "/v1/status_pages/{status_page_id}/scheduled_maintenance/{scheduled_maintenance_id}";
+};
 
-export type DeleteV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponses =
-	{
+export type GetStatusPageScheduledMaintenanceErrors = {
+	/**
+	 * Not found
+	 */
+	404: unknown;
+	/**
+	 * Internal Server Error
+	 */
+	500: unknown;
+};
+
+export type GetStatusPageScheduledMaintenanceResponses = {
+	/**
+	 * Returns the scheduled maintenance
+	 */
+	200: {
+		result: StatusPageScheduledMaintenance;
 		/**
-		 * Returns the deleted scheduled maintenance's ID
+		 * Whether the API call was successful
 		 */
-		200: {
-			result: {
-				/**
-				 * Deleted scheduled maintenance ID
-				 */
-				id: string;
-			};
-			/**
-			 * Whether the API call was successful
-			 */
-			success: boolean;
-			errors: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-			messages: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-		};
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
 	};
+};
 
-export type DeleteV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponse =
-	DeleteV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponses[keyof DeleteV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponses];
+export type GetStatusPageScheduledMaintenanceResponse =
+	GetStatusPageScheduledMaintenanceResponses[keyof GetStatusPageScheduledMaintenanceResponses];
 
-export type GetV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdData =
-	{
-		body?: never;
-		path: {
-			/**
-			 * Status Page ID
-			 */
-			status_page_id: string;
-			/**
-			 * Scheduled Maintenance ID
-			 */
-			scheduled_maintenance_id: string;
-		};
-		query?: never;
-		url: "/v1/status_pages/{status_page_id}/scheduled_maintenance/{scheduled_maintenance_id}";
+export type UpdateStatusPageScheduledMaintenanceData = {
+	body: {
+		/**
+		 * Updated title
+		 */
+		title?: string;
+		/**
+		 * Updated start date (ISO 8601)
+		 */
+		start_date?: string;
+		/**
+		 * Updated duration in minutes
+		 */
+		duration_minutes?: number;
 	};
-
-export type GetV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdErrors =
-	{
+	path: {
 		/**
-		 * Not found
+		 * Status Page ID
 		 */
-		404: unknown;
+		status_page_id: string;
 		/**
-		 * Internal Server Error
+		 * Scheduled Maintenance ID
 		 */
-		500: unknown;
+		scheduled_maintenance_id: string;
 	};
+	query?: never;
+	url: "/v1/status_pages/{status_page_id}/scheduled_maintenance/{scheduled_maintenance_id}";
+};
 
-export type GetV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponses =
-	{
+export type UpdateStatusPageScheduledMaintenanceErrors = {
+	/**
+	 * Bad Request - cannot update after maintenance has started
+	 */
+	400: unknown;
+	/**
+	 * Not found
+	 */
+	404: unknown;
+	/**
+	 * Internal Server Error
+	 */
+	500: unknown;
+};
+
+export type UpdateStatusPageScheduledMaintenanceResponses = {
+	/**
+	 * Returns the updated scheduled maintenance
+	 */
+	200: {
+		result: StatusPageScheduledMaintenance;
 		/**
-		 * Returns the scheduled maintenance
+		 * Whether the API call was successful
 		 */
-		200: {
-			result: StatusPageScheduledMaintenance;
-			/**
-			 * Whether the API call was successful
-			 */
-			success: boolean;
-			errors: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-			messages: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-		};
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string;
+		}>;
 	};
+};
 
-export type GetV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponse =
-	GetV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponses[keyof GetV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponses];
-
-export type PatchV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdData =
-	{
-		body: {
-			/**
-			 * Updated title
-			 */
-			title?: string;
-			/**
-			 * Updated start date (ISO 8601)
-			 */
-			start_date?: string;
-			/**
-			 * Updated duration in minutes
-			 */
-			duration_minutes?: number;
-		};
-		path: {
-			/**
-			 * Status Page ID
-			 */
-			status_page_id: string;
-			/**
-			 * Scheduled Maintenance ID
-			 */
-			scheduled_maintenance_id: string;
-		};
-		query?: never;
-		url: "/v1/status_pages/{status_page_id}/scheduled_maintenance/{scheduled_maintenance_id}";
-	};
-
-export type PatchV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdErrors =
-	{
-		/**
-		 * Bad Request - cannot update after maintenance has started
-		 */
-		400: unknown;
-		/**
-		 * Not found
-		 */
-		404: unknown;
-		/**
-		 * Internal Server Error
-		 */
-		500: unknown;
-	};
-
-export type PatchV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponses =
-	{
-		/**
-		 * Returns the updated scheduled maintenance
-		 */
-		200: {
-			result: StatusPageScheduledMaintenance;
-			/**
-			 * Whether the API call was successful
-			 */
-			success: boolean;
-			errors: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-			messages: Array<{
-				code: number;
-				message: string;
-				type?: string;
-			}>;
-		};
-	};
-
-export type PatchV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponse =
-	PatchV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponses[keyof PatchV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponses];
+export type UpdateStatusPageScheduledMaintenanceResponse =
+	UpdateStatusPageScheduledMaintenanceResponses[keyof UpdateStatusPageScheduledMaintenanceResponses];
 
 export type ListWebhooksData = {
 	body?: never;

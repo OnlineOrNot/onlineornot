@@ -27,6 +27,27 @@ import type {
 	CreateMaintenanceWindowData,
 	CreateMaintenanceWindowErrors,
 	CreateMaintenanceWindowResponses,
+	CreateStatusPageComponentData,
+	CreateStatusPageComponentErrors,
+	CreateStatusPageComponentGroupData,
+	CreateStatusPageComponentGroupErrors,
+	CreateStatusPageComponentGroupResponses,
+	CreateStatusPageComponentResponses,
+	CreateStatusPageData,
+	CreateStatusPageErrors,
+	CreateStatusPageIncidentData,
+	CreateStatusPageIncidentErrors,
+	CreateStatusPageIncidentResponses,
+	CreateStatusPageIncidentUpdateData,
+	CreateStatusPageIncidentUpdateErrors,
+	CreateStatusPageIncidentUpdateResponses,
+	CreateStatusPageResponses,
+	CreateStatusPageScheduledMaintenanceData,
+	CreateStatusPageScheduledMaintenanceErrors,
+	CreateStatusPageScheduledMaintenanceResponses,
+	CreateStatusPageSubscriberData,
+	CreateStatusPageSubscriberErrors,
+	CreateStatusPageSubscriberResponses,
 	CreateTcpCheckData,
 	CreateTcpCheckErrors,
 	CreateTcpCheckResponses,
@@ -54,6 +75,27 @@ import type {
 	DeleteMaintenanceWindowData,
 	DeleteMaintenanceWindowErrors,
 	DeleteMaintenanceWindowResponses,
+	DeleteStatusPageComponentData,
+	DeleteStatusPageComponentErrors,
+	DeleteStatusPageComponentGroupData,
+	DeleteStatusPageComponentGroupErrors,
+	DeleteStatusPageComponentGroupResponses,
+	DeleteStatusPageComponentResponses,
+	DeleteStatusPageData,
+	DeleteStatusPageErrors,
+	DeleteStatusPageIncidentData,
+	DeleteStatusPageIncidentErrors,
+	DeleteStatusPageIncidentResponses,
+	DeleteStatusPageIncidentUpdateData,
+	DeleteStatusPageIncidentUpdateErrors,
+	DeleteStatusPageIncidentUpdateResponses,
+	DeleteStatusPageResponses,
+	DeleteStatusPageScheduledMaintenanceData,
+	DeleteStatusPageScheduledMaintenanceErrors,
+	DeleteStatusPageScheduledMaintenanceResponses,
+	DeleteStatusPageSubscriberData,
+	DeleteStatusPageSubscriberErrors,
+	DeleteStatusPageSubscriberResponses,
 	DeleteTcpCheckData,
 	DeleteTcpCheckErrors,
 	DeleteTcpCheckResponses,
@@ -63,27 +105,6 @@ import type {
 	DeleteUptimeCheckData,
 	DeleteUptimeCheckErrors,
 	DeleteUptimeCheckResponses,
-	DeleteV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdData,
-	DeleteV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdErrors,
-	DeleteV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponses,
-	DeleteV1StatusPagesByStatusPageIdData,
-	DeleteV1StatusPagesByStatusPageIdErrors,
-	DeleteV1StatusPagesByStatusPageIdGroupsByGroupIdData,
-	DeleteV1StatusPagesByStatusPageIdGroupsByGroupIdErrors,
-	DeleteV1StatusPagesByStatusPageIdGroupsByGroupIdResponses,
-	DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdData,
-	DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdErrors,
-	DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponses,
-	DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdData,
-	DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdErrors,
-	DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponses,
-	DeleteV1StatusPagesByStatusPageIdResponses,
-	DeleteV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdData,
-	DeleteV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdErrors,
-	DeleteV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponses,
-	DeleteV1StatusPagesByStatusPageIdSubscribersBySubscriberIdData,
-	DeleteV1StatusPagesByStatusPageIdSubscribersBySubscriberIdErrors,
-	DeleteV1StatusPagesByStatusPageIdSubscribersBySubscriberIdResponses,
 	DeleteWebhookData,
 	DeleteWebhookErrors,
 	DeleteWebhookResponses,
@@ -102,69 +123,60 @@ import type {
 	GetMaintenanceWindowData,
 	GetMaintenanceWindowErrors,
 	GetMaintenanceWindowResponses,
+	GetStatusPageComponentData,
+	GetStatusPageComponentErrors,
+	GetStatusPageComponentGroupData,
+	GetStatusPageComponentGroupErrors,
+	GetStatusPageComponentGroupResponses,
+	GetStatusPageComponentResponses,
+	GetStatusPageData,
+	GetStatusPageErrors,
+	GetStatusPageIncidentData,
+	GetStatusPageIncidentErrors,
+	GetStatusPageIncidentResponses,
+	GetStatusPageIncidentUpdateData,
+	GetStatusPageIncidentUpdateErrors,
+	GetStatusPageIncidentUpdateResponses,
+	GetStatusPageResponses,
+	GetStatusPageScheduledMaintenanceData,
+	GetStatusPageScheduledMaintenanceErrors,
+	GetStatusPageScheduledMaintenanceResponses,
+	GetStatusPageSummaryData,
+	GetStatusPageSummaryErrors,
+	GetStatusPageSummaryResponses,
 	GetTcpCheckData,
 	GetTcpCheckErrors,
 	GetTcpCheckResponses,
 	GetTokenData,
 	GetTokenErrors,
+	GetTokenPermissionsData,
+	GetTokenPermissionsErrors,
+	GetTokenPermissionsResponses,
 	GetTokenResponses,
 	GetUptimeCheckData,
 	GetUptimeCheckErrors,
 	GetUptimeCheckResponses,
-	GetV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdData,
-	GetV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdErrors,
-	GetV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponses,
-	GetV1StatusPagesByStatusPageIdComponentsData,
-	GetV1StatusPagesByStatusPageIdComponentsErrors,
-	GetV1StatusPagesByStatusPageIdComponentsResponses,
-	GetV1StatusPagesByStatusPageIdData,
-	GetV1StatusPagesByStatusPageIdErrors,
-	GetV1StatusPagesByStatusPageIdGroupsByGroupIdData,
-	GetV1StatusPagesByStatusPageIdGroupsByGroupIdErrors,
-	GetV1StatusPagesByStatusPageIdGroupsByGroupIdResponses,
-	GetV1StatusPagesByStatusPageIdGroupsData,
-	GetV1StatusPagesByStatusPageIdGroupsErrors,
-	GetV1StatusPagesByStatusPageIdGroupsResponses,
-	GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdData,
-	GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdErrors,
-	GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponses,
-	GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdData,
-	GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdErrors,
-	GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponses,
-	GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesData,
-	GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesErrors,
-	GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesResponses,
-	GetV1StatusPagesByStatusPageIdIncidentsData,
-	GetV1StatusPagesByStatusPageIdIncidentsErrors,
-	GetV1StatusPagesByStatusPageIdIncidentsResponses,
-	GetV1StatusPagesByStatusPageIdResponses,
-	GetV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdData,
-	GetV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdErrors,
-	GetV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponses,
-	GetV1StatusPagesByStatusPageIdSubscribersData,
-	GetV1StatusPagesByStatusPageIdSubscribersErrors,
-	GetV1StatusPagesByStatusPageIdSubscribersResponses,
-	GetV1StatusPagesByStatusPageSubdomainSummaryData,
-	GetV1StatusPagesByStatusPageSubdomainSummaryErrors,
-	GetV1StatusPagesByStatusPageSubdomainSummaryResponses,
-	GetV1StatusPagesData,
-	GetV1StatusPagesErrors,
-	GetV1StatusPagesResponses,
-	GetV1TokensPermissionsData,
-	GetV1TokensPermissionsErrors,
-	GetV1TokensPermissionsResponses,
-	GetV1TokensVerifyData,
-	GetV1TokensVerifyErrors,
-	GetV1TokensVerifyResponses,
 	GetWebhookData,
 	GetWebhookErrors,
 	GetWebhookResponses,
 	ListAuditLogsData,
 	ListAuditLogsErrors,
 	ListAuditLogsResponses,
+	ListBrowserCheckIncidentsData,
+	ListBrowserCheckIncidentsErrors,
+	ListBrowserCheckIncidentsResponses,
+	ListBrowserCheckResultsData,
+	ListBrowserCheckResultsErrors,
+	ListBrowserCheckResultsResponses,
 	ListChecksData,
 	ListChecksErrors,
 	ListChecksResponses,
+	ListDnsCheckIncidentsData,
+	ListDnsCheckIncidentsErrors,
+	ListDnsCheckIncidentsResponses,
+	ListDnsCheckResultsData,
+	ListDnsCheckResultsErrors,
+	ListDnsCheckResultsResponses,
 	ListHeartbeatsData,
 	ListHeartbeatsErrors,
 	ListHeartbeatsResponses,
@@ -174,69 +186,51 @@ import type {
 	ListMaintenanceWindowsData,
 	ListMaintenanceWindowsErrors,
 	ListMaintenanceWindowsResponses,
+	ListStatusPageComponentGroupsData,
+	ListStatusPageComponentGroupsErrors,
+	ListStatusPageComponentGroupsResponses,
+	ListStatusPageComponentsData,
+	ListStatusPageComponentsErrors,
+	ListStatusPageComponentsResponses,
+	ListStatusPageIncidentsData,
+	ListStatusPageIncidentsErrors,
+	ListStatusPageIncidentsResponses,
+	ListStatusPageIncidentUpdatesData,
+	ListStatusPageIncidentUpdatesErrors,
+	ListStatusPageIncidentUpdatesResponses,
+	ListStatusPagesData,
+	ListStatusPagesErrors,
+	ListStatusPagesResponses,
+	ListStatusPageSubscribersData,
+	ListStatusPageSubscribersErrors,
+	ListStatusPageSubscribersResponses,
+	ListTcpCheckIncidentsData,
+	ListTcpCheckIncidentsErrors,
+	ListTcpCheckIncidentsResponses,
+	ListTcpCheckResultsData,
+	ListTcpCheckResultsErrors,
+	ListTcpCheckResultsResponses,
 	ListTokensData,
 	ListTokensErrors,
 	ListTokensResponses,
+	ListUptimeCheckIncidentsData,
+	ListUptimeCheckIncidentsErrors,
+	ListUptimeCheckIncidentsResponses,
+	ListUptimeCheckResultsData,
+	ListUptimeCheckResultsErrors,
+	ListUptimeCheckResultsResponses,
 	ListUsersData,
 	ListUsersErrors,
 	ListUsersResponses,
 	ListWebhooksData,
 	ListWebhooksErrors,
 	ListWebhooksResponses,
-	PatchV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdData,
-	PatchV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdErrors,
-	PatchV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponses,
-	PatchV1StatusPagesByStatusPageIdGroupsByGroupIdData,
-	PatchV1StatusPagesByStatusPageIdGroupsByGroupIdErrors,
-	PatchV1StatusPagesByStatusPageIdGroupsByGroupIdResponses,
-	PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdData,
-	PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdErrors,
-	PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponses,
-	PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdData,
-	PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdErrors,
-	PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponses,
-	PatchV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdData,
-	PatchV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdErrors,
-	PatchV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponses,
 	PingHeartbeatData,
 	PingHeartbeatErrors,
 	PingHeartbeatGetData,
 	PingHeartbeatGetErrors,
 	PingHeartbeatGetResponses,
 	PingHeartbeatResponses,
-	PostV1StatusPagesByStatusPageIdComponentsData,
-	PostV1StatusPagesByStatusPageIdComponentsErrors,
-	PostV1StatusPagesByStatusPageIdComponentsResponses,
-	PostV1StatusPagesByStatusPageIdData,
-	PostV1StatusPagesByStatusPageIdErrors,
-	PostV1StatusPagesByStatusPageIdGroupsData,
-	PostV1StatusPagesByStatusPageIdGroupsErrors,
-	PostV1StatusPagesByStatusPageIdGroupsResponses,
-	PostV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesData,
-	PostV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesErrors,
-	PostV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesResponses,
-	PostV1StatusPagesByStatusPageIdIncidentsData,
-	PostV1StatusPagesByStatusPageIdIncidentsErrors,
-	PostV1StatusPagesByStatusPageIdIncidentsResponses,
-	PostV1StatusPagesByStatusPageIdResponses,
-	PostV1StatusPagesByStatusPageIdScheduledMaintenanceData,
-	PostV1StatusPagesByStatusPageIdScheduledMaintenanceErrors,
-	PostV1StatusPagesByStatusPageIdScheduledMaintenanceResponses,
-	PostV1StatusPagesByStatusPageIdSubscribersData,
-	PostV1StatusPagesByStatusPageIdSubscribersErrors,
-	PostV1StatusPagesByStatusPageIdSubscribersResponses,
-	PostV1StatusPagesData,
-	PostV1StatusPagesErrors,
-	PostV1StatusPagesResponses,
-	PutV1StatusPagesByStatusPageIdComponentsSortOrderData,
-	PutV1StatusPagesByStatusPageIdComponentsSortOrderErrors,
-	PutV1StatusPagesByStatusPageIdComponentsSortOrderResponses,
-	PutV1StatusPagesByStatusPageIdGroupsByGroupIdSortOrderData,
-	PutV1StatusPagesByStatusPageIdGroupsByGroupIdSortOrderErrors,
-	PutV1StatusPagesByStatusPageIdGroupsByGroupIdSortOrderResponses,
-	PutV1StatusPagesByStatusPageIdGroupsSortOrderData,
-	PutV1StatusPagesByStatusPageIdGroupsSortOrderErrors,
-	PutV1StatusPagesByStatusPageIdGroupsSortOrderResponses,
 	RemoveUserData,
 	RemoveUserErrors,
 	RemoveUserResponses,
@@ -255,6 +249,33 @@ import type {
 	UpdateMaintenanceWindowData,
 	UpdateMaintenanceWindowErrors,
 	UpdateMaintenanceWindowResponses,
+	UpdateStatusPageComponentData,
+	UpdateStatusPageComponentErrors,
+	UpdateStatusPageComponentGroupData,
+	UpdateStatusPageComponentGroupErrors,
+	UpdateStatusPageComponentGroupResponses,
+	UpdateStatusPageComponentGroupSortOrderData,
+	UpdateStatusPageComponentGroupSortOrderErrors,
+	UpdateStatusPageComponentGroupSortOrderResponses,
+	UpdateStatusPageComponentResponses,
+	UpdateStatusPageComponentSortOrderData,
+	UpdateStatusPageComponentSortOrderErrors,
+	UpdateStatusPageComponentSortOrderResponses,
+	UpdateStatusPageData,
+	UpdateStatusPageErrors,
+	UpdateStatusPageGroupComponentSortOrderData,
+	UpdateStatusPageGroupComponentSortOrderErrors,
+	UpdateStatusPageGroupComponentSortOrderResponses,
+	UpdateStatusPageIncidentData,
+	UpdateStatusPageIncidentErrors,
+	UpdateStatusPageIncidentResponses,
+	UpdateStatusPageIncidentUpdateData,
+	UpdateStatusPageIncidentUpdateErrors,
+	UpdateStatusPageIncidentUpdateResponses,
+	UpdateStatusPageResponses,
+	UpdateStatusPageScheduledMaintenanceData,
+	UpdateStatusPageScheduledMaintenanceErrors,
+	UpdateStatusPageScheduledMaintenanceResponses,
 	UpdateTcpCheckData,
 	UpdateTcpCheckErrors,
 	UpdateTcpCheckResponses,
@@ -264,6 +285,9 @@ import type {
 	UpdateWebhookData,
 	UpdateWebhookErrors,
 	UpdateWebhookResponses,
+	VerifyTokenData,
+	VerifyTokenErrors,
+	VerifyTokenResponses,
 } from "./types.gen";
 
 export type Options<
@@ -337,16 +361,12 @@ export const listAuditLogs = <ThrowOnError extends boolean = false>(
 /**
  * Verify a token
  */
-export const getV1TokensVerify = <ThrowOnError extends boolean = false>(
-	options?: Options<GetV1TokensVerifyData, ThrowOnError>,
-): RequestResult<
-	GetV1TokensVerifyResponses,
-	GetV1TokensVerifyErrors,
-	ThrowOnError
-> =>
+export const verifyToken = <ThrowOnError extends boolean = false>(
+	options?: Options<VerifyTokenData, ThrowOnError>,
+): RequestResult<VerifyTokenResponses, VerifyTokenErrors, ThrowOnError> =>
 	(options?.client ?? client).get<
-		GetV1TokensVerifyResponses,
-		GetV1TokensVerifyErrors,
+		VerifyTokenResponses,
+		VerifyTokenErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -357,16 +377,16 @@ export const getV1TokensVerify = <ThrowOnError extends boolean = false>(
 /**
  * Retrieve a token's permissions
  */
-export const getV1TokensPermissions = <ThrowOnError extends boolean = false>(
-	options?: Options<GetV1TokensPermissionsData, ThrowOnError>,
+export const getTokenPermissions = <ThrowOnError extends boolean = false>(
+	options?: Options<GetTokenPermissionsData, ThrowOnError>,
 ): RequestResult<
-	GetV1TokensPermissionsResponses,
-	GetV1TokensPermissionsErrors,
+	GetTokenPermissionsResponses,
+	GetTokenPermissionsErrors,
 	ThrowOnError
 > =>
 	(options?.client ?? client).get<
-		GetV1TokensPermissionsResponses,
-		GetV1TokensPermissionsErrors,
+		GetTokenPermissionsResponses,
+		GetTokenPermissionsErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -799,6 +819,182 @@ export const updateBrowserCheck = <ThrowOnError extends boolean = false>(
 	});
 
 /**
+ * Review recent failures and recoveries for a specific uptime check
+ *
+ * List incidents for an uptime check
+ */
+export const listUptimeCheckIncidents = <ThrowOnError extends boolean = false>(
+	options: Options<ListUptimeCheckIncidentsData, ThrowOnError>,
+): RequestResult<
+	ListUptimeCheckIncidentsResponses,
+	ListUptimeCheckIncidentsErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		ListUptimeCheckIncidentsResponses,
+		ListUptimeCheckIncidentsErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/checks/uptime/{check_id}/incidents",
+		...options,
+	});
+
+/**
+ * Review recent failures and recoveries for a specific browser check
+ *
+ * List incidents for a browser check
+ */
+export const listBrowserCheckIncidents = <ThrowOnError extends boolean = false>(
+	options: Options<ListBrowserCheckIncidentsData, ThrowOnError>,
+): RequestResult<
+	ListBrowserCheckIncidentsResponses,
+	ListBrowserCheckIncidentsErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		ListBrowserCheckIncidentsResponses,
+		ListBrowserCheckIncidentsErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/checks/browser/{check_id}/incidents",
+		...options,
+	});
+
+/**
+ * Review recent failures and recoveries for a specific DNS check
+ *
+ * List incidents for a DNS check
+ */
+export const listDnsCheckIncidents = <ThrowOnError extends boolean = false>(
+	options: Options<ListDnsCheckIncidentsData, ThrowOnError>,
+): RequestResult<
+	ListDnsCheckIncidentsResponses,
+	ListDnsCheckIncidentsErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		ListDnsCheckIncidentsResponses,
+		ListDnsCheckIncidentsErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/checks/dns/{check_id}/incidents",
+		...options,
+	});
+
+/**
+ * Review recent failures and recoveries for a specific TCP check
+ *
+ * List incidents for a TCP check
+ */
+export const listTcpCheckIncidents = <ThrowOnError extends boolean = false>(
+	options: Options<ListTcpCheckIncidentsData, ThrowOnError>,
+): RequestResult<
+	ListTcpCheckIncidentsResponses,
+	ListTcpCheckIncidentsErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		ListTcpCheckIncidentsResponses,
+		ListTcpCheckIncidentsErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/checks/tcp/{check_id}/incidents",
+		...options,
+	});
+
+/**
+ * Review raw uptime check results over a bounded time range
+ *
+ * List results for an uptime check
+ */
+export const listUptimeCheckResults = <ThrowOnError extends boolean = false>(
+	options: Options<ListUptimeCheckResultsData, ThrowOnError>,
+): RequestResult<
+	ListUptimeCheckResultsResponses,
+	ListUptimeCheckResultsErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		ListUptimeCheckResultsResponses,
+		ListUptimeCheckResultsErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/checks/uptime/{check_id}/results",
+		...options,
+	});
+
+/**
+ * Review raw browser check results over a bounded time range
+ *
+ * List results for a browser check
+ */
+export const listBrowserCheckResults = <ThrowOnError extends boolean = false>(
+	options: Options<ListBrowserCheckResultsData, ThrowOnError>,
+): RequestResult<
+	ListBrowserCheckResultsResponses,
+	ListBrowserCheckResultsErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		ListBrowserCheckResultsResponses,
+		ListBrowserCheckResultsErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/checks/browser/{check_id}/results",
+		...options,
+	});
+
+/**
+ * Review raw DNS check results over a bounded time range
+ *
+ * List results for a DNS check
+ */
+export const listDnsCheckResults = <ThrowOnError extends boolean = false>(
+	options: Options<ListDnsCheckResultsData, ThrowOnError>,
+): RequestResult<
+	ListDnsCheckResultsResponses,
+	ListDnsCheckResultsErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		ListDnsCheckResultsResponses,
+		ListDnsCheckResultsErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/checks/dns/{check_id}/results",
+		...options,
+	});
+
+/**
+ * Review raw TCP check results over a bounded time range
+ *
+ * List results for a TCP check
+ */
+export const listTcpCheckResults = <ThrowOnError extends boolean = false>(
+	options: Options<ListTcpCheckResultsData, ThrowOnError>,
+): RequestResult<
+	ListTcpCheckResultsResponses,
+	ListTcpCheckResultsErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		ListTcpCheckResultsResponses,
+		ListTcpCheckResultsErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/checks/tcp/{check_id}/results",
+		...options,
+	});
+
+/**
  * Retrieve a paginated list of all uptime checks
  *
  * List all checks
@@ -1211,18 +1407,16 @@ export const createInvitation = <ThrowOnError extends boolean = false>(
 /**
  * Delete a status page
  */
-export const deleteV1StatusPagesByStatusPageId = <
-	ThrowOnError extends boolean = false,
->(
-	options: Options<DeleteV1StatusPagesByStatusPageIdData, ThrowOnError>,
+export const deleteStatusPage = <ThrowOnError extends boolean = false>(
+	options: Options<DeleteStatusPageData, ThrowOnError>,
 ): RequestResult<
-	DeleteV1StatusPagesByStatusPageIdResponses,
-	DeleteV1StatusPagesByStatusPageIdErrors,
+	DeleteStatusPageResponses,
+	DeleteStatusPageErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).delete<
-		DeleteV1StatusPagesByStatusPageIdResponses,
-		DeleteV1StatusPagesByStatusPageIdErrors,
+		DeleteStatusPageResponses,
+		DeleteStatusPageErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1233,18 +1427,12 @@ export const deleteV1StatusPagesByStatusPageId = <
 /**
  * Retrieve a status page
  */
-export const getV1StatusPagesByStatusPageId = <
-	ThrowOnError extends boolean = false,
->(
-	options: Options<GetV1StatusPagesByStatusPageIdData, ThrowOnError>,
-): RequestResult<
-	GetV1StatusPagesByStatusPageIdResponses,
-	GetV1StatusPagesByStatusPageIdErrors,
-	ThrowOnError
-> =>
+export const getStatusPage = <ThrowOnError extends boolean = false>(
+	options: Options<GetStatusPageData, ThrowOnError>,
+): RequestResult<GetStatusPageResponses, GetStatusPageErrors, ThrowOnError> =>
 	(options.client ?? client).get<
-		GetV1StatusPagesByStatusPageIdResponses,
-		GetV1StatusPagesByStatusPageIdErrors,
+		GetStatusPageResponses,
+		GetStatusPageErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1255,18 +1443,16 @@ export const getV1StatusPagesByStatusPageId = <
 /**
  * Update a status page
  */
-export const postV1StatusPagesByStatusPageId = <
-	ThrowOnError extends boolean = false,
->(
-	options: Options<PostV1StatusPagesByStatusPageIdData, ThrowOnError>,
+export const updateStatusPage = <ThrowOnError extends boolean = false>(
+	options: Options<UpdateStatusPageData, ThrowOnError>,
 ): RequestResult<
-	PostV1StatusPagesByStatusPageIdResponses,
-	PostV1StatusPagesByStatusPageIdErrors,
+	UpdateStatusPageResponses,
+	UpdateStatusPageErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).post<
-		PostV1StatusPagesByStatusPageIdResponses,
-		PostV1StatusPagesByStatusPageIdErrors,
+		UpdateStatusPageResponses,
+		UpdateStatusPageErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1281,37 +1467,32 @@ export const postV1StatusPagesByStatusPageId = <
 /**
  * Get a status page's overview.
  */
-export const getV1StatusPagesByStatusPageSubdomainSummary = <
-	ThrowOnError extends boolean = false,
->(
-	options: Options<
-		GetV1StatusPagesByStatusPageSubdomainSummaryData,
-		ThrowOnError
-	>,
+export const getStatusPageSummary = <ThrowOnError extends boolean = false>(
+	options: Options<GetStatusPageSummaryData, ThrowOnError>,
 ): RequestResult<
-	GetV1StatusPagesByStatusPageSubdomainSummaryResponses,
-	GetV1StatusPagesByStatusPageSubdomainSummaryErrors,
+	GetStatusPageSummaryResponses,
+	GetStatusPageSummaryErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).get<
-		GetV1StatusPagesByStatusPageSubdomainSummaryResponses,
-		GetV1StatusPagesByStatusPageSubdomainSummaryErrors,
+		GetStatusPageSummaryResponses,
+		GetStatusPageSummaryErrors,
 		ThrowOnError
 	>({ url: "/v1/status_pages/{status_page_subdomain}/summary", ...options });
 
 /**
  * List all status pages
  */
-export const getV1StatusPages = <ThrowOnError extends boolean = false>(
-	options?: Options<GetV1StatusPagesData, ThrowOnError>,
+export const listStatusPages = <ThrowOnError extends boolean = false>(
+	options?: Options<ListStatusPagesData, ThrowOnError>,
 ): RequestResult<
-	GetV1StatusPagesResponses,
-	GetV1StatusPagesErrors,
+	ListStatusPagesResponses,
+	ListStatusPagesErrors,
 	ThrowOnError
 > =>
 	(options?.client ?? client).get<
-		GetV1StatusPagesResponses,
-		GetV1StatusPagesErrors,
+		ListStatusPagesResponses,
+		ListStatusPagesErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1322,16 +1503,16 @@ export const getV1StatusPages = <ThrowOnError extends boolean = false>(
 /**
  * Create a status page
  */
-export const postV1StatusPages = <ThrowOnError extends boolean = false>(
-	options: Options<PostV1StatusPagesData, ThrowOnError>,
+export const createStatusPage = <ThrowOnError extends boolean = false>(
+	options: Options<CreateStatusPageData, ThrowOnError>,
 ): RequestResult<
-	PostV1StatusPagesResponses,
-	PostV1StatusPagesErrors,
+	CreateStatusPageResponses,
+	CreateStatusPageErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).post<
-		PostV1StatusPagesResponses,
-		PostV1StatusPagesErrors,
+		CreateStatusPageResponses,
+		CreateStatusPageErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1346,18 +1527,16 @@ export const postV1StatusPages = <ThrowOnError extends boolean = false>(
 /**
  * List all components
  */
-export const getV1StatusPagesByStatusPageIdComponents = <
-	ThrowOnError extends boolean = false,
->(
-	options: Options<GetV1StatusPagesByStatusPageIdComponentsData, ThrowOnError>,
+export const listStatusPageComponents = <ThrowOnError extends boolean = false>(
+	options: Options<ListStatusPageComponentsData, ThrowOnError>,
 ): RequestResult<
-	GetV1StatusPagesByStatusPageIdComponentsResponses,
-	GetV1StatusPagesByStatusPageIdComponentsErrors,
+	ListStatusPageComponentsResponses,
+	ListStatusPageComponentsErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).get<
-		GetV1StatusPagesByStatusPageIdComponentsResponses,
-		GetV1StatusPagesByStatusPageIdComponentsErrors,
+		ListStatusPageComponentsResponses,
+		ListStatusPageComponentsErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1368,18 +1547,16 @@ export const getV1StatusPagesByStatusPageIdComponents = <
 /**
  * Create a component
  */
-export const postV1StatusPagesByStatusPageIdComponents = <
-	ThrowOnError extends boolean = false,
->(
-	options: Options<PostV1StatusPagesByStatusPageIdComponentsData, ThrowOnError>,
+export const createStatusPageComponent = <ThrowOnError extends boolean = false>(
+	options: Options<CreateStatusPageComponentData, ThrowOnError>,
 ): RequestResult<
-	PostV1StatusPagesByStatusPageIdComponentsResponses,
-	PostV1StatusPagesByStatusPageIdComponentsErrors,
+	CreateStatusPageComponentResponses,
+	CreateStatusPageComponentErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).post<
-		PostV1StatusPagesByStatusPageIdComponentsResponses,
-		PostV1StatusPagesByStatusPageIdComponentsErrors,
+		CreateStatusPageComponentResponses,
+		CreateStatusPageComponentErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1394,45 +1571,36 @@ export const postV1StatusPagesByStatusPageIdComponents = <
 /**
  * Delete a component
  */
-export const deleteV1StatusPagesByStatusPageIdComponentsByStatusPageComponentId =
-	<ThrowOnError extends boolean = false>(
-		options: Options<
-			DeleteV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdData,
-			ThrowOnError
-		>,
-	): RequestResult<
-		DeleteV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponses,
-		DeleteV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdErrors,
+export const deleteStatusPageComponent = <ThrowOnError extends boolean = false>(
+	options: Options<DeleteStatusPageComponentData, ThrowOnError>,
+): RequestResult<
+	DeleteStatusPageComponentResponses,
+	DeleteStatusPageComponentErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).delete<
+		DeleteStatusPageComponentResponses,
+		DeleteStatusPageComponentErrors,
 		ThrowOnError
-	> =>
-		(options.client ?? client).delete<
-			DeleteV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponses,
-			DeleteV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdErrors,
-			ThrowOnError
-		>({
-			security: [{ scheme: "bearer", type: "http" }],
-			url: "/v1/status_pages/{status_page_id}/components/{status_page_component_id}",
-			...options,
-		});
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/status_pages/{status_page_id}/components/{status_page_component_id}",
+		...options,
+	});
 
 /**
  * Retrieve a component
  */
-export const getV1StatusPagesByStatusPageIdComponentsByStatusPageComponentId = <
-	ThrowOnError extends boolean = false,
->(
-	options: Options<
-		GetV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdData,
-		ThrowOnError
-	>,
+export const getStatusPageComponent = <ThrowOnError extends boolean = false>(
+	options: Options<GetStatusPageComponentData, ThrowOnError>,
 ): RequestResult<
-	GetV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponses,
-	GetV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdErrors,
+	GetStatusPageComponentResponses,
+	GetStatusPageComponentErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).get<
-		GetV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponses,
-		GetV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdErrors,
+		GetStatusPageComponentResponses,
+		GetStatusPageComponentErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1443,49 +1611,42 @@ export const getV1StatusPagesByStatusPageIdComponentsByStatusPageComponentId = <
 /**
  * Update a component
  */
-export const patchV1StatusPagesByStatusPageIdComponentsByStatusPageComponentId =
-	<ThrowOnError extends boolean = false>(
-		options: Options<
-			PatchV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdData,
-			ThrowOnError
-		>,
-	): RequestResult<
-		PatchV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponses,
-		PatchV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdErrors,
+export const updateStatusPageComponent = <ThrowOnError extends boolean = false>(
+	options: Options<UpdateStatusPageComponentData, ThrowOnError>,
+): RequestResult<
+	UpdateStatusPageComponentResponses,
+	UpdateStatusPageComponentErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).patch<
+		UpdateStatusPageComponentResponses,
+		UpdateStatusPageComponentErrors,
 		ThrowOnError
-	> =>
-		(options.client ?? client).patch<
-			PatchV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdResponses,
-			PatchV1StatusPagesByStatusPageIdComponentsByStatusPageComponentIdErrors,
-			ThrowOnError
-		>({
-			security: [{ scheme: "bearer", type: "http" }],
-			url: "/v1/status_pages/{status_page_id}/components/{status_page_component_id}",
-			...options,
-			headers: {
-				"Content-Type": "application/json",
-				...options.headers,
-			},
-		});
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/status_pages/{status_page_id}/components/{status_page_component_id}",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
 
 /**
  * Update the sort order of ungrouped components
  */
-export const putV1StatusPagesByStatusPageIdComponentsSortOrder = <
+export const updateStatusPageComponentSortOrder = <
 	ThrowOnError extends boolean = false,
 >(
-	options: Options<
-		PutV1StatusPagesByStatusPageIdComponentsSortOrderData,
-		ThrowOnError
-	>,
+	options: Options<UpdateStatusPageComponentSortOrderData, ThrowOnError>,
 ): RequestResult<
-	PutV1StatusPagesByStatusPageIdComponentsSortOrderResponses,
-	PutV1StatusPagesByStatusPageIdComponentsSortOrderErrors,
+	UpdateStatusPageComponentSortOrderResponses,
+	UpdateStatusPageComponentSortOrderErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).put<
-		PutV1StatusPagesByStatusPageIdComponentsSortOrderResponses,
-		PutV1StatusPagesByStatusPageIdComponentsSortOrderErrors,
+		UpdateStatusPageComponentSortOrderResponses,
+		UpdateStatusPageComponentSortOrderErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1500,18 +1661,18 @@ export const putV1StatusPagesByStatusPageIdComponentsSortOrder = <
 /**
  * List all component groups
  */
-export const getV1StatusPagesByStatusPageIdGroups = <
+export const listStatusPageComponentGroups = <
 	ThrowOnError extends boolean = false,
 >(
-	options: Options<GetV1StatusPagesByStatusPageIdGroupsData, ThrowOnError>,
+	options: Options<ListStatusPageComponentGroupsData, ThrowOnError>,
 ): RequestResult<
-	GetV1StatusPagesByStatusPageIdGroupsResponses,
-	GetV1StatusPagesByStatusPageIdGroupsErrors,
+	ListStatusPageComponentGroupsResponses,
+	ListStatusPageComponentGroupsErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).get<
-		GetV1StatusPagesByStatusPageIdGroupsResponses,
-		GetV1StatusPagesByStatusPageIdGroupsErrors,
+		ListStatusPageComponentGroupsResponses,
+		ListStatusPageComponentGroupsErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1522,18 +1683,18 @@ export const getV1StatusPagesByStatusPageIdGroups = <
 /**
  * Create a component group
  */
-export const postV1StatusPagesByStatusPageIdGroups = <
+export const createStatusPageComponentGroup = <
 	ThrowOnError extends boolean = false,
 >(
-	options: Options<PostV1StatusPagesByStatusPageIdGroupsData, ThrowOnError>,
+	options: Options<CreateStatusPageComponentGroupData, ThrowOnError>,
 ): RequestResult<
-	PostV1StatusPagesByStatusPageIdGroupsResponses,
-	PostV1StatusPagesByStatusPageIdGroupsErrors,
+	CreateStatusPageComponentGroupResponses,
+	CreateStatusPageComponentGroupErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).post<
-		PostV1StatusPagesByStatusPageIdGroupsResponses,
-		PostV1StatusPagesByStatusPageIdGroupsErrors,
+		CreateStatusPageComponentGroupResponses,
+		CreateStatusPageComponentGroupErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1548,21 +1709,18 @@ export const postV1StatusPagesByStatusPageIdGroups = <
 /**
  * Delete a component group
  */
-export const deleteV1StatusPagesByStatusPageIdGroupsByGroupId = <
+export const deleteStatusPageComponentGroup = <
 	ThrowOnError extends boolean = false,
 >(
-	options: Options<
-		DeleteV1StatusPagesByStatusPageIdGroupsByGroupIdData,
-		ThrowOnError
-	>,
+	options: Options<DeleteStatusPageComponentGroupData, ThrowOnError>,
 ): RequestResult<
-	DeleteV1StatusPagesByStatusPageIdGroupsByGroupIdResponses,
-	DeleteV1StatusPagesByStatusPageIdGroupsByGroupIdErrors,
+	DeleteStatusPageComponentGroupResponses,
+	DeleteStatusPageComponentGroupErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).delete<
-		DeleteV1StatusPagesByStatusPageIdGroupsByGroupIdResponses,
-		DeleteV1StatusPagesByStatusPageIdGroupsByGroupIdErrors,
+		DeleteStatusPageComponentGroupResponses,
+		DeleteStatusPageComponentGroupErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1573,21 +1731,18 @@ export const deleteV1StatusPagesByStatusPageIdGroupsByGroupId = <
 /**
  * Retrieve a component group
  */
-export const getV1StatusPagesByStatusPageIdGroupsByGroupId = <
+export const getStatusPageComponentGroup = <
 	ThrowOnError extends boolean = false,
 >(
-	options: Options<
-		GetV1StatusPagesByStatusPageIdGroupsByGroupIdData,
-		ThrowOnError
-	>,
+	options: Options<GetStatusPageComponentGroupData, ThrowOnError>,
 ): RequestResult<
-	GetV1StatusPagesByStatusPageIdGroupsByGroupIdResponses,
-	GetV1StatusPagesByStatusPageIdGroupsByGroupIdErrors,
+	GetStatusPageComponentGroupResponses,
+	GetStatusPageComponentGroupErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).get<
-		GetV1StatusPagesByStatusPageIdGroupsByGroupIdResponses,
-		GetV1StatusPagesByStatusPageIdGroupsByGroupIdErrors,
+		GetStatusPageComponentGroupResponses,
+		GetStatusPageComponentGroupErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1598,21 +1753,18 @@ export const getV1StatusPagesByStatusPageIdGroupsByGroupId = <
 /**
  * Update a component group
  */
-export const patchV1StatusPagesByStatusPageIdGroupsByGroupId = <
+export const updateStatusPageComponentGroup = <
 	ThrowOnError extends boolean = false,
 >(
-	options: Options<
-		PatchV1StatusPagesByStatusPageIdGroupsByGroupIdData,
-		ThrowOnError
-	>,
+	options: Options<UpdateStatusPageComponentGroupData, ThrowOnError>,
 ): RequestResult<
-	PatchV1StatusPagesByStatusPageIdGroupsByGroupIdResponses,
-	PatchV1StatusPagesByStatusPageIdGroupsByGroupIdErrors,
+	UpdateStatusPageComponentGroupResponses,
+	UpdateStatusPageComponentGroupErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).patch<
-		PatchV1StatusPagesByStatusPageIdGroupsByGroupIdResponses,
-		PatchV1StatusPagesByStatusPageIdGroupsByGroupIdErrors,
+		UpdateStatusPageComponentGroupResponses,
+		UpdateStatusPageComponentGroupErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1627,21 +1779,18 @@ export const patchV1StatusPagesByStatusPageIdGroupsByGroupId = <
 /**
  * Update the sort order of component groups
  */
-export const putV1StatusPagesByStatusPageIdGroupsSortOrder = <
+export const updateStatusPageComponentGroupSortOrder = <
 	ThrowOnError extends boolean = false,
 >(
-	options: Options<
-		PutV1StatusPagesByStatusPageIdGroupsSortOrderData,
-		ThrowOnError
-	>,
+	options: Options<UpdateStatusPageComponentGroupSortOrderData, ThrowOnError>,
 ): RequestResult<
-	PutV1StatusPagesByStatusPageIdGroupsSortOrderResponses,
-	PutV1StatusPagesByStatusPageIdGroupsSortOrderErrors,
+	UpdateStatusPageComponentGroupSortOrderResponses,
+	UpdateStatusPageComponentGroupSortOrderErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).put<
-		PutV1StatusPagesByStatusPageIdGroupsSortOrderResponses,
-		PutV1StatusPagesByStatusPageIdGroupsSortOrderErrors,
+		UpdateStatusPageComponentGroupSortOrderResponses,
+		UpdateStatusPageComponentGroupSortOrderErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1656,21 +1805,18 @@ export const putV1StatusPagesByStatusPageIdGroupsSortOrder = <
 /**
  * Update the sort order of components within a group
  */
-export const putV1StatusPagesByStatusPageIdGroupsByGroupIdSortOrder = <
+export const updateStatusPageGroupComponentSortOrder = <
 	ThrowOnError extends boolean = false,
 >(
-	options: Options<
-		PutV1StatusPagesByStatusPageIdGroupsByGroupIdSortOrderData,
-		ThrowOnError
-	>,
+	options: Options<UpdateStatusPageGroupComponentSortOrderData, ThrowOnError>,
 ): RequestResult<
-	PutV1StatusPagesByStatusPageIdGroupsByGroupIdSortOrderResponses,
-	PutV1StatusPagesByStatusPageIdGroupsByGroupIdSortOrderErrors,
+	UpdateStatusPageGroupComponentSortOrderResponses,
+	UpdateStatusPageGroupComponentSortOrderErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).put<
-		PutV1StatusPagesByStatusPageIdGroupsByGroupIdSortOrderResponses,
-		PutV1StatusPagesByStatusPageIdGroupsByGroupIdSortOrderErrors,
+		UpdateStatusPageGroupComponentSortOrderResponses,
+		UpdateStatusPageGroupComponentSortOrderErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1685,18 +1831,16 @@ export const putV1StatusPagesByStatusPageIdGroupsByGroupIdSortOrder = <
 /**
  * List all subscribers
  */
-export const getV1StatusPagesByStatusPageIdSubscribers = <
-	ThrowOnError extends boolean = false,
->(
-	options: Options<GetV1StatusPagesByStatusPageIdSubscribersData, ThrowOnError>,
+export const listStatusPageSubscribers = <ThrowOnError extends boolean = false>(
+	options: Options<ListStatusPageSubscribersData, ThrowOnError>,
 ): RequestResult<
-	GetV1StatusPagesByStatusPageIdSubscribersResponses,
-	GetV1StatusPagesByStatusPageIdSubscribersErrors,
+	ListStatusPageSubscribersResponses,
+	ListStatusPageSubscribersErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).get<
-		GetV1StatusPagesByStatusPageIdSubscribersResponses,
-		GetV1StatusPagesByStatusPageIdSubscribersErrors,
+		ListStatusPageSubscribersResponses,
+		ListStatusPageSubscribersErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1707,21 +1851,18 @@ export const getV1StatusPagesByStatusPageIdSubscribers = <
 /**
  * Create a subscriber
  */
-export const postV1StatusPagesByStatusPageIdSubscribers = <
+export const createStatusPageSubscriber = <
 	ThrowOnError extends boolean = false,
 >(
-	options: Options<
-		PostV1StatusPagesByStatusPageIdSubscribersData,
-		ThrowOnError
-	>,
+	options: Options<CreateStatusPageSubscriberData, ThrowOnError>,
 ): RequestResult<
-	PostV1StatusPagesByStatusPageIdSubscribersResponses,
-	PostV1StatusPagesByStatusPageIdSubscribersErrors,
+	CreateStatusPageSubscriberResponses,
+	CreateStatusPageSubscriberErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).post<
-		PostV1StatusPagesByStatusPageIdSubscribersResponses,
-		PostV1StatusPagesByStatusPageIdSubscribersErrors,
+		CreateStatusPageSubscriberResponses,
+		CreateStatusPageSubscriberErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1736,21 +1877,18 @@ export const postV1StatusPagesByStatusPageIdSubscribers = <
 /**
  * Delete a subscriber
  */
-export const deleteV1StatusPagesByStatusPageIdSubscribersBySubscriberId = <
+export const deleteStatusPageSubscriber = <
 	ThrowOnError extends boolean = false,
 >(
-	options: Options<
-		DeleteV1StatusPagesByStatusPageIdSubscribersBySubscriberIdData,
-		ThrowOnError
-	>,
+	options: Options<DeleteStatusPageSubscriberData, ThrowOnError>,
 ): RequestResult<
-	DeleteV1StatusPagesByStatusPageIdSubscribersBySubscriberIdResponses,
-	DeleteV1StatusPagesByStatusPageIdSubscribersBySubscriberIdErrors,
+	DeleteStatusPageSubscriberResponses,
+	DeleteStatusPageSubscriberErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).delete<
-		DeleteV1StatusPagesByStatusPageIdSubscribersBySubscriberIdResponses,
-		DeleteV1StatusPagesByStatusPageIdSubscribersBySubscriberIdErrors,
+		DeleteStatusPageSubscriberResponses,
+		DeleteStatusPageSubscriberErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1761,18 +1899,16 @@ export const deleteV1StatusPagesByStatusPageIdSubscribersBySubscriberId = <
 /**
  * List all incidents
  */
-export const getV1StatusPagesByStatusPageIdIncidents = <
-	ThrowOnError extends boolean = false,
->(
-	options: Options<GetV1StatusPagesByStatusPageIdIncidentsData, ThrowOnError>,
+export const listStatusPageIncidents = <ThrowOnError extends boolean = false>(
+	options: Options<ListStatusPageIncidentsData, ThrowOnError>,
 ): RequestResult<
-	GetV1StatusPagesByStatusPageIdIncidentsResponses,
-	GetV1StatusPagesByStatusPageIdIncidentsErrors,
+	ListStatusPageIncidentsResponses,
+	ListStatusPageIncidentsErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).get<
-		GetV1StatusPagesByStatusPageIdIncidentsResponses,
-		GetV1StatusPagesByStatusPageIdIncidentsErrors,
+		ListStatusPageIncidentsResponses,
+		ListStatusPageIncidentsErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1783,18 +1919,16 @@ export const getV1StatusPagesByStatusPageIdIncidents = <
 /**
  * Create an incident
  */
-export const postV1StatusPagesByStatusPageIdIncidents = <
-	ThrowOnError extends boolean = false,
->(
-	options: Options<PostV1StatusPagesByStatusPageIdIncidentsData, ThrowOnError>,
+export const createStatusPageIncident = <ThrowOnError extends boolean = false>(
+	options: Options<CreateStatusPageIncidentData, ThrowOnError>,
 ): RequestResult<
-	PostV1StatusPagesByStatusPageIdIncidentsResponses,
-	PostV1StatusPagesByStatusPageIdIncidentsErrors,
+	CreateStatusPageIncidentResponses,
+	CreateStatusPageIncidentErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).post<
-		PostV1StatusPagesByStatusPageIdIncidentsResponses,
-		PostV1StatusPagesByStatusPageIdIncidentsErrors,
+		CreateStatusPageIncidentResponses,
+		CreateStatusPageIncidentErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1809,45 +1943,36 @@ export const postV1StatusPagesByStatusPageIdIncidents = <
 /**
  * Delete an incident
  */
-export const deleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentId =
-	<ThrowOnError extends boolean = false>(
-		options: Options<
-			DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdData,
-			ThrowOnError
-		>,
-	): RequestResult<
-		DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponses,
-		DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdErrors,
+export const deleteStatusPageIncident = <ThrowOnError extends boolean = false>(
+	options: Options<DeleteStatusPageIncidentData, ThrowOnError>,
+): RequestResult<
+	DeleteStatusPageIncidentResponses,
+	DeleteStatusPageIncidentErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).delete<
+		DeleteStatusPageIncidentResponses,
+		DeleteStatusPageIncidentErrors,
 		ThrowOnError
-	> =>
-		(options.client ?? client).delete<
-			DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponses,
-			DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdErrors,
-			ThrowOnError
-		>({
-			security: [{ scheme: "bearer", type: "http" }],
-			url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}",
-			...options,
-		});
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}",
+		...options,
+	});
 
 /**
  * Retrieve an incident
  */
-export const getV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentId = <
-	ThrowOnError extends boolean = false,
->(
-	options: Options<
-		GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdData,
-		ThrowOnError
-	>,
+export const getStatusPageIncident = <ThrowOnError extends boolean = false>(
+	options: Options<GetStatusPageIncidentData, ThrowOnError>,
 ): RequestResult<
-	GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponses,
-	GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdErrors,
+	GetStatusPageIncidentResponses,
+	GetStatusPageIncidentErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).get<
-		GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponses,
-		GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdErrors,
+		GetStatusPageIncidentResponses,
+		GetStatusPageIncidentErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1858,21 +1983,16 @@ export const getV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentId = <
 /**
  * Update an incident
  */
-export const patchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentId = <
-	ThrowOnError extends boolean = false,
->(
-	options: Options<
-		PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdData,
-		ThrowOnError
-	>,
+export const updateStatusPageIncident = <ThrowOnError extends boolean = false>(
+	options: Options<UpdateStatusPageIncidentData, ThrowOnError>,
 ): RequestResult<
-	PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponses,
-	PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdErrors,
+	UpdateStatusPageIncidentResponses,
+	UpdateStatusPageIncidentErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).patch<
-		PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdResponses,
-		PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdErrors,
+		UpdateStatusPageIncidentResponses,
+		UpdateStatusPageIncidentErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -1887,149 +2007,136 @@ export const patchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentId = <
 /**
  * List all updates for an incident
  */
-export const getV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdates =
-	<ThrowOnError extends boolean = false>(
-		options: Options<
-			GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesData,
-			ThrowOnError
-		>,
-	): RequestResult<
-		GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesResponses,
-		GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesErrors,
+export const listStatusPageIncidentUpdates = <
+	ThrowOnError extends boolean = false,
+>(
+	options: Options<ListStatusPageIncidentUpdatesData, ThrowOnError>,
+): RequestResult<
+	ListStatusPageIncidentUpdatesResponses,
+	ListStatusPageIncidentUpdatesErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		ListStatusPageIncidentUpdatesResponses,
+		ListStatusPageIncidentUpdatesErrors,
 		ThrowOnError
-	> =>
-		(options.client ?? client).get<
-			GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesResponses,
-			GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesErrors,
-			ThrowOnError
-		>({
-			security: [{ scheme: "bearer", type: "http" }],
-			url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates",
-			...options,
-		});
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates",
+		...options,
+	});
 
 /**
  * Create a new update for an incident
  */
-export const postV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdates =
-	<ThrowOnError extends boolean = false>(
-		options: Options<
-			PostV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesData,
-			ThrowOnError
-		>,
-	): RequestResult<
-		PostV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesResponses,
-		PostV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesErrors,
+export const createStatusPageIncidentUpdate = <
+	ThrowOnError extends boolean = false,
+>(
+	options: Options<CreateStatusPageIncidentUpdateData, ThrowOnError>,
+): RequestResult<
+	CreateStatusPageIncidentUpdateResponses,
+	CreateStatusPageIncidentUpdateErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).post<
+		CreateStatusPageIncidentUpdateResponses,
+		CreateStatusPageIncidentUpdateErrors,
 		ThrowOnError
-	> =>
-		(options.client ?? client).post<
-			PostV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesResponses,
-			PostV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesErrors,
-			ThrowOnError
-		>({
-			security: [{ scheme: "bearer", type: "http" }],
-			url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates",
-			...options,
-			headers: {
-				"Content-Type": "application/json",
-				...options.headers,
-			},
-		});
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
 
 /**
  * Delete an incident update
  */
-export const deleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateId =
-	<ThrowOnError extends boolean = false>(
-		options: Options<
-			DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdData,
-			ThrowOnError
-		>,
-	): RequestResult<
-		DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponses,
-		DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdErrors,
+export const deleteStatusPageIncidentUpdate = <
+	ThrowOnError extends boolean = false,
+>(
+	options: Options<DeleteStatusPageIncidentUpdateData, ThrowOnError>,
+): RequestResult<
+	DeleteStatusPageIncidentUpdateResponses,
+	DeleteStatusPageIncidentUpdateErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).delete<
+		DeleteStatusPageIncidentUpdateResponses,
+		DeleteStatusPageIncidentUpdateErrors,
 		ThrowOnError
-	> =>
-		(options.client ?? client).delete<
-			DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponses,
-			DeleteV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdErrors,
-			ThrowOnError
-		>({
-			security: [{ scheme: "bearer", type: "http" }],
-			url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates/{incident_update_id}",
-			...options,
-		});
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates/{incident_update_id}",
+		...options,
+	});
 
 /**
  * Retrieve a single incident update
  */
-export const getV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateId =
-	<ThrowOnError extends boolean = false>(
-		options: Options<
-			GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdData,
-			ThrowOnError
-		>,
-	): RequestResult<
-		GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponses,
-		GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdErrors,
+export const getStatusPageIncidentUpdate = <
+	ThrowOnError extends boolean = false,
+>(
+	options: Options<GetStatusPageIncidentUpdateData, ThrowOnError>,
+): RequestResult<
+	GetStatusPageIncidentUpdateResponses,
+	GetStatusPageIncidentUpdateErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		GetStatusPageIncidentUpdateResponses,
+		GetStatusPageIncidentUpdateErrors,
 		ThrowOnError
-	> =>
-		(options.client ?? client).get<
-			GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponses,
-			GetV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdErrors,
-			ThrowOnError
-		>({
-			security: [{ scheme: "bearer", type: "http" }],
-			url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates/{incident_update_id}",
-			...options,
-		});
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates/{incident_update_id}",
+		...options,
+	});
 
 /**
  * Update an existing incident update
  */
-export const patchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateId =
-	<ThrowOnError extends boolean = false>(
-		options: Options<
-			PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdData,
-			ThrowOnError
-		>,
-	): RequestResult<
-		PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponses,
-		PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdErrors,
+export const updateStatusPageIncidentUpdate = <
+	ThrowOnError extends boolean = false,
+>(
+	options: Options<UpdateStatusPageIncidentUpdateData, ThrowOnError>,
+): RequestResult<
+	UpdateStatusPageIncidentUpdateResponses,
+	UpdateStatusPageIncidentUpdateErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).patch<
+		UpdateStatusPageIncidentUpdateResponses,
+		UpdateStatusPageIncidentUpdateErrors,
 		ThrowOnError
-	> =>
-		(options.client ?? client).patch<
-			PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdResponses,
-			PatchV1StatusPagesByStatusPageIdIncidentsByStatusPageIncidentIdUpdatesByIncidentUpdateIdErrors,
-			ThrowOnError
-		>({
-			security: [{ scheme: "bearer", type: "http" }],
-			url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates/{incident_update_id}",
-			...options,
-			headers: {
-				"Content-Type": "application/json",
-				...options.headers,
-			},
-		});
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates/{incident_update_id}",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
 
 /**
  * Schedule maintenance for a status page
  */
-export const postV1StatusPagesByStatusPageIdScheduledMaintenance = <
+export const createStatusPageScheduledMaintenance = <
 	ThrowOnError extends boolean = false,
 >(
-	options: Options<
-		PostV1StatusPagesByStatusPageIdScheduledMaintenanceData,
-		ThrowOnError
-	>,
+	options: Options<CreateStatusPageScheduledMaintenanceData, ThrowOnError>,
 ): RequestResult<
-	PostV1StatusPagesByStatusPageIdScheduledMaintenanceResponses,
-	PostV1StatusPagesByStatusPageIdScheduledMaintenanceErrors,
+	CreateStatusPageScheduledMaintenanceResponses,
+	CreateStatusPageScheduledMaintenanceErrors,
 	ThrowOnError
 > =>
 	(options.client ?? client).post<
-		PostV1StatusPagesByStatusPageIdScheduledMaintenanceResponses,
-		PostV1StatusPagesByStatusPageIdScheduledMaintenanceErrors,
+		CreateStatusPageScheduledMaintenanceResponses,
+		CreateStatusPageScheduledMaintenanceErrors,
 		ThrowOnError
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
@@ -2044,78 +2151,72 @@ export const postV1StatusPagesByStatusPageIdScheduledMaintenance = <
 /**
  * Delete a scheduled maintenance
  */
-export const deleteV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceId =
-	<ThrowOnError extends boolean = false>(
-		options: Options<
-			DeleteV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdData,
-			ThrowOnError
-		>,
-	): RequestResult<
-		DeleteV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponses,
-		DeleteV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdErrors,
+export const deleteStatusPageScheduledMaintenance = <
+	ThrowOnError extends boolean = false,
+>(
+	options: Options<DeleteStatusPageScheduledMaintenanceData, ThrowOnError>,
+): RequestResult<
+	DeleteStatusPageScheduledMaintenanceResponses,
+	DeleteStatusPageScheduledMaintenanceErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).delete<
+		DeleteStatusPageScheduledMaintenanceResponses,
+		DeleteStatusPageScheduledMaintenanceErrors,
 		ThrowOnError
-	> =>
-		(options.client ?? client).delete<
-			DeleteV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponses,
-			DeleteV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdErrors,
-			ThrowOnError
-		>({
-			security: [{ scheme: "bearer", type: "http" }],
-			url: "/v1/status_pages/{status_page_id}/scheduled_maintenance/{scheduled_maintenance_id}",
-			...options,
-		});
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/status_pages/{status_page_id}/scheduled_maintenance/{scheduled_maintenance_id}",
+		...options,
+	});
 
 /**
  * Retrieve a scheduled maintenance
  */
-export const getV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceId =
-	<ThrowOnError extends boolean = false>(
-		options: Options<
-			GetV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdData,
-			ThrowOnError
-		>,
-	): RequestResult<
-		GetV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponses,
-		GetV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdErrors,
+export const getStatusPageScheduledMaintenance = <
+	ThrowOnError extends boolean = false,
+>(
+	options: Options<GetStatusPageScheduledMaintenanceData, ThrowOnError>,
+): RequestResult<
+	GetStatusPageScheduledMaintenanceResponses,
+	GetStatusPageScheduledMaintenanceErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		GetStatusPageScheduledMaintenanceResponses,
+		GetStatusPageScheduledMaintenanceErrors,
 		ThrowOnError
-	> =>
-		(options.client ?? client).get<
-			GetV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponses,
-			GetV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdErrors,
-			ThrowOnError
-		>({
-			security: [{ scheme: "bearer", type: "http" }],
-			url: "/v1/status_pages/{status_page_id}/scheduled_maintenance/{scheduled_maintenance_id}",
-			...options,
-		});
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/status_pages/{status_page_id}/scheduled_maintenance/{scheduled_maintenance_id}",
+		...options,
+	});
 
 /**
  * Update a scheduled maintenance (only before it has started)
  */
-export const patchV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceId =
-	<ThrowOnError extends boolean = false>(
-		options: Options<
-			PatchV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdData,
-			ThrowOnError
-		>,
-	): RequestResult<
-		PatchV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponses,
-		PatchV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdErrors,
+export const updateStatusPageScheduledMaintenance = <
+	ThrowOnError extends boolean = false,
+>(
+	options: Options<UpdateStatusPageScheduledMaintenanceData, ThrowOnError>,
+): RequestResult<
+	UpdateStatusPageScheduledMaintenanceResponses,
+	UpdateStatusPageScheduledMaintenanceErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).patch<
+		UpdateStatusPageScheduledMaintenanceResponses,
+		UpdateStatusPageScheduledMaintenanceErrors,
 		ThrowOnError
-	> =>
-		(options.client ?? client).patch<
-			PatchV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdResponses,
-			PatchV1StatusPagesByStatusPageIdScheduledMaintenanceByScheduledMaintenanceIdErrors,
-			ThrowOnError
-		>({
-			security: [{ scheme: "bearer", type: "http" }],
-			url: "/v1/status_pages/{status_page_id}/scheduled_maintenance/{scheduled_maintenance_id}",
-			...options,
-			headers: {
-				"Content-Type": "application/json",
-				...options.headers,
-			},
-		});
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/status_pages/{status_page_id}/scheduled_maintenance/{scheduled_maintenance_id}",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
 
 /**
  * Retrieve a paginated list of all webhooks for your organization

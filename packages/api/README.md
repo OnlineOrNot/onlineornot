@@ -94,7 +94,7 @@ To deliberately update the schema, supply an explicit full commit SHA:
 pnpm --filter @onlineornot/api schema:update 0123456789abcdef0123456789abcdef01234567
 ```
 
-This updates the lock, digest, generated code, and reviewed `operations.json` public-name snapshot. Inspect all changes before committing. The current pinned schema contains 85 operations (not the earlier count of 73); 37 operations lack source `operationId` values and therefore have deterministic path-derived names. Adding durable operation IDs in `OnlineOrNot/api-schemas` is recommended. The checked-in operation snapshot makes any resulting public rename fail normal generation until explicitly accepted.
+This updates the lock, digest, generated code, and reviewed `operations.json` public-name snapshot. Inspect all changes before committing. The current pinned schema contains 93 operations (not the earlier count of 73), and every operation has a unique source `operationId`. The checked-in operation snapshot makes any future public rename fail normal generation until explicitly accepted.
 
 Hey API 0.99.0 does not emit operation-level OpenAPI `servers` into SDK calls. The deterministic generation script therefore verifies the two heartbeat operations exist and applies their pinned `https://oonchk.com` server to generated output.
 
