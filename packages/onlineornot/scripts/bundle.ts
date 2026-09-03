@@ -1,5 +1,7 @@
 import path from "node:path";
+
 import { build } from "esbuild";
+
 import { EXTERNAL_DEPENDENCIES } from "./deps";
 
 async function buildMain() {

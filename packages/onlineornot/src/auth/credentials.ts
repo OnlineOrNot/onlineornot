@@ -1,6 +1,7 @@
-import Conf from "conf";
 import os from "node:os";
 import path from "node:path";
+
+import Conf from "conf";
 
 export interface StoredUser {
 	email: string;

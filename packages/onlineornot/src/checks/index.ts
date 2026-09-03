@@ -1,10 +1,9 @@
+import type { CommonYargsArgv } from "../yargs-types";
 import * as Create from "./create";
 import * as Delete from "./delete";
 import * as View from "./individualCheck";
 import * as List from "./list";
 import * as Update from "./update";
-
-import type { CommonYargsArgv } from "../yargs-types";
 
 export function checks(yargs: CommonYargsArgv) {
 	return yargs

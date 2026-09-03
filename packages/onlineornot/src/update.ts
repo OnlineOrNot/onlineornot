@@ -1,11 +1,12 @@
 import chalk from "chalk";
+import type { Argv } from "yargs";
+
 import pkg from "../package.json";
 import { logger } from "./logger";
 import { isStandaloneExecutable } from "./runtime-environment";
 import { runStandaloneUpdate } from "./standalone-update";
 import type { StandaloneUpdateProgress } from "./standalone-update";
 import type { CommonYargsOptions } from "./yargs-types";
-import type { Argv } from "yargs";
 
 /** Configure flags for the standalone CLI update command. */
 export function updateOptions(yargs: Argv<CommonYargsOptions>) {

@@ -1,4 +1,5 @@
 import path from "node:path";
+
 import { build } from "esbuild";
 
 async function buildSEA() {

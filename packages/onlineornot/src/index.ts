@@ -1,4 +1,6 @@
 import makeCLI from "yargs";
+import type { CommandModule } from "yargs";
+
 import { version as onlineornotVersion } from "../package.json";
 import { printBanner } from "./banner";
 import { billingHandler, billingOptions } from "./billing";
@@ -12,7 +14,6 @@ import { uninstallHandler, uninstallOptions } from "./uninstall";
 import { updateHandler, updateOptions } from "./update";
 import { whoami } from "./whoami";
 import type { CommonYargsArgv, CommonYargsOptions } from "./yargs-types";
-import type { CommandModule } from "yargs";
 
 const resetColor = "\x1b[0m";
 const fgGreenColor = "\x1b[32m";

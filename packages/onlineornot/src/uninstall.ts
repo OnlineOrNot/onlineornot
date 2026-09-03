@@ -1,11 +1,13 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+
 import chalk from "chalk";
+import type { Argv } from "yargs";
+
 import { logger } from "./logger";
 import { isStandaloneExecutable } from "./runtime-environment";
 import type { CommonYargsOptions } from "./yargs-types";
-import type { Argv } from "yargs";
 
 const INSTALL_DIR =
 	process.env.ONLINEORNOT_INSTALL_DIR ||

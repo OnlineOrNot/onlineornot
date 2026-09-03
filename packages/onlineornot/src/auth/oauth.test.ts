@@ -1,5 +1,7 @@
 import http from "node:http";
+
 import { afterEach, describe, expect, it } from "vitest";
+
 import {
 	buildAuthUrl,
 	CALLBACK_PORT,

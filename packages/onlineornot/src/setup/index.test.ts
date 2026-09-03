@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+
 import { runSetup, validateCheckUrl } from ".";
 import type { BrowserAuthenticationOptions } from "../login";
 import type { SetupCheckState } from "./state";

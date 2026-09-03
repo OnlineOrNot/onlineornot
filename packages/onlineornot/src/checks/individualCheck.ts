@@ -2,11 +2,11 @@ import { printBanner } from "../banner";
 import { fetchResult } from "../fetch";
 import { logger } from "../logger";
 import { verifyToken } from "../user";
-import type { Check } from "./types";
 import type {
 	CommonYargsArgv,
 	StrictYargsOptionsToInterface,
 } from "../yargs-types";
+import type { Check } from "./types";
 
 export function options(yargs: CommonYargsArgv) {
 	return yargs

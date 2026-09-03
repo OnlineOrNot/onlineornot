@@ -1,10 +1,11 @@
+import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { chmod, mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdtemp } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { spawnSync } from "node:child_process";
-import { mkdtemp } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+
 import { describe, expect, it } from "vitest";
 
 const installer = fileURLToPath(new URL("../install.sh", import.meta.url));

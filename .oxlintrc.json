@@ -37,25 +37,7 @@
 		"anti-slop/require-safety-comment-for-type-assertion": "error",
 		"typescript/consistent-type-imports": "error",
 		"typescript/no-empty-function": "off",
-		"typescript/no-explicit-any": "error",
-		"import/order": [
-			"warn",
-			{
-				"groups": [
-					"builtin",
-					"external",
-					"internal",
-					"parent",
-					"sibling",
-					"index",
-					"object",
-					"type"
-				],
-				"alphabetize": {
-					"order": "asc"
-				}
-			}
-		]
+		"typescript/no-explicit-any": "error"
 	},
 	"overrides": [
 		{

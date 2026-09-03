@@ -1,11 +1,13 @@
 import process from "process";
+
 import { hideBin } from "yargs/helpers";
+
+import { main } from ".";
 import {
 	checkForUpdateInBackground,
 	handleUpdateCheckFlag,
 } from "./auto-update";
 import { FatalError } from "./errors";
-import { main } from ".";
 
 /**
  * The main entrypoint for the CLI.

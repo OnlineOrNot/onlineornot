@@ -1,7 +1,9 @@
 import { URLSearchParams } from "node:url";
+
+import type { RequestInit } from "undici";
+
 import { ParseError } from "../parse";
 import { fetchInternal } from "./internal";
-import type { RequestInit } from "undici";
 
 // Check out https://api-docs.onlineornot.com/ for API docs.
 

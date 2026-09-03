@@ -1,5 +1,3 @@
-import { logger } from "../logger";
-import openInBrowser from "../open-in-browser";
 import {
 	buildAuthUrl,
 	startOAuthCallbackServer,
@@ -8,6 +6,8 @@ import {
 	type OAuthProvider,
 } from "../auth";
 import { getOnlineOrNotAPITokenFromEnv } from "../environment-variables/misc-variables";
+import { logger } from "../logger";
+import openInBrowser from "../open-in-browser";
 
 export function loginOptions() {
 	return {};

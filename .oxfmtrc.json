@@ -4,6 +4,7 @@
 	"singleQuote": false,
 	"semi": true,
 	"useTabs": true,
+	"sortImports": true,
 	"sortPackageJson": false,
 	"ignorePatterns": ["tools/oxlint/anti-slop/**"]
 }
