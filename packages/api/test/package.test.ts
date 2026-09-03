@@ -18,15 +18,15 @@ it("imports the built package root", async () => {
 });
 
 it("packs only intended public files", () => {
-	const npm = process.platform === "win32" ? "npm.cmd" : "npm";
-	const result = execFileSync(
-		npm,
-		["pack", "--dry-run", "--json", "--ignore-scripts"],
-		{
-			cwd: packageDirectory,
-			encoding: "utf8",
-		},
-	);
+	const command = process.platform === "win32" ? "cmd.exe" : "npm";
+	const arguments_ =
+		process.platform === "win32"
+			? ["/d", "/s", "/c", "npm pack --dry-run --json --ignore-scripts"]
+			: ["pack", "--dry-run", "--json", "--ignore-scripts"];
+	const result = execFileSync(command, arguments_, {
+		cwd: packageDirectory,
+		encoding: "utf8",
+	});
 	const files = JSON.parse(result)[0]
 		.files.map((file: { path: string }) => file.path)
 		.sort();
