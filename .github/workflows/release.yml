@@ -74,7 +74,7 @@ jobs:
           TAG="onlineornot@$VERSION"
           PACKAGE_EXISTS=false
           NPM_LATEST=""
-          CLI_JUST_PUBLISHED=$(node .github/cli-release-published.mjs "$PUBLISHED_PACKAGES" "$VERSION")
+          CLI_JUST_PUBLISHED=$(node .github/package-release-published.mjs "$PUBLISHED_PACKAGES" "onlineornot" "$VERSION")
           if [[ "$CLI_JUST_PUBLISHED" == "true" ]]; then
             PACKAGE_EXISTS=true
             NPM_LATEST="$VERSION"
@@ -102,6 +102,58 @@ jobs:
           fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "release_pending=$RELEASE_PENDING" >> "$GITHUB_OUTPUT"
+
+      - name: Inspect pending API SDK release
+        id: inspect-api-release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
+        run: |
+          VERSION=$(node -p 'require("./packages/api/package.json").version')
+          TAG="@onlineornot/api@$VERSION"
+          PACKAGE_EXISTS=false
+          NPM_LATEST=""
+          API_JUST_PUBLISHED=$(node .github/package-release-published.mjs "$PUBLISHED_PACKAGES" "@onlineornot/api" "$VERSION")
+          if [[ "$API_JUST_PUBLISHED" == "true" ]]; then
+            PACKAGE_EXISTS=true
+            NPM_LATEST="$VERSION"
+          elif PUBLISHED_VERSION=$(npm view "@onlineornot/api@$VERSION" version 2>/dev/null); then
+            if [[ "$PUBLISHED_VERSION" == "$VERSION" ]]; then
+              PACKAGE_EXISTS=true
+              NPM_LATEST=$(npm view @onlineornot/api dist-tags.latest)
+            fi
+          fi
+          RELEASE_EXISTS=$(gh api --paginate "repos/$GITHUB_REPOSITORY/releases?per_page=100" \
+            --jq ".[] | select(.tag_name == \"$TAG\" and .draft == false) | .tag_name")
+          RELEASE_PENDING=false
+          if [[ "$PACKAGE_EXISTS" == "true" && "$NPM_LATEST" == "$VERSION" && -z "$RELEASE_EXISTS" ]]; then
+            RELEASE_PENDING=true
+          fi
+          if [[ "$RELEASE_PENDING" == "true" ]]; then
+            if ! git rev-parse --verify "refs/tags/$TAG" >/dev/null 2>&1; then
+              if [[ "$API_JUST_PUBLISHED" == "true" ]]; then
+                RELEASE_COMMIT="$GITHUB_SHA"
+              else
+                RELEASE_COMMIT=$(node .github/find-package-version-commit.mjs packages/api/package.json "$VERSION")
+              fi
+              git tag "$TAG" "$RELEASE_COMMIT"
+              git push origin "refs/tags/$TAG"
+            fi
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "release_pending=$RELEASE_PENDING" >> "$GITHUB_OUTPUT"
+
+      - name: Publish API SDK GitHub release
+        if: steps.inspect-api-release.outputs.release_pending == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.inspect-api-release.outputs.version }}
+        run: |
+          TAG="@onlineornot/api@$VERSION"
+          node -r esbuild-register packages/onlineornot/scripts/extract-release-notes.ts \
+            "$VERSION" packages/api/CHANGELOG.md api-release-notes.md
+          gh release create "$TAG" --verify-tag --title "$TAG" \
+            --notes-file api-release-notes.md --latest=false
 
     outputs:
       release_pending: ${{ steps.inspect-release.outputs.release_pending }}
