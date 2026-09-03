@@ -1,5 +1,11 @@
 # onlineornot
 
+## 1.6.6
+
+### Patch Changes
+
+- [#82](https://github.com/OnlineOrNot/onlineornot/pull/82) [`552148f`](https://github.com/OnlineOrNot/onlineornot/commit/552148f08c4a09fa9c08117a44ac73997edcc4d8) Thanks [@rozenmd](https://github.com/rozenmd)! - Update the CLI's runtime and development dependencies.
+
 ## 1.6.5
 
 ### Patch Changes
