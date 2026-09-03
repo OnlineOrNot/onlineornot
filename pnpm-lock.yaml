@@ -17,9 +17,6 @@ importers:
       '@types/node':
         specifier: ^22.19.15
         version: 22.20.1
-      cross-env:
-        specifier: ^10.1.0
-        version: 10.1.0
       esbuild-register:
         specifier: ^3.6.0
         version: 3.6.0(esbuild@0.28.2)(supports-color@11.0.0)
