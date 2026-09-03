@@ -7,7 +7,7 @@
 	"bugs": {
 		"url": "https://github.com/cloudflare/onlineornot/issues"
 	},
-	"license": "MIT",
+	"license": "FSL-1.1-Apache-2.0",
 	"author": "max@onlineornot.com",
 	"scripts": {
 		"build": "pnpm -r --if-present run build",
