@@ -9,7 +9,7 @@
 	"bugs": {
 		"url": "https://github.com/OnlineOrNot/onlineornot/issues"
 	},
-	"license": "MIT",
+	"license": "FSL-1.1-Apache-2.0",
 	"author": "Max Rozen <max@onlineornot.com>",
 	"repository": {
 		"type": "git",
