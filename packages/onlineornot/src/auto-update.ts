@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+
 import pkg from "../package.json";
 import { isStandaloneExecutable } from "./runtime-environment";
 import { runStandaloneUpdate } from "./standalone-update";

@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import checkForUpdate from "update-check";
+
 import pkg from "../package.json";
 
 export async function updateCheck(): Promise<string> {

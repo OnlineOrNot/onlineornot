@@ -4,6 +4,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
+
 import { githubReleaseSource, resolveAndApply } from "binpatch";
 import type { ProgressEvent } from "binpatch";
 

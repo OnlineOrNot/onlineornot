@@ -2,11 +2,11 @@ import { printBanner } from "../banner";
 import { fetchPagedResult } from "../fetch";
 import { logger } from "../logger";
 import { verifyToken } from "../user";
-import type { CheckListItem } from "./types";
 import type {
 	CommonYargsArgv,
 	StrictYargsOptionsToInterface,
 } from "../yargs-types";
+import type { CheckListItem } from "./types";
 
 export function options(yargs: CommonYargsArgv) {
 	return yargs.option("json", {

@@ -1,7 +1,7 @@
-import { printBanner } from "../banner";
-import { logger } from "../logger";
 import { getCredentials, clearCredentials, revokeToken } from "../auth";
+import { printBanner } from "../banner";
 import { getOnlineOrNotAPITokenFromEnv } from "../environment-variables/misc-variables";
+import { logger } from "../logger";
 
 export function logoutOptions() {
 	return {};

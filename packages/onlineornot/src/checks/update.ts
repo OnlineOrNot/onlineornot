@@ -3,12 +3,12 @@ import { fetchResult } from "../fetch";
 import { logger } from "../logger";
 import { ParseError } from "../parse";
 import { verifyToken } from "../user";
-import type { Check, UpdateCheckParams } from "./types";
-import { VALID_METHODS, VALID_REGIONS } from "./types";
 import type {
 	CommonYargsArgv,
 	StrictYargsOptionsToInterface,
 } from "../yargs-types";
+import type { Check, UpdateCheckParams } from "./types";
+import { VALID_METHODS, VALID_REGIONS } from "./types";
 
 export function options(yargs: CommonYargsArgv) {
 	return yargs

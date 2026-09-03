@@ -1,7 +1,7 @@
-import { getOnlineOrNotAPITokenFromEnv } from "../environment-variables/misc-variables";
-import { fetchResult } from "../fetch";
 import { getCredentials, isTokenExpired } from "../auth/credentials";
 import { getValidToken, AuthenticationError } from "../auth/refresh";
+import { getOnlineOrNotAPITokenFromEnv } from "../environment-variables/misc-variables";
+import { fetchResult } from "../fetch";
 
 export const NOT_LOGGED_IN_MSG =
 	"You are not logged in.\nRun `onlineornot login` to authenticate, or set ONLINEORNOT_API_TOKEN as an environment variable.";

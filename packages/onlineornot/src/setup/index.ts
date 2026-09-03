@@ -1,12 +1,13 @@
-import { createInterface } from "node:readline/promises";
 import { stdin, stdout } from "node:process";
+import { createInterface } from "node:readline/promises";
+
+import type { OAuthProvider } from "../auth";
+import { fetchPagedResult, fetchResult } from "../fetch";
+import { logger } from "../logger";
 import {
 	authenticateWithBrowser,
 	type BrowserAuthenticationOptions,
 } from "../login";
-import { fetchPagedResult, fetchResult } from "../fetch";
-import { logger } from "../logger";
-import type { OAuthProvider } from "../auth";
 import type {
 	CommonYargsArgv,
 	StrictYargsOptionsToInterface,

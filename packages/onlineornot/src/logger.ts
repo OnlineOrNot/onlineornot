@@ -1,9 +1,10 @@
 import { format } from "node:util";
+
 import chalk from "chalk";
 import CLITable from "cli-table3";
-import { getEnvironmentVariableFactory } from "./environment-variables/factory";
-
 import type { formatMessagesSync as FormatMessagesSyncType } from "esbuild";
+
+import { getEnvironmentVariableFactory } from "./environment-variables/factory";
 
 // Dynamically import esbuild formatter - not available in SEA builds
 let formatMessagesSync: typeof FormatMessagesSyncType | undefined;

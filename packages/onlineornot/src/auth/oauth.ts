@@ -1,5 +1,6 @@
 import http from "node:http";
 import type { AddressInfo } from "node:net";
+
 import { generatePKCECodes, generateState } from "./pkce";
 
 const CLIENT_ID = "onlineornot-cli";

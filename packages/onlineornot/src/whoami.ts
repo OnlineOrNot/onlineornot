@@ -1,3 +1,5 @@
+import { getCredentials } from "./auth";
+import { getOnlineOrNotAPITokenFromEnv } from "./environment-variables/misc-variables";
 import { fetchResult } from "./fetch";
 import { logger } from "./logger";
 import {
@@ -5,8 +7,6 @@ import {
 	INVALID_TOKEN_MSG,
 	hasAuthentication,
 } from "./user";
-import { getCredentials } from "./auth";
-import { getOnlineOrNotAPITokenFromEnv } from "./environment-variables/misc-variables";
 
 interface TokenVerifyResponse {
 	status: "active" | "expired" | "revoked";
