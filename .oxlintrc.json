@@ -59,6 +59,7 @@
 	],
 	"ignorePatterns": [
 		"packages/onlineornot/*-dist",
+		"packages/api/src/generated/**",
 		"node_modules",
 		"tools/oxlint/anti-slop/**"
 	]

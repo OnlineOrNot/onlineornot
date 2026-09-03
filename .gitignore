@@ -188,3 +188,5 @@ packages/prerelease-registry/_worker.js
 sea/
 packages/onlineornot/onlineornot
 packages/onlineornot/onlineornot-*
+# Verified OpenAPI download cache (keyed by schema commit and digest)
+packages/api/.schema-cache/

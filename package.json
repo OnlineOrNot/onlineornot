@@ -10,14 +10,14 @@
 	"license": "MIT",
 	"author": "max@onlineornot.com",
 	"scripts": {
-		"build": "pnpm --filter onlineornot run build",
+		"build": "pnpm -r --if-present run build",
 		"check": "run-p check:* --aggregate-output --continue-on-error",
 		"check:format": "oxfmt --check .",
 		"check:lint": "oxlint --deny-warnings",
 		"check:type": "pnpm -r --if-present run check:type",
 		"fix": "oxfmt --write . && oxlint --fix",
-		"test": "pnpm --filter onlineornot run clean && pnpm --filter onlineornot run bundle && pnpm --filter onlineornot run test",
-		"test:ci": "pnpm --filter onlineornot run test:ci",
+		"test": "pnpm --filter onlineornot run clean && pnpm run build && pnpm -r --if-present run test",
+		"test:ci": "pnpm -r --if-present run test:ci",
 		"prepare": "husky"
 	},
 	"dependencies": {

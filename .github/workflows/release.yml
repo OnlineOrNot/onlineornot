@@ -68,13 +68,14 @@ jobs:
         id: inspect-release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          JUST_PUBLISHED: ${{ steps.changesets.outputs.published }}
+          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
         run: |
           VERSION=$(node -p 'require("./packages/onlineornot/package.json").version')
           TAG="onlineornot@$VERSION"
           PACKAGE_EXISTS=false
           NPM_LATEST=""
-          if [[ "$JUST_PUBLISHED" == "true" ]]; then
+          CLI_JUST_PUBLISHED=$(node .github/cli-release-published.mjs "$PUBLISHED_PACKAGES" "$VERSION")
+          if [[ "$CLI_JUST_PUBLISHED" == "true" ]]; then
             PACKAGE_EXISTS=true
             NPM_LATEST="$VERSION"
           elif PUBLISHED_VERSION=$(npm view "onlineornot@$VERSION" version 2>/dev/null); then
@@ -91,7 +92,7 @@ jobs:
           fi
           if [[ "$RELEASE_PENDING" == "true" ]]; then
             if ! git rev-parse --verify "refs/tags/$TAG" >/dev/null 2>&1; then
-              if [[ "$JUST_PUBLISHED" != "true" ]]; then
+              if [[ "$CLI_JUST_PUBLISHED" != "true" ]]; then
                 echo "::error::Published package $VERSION has no immutable release tag"
                 exit 1
               fi
