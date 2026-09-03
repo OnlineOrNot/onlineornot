@@ -1,0 +1,18 @@
+{
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"incremental": false,
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"target": "ES2022",
+		"types": ["node", "vitest/globals"]
+	},
+	"include": [
+		"src/**/*.ts",
+		"test/**/*.ts",
+		"openapi-ts.config.ts",
+		"tsup.config.ts"
+	],
+	"exclude": ["dist", "node_modules"]
+}

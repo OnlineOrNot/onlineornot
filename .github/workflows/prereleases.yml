@@ -42,4 +42,4 @@ jobs:
         run: pnpm run build:sea
 
       - name: Publish to pkg.pr.new
-        run: pnpm dlx pkg-pr-new publish './packages/onlineornot'
+        run: pnpm dlx pkg-pr-new publish './packages/onlineornot' './packages/api'

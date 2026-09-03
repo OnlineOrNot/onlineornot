@@ -52,3 +52,7 @@ There are docs for:
 - [Installing and updating `onlineornot`](https://onlineornot.com/docs/cli-installation)
 - [Logging in](https://onlineornot.com/docs/cli-login)
 - [CLI Commands](https://onlineornot.com/docs/cli-commands)
+
+## TypeScript API SDK
+
+The independently versioned [`@onlineornot/api`](./packages/api) workspace package provides a low-level generated TypeScript client for the OnlineOrNot REST API. The CLI does not consume the SDK yet.
