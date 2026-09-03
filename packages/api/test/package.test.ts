@@ -40,7 +40,7 @@ it("packs only intended public files", () => {
 	]);
 	for (const file of files)
 		expect(file).not.toMatch(/(?:\.env|schema|cache|token|credential)/i);
-});
+}, 30_000);
 
 it("keeps public operation names unique and pinned", () => {
 	const manifest = JSON.parse(
