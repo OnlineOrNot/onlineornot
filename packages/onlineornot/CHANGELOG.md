@@ -1,5 +1,11 @@
 # onlineornot
 
+## 1.7.0
+
+### Minor Changes
+
+- [#88](https://github.com/OnlineOrNot/onlineornot/pull/88) [`5853e70`](https://github.com/OnlineOrNot/onlineornot/commit/5853e7034dd34e05208e7dcf9fe24838003e64ed) Thanks [@rozenmd](https://github.com/rozenmd)! - Use the generated `@onlineornot/api` SDK for checks and token API requests while preserving CLI authentication, errors, logging, and pagination.
+
 ## 1.6.6
 
 ### Patch Changes
