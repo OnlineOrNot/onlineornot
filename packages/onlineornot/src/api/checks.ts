@@ -19,36 +19,28 @@ import {
 	unwrapApiEnvelope,
 	unwrapApiResult,
 } from "./infrastructure";
+import { paginateAllPages } from "./pagination";
 
 const CHECKS_RESOURCE = "/checks";
-const PAGE_SIZE = 100;
 
 export async function listChecks(): Promise<CheckListItem[]> {
 	const config = await authenticatedConfig();
-	const checks: CheckListItem[] = [];
-	let page = 1;
-
-	while (true) {
+	return paginateAllPages(async (page, pageSize) => {
 		const response = unwrapApiEnvelope(
 			await sdkListChecks({
 				...config,
 				query: {
 					page: String(page),
-					per_page: String(PAGE_SIZE),
+					per_page: String(pageSize),
 				},
 			}),
 			CHECKS_RESOURCE,
 		);
-		checks.push(...response.result);
-
-		if (
-			checks.length >= response.result_info.total_count ||
-			response.result.length === 0
-		) {
-			return checks;
-		}
-		page += 1;
-	}
+		return {
+			items: response.result,
+			totalItems: response.result_info.total_count,
+		};
+	});
 }
 
 export async function createCheck(params: CreateCheckParams): Promise<Check> {
