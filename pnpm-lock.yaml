@@ -73,8 +73,8 @@ importers:
   packages/onlineornot:
     dependencies:
       '@onlineornot/api':
-        specifier: workspace:^
-        version: link:../api
+        specifier: ^0.1.0
+        version: 0.1.0
       chalk:
         specifier: ^6.0.0
         version: 6.0.0
@@ -586,6 +586,10 @@ packages:
     cpu: [x64]
     os: [linux]
     libc: [glibc]
+
+  '@onlineornot/api@0.1.0':
+    resolution: {integrity: sha512-RXfeB2xoJvezijQEV+gXpPc0klHGYTZa+0ci2uITl13N8aMCGqprOGJvp8ITjXpHriVvGltRr5/3I1uNvxkZnw==}
+    engines: {node: '>=18'}
 
   '@oxc-project/types@0.147.0':
     resolution: {integrity: sha512-IJ3s6ltHLp45S0bh7phkX+gJO7A1Wuz2EaqpAhb8WjqDwbzMiWKHhyyT42tskaWjEYXtHtVCPpnBJVT9+dcRLg==}
@@ -3171,6 +3175,8 @@ snapshots:
 
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     optional: true
+
+  '@onlineornot/api@0.1.0': {}
 
   '@oxc-project/types@0.147.0': {}
 

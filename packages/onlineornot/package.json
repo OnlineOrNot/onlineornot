@@ -40,7 +40,7 @@
 		"verify:release-patches": "tsx scripts/verify-release-patches.mts"
 	},
 	"dependencies": {
-		"@onlineornot/api": "workspace:^",
+		"@onlineornot/api": "^0.1.0",
 		"chalk": "^6.0.0",
 		"cli-table3": "^0.6.5",
 		"conf": "^15.1.0",
