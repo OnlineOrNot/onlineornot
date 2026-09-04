@@ -55,4 +55,4 @@ There are docs for:
 
 ## TypeScript API SDK
 
-The independently versioned [`@onlineornot/api`](./packages/api) workspace package provides a low-level generated TypeScript client for the OnlineOrNot REST API. The CLI does not consume the SDK yet.
+The independently versioned [`@onlineornot/api`](./packages/api) workspace package provides a low-level generated TypeScript client for the OnlineOrNot REST API. The CLI uses its generated operations through a small adapter that supplies CLI authentication, logging, error handling, and pagination.

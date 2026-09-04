@@ -1,5 +1,5 @@
+import { deleteCheck } from "../api/checks";
 import { printBanner } from "../banner";
-import { fetchResult } from "../fetch";
 import { logger } from "../logger";
 import { ParseError } from "../parse";
 import { verifyToken } from "../user";
@@ -31,9 +31,7 @@ export async function handler(
 	await verifyToken();
 
 	try {
-		await fetchResult(`/checks/${args.id}`, {
-			method: "DELETE",
-		});
+		await deleteCheck(args.id);
 	} catch (err) {
 		if (
 			err instanceof ParseError &&

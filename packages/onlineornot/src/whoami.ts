@@ -1,20 +1,12 @@
+import { getApiTokenPermissions, verifyApiToken } from "./api/tokens";
 import { getCredentials } from "./auth";
 import { getOnlineOrNotAPITokenFromEnv } from "./environment-variables/misc-variables";
-import { fetchResult } from "./fetch";
 import { logger } from "./logger";
 import {
 	NOT_LOGGED_IN_MSG,
 	INVALID_TOKEN_MSG,
 	hasAuthentication,
 } from "./user";
-
-interface TokenVerifyResponse {
-	status: "active" | "expired" | "revoked";
-}
-
-interface TokenPermissionsResponse {
-	permissions: string[];
-}
 
 export async function whoami() {
 	logger.log("Getting User settings...");
@@ -28,25 +20,25 @@ export async function whoami() {
 	const envToken = getOnlineOrNotAPITokenFromEnv();
 
 	if (envToken) {
-		await showApiTokenInfo();
+		await showApiTokenInfo(envToken);
 	} else {
 		await showOAuthInfo();
 	}
 }
 
-async function showApiTokenInfo() {
+async function showApiTokenInfo(envToken: string) {
 	logger.log(
 		"👋 You are logged in with an API token (via environment variable).",
 	);
 
 	// Verify token is valid by calling the API
-	const verified = await verifyTokenWithServer();
+	const verified = await verifyTokenWithServer(envToken);
 	if (!verified) {
 		return void logger.log(INVALID_TOKEN_MSG);
 	}
 
 	// Get permissions from server (not from local storage)
-	const permissions = await getServerPermissions();
+	const permissions = await getServerPermissions(envToken);
 	if (permissions) {
 		logger.log("🔓 Token Permissions:");
 		logger.log("Scope (Access)");
@@ -117,9 +109,9 @@ async function showOAuthInfo() {
  * Verify token is valid by calling the server.
  * Returns true if valid, false if invalid/revoked.
  */
-async function verifyTokenWithServer(): Promise<boolean> {
+async function verifyTokenWithServer(apiToken: string): Promise<boolean> {
 	try {
-		const result = await fetchResult<TokenVerifyResponse>("/tokens/verify");
+		const result = await verifyApiToken(apiToken);
 		return result.status === "active";
 	} catch {
 		return false;
@@ -129,11 +121,11 @@ async function verifyTokenWithServer(): Promise<boolean> {
 /**
  * Get token permissions from the server.
  */
-async function getServerPermissions(): Promise<string[] | null> {
+async function getServerPermissions(
+	apiToken: string,
+): Promise<string[] | null> {
 	try {
-		const result = await fetchResult<TokenPermissionsResponse>(
-			"/tokens/permissions",
-		);
+		const result = await getApiTokenPermissions(apiToken);
 		return result.permissions;
 	} catch {
 		return null;

@@ -72,6 +72,9 @@ importers:
 
   packages/onlineornot:
     dependencies:
+      '@onlineornot/api':
+        specifier: workspace:^
+        version: link:../api
       chalk:
         specifier: ^6.0.0
         version: 6.0.0
@@ -90,9 +93,6 @@ importers:
       supports-color:
         specifier: ^11.0.0
         version: 11.0.0
-      undici:
-        specifier: ^7.29.0
-        version: 7.29.0
       update-check:
         specifier: ^1.5.4
         version: 1.5.4
@@ -2642,10 +2642,6 @@ packages:
   undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
-  undici@7.29.0:
-    resolution: {integrity: sha512-IDxfleLmmbSskfWSUATiN1nfn2rDuvnMOqb5CWR92iIfojA0Ud+ulOAAEQ57LPr9rWmsreUyf5lwyao+7GNNVw==}
-    engines: {node: '>=20.18.1'}
-
   update-check@1.5.4:
     resolution: {integrity: sha512-5YHsflzHP4t1G+8WGPlvKbJEbAJGCgw+Em+dGR1KmBUbr1J36SJBqlHLjR7oob7sco5hWHGQVcr9B2poIVDDTQ==}
 
@@ -5121,8 +5117,6 @@ snapshots:
       which-boxed-primitive: 1.1.1
 
   undici-types@6.21.0: {}
-
-  undici@7.29.0: {}
 
   update-check@1.5.4:
     dependencies:

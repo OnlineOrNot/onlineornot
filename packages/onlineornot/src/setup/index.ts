@@ -1,8 +1,11 @@
 import { stdin, stdout } from "node:process";
 import { createInterface } from "node:readline/promises";
 
+import {
+	createCheck as createApiCheck,
+	listChecks as listApiChecks,
+} from "../api/checks";
 import type { OAuthProvider } from "../auth";
-import { fetchPagedResult, fetchResult } from "../fetch";
 import { logger } from "../logger";
 import {
 	authenticateWithBrowser,
@@ -75,15 +78,27 @@ interface SetupDependencies {
 	log: (...values: unknown[]) => void;
 }
 
+async function listSetupChecks(): Promise<SetupCheck[]> {
+	return (await listApiChecks()).flatMap(({ id, name, url }) =>
+		url === null ? [] : [{ id, name, url }],
+	);
+}
+
+async function createSetupCheck(
+	name: string,
+	url: string,
+): Promise<SetupCheck> {
+	const check = await createApiCheck({ name, url });
+	if (check.url === null) {
+		throw new Error("The API returned a check without a URL.");
+	}
+	return { id: check.id, name: check.name, url: check.url };
+}
+
 const defaultDependencies: SetupDependencies = {
 	authenticate: authenticateWithBrowser,
-	listChecks: () => fetchPagedResult<SetupCheck>("/checks"),
-	createCheck: (name, url) =>
-		fetchResult<SetupCheck>("/checks/", {
-			method: "POST",
-			headers: { "content-type": "application/json" },
-			body: JSON.stringify({ name, url }),
-		}),
+	listChecks: listSetupChecks,
+	createCheck: createSetupCheck,
 	getState: getSetupCheckState,
 	saveState: saveSetupCheckState,
 	prompt: async () => {
