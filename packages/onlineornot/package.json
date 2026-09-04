@@ -40,13 +40,13 @@
 		"verify:release-patches": "tsx scripts/verify-release-patches.mts"
 	},
 	"dependencies": {
+		"@onlineornot/api": "workspace:^",
 		"chalk": "^6.0.0",
 		"cli-table3": "^0.6.5",
 		"conf": "^15.1.0",
 		"esbuild": "^0.28.2",
 		"open": "^11.0.2",
 		"supports-color": "^11.0.0",
-		"undici": "^7.29.0",
 		"update-check": "^1.5.4",
 		"yargs": "^17.7.3"
 	},

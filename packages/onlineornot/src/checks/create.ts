@@ -1,5 +1,5 @@
+import { createCheck } from "../api/checks";
 import { printBanner } from "../banner";
-import { fetchResult } from "../fetch";
 import { logger } from "../logger";
 import { ParseError } from "../parse";
 import { verifyToken } from "../user";
@@ -109,7 +109,7 @@ export function options(yargs: CommonYargsArgv) {
 		.option("version", {
 			describe: "Version of the Browser Check",
 			type: "string",
-			choices: ["NODE20_PLAYWRIGHT"] as const,
+			choices: ["NODE24_PLAYWRIGHT"] as const,
 		})
 		.option("webhook-alerts", {
 			describe: "IDs of webhooks to associate with this check",
@@ -196,11 +196,7 @@ export async function handler(
 
 	let result: Check;
 	try {
-		result = await fetchResult(`/checks/`, {
-			method: "POST",
-			headers: { "content-type": "application/json" },
-			body: JSON.stringify(params),
-		});
+		result = await createCheck(params);
 	} catch (err) {
 		if (err instanceof ParseError && err.code === 10004) {
 			return logger.error(

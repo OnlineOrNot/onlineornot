@@ -1,7 +1,7 @@
+import { verifyApiToken } from "../api/tokens";
 import { getCredentials, isTokenExpired } from "../auth/credentials";
 import { getValidToken, AuthenticationError } from "../auth/refresh";
 import { getOnlineOrNotAPITokenFromEnv } from "../environment-variables/misc-variables";
-import { fetchResult } from "../fetch";
 
 export const NOT_LOGGED_IN_MSG =
 	"You are not logged in.\nRun `onlineornot login` to authenticate, or set ONLINEORNOT_API_TOKEN as an environment variable.";
@@ -72,10 +72,6 @@ export function getTokenQuietly(): TokenInfo | undefined {
 	return undefined;
 }
 
-interface TokenVerifyResponse {
-	status: "active" | "expired" | "revoked";
-}
-
 /**
  * Verify the current token is valid.
  *
@@ -94,7 +90,7 @@ export async function verifyToken(): Promise<TokenInfo> {
 
 	// API tokens need server verification
 	try {
-		const result = await fetchResult<TokenVerifyResponse>("/tokens/verify");
+		const result = await verifyApiToken(tokenInfo.apiToken);
 
 		if (result.status !== "active") {
 			throw new Error(INVALID_TOKEN_MSG);

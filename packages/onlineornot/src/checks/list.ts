@@ -1,5 +1,5 @@
+import { listChecks } from "../api/checks";
 import { printBanner } from "../banner";
-import { fetchPagedResult } from "../fetch";
 import { logger } from "../logger";
 import { verifyToken } from "../user";
 import type {
@@ -23,7 +23,7 @@ export async function handler(
 		await printBanner();
 	}
 	await verifyToken();
-	const results = await fetchPagedResult<CheckListItem>("/checks");
+	const results: CheckListItem[] = await listChecks();
 
 	if (args.json) {
 		logger.log(JSON.stringify(results, null, "  "));
@@ -32,7 +32,7 @@ export async function handler(
 			results.map((result) => ({
 				"Check ID": result.id,
 				Name: result.name,
-				URL: result.url,
+				URL: result.url ?? result.dns_domain ?? result.tcp_hostname ?? "-",
 				Status: result.status ? result.status : "Pending",
 				"Last queued": result.last_queued
 					? result.last_queued

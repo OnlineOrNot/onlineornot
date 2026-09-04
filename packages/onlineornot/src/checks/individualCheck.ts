@@ -1,5 +1,5 @@
+import { getCheck } from "../api/checks";
 import { printBanner } from "../banner";
-import { fetchResult } from "../fetch";
 import { logger } from "../logger";
 import { verifyToken } from "../user";
 import type {
@@ -29,7 +29,7 @@ export async function handler(
 		await printBanner();
 	}
 	await verifyToken();
-	const result = await fetchResult<Check>(`/checks/${args.id}`);
+	const result: Check = await getCheck(args.id);
 
 	if (args.json) {
 		logger.log(JSON.stringify(result, null, "  "));
