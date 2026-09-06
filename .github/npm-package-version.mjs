@@ -1,6 +1,7 @@
 import { execFileSync } from "node:child_process";
+import path from "node:path";
 import { setTimeout } from "node:timers/promises";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 
 export async function npmPackageVersion(
 	spec,
@@ -35,7 +36,10 @@ export async function npmPackageVersion(
 
 if (
 	process.argv[1] &&
-	import.meta.url === pathToFileURL(process.argv[1]).href
+	path.relative(
+		fileURLToPath(import.meta.url),
+		path.resolve(process.argv[1]),
+	) === ""
 ) {
 	console.log(await npmPackageVersion(process.argv[2]));
 }

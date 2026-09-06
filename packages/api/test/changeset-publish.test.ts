@@ -2,7 +2,7 @@ import { spawnSync } from "node:child_process";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { expect, it, vi } from "vitest";
 
@@ -82,32 +82,43 @@ for (const status of [0, 1]) {
 	it(`bridges only successful publish subprocesses (exit ${status})`, () => {
 		const directory = mkdtempSync(path.join(tmpdir(), "publish-test-"));
 		try {
-			// Stub pnpm: these tests never contact npm or publish packages.
+			// Preload a Node stub rather than relying on executable shell scripts or
+			// PATH lookup. Any unexpected subprocess fails, never reaching npm.
+			const preload = path.join(directory, "stub-publish.mjs");
 			writeFileSync(
-				path.join(directory, "pnpm"),
-				`#!/bin/sh
-printf '%s\n' '{"type":"git-tag","packageName":"onlineornot","tag":"onlineornot@1.7.0"}' > "$CHANGESETS_OUTPUT"
-echo 'Successfully published: onlineornot@1.7.0'
-exit ${status}
+				preload,
+				`import assert from "node:assert/strict";
+import childProcess from "node:child_process";
+import { writeFileSync } from "node:fs";
+import { syncBuiltinESMExports } from "node:module";
+childProcess.execFileSync = (command, args, options) => {
+	assert.equal(command, "pnpm");
+	assert.deepEqual(args, ["changeset", "publish"]);
+	writeFileSync(options.env.CHANGESETS_OUTPUT, JSON.stringify({
+		type: "git-tag", packageName: "onlineornot", tag: "onlineornot@1.7.0"
+	}) + "\\n");
+	console.log("Stub publish invoked");
+	if (${status} !== 0) throw new Error("Stub publish failed");
+};
+syncBuiltinESMExports();
 `,
-				{ mode: 0o755 },
 			);
 			const result = spawnSync(
 				process.execPath,
 				[
+					"--import",
+					pathToFileURL(preload).href,
 					fileURLToPath(
 						new URL("../../../.github/changeset-publish.mjs", import.meta.url),
 					),
 				],
 				{
 					encoding: "utf8",
-					env: {
-						...process.env,
-						PATH: `${directory}${path.delimiter}${process.env.PATH}`,
-					},
 				},
 			);
-			expect(result.status === 0).toBe(status === 0);
+			expect(result.error).toBeUndefined();
+			expect(result.stdout).toContain("Stub publish invoked");
+			expect(result.status === 0, result.stderr).toBe(status === 0);
 			expect(result.stdout.includes("New tag: onlineornot@1.7.0")).toBe(
 				status === 0,
 			);

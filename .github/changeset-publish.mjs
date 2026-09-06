@@ -2,7 +2,7 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 
 // changesets/action v1 expects legacy tag lines. Use v3's machine-readable
 // report rather than parsing its human-facing (and potentially ANSI) output.
@@ -45,7 +45,10 @@ export function publish() {
 
 if (
 	process.argv[1] &&
-	import.meta.url === pathToFileURL(process.argv[1]).href
+	path.relative(
+		fileURLToPath(import.meta.url),
+		path.resolve(process.argv[1]),
+	) === ""
 ) {
 	publish();
 }
