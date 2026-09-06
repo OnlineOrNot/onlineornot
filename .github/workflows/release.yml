@@ -202,6 +202,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Each matrix runner starts fresh; the SDK build in the release job
+      # is not available here. Build from the same immutable release tag.
+      - name: Build API SDK
+        run: pnpm --filter @onlineornot/api run build
+
       - name: Build SEA binary
         working-directory: packages/onlineornot
         run: pnpm run build:sea
