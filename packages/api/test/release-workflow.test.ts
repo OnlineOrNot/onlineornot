@@ -54,3 +54,21 @@ it("uses the v3 publication bridge and recovers missing CLI tags from version hi
 		'node .github/npm-package-version.mjs "onlineornot@$VERSION"',
 	);
 });
+
+it("builds the workspace SDK in each binary job before bundling the CLI", () => {
+	const workflow = readFileSync(
+		new URL("../../../.github/workflows/release.yml", import.meta.url),
+		"utf8",
+	);
+	const binaryJob = workflow
+		.split(/\r?\n  build-binaries:\r?\n/)[1]
+		?.split(/\r?\n  publish-release:\r?\n/)[0];
+	expect(binaryJob).toBeDefined();
+	expect(binaryJob).toContain("runs-on: ${{ matrix.os }}");
+	expect(binaryJob).toContain(
+		"ref: onlineornot@${{ needs.release.outputs.version }}",
+	);
+	expect(binaryJob).toMatch(
+		/run: pnpm install --frozen-lockfile[\s\S]*run: pnpm --filter @onlineornot\/api run build[\s\S]*run: pnpm run build:sea/,
+	);
+});
