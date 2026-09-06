@@ -39,3 +39,18 @@ it("publishes API SDK GitHub releases without replacing the CLI latest release",
 	expect(workflow).toContain('gh release create "$TAG" --verify-tag');
 	expect(workflow).toContain("--latest=false");
 });
+
+it("uses the v3 publication bridge and recovers missing CLI tags from version history", () => {
+	const workflow = readFileSync(
+		new URL("../../../.github/workflows/release.yml", import.meta.url),
+		"utf8",
+	);
+	expect(workflow).toContain("publish: node .github/changeset-publish.mjs");
+	expect(workflow).toContain(
+		'node .github/find-package-version-commit.mjs packages/onlineornot/package.json "$VERSION"',
+	);
+	expect(workflow).toContain('git tag "$TAG" "$RELEASE_COMMIT"');
+	expect(workflow).toContain(
+		'node .github/npm-package-version.mjs "onlineornot@$VERSION"',
+	);
+});
