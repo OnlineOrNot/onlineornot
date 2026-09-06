@@ -56,7 +56,7 @@ jobs:
         uses: changesets/action@6a0a831ff30acef54f2c6aa1cbbc1096b066edaf # v1.7.0
         with:
           version: node .github/changeset-version.js
-          publish: pnpm changeset publish
+          publish: node .github/changeset-publish.mjs
           createGithubReleases: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -78,7 +78,8 @@ jobs:
           if [[ "$CLI_JUST_PUBLISHED" == "true" ]]; then
             PACKAGE_EXISTS=true
             NPM_LATEST="$VERSION"
-          elif PUBLISHED_VERSION=$(npm view "onlineornot@$VERSION" version 2>/dev/null); then
+          else
+            PUBLISHED_VERSION=$(node .github/npm-package-version.mjs "onlineornot@$VERSION")
             if [[ "$PUBLISHED_VERSION" == "$VERSION" ]]; then
               PACKAGE_EXISTS=true
               NPM_LATEST=$(npm view onlineornot dist-tags.latest)
@@ -92,11 +93,12 @@ jobs:
           fi
           if [[ "$RELEASE_PENDING" == "true" ]]; then
             if ! git rev-parse --verify "refs/tags/$TAG" >/dev/null 2>&1; then
-              if [[ "$CLI_JUST_PUBLISHED" != "true" ]]; then
-                echo "::error::Published package $VERSION has no immutable release tag"
-                exit 1
+              if [[ "$CLI_JUST_PUBLISHED" == "true" ]]; then
+                RELEASE_COMMIT="$GITHUB_SHA"
+              else
+                RELEASE_COMMIT=$(node .github/find-package-version-commit.mjs packages/onlineornot/package.json "$VERSION")
               fi
-              git tag "$TAG" "$GITHUB_SHA"
+              git tag "$TAG" "$RELEASE_COMMIT"
             fi
             git push origin "refs/tags/$TAG"
           fi
@@ -117,7 +119,8 @@ jobs:
           if [[ "$API_JUST_PUBLISHED" == "true" ]]; then
             PACKAGE_EXISTS=true
             NPM_LATEST="$VERSION"
-          elif PUBLISHED_VERSION=$(npm view "@onlineornot/api@$VERSION" version 2>/dev/null); then
+          else
+            PUBLISHED_VERSION=$(node .github/npm-package-version.mjs "@onlineornot/api@$VERSION")
             if [[ "$PUBLISHED_VERSION" == "$VERSION" ]]; then
               PACKAGE_EXISTS=true
               NPM_LATEST=$(npm view @onlineornot/api dist-tags.latest)
