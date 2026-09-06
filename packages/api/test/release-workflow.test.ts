@@ -61,8 +61,8 @@ it("builds the workspace SDK in each binary job before bundling the CLI", () => 
 		"utf8",
 	);
 	const binaryJob = workflow
-		.split("\n  build-binaries:\n")[1]
-		?.split("\n  publish-release:\n")[0];
+		.split(/\r?\n  build-binaries:\r?\n/)[1]
+		?.split(/\r?\n  publish-release:\r?\n/)[0];
 	expect(binaryJob).toBeDefined();
 	expect(binaryJob).toContain("runs-on: ${{ matrix.os }}");
 	expect(binaryJob).toContain(
