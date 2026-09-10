@@ -15,10 +15,9 @@ interface ApiEnvelope<TResult = unknown> {
 	errors: ApiError[];
 }
 
-type ApiResult<TData> = (
-	| { data: TData; error: undefined }
-	| { data: undefined; error: unknown }
-) & {
+type ApiResult<TData> = {
+	data: TData | undefined;
+	error: unknown;
 	request?: Request;
 	response?: Response;
 };
