@@ -6,6 +6,7 @@ import {
 	listChecks,
 	pingHeartbeat,
 	type CheckListItem,
+	type CheckListResponse,
 	type ListChecksResponses,
 	type VerifyTokenErrors,
 } from "../src/index";
@@ -109,6 +110,7 @@ describe("generated client", () => {
 			ListChecksResponses[200],
 			{ success: false }
 		>;
+		expectTypeOf<ListChecksSuccess>().toMatchTypeOf<CheckListResponse>();
 		expectTypeOf<ListChecksSuccess["result"]>().toEqualTypeOf<
 			CheckListItem[]
 		>();
