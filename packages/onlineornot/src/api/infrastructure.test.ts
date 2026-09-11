@@ -41,7 +41,84 @@ function unwrapTypedSdkResult(response: TypedSdkResult) {
 	return { envelope, result };
 }
 
+type TokenFailure = {
+	success: false;
+	result?: null;
+	errors: { code: number; message: string }[];
+};
+
+type TokenSdkResult =
+	| {
+			data:
+				| {
+						success: boolean;
+						result: { id?: string; status: string };
+						errors: [];
+				  }
+				| TokenFailure;
+			error: undefined;
+	  }
+	| { data: undefined; error: TokenFailure };
+
+function unwrapTokenSdkResult(response: TokenSdkResult) {
+	const envelope = unwrapApiEnvelope(response, "/tokens/verify");
+	const result = unwrapApiResult(response, "/tokens/verify");
+
+	expectTypeOf(envelope.result.status).toEqualTypeOf<string>();
+	expectTypeOf(result.status).toEqualTypeOf<string>();
+	expectTypeOf(result.id).toEqualTypeOf<string | undefined>();
+
+	return result;
+}
+
 describe("API SDK infrastructure", () => {
+	it("keeps token success typed when HTTP 200 can contain a failure", () => {
+		expect(
+			unwrapTokenSdkResult({
+				data: { success: true, result: { status: "active" }, errors: [] },
+				error: undefined,
+			}),
+		).toEqual({ status: "active" });
+	});
+
+	it.each(["data", "error"] as const)(
+		"preserves API errors without result in SDK %s",
+		(field) => {
+			const failure: TokenFailure = {
+				success: false,
+				errors: [{ code: 10003, message: "Forbidden" }],
+			};
+			const response: TokenSdkResult =
+				field === "data"
+					? { data: failure, error: undefined }
+					: { data: undefined, error: failure };
+
+			for (const unwrap of [unwrapApiEnvelope, unwrapApiResult]) {
+				expect(() => unwrap(response, "/tokens/verify")).toThrowError(
+					expect.objectContaining<Partial<ParseError>>({
+						code: 10003,
+						notes: [{ text: "Forbidden [code: 10003]" }],
+					}),
+				);
+			}
+		},
+	);
+
+	it.each([unwrapApiEnvelope, unwrapApiResult])(
+		"still rejects successful envelopes missing result via %s",
+		(unwrap) => {
+			expect(() =>
+				unwrap(
+					{
+						// @ts-expect-error Deliberately malformed wire response.
+						data: { success: true, errors: [] },
+						error: undefined,
+					},
+					"/tokens/verify",
+				),
+			).toThrowError("Received a malformed response from the API");
+		},
+	);
 	it("preserves success and pagination types with typed SDK errors", () => {
 		const data: Extract<TypedSdkResult, { error: undefined }>["data"] = {
 			success: true,

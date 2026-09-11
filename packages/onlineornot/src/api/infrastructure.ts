@@ -9,11 +9,21 @@ interface ApiError {
 	error_chain?: ApiError[];
 }
 
-interface ApiEnvelope<TResult = unknown> {
+interface ApiResponse {
 	success: boolean;
-	result: TResult;
 	errors: ApiError[];
 }
+
+interface ApiEnvelope<TResult = unknown> extends ApiResponse {
+	result: TResult;
+}
+
+interface ApiFailure extends ApiResponse {
+	success: false;
+	result?: null;
+}
+
+type SuccessfulEnvelope<TData> = Exclude<TData, ApiFailure>;
 
 type ApiResult<TData> = {
 	data: TData | undefined;
@@ -44,12 +54,11 @@ export function getApiConfig(apiToken: string) {
 }
 
 /** Convert a generated SDK result into the API's successful wire envelope. */
-export function unwrapApiEnvelope<TData extends ApiEnvelope<unknown>>(
-	result: ApiResult<TData>,
-	resource: string,
-): TData {
+export function unwrapApiEnvelope<
+	TData extends ApiEnvelope<unknown> | ApiFailure,
+>(result: ApiResult<TData>, resource: string): SuccessfulEnvelope<TData> {
 	if (result.error !== undefined) {
-		if (isApiEnvelope(result.error)) {
+		if (isApiResponse(result.error)) {
 			throwApiError(resource, result.error);
 		}
 
@@ -62,6 +71,10 @@ export function unwrapApiEnvelope<TData extends ApiEnvelope<unknown>>(
 		});
 	}
 
+	if (isApiResponse(result.data) && !result.data.success) {
+		throwApiError(resource, result.data);
+	}
+
 	if (!isApiEnvelope(result.data)) {
 		throw new ParseError({
 			text: "Received a malformed response from the API",
@@ -69,21 +82,23 @@ export function unwrapApiEnvelope<TData extends ApiEnvelope<unknown>>(
 		});
 	}
 
-	if (!result.data.success) {
-		throwApiError(resource, result.data);
-	}
-
-	return result.data;
+	// SAFETY: Failure envelopes were rejected above, and successful envelopes
+	// must still contain result even when errors are allowed to omit it.
+	return result.data as SuccessfulEnvelope<TData>;
 }
 
 /** Unwrap both the generated SDK result and the API's `result` envelope. */
-export function unwrapApiResult<TData extends ApiEnvelope<unknown>>(
+export function unwrapApiResult<
+	TData extends ApiEnvelope<unknown> | ApiFailure,
+>(
 	result: ApiResult<TData>,
 	resource: string,
-): EnvelopeResult<TData> {
-	// SAFETY: EnvelopeResult extracts the result type from the TData envelope
+): EnvelopeResult<SuccessfulEnvelope<TData>> {
+	// SAFETY: EnvelopeResult extracts the result type from the successful envelope
 	// that unwrapApiEnvelope validates before returning.
-	return unwrapApiEnvelope(result, resource).result as EnvelopeResult<TData>;
+	return unwrapApiEnvelope(result, resource).result as EnvelopeResult<
+		SuccessfulEnvelope<TData>
+	>;
 }
 
 const fetchApi: typeof globalThis.fetch = async (input, init) => {
@@ -125,22 +140,22 @@ function redactedHeaders(headers: Headers): Record<string, string> {
 	return values;
 }
 
-function isApiEnvelope(value: unknown): value is ApiEnvelope<unknown> {
+function isApiResponse(value: unknown): value is ApiResponse {
 	return (
 		typeof value === "object" &&
 		value !== null &&
 		"success" in value &&
 		typeof value.success === "boolean" &&
-		"result" in value &&
 		"errors" in value &&
 		Array.isArray(value.errors)
 	);
 }
 
-function throwApiError(
-	resource: string,
-	response: ApiEnvelope<unknown>,
-): never {
+function isApiEnvelope(value: unknown): value is ApiEnvelope<unknown> {
+	return isApiResponse(value) && "result" in value;
+}
+
+function throwApiError(resource: string, response: ApiResponse): never {
 	throw new ParseError({
 		text: `A request to the OnlineOrNot API (${resource}) failed.`,
 		code: response.errors[0]?.code,

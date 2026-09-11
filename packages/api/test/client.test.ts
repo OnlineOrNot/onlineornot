@@ -108,7 +108,7 @@ describe("generated client", () => {
 		expectTypeOf<ListChecksResponses[200]>().toEqualTypeOf<CheckListResponse>();
 		expectTypeOf<VerifyTokenErrors[401]>().toMatchTypeOf<{
 			errors: Array<{ code: number; message: string }>;
-			result: null;
+			result?: null;
 			success: boolean;
 		}>();
 	});
