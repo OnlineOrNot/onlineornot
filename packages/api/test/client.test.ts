@@ -5,7 +5,7 @@ import {
 	createClient,
 	listChecks,
 	pingHeartbeat,
-	type CheckListResponse,
+	type CheckListItem,
 	type ListChecksResponses,
 	type VerifyTokenErrors,
 } from "../src/index";
@@ -105,7 +105,16 @@ describe("generated client", () => {
 	});
 
 	it("retains generated success and documented error types", () => {
-		expectTypeOf<ListChecksResponses[200]>().toEqualTypeOf<CheckListResponse>();
+		type ListChecksSuccess = Exclude<
+			ListChecksResponses[200],
+			{ success: false }
+		>;
+		expectTypeOf<ListChecksSuccess["result"]>().toEqualTypeOf<
+			CheckListItem[]
+		>();
+		expectTypeOf<
+			ListChecksSuccess["result_info"]["total_count"]
+		>().toEqualTypeOf<number>();
 		expectTypeOf<VerifyTokenErrors[401]>().toMatchTypeOf<{
 			errors: Array<{ code: number; message: string }>;
 			result?: null;
