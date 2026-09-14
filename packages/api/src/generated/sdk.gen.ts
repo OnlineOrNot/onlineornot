@@ -344,6 +344,8 @@ export const pingHeartbeat = <ThrowOnError extends boolean = false>(
  * Retrieve a paginated list of audit log events for your organisation
  *
  * List audit log events
+ *
+ * Requires PEOPLE:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listAuditLogs = <ThrowOnError extends boolean = false>(
 	options?: Options<ListAuditLogsData, ThrowOnError>,
@@ -359,7 +361,7 @@ export const listAuditLogs = <ThrowOnError extends boolean = false>(
 	});
 
 /**
- * Verify a token
+ * Verify an API token or OAuth access token. No session-cookie authentication or organization selection. Invalid nonempty tokens return HTTP 200 with success: false; a missing Authorization header returns 401.
  */
 export const verifyToken = <ThrowOnError extends boolean = false>(
 	options?: Options<VerifyTokenData, ThrowOnError>,
@@ -375,7 +377,7 @@ export const verifyToken = <ThrowOnError extends boolean = false>(
 	});
 
 /**
- * Retrieve a token's permissions
+ * Retrieve API-token grants. Does not inspect OAuth scopes, check token expiration, select an organization, or use session cookies. No matching grants returns HTTP 200 with success: false.
  */
 export const getTokenPermissions = <ThrowOnError extends boolean = false>(
 	options?: Options<GetTokenPermissionsData, ThrowOnError>,
@@ -398,6 +400,8 @@ export const getTokenPermissions = <ThrowOnError extends boolean = false>(
  * Retrieve a paginated list of all API tokens for the organization
  *
  * List all API tokens
+ *
+ * Requires API_TOKENS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listTokens = <ThrowOnError extends boolean = false>(
 	options?: Options<ListTokensData, ThrowOnError>,
@@ -416,6 +420,8 @@ export const listTokens = <ThrowOnError extends boolean = false>(
  * Create a new API token for the organization
  *
  * Create an API token
+ *
+ * Requires API_TOKENS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const createToken = <ThrowOnError extends boolean = false>(
 	options: Options<CreateTokenData, ThrowOnError>,
@@ -438,6 +444,8 @@ export const createToken = <ThrowOnError extends boolean = false>(
  * Permanently delete an API token
  *
  * Delete an API token
+ *
+ * Requires API_TOKENS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const deleteToken = <ThrowOnError extends boolean = false>(
 	options: Options<DeleteTokenData, ThrowOnError>,
@@ -456,6 +464,8 @@ export const deleteToken = <ThrowOnError extends boolean = false>(
  * Look up detailed information about a specific API token
  *
  * Retrieve an API token
+ *
+ * Requires API_TOKENS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const getToken = <ThrowOnError extends boolean = false>(
 	options: Options<GetTokenData, ThrowOnError>,
@@ -474,6 +484,8 @@ export const getToken = <ThrowOnError extends boolean = false>(
  * Create a new DNS check to monitor DNS records
  *
  * Create a DNS check
+ *
+ * Requires UPTIME_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const createDnsCheck = <ThrowOnError extends boolean = false>(
 	options: Options<CreateDnsCheckData, ThrowOnError>,
@@ -496,6 +508,8 @@ export const createDnsCheck = <ThrowOnError extends boolean = false>(
  * Permanently delete a DNS check
  *
  * Delete a DNS check
+ *
+ * Requires UPTIME_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const deleteDnsCheck = <ThrowOnError extends boolean = false>(
 	options: Options<DeleteDnsCheckData, ThrowOnError>,
@@ -514,6 +528,8 @@ export const deleteDnsCheck = <ThrowOnError extends boolean = false>(
  * Look up detailed information about a specific DNS check
  *
  * Retrieve a DNS check
+ *
+ * Requires UPTIME_CHECKS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const getDnsCheck = <ThrowOnError extends boolean = false>(
 	options: Options<GetDnsCheckData, ThrowOnError>,
@@ -532,6 +548,8 @@ export const getDnsCheck = <ThrowOnError extends boolean = false>(
  * Modify the configuration of an existing DNS check
  *
  * Modify a DNS check
+ *
+ * Requires UPTIME_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const updateDnsCheck = <ThrowOnError extends boolean = false>(
 	options: Options<UpdateDnsCheckData, ThrowOnError>,
@@ -554,6 +572,8 @@ export const updateDnsCheck = <ThrowOnError extends boolean = false>(
  * Create a new TCP check to monitor TCP connectivity
  *
  * Create a TCP check
+ *
+ * Requires UPTIME_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const createTcpCheck = <ThrowOnError extends boolean = false>(
 	options: Options<CreateTcpCheckData, ThrowOnError>,
@@ -576,6 +596,8 @@ export const createTcpCheck = <ThrowOnError extends boolean = false>(
  * Permanently delete a TCP check
  *
  * Delete a TCP check
+ *
+ * Requires UPTIME_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const deleteTcpCheck = <ThrowOnError extends boolean = false>(
 	options: Options<DeleteTcpCheckData, ThrowOnError>,
@@ -594,6 +616,8 @@ export const deleteTcpCheck = <ThrowOnError extends boolean = false>(
  * Look up detailed information about a specific TCP check
  *
  * Retrieve a TCP check
+ *
+ * Requires UPTIME_CHECKS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const getTcpCheck = <ThrowOnError extends boolean = false>(
 	options: Options<GetTcpCheckData, ThrowOnError>,
@@ -612,6 +636,8 @@ export const getTcpCheck = <ThrowOnError extends boolean = false>(
  * Modify the configuration of an existing TCP check
  *
  * Modify a TCP check
+ *
+ * Requires UPTIME_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const updateTcpCheck = <ThrowOnError extends boolean = false>(
 	options: Options<UpdateTcpCheckData, ThrowOnError>,
@@ -634,6 +660,8 @@ export const updateTcpCheck = <ThrowOnError extends boolean = false>(
  * Create a new HTTP uptime check to monitor a URL
  *
  * Create an uptime check
+ *
+ * Requires UPTIME_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const createUptimeCheck = <ThrowOnError extends boolean = false>(
 	options: Options<CreateUptimeCheckData, ThrowOnError>,
@@ -660,6 +688,8 @@ export const createUptimeCheck = <ThrowOnError extends boolean = false>(
  * Permanently delete an uptime check
  *
  * Delete an uptime check
+ *
+ * Requires UPTIME_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const deleteUptimeCheck = <ThrowOnError extends boolean = false>(
 	options: Options<DeleteUptimeCheckData, ThrowOnError>,
@@ -682,6 +712,8 @@ export const deleteUptimeCheck = <ThrowOnError extends boolean = false>(
  * Look up detailed information about a specific uptime check
  *
  * Retrieve an uptime check
+ *
+ * Requires UPTIME_CHECKS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const getUptimeCheck = <ThrowOnError extends boolean = false>(
 	options: Options<GetUptimeCheckData, ThrowOnError>,
@@ -700,6 +732,8 @@ export const getUptimeCheck = <ThrowOnError extends boolean = false>(
  * Modify the configuration of an existing uptime check
  *
  * Modify an uptime check
+ *
+ * Requires UPTIME_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const updateUptimeCheck = <ThrowOnError extends boolean = false>(
 	options: Options<UpdateUptimeCheckData, ThrowOnError>,
@@ -726,6 +760,8 @@ export const updateUptimeCheck = <ThrowOnError extends boolean = false>(
  * Create a new browser check using Playwright
  *
  * Create a browser check
+ *
+ * Requires UPTIME_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const createBrowserCheck = <ThrowOnError extends boolean = false>(
 	options: Options<CreateBrowserCheckData, ThrowOnError>,
@@ -752,6 +788,8 @@ export const createBrowserCheck = <ThrowOnError extends boolean = false>(
  * Permanently delete a browser check
  *
  * Delete a browser check
+ *
+ * Requires UPTIME_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const deleteBrowserCheck = <ThrowOnError extends boolean = false>(
 	options: Options<DeleteBrowserCheckData, ThrowOnError>,
@@ -774,6 +812,8 @@ export const deleteBrowserCheck = <ThrowOnError extends boolean = false>(
  * Look up detailed information about a specific browser check
  *
  * Retrieve a browser check
+ *
+ * Requires UPTIME_CHECKS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const getBrowserCheck = <ThrowOnError extends boolean = false>(
 	options: Options<GetBrowserCheckData, ThrowOnError>,
@@ -796,6 +836,8 @@ export const getBrowserCheck = <ThrowOnError extends boolean = false>(
  * Modify the configuration of an existing browser check
  *
  * Modify a browser check
+ *
+ * Requires UPTIME_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const updateBrowserCheck = <ThrowOnError extends boolean = false>(
 	options: Options<UpdateBrowserCheckData, ThrowOnError>,
@@ -821,7 +863,9 @@ export const updateBrowserCheck = <ThrowOnError extends boolean = false>(
 /**
  * Review recent failures and recoveries for a specific uptime check
  *
- * List incidents for an uptime check
+ * List incidents for an uptime check. Optional from/to select overlapping incidents, not only incidents starting within the interval. Results are ordered by started time descending, then ID descending. Bounds accept at most millisecond precision; page/per_page and the computed offset must be safe integers, with per_page <= 100.
+ *
+ * Requires UPTIME_CHECKS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listUptimeCheckIncidents = <ThrowOnError extends boolean = false>(
 	options: Options<ListUptimeCheckIncidentsData, ThrowOnError>,
@@ -843,7 +887,9 @@ export const listUptimeCheckIncidents = <ThrowOnError extends boolean = false>(
 /**
  * Review recent failures and recoveries for a specific browser check
  *
- * List incidents for a browser check
+ * List incidents for a browser check. Optional from/to select overlapping incidents, not only incidents starting within the interval. Results are ordered by started time descending, then ID descending. Bounds accept at most millisecond precision; page/per_page and the computed offset must be safe integers, with per_page <= 100.
+ *
+ * Requires UPTIME_CHECKS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listBrowserCheckIncidents = <ThrowOnError extends boolean = false>(
 	options: Options<ListBrowserCheckIncidentsData, ThrowOnError>,
@@ -865,7 +911,9 @@ export const listBrowserCheckIncidents = <ThrowOnError extends boolean = false>(
 /**
  * Review recent failures and recoveries for a specific DNS check
  *
- * List incidents for a DNS check
+ * List incidents for a DNS check. Optional from/to select overlapping incidents, not only incidents starting within the interval. Results are ordered by started time descending, then ID descending. Bounds accept at most millisecond precision; page/per_page and the computed offset must be safe integers, with per_page <= 100.
+ *
+ * Requires UPTIME_CHECKS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listDnsCheckIncidents = <ThrowOnError extends boolean = false>(
 	options: Options<ListDnsCheckIncidentsData, ThrowOnError>,
@@ -887,7 +935,9 @@ export const listDnsCheckIncidents = <ThrowOnError extends boolean = false>(
 /**
  * Review recent failures and recoveries for a specific TCP check
  *
- * List incidents for a TCP check
+ * List incidents for a TCP check. Optional from/to select overlapping incidents, not only incidents starting within the interval. Results are ordered by started time descending, then ID descending. Bounds accept at most millisecond precision; page/per_page and the computed offset must be safe integers, with per_page <= 100.
+ *
+ * Requires UPTIME_CHECKS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listTcpCheckIncidents = <ThrowOnError extends boolean = false>(
 	options: Options<ListTcpCheckIncidentsData, ThrowOnError>,
@@ -909,7 +959,9 @@ export const listTcpCheckIncidents = <ThrowOnError extends boolean = false>(
 /**
  * Review raw uptime check results over a bounded time range
  *
- * List results for an uptime check
+ * List results for an uptime check. Requires from < to, at most seven days, and at most three fractional timestamp digits. Pagination uses positive safe integers with per_page <= 100 and a safe integer offset.
+ *
+ * Requires UPTIME_CHECKS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listUptimeCheckResults = <ThrowOnError extends boolean = false>(
 	options: Options<ListUptimeCheckResultsData, ThrowOnError>,
@@ -931,7 +983,9 @@ export const listUptimeCheckResults = <ThrowOnError extends boolean = false>(
 /**
  * Review raw browser check results over a bounded time range
  *
- * List results for a browser check
+ * List results for a browser check. Requires from < to, at most seven days, and at most three fractional timestamp digits. Pagination uses positive safe integers with per_page <= 100 and a safe integer offset.
+ *
+ * Requires UPTIME_CHECKS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listBrowserCheckResults = <ThrowOnError extends boolean = false>(
 	options: Options<ListBrowserCheckResultsData, ThrowOnError>,
@@ -953,7 +1007,9 @@ export const listBrowserCheckResults = <ThrowOnError extends boolean = false>(
 /**
  * Review raw DNS check results over a bounded time range
  *
- * List results for a DNS check
+ * List results for a DNS check. Requires from < to, at most seven days, and at most three fractional timestamp digits. Pagination uses positive safe integers with per_page <= 100 and a safe integer offset.
+ *
+ * Requires UPTIME_CHECKS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listDnsCheckResults = <ThrowOnError extends boolean = false>(
 	options: Options<ListDnsCheckResultsData, ThrowOnError>,
@@ -975,7 +1031,9 @@ export const listDnsCheckResults = <ThrowOnError extends boolean = false>(
 /**
  * Review raw TCP check results over a bounded time range
  *
- * List results for a TCP check
+ * List results for a TCP check. Requires from < to, at most seven days, and at most three fractional timestamp digits. Pagination uses positive safe integers with per_page <= 100 and a safe integer offset.
+ *
+ * Requires UPTIME_CHECKS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listTcpCheckResults = <ThrowOnError extends boolean = false>(
 	options: Options<ListTcpCheckResultsData, ThrowOnError>,
@@ -998,6 +1056,8 @@ export const listTcpCheckResults = <ThrowOnError extends boolean = false>(
  * Retrieve a paginated list of all uptime checks
  *
  * List all checks
+ *
+ * Requires UPTIME_CHECKS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listChecks = <ThrowOnError extends boolean = false>(
 	options?: Options<ListChecksData, ThrowOnError>,
@@ -1016,6 +1076,8 @@ export const listChecks = <ThrowOnError extends boolean = false>(
  * Create a new uptime check to monitor a URL
  *
  * Create a check
+ *
+ * Requires UPTIME_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const createCheck = <ThrowOnError extends boolean = false>(
 	options: Options<CreateCheckData, ThrowOnError>,
@@ -1038,6 +1100,8 @@ export const createCheck = <ThrowOnError extends boolean = false>(
  * Permanently delete an uptime check
  *
  * Delete a check
+ *
+ * Requires UPTIME_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const deleteCheck = <ThrowOnError extends boolean = false>(
 	options: Options<DeleteCheckData, ThrowOnError>,
@@ -1056,6 +1120,8 @@ export const deleteCheck = <ThrowOnError extends boolean = false>(
  * Look up detailed information about a specific uptime check
  *
  * Retrieve a check
+ *
+ * Requires UPTIME_CHECKS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const getCheck = <ThrowOnError extends boolean = false>(
 	options: Options<GetCheckData, ThrowOnError>,
@@ -1074,6 +1140,8 @@ export const getCheck = <ThrowOnError extends boolean = false>(
  * Modify the configuration of an existing uptime check
  *
  * Modify a check
+ *
+ * Requires UPTIME_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const updateCheck = <ThrowOnError extends boolean = false>(
 	options: Options<UpdateCheckData, ThrowOnError>,
@@ -1096,6 +1164,8 @@ export const updateCheck = <ThrowOnError extends boolean = false>(
  * Retrieve a paginated list of all heartbeat monitors
  *
  * List all heartbeats
+ *
+ * Requires HEARTBEAT_CHECKS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listHeartbeats = <ThrowOnError extends boolean = false>(
 	options?: Options<ListHeartbeatsData, ThrowOnError>,
@@ -1114,6 +1184,8 @@ export const listHeartbeats = <ThrowOnError extends boolean = false>(
  * Create a new heartbeat monitor for cron jobs or scheduled tasks
  *
  * Create a heartbeat
+ *
+ * Requires HEARTBEAT_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const createHeartbeat = <ThrowOnError extends boolean = false>(
 	options: Options<CreateHeartbeatData, ThrowOnError>,
@@ -1140,6 +1212,8 @@ export const createHeartbeat = <ThrowOnError extends boolean = false>(
  * Permanently delete a heartbeat monitor
  *
  * Delete a heartbeat
+ *
+ * Requires HEARTBEAT_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const deleteHeartbeat = <ThrowOnError extends boolean = false>(
 	options: Options<DeleteHeartbeatData, ThrowOnError>,
@@ -1162,6 +1236,8 @@ export const deleteHeartbeat = <ThrowOnError extends boolean = false>(
  * Look up detailed information about a specific heartbeat monitor
  *
  * Retrieve a heartbeat
+ *
+ * Requires HEARTBEAT_CHECKS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const getHeartbeat = <ThrowOnError extends boolean = false>(
 	options: Options<GetHeartbeatData, ThrowOnError>,
@@ -1180,6 +1256,8 @@ export const getHeartbeat = <ThrowOnError extends boolean = false>(
  * Modify the configuration of an existing heartbeat monitor
  *
  * Modify a heartbeat
+ *
+ * Requires HEARTBEAT_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const updateHeartbeat = <ThrowOnError extends boolean = false>(
 	options: Options<UpdateHeartbeatData, ThrowOnError>,
@@ -1206,6 +1284,8 @@ export const updateHeartbeat = <ThrowOnError extends boolean = false>(
  * Retrieve a paginated list of all maintenance windows
  *
  * List all maintenance windows
+ *
+ * Requires MAINTENANCE_WINDOWS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listMaintenanceWindows = <ThrowOnError extends boolean = false>(
 	options?: Options<ListMaintenanceWindowsData, ThrowOnError>,
@@ -1228,6 +1308,8 @@ export const listMaintenanceWindows = <ThrowOnError extends boolean = false>(
  * Create a new maintenance window with associated checks and heartbeats
  *
  * Create a new maintenance window
+ *
+ * Requires MAINTENANCE_WINDOWS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const createMaintenanceWindow = <ThrowOnError extends boolean = false>(
 	options: Options<CreateMaintenanceWindowData, ThrowOnError>,
@@ -1254,6 +1336,8 @@ export const createMaintenanceWindow = <ThrowOnError extends boolean = false>(
  * Delete a maintenance window and all its associations with checks and heartbeats
  *
  * Delete a maintenance window
+ *
+ * Requires MAINTENANCE_WINDOWS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const deleteMaintenanceWindow = <ThrowOnError extends boolean = false>(
 	options: Options<DeleteMaintenanceWindowData, ThrowOnError>,
@@ -1276,6 +1360,8 @@ export const deleteMaintenanceWindow = <ThrowOnError extends boolean = false>(
  * Retrieve a maintenance window with associated checks and heartbeats
  *
  * Get a maintenance window by ID
+ *
+ * Requires MAINTENANCE_WINDOWS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const getMaintenanceWindow = <ThrowOnError extends boolean = false>(
 	options: Options<GetMaintenanceWindowData, ThrowOnError>,
@@ -1298,6 +1384,8 @@ export const getMaintenanceWindow = <ThrowOnError extends boolean = false>(
  * Update a maintenance window. All fields are optional - only provided fields will be updated. Updating checks or heartbeats replaces existing associations.
  *
  * Update a maintenance window
+ *
+ * Requires MAINTENANCE_WINDOWS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const updateMaintenanceWindow = <ThrowOnError extends boolean = false>(
 	options: Options<UpdateMaintenanceWindowData, ThrowOnError>,
@@ -1324,6 +1412,8 @@ export const updateMaintenanceWindow = <ThrowOnError extends boolean = false>(
  * Retrieve a paginated list of all users in your organisation
  *
  * List all users
+ *
+ * Requires PEOPLE:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listUsers = <ThrowOnError extends boolean = false>(
 	options?: Options<ListUsersData, ThrowOnError>,
@@ -1342,6 +1432,8 @@ export const listUsers = <ThrowOnError extends boolean = false>(
  * Remove a team member from your organisation
  *
  * Remove a user from the organisation
+ *
+ * Requires PEOPLE:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const removeUser = <ThrowOnError extends boolean = false>(
 	options: Options<RemoveUserData, ThrowOnError>,
@@ -1360,6 +1452,8 @@ export const removeUser = <ThrowOnError extends boolean = false>(
  * Retrieve a paginated list of all pending invitations in your organisation
  *
  * List all invitations
+ *
+ * Requires PEOPLE:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listInvitations = <ThrowOnError extends boolean = false>(
 	options?: Options<ListInvitationsData, ThrowOnError>,
@@ -1382,6 +1476,8 @@ export const listInvitations = <ThrowOnError extends boolean = false>(
  * Send an invitation email to add a new team member to your organisation
  *
  * Create an invitation
+ *
+ * Requires PEOPLE:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const createInvitation = <ThrowOnError extends boolean = false>(
 	options: Options<CreateInvitationData, ThrowOnError>,
@@ -1406,6 +1502,8 @@ export const createInvitation = <ThrowOnError extends boolean = false>(
 
 /**
  * Delete a status page
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const deleteStatusPage = <ThrowOnError extends boolean = false>(
 	options: Options<DeleteStatusPageData, ThrowOnError>,
@@ -1426,6 +1524,8 @@ export const deleteStatusPage = <ThrowOnError extends boolean = false>(
 
 /**
  * Retrieve a status page
+ *
+ * Requires STATUS_PAGES:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const getStatusPage = <ThrowOnError extends boolean = false>(
 	options: Options<GetStatusPageData, ThrowOnError>,
@@ -1442,6 +1542,8 @@ export const getStatusPage = <ThrowOnError extends boolean = false>(
 
 /**
  * Update a status page
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const updateStatusPage = <ThrowOnError extends boolean = false>(
 	options: Options<UpdateStatusPageData, ThrowOnError>,
@@ -1482,6 +1584,8 @@ export const getStatusPageSummary = <ThrowOnError extends boolean = false>(
 
 /**
  * List all status pages
+ *
+ * Requires STATUS_PAGES:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listStatusPages = <ThrowOnError extends boolean = false>(
 	options?: Options<ListStatusPagesData, ThrowOnError>,
@@ -1502,6 +1606,8 @@ export const listStatusPages = <ThrowOnError extends boolean = false>(
 
 /**
  * Create a status page
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const createStatusPage = <ThrowOnError extends boolean = false>(
 	options: Options<CreateStatusPageData, ThrowOnError>,
@@ -1526,6 +1632,8 @@ export const createStatusPage = <ThrowOnError extends boolean = false>(
 
 /**
  * List all components
+ *
+ * Requires STATUS_PAGES:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listStatusPageComponents = <ThrowOnError extends boolean = false>(
 	options: Options<ListStatusPageComponentsData, ThrowOnError>,
@@ -1546,6 +1654,8 @@ export const listStatusPageComponents = <ThrowOnError extends boolean = false>(
 
 /**
  * Create a component
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const createStatusPageComponent = <ThrowOnError extends boolean = false>(
 	options: Options<CreateStatusPageComponentData, ThrowOnError>,
@@ -1570,6 +1680,8 @@ export const createStatusPageComponent = <ThrowOnError extends boolean = false>(
 
 /**
  * Delete a component
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const deleteStatusPageComponent = <ThrowOnError extends boolean = false>(
 	options: Options<DeleteStatusPageComponentData, ThrowOnError>,
@@ -1590,6 +1702,8 @@ export const deleteStatusPageComponent = <ThrowOnError extends boolean = false>(
 
 /**
  * Retrieve a component
+ *
+ * Requires STATUS_PAGES:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const getStatusPageComponent = <ThrowOnError extends boolean = false>(
 	options: Options<GetStatusPageComponentData, ThrowOnError>,
@@ -1610,6 +1724,8 @@ export const getStatusPageComponent = <ThrowOnError extends boolean = false>(
 
 /**
  * Update a component
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const updateStatusPageComponent = <ThrowOnError extends boolean = false>(
 	options: Options<UpdateStatusPageComponentData, ThrowOnError>,
@@ -1634,6 +1750,8 @@ export const updateStatusPageComponent = <ThrowOnError extends boolean = false>(
 
 /**
  * Update the sort order of ungrouped components
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const updateStatusPageComponentSortOrder = <
 	ThrowOnError extends boolean = false,
@@ -1660,6 +1778,8 @@ export const updateStatusPageComponentSortOrder = <
 
 /**
  * List all component groups
+ *
+ * Requires STATUS_PAGES:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listStatusPageComponentGroups = <
 	ThrowOnError extends boolean = false,
@@ -1682,6 +1802,8 @@ export const listStatusPageComponentGroups = <
 
 /**
  * Create a component group
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const createStatusPageComponentGroup = <
 	ThrowOnError extends boolean = false,
@@ -1708,6 +1830,8 @@ export const createStatusPageComponentGroup = <
 
 /**
  * Delete a component group
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const deleteStatusPageComponentGroup = <
 	ThrowOnError extends boolean = false,
@@ -1730,6 +1854,8 @@ export const deleteStatusPageComponentGroup = <
 
 /**
  * Retrieve a component group
+ *
+ * Requires STATUS_PAGES:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const getStatusPageComponentGroup = <
 	ThrowOnError extends boolean = false,
@@ -1752,6 +1878,8 @@ export const getStatusPageComponentGroup = <
 
 /**
  * Update a component group
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const updateStatusPageComponentGroup = <
 	ThrowOnError extends boolean = false,
@@ -1778,6 +1906,8 @@ export const updateStatusPageComponentGroup = <
 
 /**
  * Update the sort order of component groups
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const updateStatusPageComponentGroupSortOrder = <
 	ThrowOnError extends boolean = false,
@@ -1804,6 +1934,8 @@ export const updateStatusPageComponentGroupSortOrder = <
 
 /**
  * Update the sort order of components within a group
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const updateStatusPageGroupComponentSortOrder = <
 	ThrowOnError extends boolean = false,
@@ -1830,6 +1962,8 @@ export const updateStatusPageGroupComponentSortOrder = <
 
 /**
  * List all subscribers
+ *
+ * Requires STATUS_PAGES:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listStatusPageSubscribers = <ThrowOnError extends boolean = false>(
 	options: Options<ListStatusPageSubscribersData, ThrowOnError>,
@@ -1850,6 +1984,8 @@ export const listStatusPageSubscribers = <ThrowOnError extends boolean = false>(
 
 /**
  * Create a subscriber
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const createStatusPageSubscriber = <
 	ThrowOnError extends boolean = false,
@@ -1876,6 +2012,8 @@ export const createStatusPageSubscriber = <
 
 /**
  * Delete a subscriber
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const deleteStatusPageSubscriber = <
 	ThrowOnError extends boolean = false,
@@ -1898,6 +2036,8 @@ export const deleteStatusPageSubscriber = <
 
 /**
  * List all incidents
+ *
+ * Requires STATUS_PAGES:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listStatusPageIncidents = <ThrowOnError extends boolean = false>(
 	options: Options<ListStatusPageIncidentsData, ThrowOnError>,
@@ -1918,6 +2058,8 @@ export const listStatusPageIncidents = <ThrowOnError extends boolean = false>(
 
 /**
  * Create an incident
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const createStatusPageIncident = <ThrowOnError extends boolean = false>(
 	options: Options<CreateStatusPageIncidentData, ThrowOnError>,
@@ -1942,6 +2084,8 @@ export const createStatusPageIncident = <ThrowOnError extends boolean = false>(
 
 /**
  * Delete an incident
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const deleteStatusPageIncident = <ThrowOnError extends boolean = false>(
 	options: Options<DeleteStatusPageIncidentData, ThrowOnError>,
@@ -1962,6 +2106,8 @@ export const deleteStatusPageIncident = <ThrowOnError extends boolean = false>(
 
 /**
  * Retrieve an incident
+ *
+ * Requires STATUS_PAGES:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const getStatusPageIncident = <ThrowOnError extends boolean = false>(
 	options: Options<GetStatusPageIncidentData, ThrowOnError>,
@@ -1982,6 +2128,8 @@ export const getStatusPageIncident = <ThrowOnError extends boolean = false>(
 
 /**
  * Update an incident
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const updateStatusPageIncident = <ThrowOnError extends boolean = false>(
 	options: Options<UpdateStatusPageIncidentData, ThrowOnError>,
@@ -2006,6 +2154,8 @@ export const updateStatusPageIncident = <ThrowOnError extends boolean = false>(
 
 /**
  * List all updates for an incident
+ *
+ * Requires STATUS_PAGES:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listStatusPageIncidentUpdates = <
 	ThrowOnError extends boolean = false,
@@ -2028,6 +2178,8 @@ export const listStatusPageIncidentUpdates = <
 
 /**
  * Create a new update for an incident
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const createStatusPageIncidentUpdate = <
 	ThrowOnError extends boolean = false,
@@ -2054,6 +2206,8 @@ export const createStatusPageIncidentUpdate = <
 
 /**
  * Delete an incident update
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const deleteStatusPageIncidentUpdate = <
 	ThrowOnError extends boolean = false,
@@ -2076,6 +2230,8 @@ export const deleteStatusPageIncidentUpdate = <
 
 /**
  * Retrieve a single incident update
+ *
+ * Requires STATUS_PAGES:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const getStatusPageIncidentUpdate = <
 	ThrowOnError extends boolean = false,
@@ -2098,6 +2254,8 @@ export const getStatusPageIncidentUpdate = <
 
 /**
  * Update an existing incident update
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const updateStatusPageIncidentUpdate = <
 	ThrowOnError extends boolean = false,
@@ -2124,6 +2282,8 @@ export const updateStatusPageIncidentUpdate = <
 
 /**
  * Schedule maintenance for a status page
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const createStatusPageScheduledMaintenance = <
 	ThrowOnError extends boolean = false,
@@ -2150,6 +2310,8 @@ export const createStatusPageScheduledMaintenance = <
 
 /**
  * Delete a scheduled maintenance
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const deleteStatusPageScheduledMaintenance = <
 	ThrowOnError extends boolean = false,
@@ -2172,6 +2334,8 @@ export const deleteStatusPageScheduledMaintenance = <
 
 /**
  * Retrieve a scheduled maintenance
+ *
+ * Requires STATUS_PAGES:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const getStatusPageScheduledMaintenance = <
 	ThrowOnError extends boolean = false,
@@ -2194,6 +2358,8 @@ export const getStatusPageScheduledMaintenance = <
 
 /**
  * Update a scheduled maintenance (only before it has started)
+ *
+ * Requires STATUS_PAGES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const updateStatusPageScheduledMaintenance = <
 	ThrowOnError extends boolean = false,
@@ -2222,6 +2388,8 @@ export const updateStatusPageScheduledMaintenance = <
  * Retrieve a paginated list of all webhooks for your organization
  *
  * List all webhooks
+ *
+ * Requires WEBHOOKS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const listWebhooks = <ThrowOnError extends boolean = false>(
 	options?: Options<ListWebhooksData, ThrowOnError>,
@@ -2240,6 +2408,8 @@ export const listWebhooks = <ThrowOnError extends boolean = false>(
  * Create a new webhook to receive event notifications
  *
  * Create a webhook
+ *
+ * Requires WEBHOOKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const createWebhook = <ThrowOnError extends boolean = false>(
 	options: Options<CreateWebhookData, ThrowOnError>,
@@ -2262,6 +2432,8 @@ export const createWebhook = <ThrowOnError extends boolean = false>(
  * Permanently delete a webhook
  *
  * Delete a webhook
+ *
+ * Requires WEBHOOKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const deleteWebhook = <ThrowOnError extends boolean = false>(
 	options: Options<DeleteWebhookData, ThrowOnError>,
@@ -2280,6 +2452,8 @@ export const deleteWebhook = <ThrowOnError extends boolean = false>(
  * Look up detailed information about a specific webhook
  *
  * Retrieve a webhook
+ *
+ * Requires WEBHOOKS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const getWebhook = <ThrowOnError extends boolean = false>(
 	options: Options<GetWebhookData, ThrowOnError>,
@@ -2298,6 +2472,8 @@ export const getWebhook = <ThrowOnError extends boolean = false>(
  * Update the configuration of an existing webhook
  *
  * Modify a webhook
+ *
+ * Requires WEBHOOKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
 export const updateWebhook = <ThrowOnError extends boolean = false>(
 	options: Options<UpdateWebhookData, ThrowOnError>,

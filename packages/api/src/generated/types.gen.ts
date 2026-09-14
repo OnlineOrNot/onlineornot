@@ -8,6 +8,384 @@ export type ClientOptions = {
 		| (string & {});
 };
 
+export type PublicApiErrorResponse = {
+	success: false;
+	result: null;
+	errors: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+	messages: Array<unknown>;
+};
+
+export type PublicApiBadRequest = {
+	success: false;
+	result: null;
+	errors: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+	messages: Array<unknown>;
+};
+
+export type PublicApiServerError = {
+	success: false;
+	result: null;
+	errors: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+	messages: Array<unknown>;
+};
+
+export type ExpandedUptimeCheck = {
+	/**
+	 * Uptime Check ID
+	 */
+	id: string;
+	/**
+	 * Name of the check
+	 */
+	name: string;
+	/**
+	 * URL to check (null for script-based browser checks)
+	 */
+	url: string | null;
+	/**
+	 * Last time the check was queued
+	 */
+	last_queued: string | null;
+	/**
+	 * Current status of the check based on the latest uptime event
+	 */
+	status:
+		| "UP"
+		| "DOWN"
+		| "PENDING"
+		| "PAUSED"
+		| "MUTED"
+		| "MAINTENANCE"
+		| "RECOVERING"
+		| "VERIFYING";
+	/**
+	 * Headers to send with the request
+	 */
+	headers: {
+		[key: string]: string;
+	} | null;
+	/**
+	 * Text to search for in the response
+	 */
+	text_to_search_for: string | null;
+	/**
+	 * Interval in minutes between reminder alerts (-1 for never)
+	 */
+	reminder_alert_interval_minutes: number;
+	/**
+	 * Seconds to wait before confirming a down status
+	 */
+	confirmation_period_seconds: number;
+	/**
+	 * Seconds to wait before confirming recovery
+	 */
+	recovery_period_seconds: number;
+	/**
+	 * Interval in seconds between checks
+	 */
+	test_interval: number;
+	timeout: number;
+	/**
+	 * Runtime version for browser checks (null for standard uptime checks)
+	 */
+	version: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT" | "CLOUDFLARE";
+	/**
+	 * Playwright Test script loaded by GET for scripted browser checks; null for URL-based checks or when script content was not loaded. Mutation responses do not load script content.
+	 */
+	script: string | null;
+	/**
+	 * Priority level for alerts
+	 */
+	alert_priority: "LOW" | "HIGH";
+	/**
+	 * Whether to verify SSL certificates
+	 */
+	verify_ssl: boolean;
+	/**
+	 * HTTP method to use
+	 */
+	method: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
+	/**
+	 * Request body for POST/PUT/PATCH requests
+	 */
+	body: string | null;
+	/**
+	 * Whether to follow HTTP redirects
+	 */
+	follow_redirects: boolean;
+	/**
+	 * Assertions to validate the response
+	 */
+	assertions: Array<{
+		/**
+		 * Type of assertion
+		 */
+		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+		/**
+		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+		 */
+		property: string;
+		/**
+		 * Comparison operator
+		 */
+		comparison:
+			| "EQUALS"
+			| "NOT_EQUALS"
+			| "GREATER_THAN"
+			| "LESS_THAN"
+			| "NULL"
+			| "NOT_NULL"
+			| "EMPTY"
+			| "NOT_EMPTY"
+			| "CONTAINS"
+			| "NOT_CONTAINS"
+			| "FALSE"
+			| "TRUE";
+		/**
+		 * Expected value
+		 */
+		expected: string;
+	}> | null;
+	/**
+	 * Username for HTTP Basic Auth. Null when unset; an empty string represents an empty user-id.
+	 */
+	auth_username: string | null;
+	/**
+	 * Password for HTTP Basic Auth. Null when unset; empty strings are preserved.
+	 */
+	auth_password: string | null;
+	/**
+	 * Regions the check runs from. Format: aws:{region}
+	 */
+	test_regions: Array<string>;
+	/**
+	 * User IDs to notify on alerts
+	 */
+	user_alerts: Array<string>;
+	/**
+	 * Slack integration IDs to notify
+	 */
+	slack_alerts: Array<string>;
+	/**
+	 * Discord integration IDs to notify
+	 */
+	discord_alerts: Array<string>;
+	/**
+	 * Incident.io integration IDs to notify
+	 */
+	incident_io_alerts: Array<string>;
+	/**
+	 * Microsoft Teams integration IDs to notify
+	 */
+	microsoft_teams_alerts: Array<string>;
+	/**
+	 * Telegram integration IDs to notify
+	 */
+	telegram_alerts: Array<string>;
+	/**
+	 * Pushover integration IDs to notify
+	 */
+	pushover_alerts: Array<string>;
+	/**
+	 * On-call integration IDs (PagerDuty, Opsgenie, Grafana, Spike)
+	 */
+	oncall_alerts: Array<string>;
+	/**
+	 * Webhook IDs to notify
+	 */
+	webhook_alerts: Array<string>;
+	/**
+	 * Indicates this monitor is an uptime check.
+	 */
+	check_type: "UPTIME";
+};
+
+export type ExpandedBrowserCheck = {
+	/**
+	 * Uptime Check ID
+	 */
+	id: string;
+	/**
+	 * Name of the check
+	 */
+	name: string;
+	/**
+	 * URL to check (null for script-based browser checks)
+	 */
+	url: string | null;
+	/**
+	 * Last time the check was queued
+	 */
+	last_queued: string | null;
+	/**
+	 * Current status of the check based on the latest uptime event
+	 */
+	status:
+		| "UP"
+		| "DOWN"
+		| "PENDING"
+		| "PAUSED"
+		| "MUTED"
+		| "MAINTENANCE"
+		| "RECOVERING"
+		| "VERIFYING";
+	/**
+	 * Headers to send with the request
+	 */
+	headers: {
+		[key: string]: string;
+	} | null;
+	/**
+	 * Text to search for in the response
+	 */
+	text_to_search_for: string | null;
+	/**
+	 * Interval in minutes between reminder alerts (-1 for never)
+	 */
+	reminder_alert_interval_minutes: number;
+	/**
+	 * Seconds to wait before confirming a down status
+	 */
+	confirmation_period_seconds: number;
+	/**
+	 * Seconds to wait before confirming recovery
+	 */
+	recovery_period_seconds: number;
+	/**
+	 * Interval in seconds between checks
+	 */
+	test_interval: number;
+	/**
+	 * Timeout in milliseconds
+	 */
+	timeout: number | null;
+	/**
+	 * Runtime version for browser checks (null for standard uptime checks)
+	 */
+	version: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT" | "CLOUDFLARE";
+	/**
+	 * Playwright Test script loaded by GET for scripted browser checks; null for URL-based checks or when script content was not loaded. Mutation responses do not load script content.
+	 */
+	script: string | null;
+	/**
+	 * Priority level for alerts
+	 */
+	alert_priority: "LOW" | "HIGH";
+	/**
+	 * Whether to verify SSL certificates
+	 */
+	verify_ssl: boolean;
+	/**
+	 * HTTP method to use
+	 */
+	method: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
+	/**
+	 * Request body for POST/PUT/PATCH requests
+	 */
+	body: string | null;
+	/**
+	 * Whether to follow HTTP redirects
+	 */
+	follow_redirects: boolean;
+	/**
+	 * Assertions to validate the response
+	 */
+	assertions: Array<{
+		/**
+		 * Type of assertion
+		 */
+		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+		/**
+		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+		 */
+		property: string;
+		/**
+		 * Comparison operator
+		 */
+		comparison:
+			| "EQUALS"
+			| "NOT_EQUALS"
+			| "GREATER_THAN"
+			| "LESS_THAN"
+			| "NULL"
+			| "NOT_NULL"
+			| "EMPTY"
+			| "NOT_EMPTY"
+			| "CONTAINS"
+			| "NOT_CONTAINS"
+			| "FALSE"
+			| "TRUE";
+		/**
+		 * Expected value
+		 */
+		expected: string;
+	}> | null;
+	/**
+	 * Username for HTTP Basic Auth. Null when unset; an empty string represents an empty user-id.
+	 */
+	auth_username: string | null;
+	/**
+	 * Password for HTTP Basic Auth. Null when unset; empty strings are preserved.
+	 */
+	auth_password: string | null;
+	/**
+	 * Regions the check runs from. Format: aws:{region}
+	 */
+	test_regions: Array<string>;
+	/**
+	 * User IDs to notify on alerts
+	 */
+	user_alerts: Array<string>;
+	/**
+	 * Slack integration IDs to notify
+	 */
+	slack_alerts: Array<string>;
+	/**
+	 * Discord integration IDs to notify
+	 */
+	discord_alerts: Array<string>;
+	/**
+	 * Incident.io integration IDs to notify
+	 */
+	incident_io_alerts: Array<string>;
+	/**
+	 * Microsoft Teams integration IDs to notify
+	 */
+	microsoft_teams_alerts: Array<string>;
+	/**
+	 * Telegram integration IDs to notify
+	 */
+	telegram_alerts: Array<string>;
+	/**
+	 * Pushover integration IDs to notify
+	 */
+	pushover_alerts: Array<string>;
+	/**
+	 * On-call integration IDs (PagerDuty, Opsgenie, Grafana, Spike)
+	 */
+	oncall_alerts: Array<string>;
+	/**
+	 * Webhook IDs to notify
+	 */
+	webhook_alerts: Array<string>;
+	/**
+	 * Indicates this monitor is a browser check.
+	 */
+	check_type: "BROWSER";
+};
+
 export type DnsAssertion = {
 	/**
 	 * Type of DNS assertion
@@ -65,16 +443,6 @@ export type ExpandedDnsCheck = {
 		| "RECOVERING"
 		| "VERIFYING";
 	/**
-	 * Headers to send with the request
-	 */
-	headers: {
-		[key: string]: string;
-	} | null;
-	/**
-	 * Text to search for in the response
-	 */
-	text_to_search_for: string | null;
-	/**
 	 * Interval in minutes between reminder alerts (-1 for never)
 	 */
 	reminder_alert_interval_minutes: number;
@@ -90,42 +458,11 @@ export type ExpandedDnsCheck = {
 	 * Interval in seconds between checks
 	 */
 	test_interval: number;
-	/**
-	 * Timeout in milliseconds
-	 */
 	timeout: number;
-	/**
-	 * Playwright Test script for scripted browser checks (null for URL-based checks)
-	 */
-	script: string | null;
 	/**
 	 * Priority level for alerts
 	 */
 	alert_priority: "LOW" | "HIGH";
-	/**
-	 * Whether to verify SSL certificates
-	 */
-	verify_ssl: boolean;
-	/**
-	 * HTTP method to use
-	 */
-	method: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
-	/**
-	 * Request body for POST/PUT/PATCH requests
-	 */
-	body: string | null;
-	/**
-	 * Whether to follow HTTP redirects
-	 */
-	follow_redirects: boolean;
-	/**
-	 * Username for HTTP Basic Auth
-	 */
-	auth_username: string | null;
-	/**
-	 * Password for HTTP Basic Auth
-	 */
-	auth_password: string | null;
 	/**
 	 * Regions the check runs from. Format: aws:{region}
 	 */
@@ -200,6 +537,325 @@ export type ExpandedDnsCheck = {
 	assertions: Array<DnsAssertion> | null;
 };
 
+export type TcpAssertion = {
+	/**
+	 * Type of TCP assertion
+	 */
+	type: "TCP_RESPONSE_TIME" | "TCP_RESPONSE_DATA";
+	/**
+	 * Property to assert on. Use an empty string for raw TCP response data and responseTime for response time assertions.
+	 */
+	property: string;
+	/**
+	 * Comparison operator
+	 */
+	comparison:
+		| "EQUALS"
+		| "NOT_EQUALS"
+		| "GREATER_THAN"
+		| "LESS_THAN"
+		| "NULL"
+		| "NOT_NULL"
+		| "EMPTY"
+		| "NOT_EMPTY"
+		| "CONTAINS"
+		| "NOT_CONTAINS"
+		| "FALSE"
+		| "TRUE";
+	/**
+	 * Expected value
+	 */
+	expected: string;
+};
+
+export type ExpandedTcpCheck = {
+	/**
+	 * Uptime Check ID
+	 */
+	id: string;
+	/**
+	 * Name of the check
+	 */
+	name: string;
+	/**
+	 * Last time the check was queued
+	 */
+	last_queued: string | null;
+	/**
+	 * Current status of the check based on the latest uptime event
+	 */
+	status:
+		| "UP"
+		| "DOWN"
+		| "PENDING"
+		| "PAUSED"
+		| "MUTED"
+		| "MAINTENANCE"
+		| "RECOVERING"
+		| "VERIFYING";
+	/**
+	 * Interval in minutes between reminder alerts (-1 for never)
+	 */
+	reminder_alert_interval_minutes: number;
+	/**
+	 * Seconds to wait before confirming a down status
+	 */
+	confirmation_period_seconds: number;
+	/**
+	 * Seconds to wait before confirming recovery
+	 */
+	recovery_period_seconds: number;
+	/**
+	 * Interval in seconds between checks
+	 */
+	test_interval: number;
+	timeout: number;
+	/**
+	 * Priority level for alerts
+	 */
+	alert_priority: "LOW" | "HIGH";
+	/**
+	 * Regions the check runs from. Format: aws:{region}
+	 */
+	test_regions: Array<string>;
+	/**
+	 * User IDs to notify on alerts
+	 */
+	user_alerts: Array<string>;
+	/**
+	 * Slack integration IDs to notify
+	 */
+	slack_alerts: Array<string>;
+	/**
+	 * Discord integration IDs to notify
+	 */
+	discord_alerts: Array<string>;
+	/**
+	 * Incident.io integration IDs to notify
+	 */
+	incident_io_alerts: Array<string>;
+	/**
+	 * Microsoft Teams integration IDs to notify
+	 */
+	microsoft_teams_alerts: Array<string>;
+	/**
+	 * Telegram integration IDs to notify
+	 */
+	telegram_alerts: Array<string>;
+	/**
+	 * Pushover integration IDs to notify
+	 */
+	pushover_alerts: Array<string>;
+	/**
+	 * On-call integration IDs (PagerDuty, Opsgenie, Grafana, Spike)
+	 */
+	oncall_alerts: Array<string>;
+	/**
+	 * Webhook IDs to notify
+	 */
+	webhook_alerts: Array<string>;
+	/**
+	 * Indicates this monitor is a TCP check.
+	 */
+	check_type: "TCP";
+	/**
+	 * TCP checks do not use a URL target.
+	 */
+	url: null;
+	/**
+	 * Runtime version for TCP checks.
+	 */
+	version: "NODE24_TCP";
+	/**
+	 * TCP hostname connected to by this check.
+	 */
+	tcp_hostname: string;
+	/**
+	 * TCP port to connect to
+	 */
+	tcp_port: number;
+	/**
+	 * IP family used by this check.
+	 */
+	tcp_ip_family: "IPv4" | "IPv6";
+	/**
+	 * Optional TCP payload sent by this check.
+	 */
+	tcp_data: string | null;
+	/**
+	 * Whether failed TCP connections are expected.
+	 */
+	tcp_should_fail: boolean;
+	/**
+	 * TCP assertions to validate the response.
+	 */
+	assertions: Array<TcpAssertion> | null;
+};
+
+export type AnyCheck =
+	| ({
+			check_type: "UPTIME";
+	  } & ExpandedUptimeCheck)
+	| ({
+			check_type: "BROWSER";
+	  } & ExpandedBrowserCheck)
+	| ({
+			check_type: "DNS";
+	  } & ExpandedDnsCheck)
+	| ({
+			check_type: "TCP";
+	  } & ExpandedTcpCheck);
+
+export type AnyCheckResponse = {
+	result: AnyCheck;
+	/**
+	 * Whether the API call was successful
+	 */
+	success: boolean;
+	errors: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+	messages: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+};
+
+export type CheckListItem = {
+	/**
+	 * Uptime Check ID
+	 */
+	id: string;
+	/**
+	 * Name of the check
+	 */
+	name: string;
+	/**
+	 * URL to check (null for DNS or script-based browser checks)
+	 */
+	url: string | null;
+	/**
+	 * Indicates whether the check is an uptime, browser, DNS, or TCP check.
+	 */
+	check_type: "UPTIME" | "BROWSER" | "DNS" | "TCP";
+	/**
+	 * Last time the check was queued
+	 */
+	last_queued: string | null;
+	/**
+	 * Current status of the check based on the latest event
+	 */
+	status:
+		| "UP"
+		| "DOWN"
+		| "PENDING"
+		| "PAUSED"
+		| "MUTED"
+		| "MAINTENANCE"
+		| "RECOVERING"
+		| "VERIFYING";
+	/**
+	 * DNS name queried by this check. Present for DNS checks.
+	 */
+	dns_domain?: string | null;
+	/**
+	 * DNS record type queried by this check. Present for DNS checks.
+	 */
+	dns_record_type?: "A" | "AAAA" | "CNAME" | "MX" | "NS" | "SOA" | "TXT";
+	/**
+	 * Custom resolver used by this DNS check, or null for the default resolver.
+	 */
+	dns_resolver?: string | null;
+	/**
+	 * DNS transport protocol used by this check. Present for DNS checks.
+	 */
+	dns_protocol?: "UDP" | "TCP";
+	/**
+	 * TCP hostname connected to by this check. Present for TCP checks.
+	 */
+	tcp_hostname?: string | null;
+	/**
+	 * TCP port to connect to
+	 */
+	tcp_port?: number | null;
+	/**
+	 * IP family used by this check. Present for TCP checks.
+	 */
+	tcp_ip_family?: "IPv4" | "IPv6";
+};
+
+export type CheckListResponse = {
+	result: Array<CheckListItem>;
+	result_info: {
+		/**
+		 * Page number of paginated results.
+		 */
+		page?: number;
+		/**
+		 * Number of items per page.
+		 */
+		per_page?: number;
+		/**
+		 * Number of items on the current page.
+		 */
+		count: number;
+		/**
+		 * Total number of items.
+		 */
+		total_count: number;
+	};
+	/**
+	 * Whether the API call was successful
+	 */
+	success: boolean;
+	errors: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+	messages: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+};
+
+export type PublicApiValidationError = {
+	success: false;
+	result: null;
+	errors: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+	messages: Array<unknown>;
+};
+
+export type PublicCheckIncidentErrorResponse = {
+	success: false;
+	result: null;
+	errors: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+	messages: Array<unknown>;
+};
+
+export type PublicCheckResultsErrorResponse = {
+	success: false;
+	result: null;
+	errors: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+	messages: Array<unknown>;
+};
+
 export type DnsCheckResponse = {
 	result: ExpandedDnsCheck;
 	/**
@@ -209,12 +865,12 @@ export type DnsCheckResponse = {
 	errors: Array<{
 		code: number;
 		message: string;
-		type?: string;
+		type?: string | null;
 	}>;
 	messages: Array<{
 		code: number;
 		message: string;
-		type?: string;
+		type?: string | null;
 	}>;
 };
 
@@ -369,209 +1025,13 @@ export type CheckDeleteResponse = {
 	errors: Array<{
 		code: number;
 		message: string;
-		type?: string;
+		type?: string | null;
 	}>;
 	messages: Array<{
 		code: number;
 		message: string;
-		type?: string;
+		type?: string | null;
 	}>;
-};
-
-export type TcpAssertion = {
-	/**
-	 * Type of TCP assertion
-	 */
-	type: "TCP_RESPONSE_TIME" | "TCP_RESPONSE_DATA";
-	/**
-	 * Property to assert on. Use an empty string for raw TCP response data and responseTime for response time assertions.
-	 */
-	property: string;
-	/**
-	 * Comparison operator
-	 */
-	comparison:
-		| "EQUALS"
-		| "NOT_EQUALS"
-		| "GREATER_THAN"
-		| "LESS_THAN"
-		| "NULL"
-		| "NOT_NULL"
-		| "EMPTY"
-		| "NOT_EMPTY"
-		| "CONTAINS"
-		| "NOT_CONTAINS"
-		| "FALSE"
-		| "TRUE";
-	/**
-	 * Expected value
-	 */
-	expected: string;
-};
-
-export type ExpandedTcpCheck = {
-	/**
-	 * Uptime Check ID
-	 */
-	id: string;
-	/**
-	 * Name of the check
-	 */
-	name: string;
-	/**
-	 * Last time the check was queued
-	 */
-	last_queued: string | null;
-	/**
-	 * Current status of the check based on the latest uptime event
-	 */
-	status:
-		| "UP"
-		| "DOWN"
-		| "PENDING"
-		| "PAUSED"
-		| "MUTED"
-		| "MAINTENANCE"
-		| "RECOVERING"
-		| "VERIFYING";
-	/**
-	 * Headers to send with the request
-	 */
-	headers: {
-		[key: string]: string;
-	} | null;
-	/**
-	 * Text to search for in the response
-	 */
-	text_to_search_for: string | null;
-	/**
-	 * Interval in minutes between reminder alerts (-1 for never)
-	 */
-	reminder_alert_interval_minutes: number;
-	/**
-	 * Seconds to wait before confirming a down status
-	 */
-	confirmation_period_seconds: number;
-	/**
-	 * Seconds to wait before confirming recovery
-	 */
-	recovery_period_seconds: number;
-	/**
-	 * Interval in seconds between checks
-	 */
-	test_interval: number;
-	/**
-	 * Timeout in milliseconds
-	 */
-	timeout: number;
-	/**
-	 * Playwright Test script for scripted browser checks (null for URL-based checks)
-	 */
-	script: string | null;
-	/**
-	 * Priority level for alerts
-	 */
-	alert_priority: "LOW" | "HIGH";
-	/**
-	 * Whether to verify SSL certificates
-	 */
-	verify_ssl: boolean;
-	/**
-	 * HTTP method to use
-	 */
-	method: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
-	/**
-	 * Request body for POST/PUT/PATCH requests
-	 */
-	body: string | null;
-	/**
-	 * Whether to follow HTTP redirects
-	 */
-	follow_redirects: boolean;
-	/**
-	 * Username for HTTP Basic Auth
-	 */
-	auth_username: string | null;
-	/**
-	 * Password for HTTP Basic Auth
-	 */
-	auth_password: string | null;
-	/**
-	 * Regions the check runs from. Format: aws:{region}
-	 */
-	test_regions: Array<string>;
-	/**
-	 * User IDs to notify on alerts
-	 */
-	user_alerts: Array<string>;
-	/**
-	 * Slack integration IDs to notify
-	 */
-	slack_alerts: Array<string>;
-	/**
-	 * Discord integration IDs to notify
-	 */
-	discord_alerts: Array<string>;
-	/**
-	 * Incident.io integration IDs to notify
-	 */
-	incident_io_alerts: Array<string>;
-	/**
-	 * Microsoft Teams integration IDs to notify
-	 */
-	microsoft_teams_alerts: Array<string>;
-	/**
-	 * Telegram integration IDs to notify
-	 */
-	telegram_alerts: Array<string>;
-	/**
-	 * Pushover integration IDs to notify
-	 */
-	pushover_alerts: Array<string>;
-	/**
-	 * On-call integration IDs (PagerDuty, Opsgenie, Grafana, Spike)
-	 */
-	oncall_alerts: Array<string>;
-	/**
-	 * Webhook IDs to notify
-	 */
-	webhook_alerts: Array<string>;
-	/**
-	 * Indicates this monitor is a TCP check.
-	 */
-	check_type: "TCP";
-	/**
-	 * TCP checks do not use a URL target.
-	 */
-	url: null;
-	/**
-	 * Runtime version for TCP checks.
-	 */
-	version: "NODE24_TCP";
-	/**
-	 * TCP hostname connected to by this check.
-	 */
-	tcp_hostname: string;
-	/**
-	 * TCP port to connect to
-	 */
-	tcp_port: number;
-	/**
-	 * IP family used by this check.
-	 */
-	tcp_ip_family: "IPv4" | "IPv6";
-	/**
-	 * Optional TCP payload sent by this check.
-	 */
-	tcp_data: string | null;
-	/**
-	 * Whether failed TCP connections are expected.
-	 */
-	tcp_should_fail: boolean;
-	/**
-	 * TCP assertions to validate the response.
-	 */
-	assertions: Array<TcpAssertion> | null;
 };
 
 export type TcpCheckResponse = {
@@ -583,12 +1043,12 @@ export type TcpCheckResponse = {
 	errors: Array<{
 		code: number;
 		message: string;
-		type?: string;
+		type?: string | null;
 	}>;
 	messages: Array<{
 		code: number;
 		message: string;
-		type?: string;
+		type?: string | null;
 	}>;
 };
 
@@ -740,180 +1200,6 @@ export type TcpCheckPatch = {
 	assertions?: Array<TcpAssertion>;
 };
 
-export type ExpandedUptimeCheck = {
-	/**
-	 * Uptime Check ID
-	 */
-	id: string;
-	/**
-	 * Name of the check
-	 */
-	name: string;
-	/**
-	 * URL to check (null for script-based browser checks)
-	 */
-	url: string | null;
-	/**
-	 * Last time the check was queued
-	 */
-	last_queued: string | null;
-	/**
-	 * Current status of the check based on the latest uptime event
-	 */
-	status:
-		| "UP"
-		| "DOWN"
-		| "PENDING"
-		| "PAUSED"
-		| "MUTED"
-		| "MAINTENANCE"
-		| "RECOVERING"
-		| "VERIFYING";
-	/**
-	 * Headers to send with the request
-	 */
-	headers: {
-		[key: string]: string;
-	} | null;
-	/**
-	 * Text to search for in the response
-	 */
-	text_to_search_for: string | null;
-	/**
-	 * Interval in minutes between reminder alerts (-1 for never)
-	 */
-	reminder_alert_interval_minutes: number;
-	/**
-	 * Seconds to wait before confirming a down status
-	 */
-	confirmation_period_seconds: number;
-	/**
-	 * Seconds to wait before confirming recovery
-	 */
-	recovery_period_seconds: number;
-	/**
-	 * Interval in seconds between checks
-	 */
-	test_interval: number;
-	/**
-	 * Timeout in milliseconds
-	 */
-	timeout: number;
-	/**
-	 * Runtime version for browser checks (null for standard uptime checks)
-	 */
-	version: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT" | "CLOUDFLARE";
-	/**
-	 * Playwright Test script for scripted browser checks (null for URL-based checks)
-	 */
-	script: string | null;
-	/**
-	 * Priority level for alerts
-	 */
-	alert_priority: "LOW" | "HIGH";
-	/**
-	 * Whether to verify SSL certificates
-	 */
-	verify_ssl: boolean;
-	/**
-	 * HTTP method to use
-	 */
-	method: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
-	/**
-	 * Request body for POST/PUT/PATCH requests
-	 */
-	body: string | null;
-	/**
-	 * Whether to follow HTTP redirects
-	 */
-	follow_redirects: boolean;
-	/**
-	 * Assertions to validate the response
-	 */
-	assertions: Array<{
-		/**
-		 * Type of assertion
-		 */
-		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
-		/**
-		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
-		 */
-		property: string;
-		/**
-		 * Comparison operator
-		 */
-		comparison:
-			| "EQUALS"
-			| "NOT_EQUALS"
-			| "GREATER_THAN"
-			| "LESS_THAN"
-			| "NULL"
-			| "NOT_NULL"
-			| "EMPTY"
-			| "NOT_EMPTY"
-			| "CONTAINS"
-			| "NOT_CONTAINS"
-			| "FALSE"
-			| "TRUE";
-		/**
-		 * Expected value
-		 */
-		expected: string;
-	}> | null;
-	/**
-	 * Username for HTTP Basic Auth
-	 */
-	auth_username: string | null;
-	/**
-	 * Password for HTTP Basic Auth
-	 */
-	auth_password: string | null;
-	/**
-	 * Regions the check runs from. Format: aws:{region}
-	 */
-	test_regions: Array<string>;
-	/**
-	 * User IDs to notify on alerts
-	 */
-	user_alerts: Array<string>;
-	/**
-	 * Slack integration IDs to notify
-	 */
-	slack_alerts: Array<string>;
-	/**
-	 * Discord integration IDs to notify
-	 */
-	discord_alerts: Array<string>;
-	/**
-	 * Incident.io integration IDs to notify
-	 */
-	incident_io_alerts: Array<string>;
-	/**
-	 * Microsoft Teams integration IDs to notify
-	 */
-	microsoft_teams_alerts: Array<string>;
-	/**
-	 * Telegram integration IDs to notify
-	 */
-	telegram_alerts: Array<string>;
-	/**
-	 * Pushover integration IDs to notify
-	 */
-	pushover_alerts: Array<string>;
-	/**
-	 * On-call integration IDs (PagerDuty, Opsgenie, Grafana, Spike)
-	 */
-	oncall_alerts: Array<string>;
-	/**
-	 * Webhook IDs to notify
-	 */
-	webhook_alerts: Array<string>;
-	/**
-	 * Indicates this monitor is an uptime check.
-	 */
-	check_type: "UPTIME";
-};
-
 export type UptimeCheckResponse = {
 	result: ExpandedUptimeCheck;
 	/**
@@ -923,12 +1209,12 @@ export type UptimeCheckResponse = {
 	errors: Array<{
 		code: number;
 		message: string;
-		type?: string;
+		type?: string | null;
 	}>;
 	messages: Array<{
 		code: number;
 		message: string;
-		type?: string;
+		type?: string | null;
 	}>;
 };
 
@@ -1045,11 +1331,11 @@ export type UptimeCheckInput = {
 	 */
 	verify_ssl?: boolean;
 	/**
-	 * Username to use for URLs behind HTTP Basic Auth
+	 * Username to use for URLs behind HTTP Basic Auth. An empty string represents an empty user-id.
 	 */
 	auth_username?: string;
 	/**
-	 * Password to use for URLs behind HTTP Basic Auth
+	 * Password to use for URLs behind HTTP Basic Auth. Empty strings are preserved.
 	 */
 	auth_password?: string;
 };
@@ -1168,187 +1454,13 @@ export type UptimeCheckPatch = {
 	 */
 	verify_ssl?: boolean;
 	/**
-	 * Username to use for URLs behind HTTP Basic Auth
+	 * Username to use for URLs behind HTTP Basic Auth. An empty string represents an empty user-id.
 	 */
 	auth_username?: string;
 	/**
-	 * Password to use for URLs behind HTTP Basic Auth
+	 * Password to use for URLs behind HTTP Basic Auth. Empty strings are preserved.
 	 */
 	auth_password?: string;
-};
-
-export type ExpandedBrowserCheck = {
-	/**
-	 * Uptime Check ID
-	 */
-	id: string;
-	/**
-	 * Name of the check
-	 */
-	name: string;
-	/**
-	 * URL to check (null for script-based browser checks)
-	 */
-	url: string | null;
-	/**
-	 * Last time the check was queued
-	 */
-	last_queued: string | null;
-	/**
-	 * Current status of the check based on the latest uptime event
-	 */
-	status:
-		| "UP"
-		| "DOWN"
-		| "PENDING"
-		| "PAUSED"
-		| "MUTED"
-		| "MAINTENANCE"
-		| "RECOVERING"
-		| "VERIFYING";
-	/**
-	 * Headers to send with the request
-	 */
-	headers: {
-		[key: string]: string;
-	} | null;
-	/**
-	 * Text to search for in the response
-	 */
-	text_to_search_for: string | null;
-	/**
-	 * Interval in minutes between reminder alerts (-1 for never)
-	 */
-	reminder_alert_interval_minutes: number;
-	/**
-	 * Seconds to wait before confirming a down status
-	 */
-	confirmation_period_seconds: number;
-	/**
-	 * Seconds to wait before confirming recovery
-	 */
-	recovery_period_seconds: number;
-	/**
-	 * Interval in seconds between checks
-	 */
-	test_interval: number;
-	/**
-	 * Timeout in milliseconds
-	 */
-	timeout: number;
-	/**
-	 * Runtime version for browser checks (null for standard uptime checks)
-	 */
-	version: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT" | "CLOUDFLARE";
-	/**
-	 * Playwright Test script for scripted browser checks (null for URL-based checks)
-	 */
-	script: string | null;
-	/**
-	 * Priority level for alerts
-	 */
-	alert_priority: "LOW" | "HIGH";
-	/**
-	 * Whether to verify SSL certificates
-	 */
-	verify_ssl: boolean;
-	/**
-	 * HTTP method to use
-	 */
-	method: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
-	/**
-	 * Request body for POST/PUT/PATCH requests
-	 */
-	body: string | null;
-	/**
-	 * Whether to follow HTTP redirects
-	 */
-	follow_redirects: boolean;
-	/**
-	 * Assertions to validate the response
-	 */
-	assertions: Array<{
-		/**
-		 * Type of assertion
-		 */
-		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
-		/**
-		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
-		 */
-		property: string;
-		/**
-		 * Comparison operator
-		 */
-		comparison:
-			| "EQUALS"
-			| "NOT_EQUALS"
-			| "GREATER_THAN"
-			| "LESS_THAN"
-			| "NULL"
-			| "NOT_NULL"
-			| "EMPTY"
-			| "NOT_EMPTY"
-			| "CONTAINS"
-			| "NOT_CONTAINS"
-			| "FALSE"
-			| "TRUE";
-		/**
-		 * Expected value
-		 */
-		expected: string;
-	}> | null;
-	/**
-	 * Username for HTTP Basic Auth
-	 */
-	auth_username: string | null;
-	/**
-	 * Password for HTTP Basic Auth
-	 */
-	auth_password: string | null;
-	/**
-	 * Regions the check runs from. Format: aws:{region}
-	 */
-	test_regions: Array<string>;
-	/**
-	 * User IDs to notify on alerts
-	 */
-	user_alerts: Array<string>;
-	/**
-	 * Slack integration IDs to notify
-	 */
-	slack_alerts: Array<string>;
-	/**
-	 * Discord integration IDs to notify
-	 */
-	discord_alerts: Array<string>;
-	/**
-	 * Incident.io integration IDs to notify
-	 */
-	incident_io_alerts: Array<string>;
-	/**
-	 * Microsoft Teams integration IDs to notify
-	 */
-	microsoft_teams_alerts: Array<string>;
-	/**
-	 * Telegram integration IDs to notify
-	 */
-	telegram_alerts: Array<string>;
-	/**
-	 * Pushover integration IDs to notify
-	 */
-	pushover_alerts: Array<string>;
-	/**
-	 * On-call integration IDs (PagerDuty, Opsgenie, Grafana, Spike)
-	 */
-	oncall_alerts: Array<string>;
-	/**
-	 * Webhook IDs to notify
-	 */
-	webhook_alerts: Array<string>;
-	/**
-	 * Indicates this monitor is a browser check.
-	 */
-	check_type: "BROWSER";
 };
 
 export type BrowserCheckResponse = {
@@ -1360,12 +1472,12 @@ export type BrowserCheckResponse = {
 	errors: Array<{
 		code: number;
 		message: string;
-		type?: string;
+		type?: string | null;
 	}>;
 	messages: Array<{
 		code: number;
 		message: string;
-		type?: string;
+		type?: string | null;
 	}>;
 };
 
@@ -1485,11 +1597,11 @@ export type BrowserCheckInput = {
 	 */
 	verify_ssl?: boolean;
 	/**
-	 * Username to use for URLs behind HTTP Basic Auth
+	 * Username to use for URLs behind HTTP Basic Auth. An empty string represents an empty user-id.
 	 */
 	auth_username?: string;
 	/**
-	 * Password to use for URLs behind HTTP Basic Auth
+	 * Password to use for URLs behind HTTP Basic Auth. Empty strings are preserved.
 	 */
 	auth_password?: string;
 	/**
@@ -1616,11 +1728,11 @@ export type BrowserCheckPatch = {
 	 */
 	verify_ssl?: boolean;
 	/**
-	 * Username to use for URLs behind HTTP Basic Auth
+	 * Username to use for URLs behind HTTP Basic Auth. An empty string represents an empty user-id.
 	 */
 	auth_username?: string;
 	/**
-	 * Password to use for URLs behind HTTP Basic Auth
+	 * Password to use for URLs behind HTTP Basic Auth. Empty strings are preserved.
 	 */
 	auth_password?: string;
 	/**
@@ -1653,21 +1765,6 @@ export type PublicCheckIncidentListResponse = {
 	result_info: PublicCheckIncidentResultInfo;
 	errors: Array<unknown>;
 	messages: Array<unknown>;
-};
-
-export type PublicCheckIncidentErrorResponse = {
-	success: false;
-	result: null;
-	errors: Array<{
-		code: number;
-		message: string;
-		type?: string | null;
-	}>;
-	messages: Array<{
-		code: number;
-		message: string;
-		type?: string | null;
-	}>;
 };
 
 export type PublicCheckResultWindow = {
@@ -1732,21 +1829,6 @@ export type PublicUptimeCheckResultsResponse = {
 	};
 	errors: Array<unknown>;
 	messages: Array<unknown>;
-};
-
-export type PublicCheckResultsErrorResponse = {
-	success: false;
-	result: null;
-	errors: Array<{
-		code: number;
-		message: string;
-		type?: string | null;
-	}>;
-	messages: Array<{
-		code: number;
-		message: string;
-		type?: string | null;
-	}>;
 };
 
 export type PublicBrowserCheckResultsResponse = {
@@ -1847,105 +1929,6 @@ export type PublicTcpCheckResultsResponse = {
 	messages: Array<unknown>;
 };
 
-export type CheckListItem = {
-	/**
-	 * Uptime Check ID
-	 */
-	id: string;
-	/**
-	 * Name of the check
-	 */
-	name: string;
-	/**
-	 * URL to check (null for DNS or script-based browser checks)
-	 */
-	url: string | null;
-	/**
-	 * Indicates whether the check is an uptime, browser, DNS, or TCP check.
-	 */
-	check_type: "UPTIME" | "BROWSER" | "DNS" | "TCP";
-	/**
-	 * Last time the check was queued
-	 */
-	last_queued: string | null;
-	/**
-	 * Current status of the check based on the latest event
-	 */
-	status:
-		| "UP"
-		| "DOWN"
-		| "PENDING"
-		| "PAUSED"
-		| "MUTED"
-		| "MAINTENANCE"
-		| "RECOVERING"
-		| "VERIFYING";
-	/**
-	 * DNS name queried by this check. Present for DNS checks.
-	 */
-	dns_domain?: string;
-	/**
-	 * DNS record type queried by this check. Present for DNS checks.
-	 */
-	dns_record_type?: "A" | "AAAA" | "CNAME" | "MX" | "NS" | "SOA" | "TXT";
-	/**
-	 * Custom resolver used by this DNS check, or null for the default resolver.
-	 */
-	dns_resolver?: string | null;
-	/**
-	 * DNS transport protocol used by this check. Present for DNS checks.
-	 */
-	dns_protocol?: "UDP" | "TCP";
-	/**
-	 * TCP hostname connected to by this check. Present for TCP checks.
-	 */
-	tcp_hostname?: string;
-	/**
-	 * TCP port to connect to
-	 */
-	tcp_port?: number;
-	/**
-	 * IP family used by this check. Present for TCP checks.
-	 */
-	tcp_ip_family?: "IPv4" | "IPv6";
-};
-
-export type CheckListResponse = {
-	result: Array<CheckListItem>;
-	result_info: {
-		/**
-		 * Page number of paginated results.
-		 */
-		page?: number;
-		/**
-		 * Number of items per page.
-		 */
-		per_page?: number;
-		/**
-		 * Number of items on the current page.
-		 */
-		count: number;
-		/**
-		 * Total number of items.
-		 */
-		total_count: number;
-	};
-	/**
-	 * Whether the API call was successful
-	 */
-	success: boolean;
-	errors: Array<{
-		code: number;
-		message: string;
-		type?: string;
-	}>;
-	messages: Array<{
-		code: number;
-		message: string;
-		type?: string;
-	}>;
-};
-
 export type Check = {
 	/**
 	 * Uptime Check ID
@@ -2011,13 +1994,13 @@ export type ExpandedCheck = Check & {
 	/**
 	 * Timeout in milliseconds
 	 */
-	timeout: number;
+	timeout: number | null;
 	/**
 	 * Runtime version for browser checks (null for standard uptime checks)
 	 */
 	version: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT" | "CLOUDFLARE";
 	/**
-	 * Playwright Test script for scripted browser checks (null for URL-based checks)
+	 * Playwright Test script loaded by GET for scripted browser checks; null for URL-based checks or when script content was not loaded. Mutation responses do not load script content.
 	 */
 	script: string | null;
 	/**
@@ -2074,11 +2057,11 @@ export type ExpandedCheck = Check & {
 		expected: string;
 	}> | null;
 	/**
-	 * Username for HTTP Basic Auth
+	 * Username for HTTP Basic Auth. Null when unset; an empty string represents an empty user-id.
 	 */
 	auth_username: string | null;
 	/**
-	 * Password for HTTP Basic Auth
+	 * Password for HTTP Basic Auth. Null when unset; empty strings are preserved.
 	 */
 	auth_password: string | null;
 	/**
@@ -2132,12 +2115,12 @@ export type CheckResponse = {
 	errors: Array<{
 		code: number;
 		message: string;
-		type?: string;
+		type?: string | null;
 	}>;
 	messages: Array<{
 		code: number;
 		message: string;
-		type?: string;
+		type?: string | null;
 	}>;
 };
 
@@ -2254,11 +2237,11 @@ export type CheckInput = {
 	 */
 	verify_ssl?: boolean;
 	/**
-	 * Username to use for URLs behind HTTP Basic Auth
+	 * Username to use for URLs behind HTTP Basic Auth. An empty string represents an empty user-id.
 	 */
 	auth_username?: string;
 	/**
-	 * Password to use for URLs behind HTTP Basic Auth
+	 * Password to use for URLs behind HTTP Basic Auth. Empty strings are preserved.
 	 */
 	auth_password?: string;
 	/**
@@ -2269,38 +2252,6 @@ export type CheckInput = {
 	 * Playwright Test script for scripted browser checks. Required for script-based checks, optional for URL-based checks.
 	 */
 	script?: string;
-};
-
-export type AnyCheck =
-	| ({
-			check_type: "UPTIME";
-	  } & ExpandedUptimeCheck)
-	| ({
-			check_type: "BROWSER";
-	  } & ExpandedBrowserCheck)
-	| ({
-			check_type: "DNS";
-	  } & ExpandedDnsCheck)
-	| ({
-			check_type: "TCP";
-	  } & ExpandedTcpCheck);
-
-export type AnyCheckResponse = {
-	result: AnyCheck;
-	/**
-	 * Whether the API call was successful
-	 */
-	success: boolean;
-	errors: Array<{
-		code: number;
-		message: string;
-		type?: string;
-	}>;
-	messages: Array<{
-		code: number;
-		message: string;
-		type?: string;
-	}>;
 };
 
 export type CheckPatch = {
@@ -2421,11 +2372,11 @@ export type CheckPatch = {
 	 */
 	verify_ssl?: boolean;
 	/**
-	 * Username to use for URLs behind HTTP Basic Auth
+	 * Username to use for URLs behind HTTP Basic Auth. An empty string represents an empty user-id.
 	 */
 	auth_username?: string;
 	/**
-	 * Password to use for URLs behind HTTP Basic Auth
+	 * Password to use for URLs behind HTTP Basic Auth. Empty strings are preserved.
 	 */
 	auth_password?: string;
 	/**
@@ -2538,7 +2489,7 @@ export type MaintenanceWindow = {
 	 */
 	name: string;
 	/**
-	 * Start time of the maintenance window (HH:MM format)
+	 * Start date and time of the maintenance window, as a timestamp
 	 */
 	start_date: string;
 	/**
@@ -2638,7 +2589,7 @@ export type StatusPage = {
 	 */
 	subdomain: string;
 	/**
-	 * The custom domain your status page is hosted at. For example "https://status.yourdomain.com"
+	 * Stored custom-domain hostname, without a URL scheme.
 	 */
 	custom_domain?: string | null;
 	/**
@@ -2669,7 +2620,7 @@ export type StatusPage = {
 	/**
 	 * Whether the status page is hidden from search engines
 	 */
-	hide_from_search_engines: boolean;
+	hide_from_search_engines: boolean | null;
 	/**
 	 * Whether the status page requires a password to view
 	 */
@@ -2680,6 +2631,25 @@ export type StatusPage = {
 	allowed_ips?: Array<string> | null;
 };
 
+export type StatusPageIdentity = {
+	/**
+	 * Status Page ID
+	 */
+	id: string;
+	/**
+	 * Name of the Status Page
+	 */
+	name: string;
+	/**
+	 * The subdomain your status page will be hosted at. For example "status" would become "status.yourdomain.com"
+	 */
+	subdomain: string;
+	/**
+	 * Stored custom-domain hostname, without a URL scheme.
+	 */
+	custom_domain?: string | null;
+};
+
 export type StatusPageComponent = {
 	/**
 	 * Status Page Component ID
@@ -2688,7 +2658,7 @@ export type StatusPageComponent = {
 	/**
 	 * a name for the component
 	 */
-	name: string;
+	name: string | null;
 	/**
 	 * Status of the component
 	 */
@@ -2702,11 +2672,11 @@ export type StatusPageComponent = {
 	/**
 	 * Show this component's uptime and historical incidents on the status page.
 	 */
-	display_uptime: boolean;
+	display_uptime: boolean | null;
 	/**
 	 * Show this component's response time metrics on the status page.
 	 */
-	display_metrics: boolean;
+	display_metrics: boolean | null;
 	/**
 	 * When the component was created
 	 */
@@ -2718,7 +2688,11 @@ export type StatusPageComponent = {
 	/**
 	 * Status Page Group ID
 	 */
-	group_id: string;
+	group_id: string | null;
+	/**
+	 * Zero-based sort order, or null when unordered.
+	 */
+	sort_order?: number | null;
 	/**
 	 * Whether this component is synced from an external status page
 	 */
@@ -2733,7 +2707,7 @@ export type StatusPageIncident = {
 	/**
 	 * a title for the incident
 	 */
-	title: string;
+	title: string | null;
 	/**
 	 * Impact of the incident
 	 */
@@ -2746,22 +2720,23 @@ export type StatusPageIncident = {
 	/**
 	 * When the incident started
 	 */
-	started: string;
+	started: string | null;
 	/**
 	 * When the incident was resolved
 	 */
-	ended?: string;
+	ended?: string | null;
 	/**
 	 * When the incident was created
 	 */
-	created_at: string;
+	created_at: string | null;
 	/**
 	 * When the incident was last updated
 	 */
-	updated_at: string;
+	updated_at: string | null;
 };
 
 export type StatusPageScheduledMaintenance = StatusPageIncident & {
+	title?: string;
 	/**
 	 * When the scheduled maintenance is expected to start
 	 */
@@ -2818,7 +2793,7 @@ export type StatusPageComponentGroup = {
 	/**
 	 * Sort order of the group
 	 */
-	sort_order: number;
+	sort_order: number | null;
 	/**
 	 * When the component group was created
 	 */
@@ -2898,7 +2873,7 @@ export type StatusPageIncidentWithLatestUpdate = StatusPageIncident & {
 		/**
 		 * Duration in minutes
 		 */
-		duration_minutes: number;
+		duration_minutes: number | null;
 		/**
 		 * Notify subscribers when maintenance starts
 		 */
@@ -3073,14 +3048,25 @@ export type PingHeartbeatGetData = {
 
 export type PingHeartbeatGetErrors = {
 	/**
+	 * Invalid heartbeat ID
+	 */
+	404: string;
+	/**
+	 * Too many requests for this heartbeat ID. Retry later.
+	 */
+	429: string;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: string;
 };
+
+export type PingHeartbeatGetError =
+	PingHeartbeatGetErrors[keyof PingHeartbeatGetErrors];
 
 export type PingHeartbeatGetResponses = {
 	/**
-	 * Heartbeat received successfully
+	 * Accepted for asynchronous processing, with an empty body. Does not guarantee the ping was recorded: missing, paused, early pings and processing failures can still return 200. Request body and query are ignored.
 	 */
 	200: unknown;
 };
@@ -3099,30 +3085,46 @@ export type PingHeartbeatData = {
 
 export type PingHeartbeatErrors = {
 	/**
+	 * Invalid heartbeat ID
+	 */
+	404: string;
+	/**
+	 * Too many requests for this heartbeat ID. Retry later.
+	 */
+	429: string;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: string;
 };
+
+export type PingHeartbeatError = PingHeartbeatErrors[keyof PingHeartbeatErrors];
 
 export type PingHeartbeatResponses = {
 	/**
-	 * Heartbeat received successfully
+	 * Accepted for asynchronous processing, with an empty body. Does not guarantee the ping was recorded: missing, paused, early pings and processing failures can still return 200. Request body and query are ignored.
 	 */
 	200: unknown;
 };
 
 export type ListAuditLogsData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: {
 		/**
-		 * Page number of paginated results.
+		 * Page number of paginated results, starting at 1.
 		 */
-		page?: string;
+		page?: number;
 		/**
-		 * Number of items per page.
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Search term to filter results.
 		 */
@@ -3133,14 +3135,24 @@ export type ListAuditLogsData = {
 
 export type ListAuditLogsErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type ListAuditLogsError = ListAuditLogsErrors[keyof ListAuditLogsErrors];
 
 export type ListAuditLogsResponses = {
 	/**
@@ -3193,12 +3205,12 @@ export type ListAuditLogsResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -3215,68 +3227,59 @@ export type VerifyTokenData = {
 
 export type VerifyTokenErrors = {
 	/**
-	 * Returns an error message if the token is invalid
+	 * Invalid request
 	 */
-	401: {
-		result: null;
-		/**
-		 * Whether the API call was successful
-		 */
-		success: boolean;
-		errors: Array<{
-			/**
-			 * Error code
-			 */
-			code: number;
-			/**
-			 * A message to describe the error
-			 */
-			message: string;
-		}>;
-		messages: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-	};
+	400: PublicApiBadRequest;
+	/**
+	 * Authorization header is missing
+	 */
+	401: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
 
 export type VerifyTokenError = VerifyTokenErrors[keyof VerifyTokenErrors];
 
 export type VerifyTokenResponses = {
 	/**
-	 * Returns that the given API token is valid
+	 * Verification result. OAuth success omits result.id; invalid tokens have success: false.. May also return a canonical failure envelope with success: false at HTTP200.
 	 */
-	200: {
-		result: {
-			/**
-			 * Token ID
-			 */
-			id: string;
-			/**
-			 * Status
-			 */
-			status: string;
-		};
-		/**
-		 * Whether the API call was successful
-		 */
-		success: boolean;
-		errors: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-		messages: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-	};
+	200:
+		| {
+				result: {
+					/**
+					 * API token ID. Omitted when verifying an OAuth access token.
+					 */
+					id?: string;
+					/**
+					 * Status
+					 */
+					status: string;
+				};
+				success: true;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+		  }
+		| {
+				success: false;
+				result: null;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<unknown>;
+		  };
 };
 
 export type VerifyTokenResponse =
@@ -3291,34 +3294,53 @@ export type GetTokenPermissionsData = {
 
 export type GetTokenPermissionsErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Authorization header is missing
+	 */
+	401: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type GetTokenPermissionsError =
+	GetTokenPermissionsErrors[keyof GetTokenPermissionsErrors];
 
 export type GetTokenPermissionsResponses = {
 	/**
-	 * Returns the permissions of a given API token
+	 * API-token permissions or a failure envelope. May also return a canonical failure envelope with success: false at HTTP200.
 	 */
-	200: {
-		result: {
-			permissions: Array<string>;
-		};
-		/**
-		 * Whether the API call was successful
-		 */
-		success: boolean;
-		errors: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-		messages: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-	};
+	200:
+		| {
+				result: {
+					permissions: Array<string>;
+				};
+				success: true;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+		  }
+		| {
+				success: false;
+				result: null;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<unknown>;
+		  };
 };
 
 export type GetTokenPermissionsResponse =
@@ -3326,16 +3348,22 @@ export type GetTokenPermissionsResponse =
 
 export type ListTokensData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: {
 		/**
-		 * Page number of paginated results.
+		 * Page number of paginated results, starting at 1.
 		 */
-		page?: string;
+		page?: number;
 		/**
-		 * Number of items per page.
+		 * Number of tokens per page, default 10. Pagination metadata is nested at result.result_info.
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Search term to filter results.
 		 */
@@ -3346,66 +3374,70 @@ export type ListTokensData = {
 
 export type ListTokensErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type ListTokensError = ListTokensErrors[keyof ListTokensErrors];
 
 export type ListTokensResponses = {
 	/**
 	 * Returns a list of API tokens
 	 */
 	200: {
-		result: Array<{
-			/**
-			 * Token ID
-			 */
-			id: string;
-			/**
-			 * Token name
-			 */
-			name: string;
-			/**
-			 * Token expiration date
-			 */
-			expiresAfter: string;
-			/**
-			 * Token creation date
-			 */
-			createdAt: string;
-			/**
-			 * List of grants (scope and permission pairs) assigned to this token
-			 */
-			grants: Array<{
-				scope:
-					| "UPTIME_CHECKS"
-					| "STATUS_PAGES"
-					| "HEARTBEAT_CHECKS"
-					| "MAINTENANCE_WINDOWS"
-					| "PEOPLE"
-					| "INTEGRATIONS"
-					| "API_TOKENS"
-					| "WEBHOOKS";
-				permission: "READ" | "EDIT";
+		result: {
+			result: Array<{
+				/**
+				 * Token ID
+				 */
+				id: string;
+				/**
+				 * Token name
+				 */
+				name: string;
+				/**
+				 * Token expiration date, or null for a token that never expires.
+				 */
+				expiresAfter: string | null;
+				/**
+				 * Token creation date
+				 */
+				createdAt: string;
+				/**
+				 * List of grants (scope and permission pairs) assigned to this token
+				 */
+				grants: Array<{
+					scope:
+						| "UPTIME_CHECKS"
+						| "STATUS_PAGES"
+						| "HEARTBEAT_CHECKS"
+						| "MAINTENANCE_WINDOWS"
+						| "PEOPLE"
+						| "INTEGRATIONS"
+						| "API_TOKENS"
+						| "WEBHOOKS";
+					permission: "READ" | "EDIT";
+				}>;
 			}>;
-		}>;
-		result_info: {
-			/**
-			 * Page number of paginated results.
-			 */
-			page?: number;
-			/**
-			 * Number of items per page.
-			 */
-			per_page?: number;
-			/**
-			 * Number of items on the current page.
-			 */
-			count: number;
-			/**
-			 * Total number of items.
-			 */
-			total_count: number;
+			result_info: {
+				page: number;
+				per_page: number;
+				total_count: number;
+				total_pages: number;
+			};
 		};
 		/**
 		 * Whether the API call was successful
@@ -3414,12 +3446,12 @@ export type ListTokensResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -3452,6 +3484,12 @@ export type CreateTokenData = {
 		 */
 		expiresAt?: string | null;
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: never;
 	url: "/v1/tokens";
@@ -3459,10 +3497,24 @@ export type CreateTokenData = {
 
 export type CreateTokenErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type CreateTokenError = CreateTokenErrors[keyof CreateTokenErrors];
 
 export type CreateTokenResponses = {
 	/**
@@ -3479,9 +3531,9 @@ export type CreateTokenResponses = {
 			 */
 			name: string;
 			/**
-			 * Token expiration date
+			 * Token expiration date, or null for a token that never expires.
 			 */
-			expiresAfter: string;
+			expiresAfter: string | null;
 			/**
 			 * Token creation date
 			 */
@@ -3498,12 +3550,12 @@ export type CreateTokenResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -3513,6 +3565,12 @@ export type CreateTokenResponse =
 
 export type DeleteTokenData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * The token ID
@@ -3525,14 +3583,28 @@ export type DeleteTokenData = {
 
 export type DeleteTokenErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Token not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type DeleteTokenError = DeleteTokenErrors[keyof DeleteTokenErrors];
 
 export type DeleteTokenResponses = {
 	/**
@@ -3549,12 +3621,12 @@ export type DeleteTokenResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -3564,6 +3636,12 @@ export type DeleteTokenResponse =
 
 export type GetTokenData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * The token ID
@@ -3576,14 +3654,28 @@ export type GetTokenData = {
 
 export type GetTokenErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Token not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type GetTokenError = GetTokenErrors[keyof GetTokenErrors];
 
 export type GetTokenResponses = {
 	/**
@@ -3600,9 +3692,9 @@ export type GetTokenResponses = {
 			 */
 			name: string;
 			/**
-			 * Token expiration date
+			 * Token expiration date, or null for a token that never expires.
 			 */
-			expiresAfter: string;
+			expiresAfter: string | null;
 			/**
 			 * Token creation date
 			 */
@@ -3630,12 +3722,12 @@ export type GetTokenResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -3644,6 +3736,12 @@ export type GetTokenResponse = GetTokenResponses[keyof GetTokenResponses];
 
 export type CreateDnsCheckData = {
 	body: DnsCheckInput;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: never;
 	url: "/v1/checks/dns";
@@ -3653,20 +3751,23 @@ export type CreateDnsCheckErrors = {
 	/**
 	 * Validation error
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type CreateDnsCheckError =
+	CreateDnsCheckErrors[keyof CreateDnsCheckErrors];
 
 export type CreateDnsCheckResponses = {
 	/**
@@ -3680,6 +3781,12 @@ export type CreateDnsCheckResponse =
 
 export type DeleteDnsCheckData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Uptime Check ID
@@ -3694,24 +3801,27 @@ export type DeleteDnsCheckErrors = {
 	/**
 	 * Validation error
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * DNS check not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type DeleteDnsCheckError =
+	DeleteDnsCheckErrors[keyof DeleteDnsCheckErrors];
 
 export type DeleteDnsCheckResponses = {
 	/**
@@ -3725,6 +3835,12 @@ export type DeleteDnsCheckResponse =
 
 export type GetDnsCheckData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Uptime Check ID
@@ -3737,28 +3853,58 @@ export type GetDnsCheckData = {
 
 export type GetDnsCheckErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * DNS check not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type GetDnsCheckError = GetDnsCheckErrors[keyof GetDnsCheckErrors];
 
 export type GetDnsCheckResponses = {
 	/**
-	 * Retrieve the specified OnlineOrNot DNS Check
+	 * Retrieve the specified OnlineOrNot DNS Check. May also return a canonical failure envelope with success: false at HTTP200.
 	 */
-	200: DnsCheckResponse;
+	200:
+		| {
+				result: ExpandedDnsCheck;
+				success: true;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+		  }
+		| {
+				success: false;
+				result: null;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<unknown>;
+		  };
 };
 
 export type GetDnsCheckResponse =
@@ -3766,6 +3912,12 @@ export type GetDnsCheckResponse =
 
 export type UpdateDnsCheckData = {
 	body: DnsCheckPatch;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Uptime Check ID
@@ -3780,24 +3932,27 @@ export type UpdateDnsCheckErrors = {
 	/**
 	 * Validation error
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * DNS check not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type UpdateDnsCheckError =
+	UpdateDnsCheckErrors[keyof UpdateDnsCheckErrors];
 
 export type UpdateDnsCheckResponses = {
 	/**
@@ -3811,6 +3966,12 @@ export type UpdateDnsCheckResponse =
 
 export type CreateTcpCheckData = {
 	body: TcpCheckInput;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: never;
 	url: "/v1/checks/tcp";
@@ -3820,20 +3981,23 @@ export type CreateTcpCheckErrors = {
 	/**
 	 * Validation error
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type CreateTcpCheckError =
+	CreateTcpCheckErrors[keyof CreateTcpCheckErrors];
 
 export type CreateTcpCheckResponses = {
 	/**
@@ -3847,6 +4011,12 @@ export type CreateTcpCheckResponse =
 
 export type DeleteTcpCheckData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Uptime Check ID
@@ -3861,24 +4031,27 @@ export type DeleteTcpCheckErrors = {
 	/**
 	 * Validation error
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * TCP check not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type DeleteTcpCheckError =
+	DeleteTcpCheckErrors[keyof DeleteTcpCheckErrors];
 
 export type DeleteTcpCheckResponses = {
 	/**
@@ -3892,6 +4065,12 @@ export type DeleteTcpCheckResponse =
 
 export type GetTcpCheckData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Uptime Check ID
@@ -3904,28 +4083,58 @@ export type GetTcpCheckData = {
 
 export type GetTcpCheckErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * TCP check not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type GetTcpCheckError = GetTcpCheckErrors[keyof GetTcpCheckErrors];
 
 export type GetTcpCheckResponses = {
 	/**
-	 * Retrieve the specified OnlineOrNot TCP Check
+	 * Retrieve the specified OnlineOrNot TCP Check. May also return a canonical failure envelope with success: false at HTTP200.
 	 */
-	200: TcpCheckResponse;
+	200:
+		| {
+				result: ExpandedTcpCheck;
+				success: true;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+		  }
+		| {
+				success: false;
+				result: null;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<unknown>;
+		  };
 };
 
 export type GetTcpCheckResponse =
@@ -3933,6 +4142,12 @@ export type GetTcpCheckResponse =
 
 export type UpdateTcpCheckData = {
 	body: TcpCheckPatch;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Uptime Check ID
@@ -3947,24 +4162,27 @@ export type UpdateTcpCheckErrors = {
 	/**
 	 * Validation error
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * TCP check not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type UpdateTcpCheckError =
+	UpdateTcpCheckErrors[keyof UpdateTcpCheckErrors];
 
 export type UpdateTcpCheckResponses = {
 	/**
@@ -3978,6 +4196,12 @@ export type UpdateTcpCheckResponse =
 
 export type CreateUptimeCheckData = {
 	body: UptimeCheckInput;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: never;
 	url: "/v1/checks/uptime";
@@ -3987,20 +4211,23 @@ export type CreateUptimeCheckErrors = {
 	/**
 	 * Validation error
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type CreateUptimeCheckError =
+	CreateUptimeCheckErrors[keyof CreateUptimeCheckErrors];
 
 export type CreateUptimeCheckResponses = {
 	/**
@@ -4014,6 +4241,12 @@ export type CreateUptimeCheckResponse =
 
 export type DeleteUptimeCheckData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Uptime Check ID
@@ -4028,24 +4261,27 @@ export type DeleteUptimeCheckErrors = {
 	/**
 	 * Validation error
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Uptime check not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type DeleteUptimeCheckError =
+	DeleteUptimeCheckErrors[keyof DeleteUptimeCheckErrors];
 
 export type DeleteUptimeCheckResponses = {
 	/**
@@ -4059,6 +4295,12 @@ export type DeleteUptimeCheckResponse =
 
 export type GetUptimeCheckData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Uptime Check ID
@@ -4071,22 +4313,29 @@ export type GetUptimeCheckData = {
 
 export type GetUptimeCheckErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Uptime check not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type GetUptimeCheckError =
+	GetUptimeCheckErrors[keyof GetUptimeCheckErrors];
 
 export type GetUptimeCheckResponses = {
 	/**
@@ -4100,6 +4349,12 @@ export type GetUptimeCheckResponse =
 
 export type UpdateUptimeCheckData = {
 	body: UptimeCheckPatch;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Uptime Check ID
@@ -4114,24 +4369,27 @@ export type UpdateUptimeCheckErrors = {
 	/**
 	 * Validation error
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Uptime check not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type UpdateUptimeCheckError =
+	UpdateUptimeCheckErrors[keyof UpdateUptimeCheckErrors];
 
 export type UpdateUptimeCheckResponses = {
 	/**
@@ -4145,6 +4403,12 @@ export type UpdateUptimeCheckResponse =
 
 export type CreateBrowserCheckData = {
 	body: BrowserCheckInput;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: never;
 	url: "/v1/checks/browser";
@@ -4154,20 +4418,23 @@ export type CreateBrowserCheckErrors = {
 	/**
 	 * Validation error
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type CreateBrowserCheckError =
+	CreateBrowserCheckErrors[keyof CreateBrowserCheckErrors];
 
 export type CreateBrowserCheckResponses = {
 	/**
@@ -4181,6 +4448,12 @@ export type CreateBrowserCheckResponse =
 
 export type DeleteBrowserCheckData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Uptime Check ID
@@ -4195,24 +4468,27 @@ export type DeleteBrowserCheckErrors = {
 	/**
 	 * Validation error
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Browser check not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type DeleteBrowserCheckError =
+	DeleteBrowserCheckErrors[keyof DeleteBrowserCheckErrors];
 
 export type DeleteBrowserCheckResponses = {
 	/**
@@ -4226,6 +4502,12 @@ export type DeleteBrowserCheckResponse =
 
 export type GetBrowserCheckData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Uptime Check ID
@@ -4238,22 +4520,29 @@ export type GetBrowserCheckData = {
 
 export type GetBrowserCheckErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Browser check not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type GetBrowserCheckError =
+	GetBrowserCheckErrors[keyof GetBrowserCheckErrors];
 
 export type GetBrowserCheckResponses = {
 	/**
@@ -4267,6 +4556,12 @@ export type GetBrowserCheckResponse =
 
 export type UpdateBrowserCheckData = {
 	body: BrowserCheckPatch;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Uptime Check ID
@@ -4281,24 +4576,27 @@ export type UpdateBrowserCheckErrors = {
 	/**
 	 * Validation error
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Browser check not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type UpdateBrowserCheckError =
+	UpdateBrowserCheckErrors[keyof UpdateBrowserCheckErrors];
 
 export type UpdateBrowserCheckResponses = {
 	/**
@@ -4312,6 +4610,12 @@ export type UpdateBrowserCheckResponse =
 
 export type ListUptimeCheckIncidentsData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Public check ID
@@ -4322,11 +4626,11 @@ export type ListUptimeCheckIncidentsData = {
 		/**
 		 * Page number of paginated results
 		 */
-		page?: string;
+		page?: number;
 		/**
 		 * Number of records per page, from 1 through 100
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Inclusive start of the requested time range
 		 */
@@ -4343,23 +4647,23 @@ export type ListUptimeCheckIncidentsErrors = {
 	/**
 	 * Invalid query parameters
 	 */
-	400: PublicCheckIncidentErrorResponse;
+	400: PublicApiErrorResponse;
 	/**
 	 * Unauthenticated
 	 */
-	401: PublicCheckIncidentErrorResponse;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: PublicCheckIncidentErrorResponse;
+	403: PublicApiErrorResponse;
 	/**
 	 * Check not found
 	 */
-	404: PublicCheckIncidentErrorResponse;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal server error
 	 */
-	500: PublicCheckIncidentErrorResponse;
+	500: PublicApiServerError;
 };
 
 export type ListUptimeCheckIncidentsError =
@@ -4377,6 +4681,12 @@ export type ListUptimeCheckIncidentsResponse =
 
 export type ListBrowserCheckIncidentsData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Public check ID
@@ -4387,11 +4697,11 @@ export type ListBrowserCheckIncidentsData = {
 		/**
 		 * Page number of paginated results
 		 */
-		page?: string;
+		page?: number;
 		/**
 		 * Number of records per page, from 1 through 100
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Inclusive start of the requested time range
 		 */
@@ -4408,23 +4718,23 @@ export type ListBrowserCheckIncidentsErrors = {
 	/**
 	 * Invalid query parameters
 	 */
-	400: PublicCheckIncidentErrorResponse;
+	400: PublicApiErrorResponse;
 	/**
 	 * Unauthenticated
 	 */
-	401: PublicCheckIncidentErrorResponse;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: PublicCheckIncidentErrorResponse;
+	403: PublicApiErrorResponse;
 	/**
 	 * Check not found
 	 */
-	404: PublicCheckIncidentErrorResponse;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal server error
 	 */
-	500: PublicCheckIncidentErrorResponse;
+	500: PublicApiServerError;
 };
 
 export type ListBrowserCheckIncidentsError =
@@ -4442,6 +4752,12 @@ export type ListBrowserCheckIncidentsResponse =
 
 export type ListDnsCheckIncidentsData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Public check ID
@@ -4452,11 +4768,11 @@ export type ListDnsCheckIncidentsData = {
 		/**
 		 * Page number of paginated results
 		 */
-		page?: string;
+		page?: number;
 		/**
 		 * Number of records per page, from 1 through 100
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Inclusive start of the requested time range
 		 */
@@ -4473,23 +4789,23 @@ export type ListDnsCheckIncidentsErrors = {
 	/**
 	 * Invalid query parameters
 	 */
-	400: PublicCheckIncidentErrorResponse;
+	400: PublicApiErrorResponse;
 	/**
 	 * Unauthenticated
 	 */
-	401: PublicCheckIncidentErrorResponse;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: PublicCheckIncidentErrorResponse;
+	403: PublicApiErrorResponse;
 	/**
 	 * Check not found
 	 */
-	404: PublicCheckIncidentErrorResponse;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal server error
 	 */
-	500: PublicCheckIncidentErrorResponse;
+	500: PublicApiServerError;
 };
 
 export type ListDnsCheckIncidentsError =
@@ -4507,6 +4823,12 @@ export type ListDnsCheckIncidentsResponse =
 
 export type ListTcpCheckIncidentsData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Public check ID
@@ -4517,11 +4839,11 @@ export type ListTcpCheckIncidentsData = {
 		/**
 		 * Page number of paginated results
 		 */
-		page?: string;
+		page?: number;
 		/**
 		 * Number of records per page, from 1 through 100
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Inclusive start of the requested time range
 		 */
@@ -4538,23 +4860,23 @@ export type ListTcpCheckIncidentsErrors = {
 	/**
 	 * Invalid query parameters
 	 */
-	400: PublicCheckIncidentErrorResponse;
+	400: PublicApiErrorResponse;
 	/**
 	 * Unauthenticated
 	 */
-	401: PublicCheckIncidentErrorResponse;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: PublicCheckIncidentErrorResponse;
+	403: PublicApiErrorResponse;
 	/**
 	 * Check not found
 	 */
-	404: PublicCheckIncidentErrorResponse;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal server error
 	 */
-	500: PublicCheckIncidentErrorResponse;
+	500: PublicApiServerError;
 };
 
 export type ListTcpCheckIncidentsError =
@@ -4572,6 +4894,12 @@ export type ListTcpCheckIncidentsResponse =
 
 export type ListUptimeCheckResultsData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Public check ID
@@ -4582,11 +4910,11 @@ export type ListUptimeCheckResultsData = {
 		/**
 		 * Page number of paginated results
 		 */
-		page?: string;
+		page?: number;
 		/**
 		 * Number of records per page, from 1 through 100
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Inclusive start of the requested time range
 		 */
@@ -4603,27 +4931,27 @@ export type ListUptimeCheckResultsErrors = {
 	/**
 	 * Invalid query parameters
 	 */
-	400: PublicCheckResultsErrorResponse;
+	400: PublicApiErrorResponse;
 	/**
 	 * Unauthenticated
 	 */
-	401: PublicCheckResultsErrorResponse;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: PublicCheckResultsErrorResponse;
+	403: PublicApiErrorResponse;
 	/**
 	 * Check not found
 	 */
-	404: PublicCheckResultsErrorResponse;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal server error
 	 */
-	500: PublicCheckResultsErrorResponse;
+	500: PublicApiServerError;
 	/**
 	 * Required result storage unavailable
 	 */
-	503: PublicCheckResultsErrorResponse;
+	503: PublicApiErrorResponse;
 };
 
 export type ListUptimeCheckResultsError =
@@ -4641,6 +4969,12 @@ export type ListUptimeCheckResultsResponse =
 
 export type ListBrowserCheckResultsData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Public check ID
@@ -4651,11 +4985,11 @@ export type ListBrowserCheckResultsData = {
 		/**
 		 * Page number of paginated results
 		 */
-		page?: string;
+		page?: number;
 		/**
 		 * Number of records per page, from 1 through 100
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Inclusive start of the requested time range
 		 */
@@ -4672,27 +5006,27 @@ export type ListBrowserCheckResultsErrors = {
 	/**
 	 * Invalid query parameters
 	 */
-	400: PublicCheckResultsErrorResponse;
+	400: PublicApiErrorResponse;
 	/**
 	 * Unauthenticated
 	 */
-	401: PublicCheckResultsErrorResponse;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: PublicCheckResultsErrorResponse;
+	403: PublicApiErrorResponse;
 	/**
 	 * Check not found
 	 */
-	404: PublicCheckResultsErrorResponse;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal server error
 	 */
-	500: PublicCheckResultsErrorResponse;
+	500: PublicApiServerError;
 	/**
 	 * Required result storage unavailable
 	 */
-	503: PublicCheckResultsErrorResponse;
+	503: PublicApiErrorResponse;
 };
 
 export type ListBrowserCheckResultsError =
@@ -4710,6 +5044,12 @@ export type ListBrowserCheckResultsResponse =
 
 export type ListDnsCheckResultsData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Public check ID
@@ -4720,11 +5060,11 @@ export type ListDnsCheckResultsData = {
 		/**
 		 * Page number of paginated results
 		 */
-		page?: string;
+		page?: number;
 		/**
 		 * Number of records per page, from 1 through 100
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Inclusive start of the requested time range
 		 */
@@ -4741,27 +5081,27 @@ export type ListDnsCheckResultsErrors = {
 	/**
 	 * Invalid query parameters
 	 */
-	400: PublicCheckResultsErrorResponse;
+	400: PublicApiErrorResponse;
 	/**
 	 * Unauthenticated
 	 */
-	401: PublicCheckResultsErrorResponse;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: PublicCheckResultsErrorResponse;
+	403: PublicApiErrorResponse;
 	/**
 	 * Check not found
 	 */
-	404: PublicCheckResultsErrorResponse;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal server error
 	 */
-	500: PublicCheckResultsErrorResponse;
+	500: PublicApiServerError;
 	/**
 	 * Required result storage unavailable
 	 */
-	503: PublicCheckResultsErrorResponse;
+	503: PublicApiErrorResponse;
 };
 
 export type ListDnsCheckResultsError =
@@ -4779,6 +5119,12 @@ export type ListDnsCheckResultsResponse =
 
 export type ListTcpCheckResultsData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Public check ID
@@ -4789,11 +5135,11 @@ export type ListTcpCheckResultsData = {
 		/**
 		 * Page number of paginated results
 		 */
-		page?: string;
+		page?: number;
 		/**
 		 * Number of records per page, from 1 through 100
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Inclusive start of the requested time range
 		 */
@@ -4810,27 +5156,27 @@ export type ListTcpCheckResultsErrors = {
 	/**
 	 * Invalid query parameters
 	 */
-	400: PublicCheckResultsErrorResponse;
+	400: PublicApiErrorResponse;
 	/**
 	 * Unauthenticated
 	 */
-	401: PublicCheckResultsErrorResponse;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: PublicCheckResultsErrorResponse;
+	403: PublicApiErrorResponse;
 	/**
 	 * Check not found
 	 */
-	404: PublicCheckResultsErrorResponse;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal server error
 	 */
-	500: PublicCheckResultsErrorResponse;
+	500: PublicApiServerError;
 	/**
 	 * Required result storage unavailable
 	 */
-	503: PublicCheckResultsErrorResponse;
+	503: PublicApiErrorResponse;
 };
 
 export type ListTcpCheckResultsError =
@@ -4848,20 +5194,38 @@ export type ListTcpCheckResultsResponse =
 
 export type ListChecksData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: {
 		/**
-		 * Page number of paginated results.
+		 * Page number of paginated results, starting at 1.
 		 */
-		page?: string;
+		page?: number;
 		/**
-		 * Number of items per page.
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Search term to filter results.
 		 */
 		search?: string;
+		/**
+		 * Filter by current check status. NA, omitted and unrecognized values leave status unfiltered.
+		 */
+		filter?:
+			| "DOWN"
+			| "MUTED"
+			| "NA"
+			| "PAUSED"
+			| "PENDING"
+			| "RECOVERING"
+			| "UP"
+			| "VERIFYING";
 	};
 	url: "/v1/checks";
 };
@@ -4870,32 +5234,82 @@ export type ListChecksErrors = {
 	/**
 	 * Validation error
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type ListChecksError = ListChecksErrors[keyof ListChecksErrors];
 
 export type ListChecksResponses = {
 	/**
-	 * Returns a list of OnlineOrNot Checks
+	 * Returns a list of OnlineOrNot Checks. May also return a canonical failure envelope with success: false at HTTP200.
 	 */
-	200: CheckListResponse;
+	200:
+		| {
+				result: Array<CheckListItem>;
+				result_info: {
+					/**
+					 * Page number of paginated results.
+					 */
+					page?: number;
+					/**
+					 * Number of items per page.
+					 */
+					per_page?: number;
+					/**
+					 * Number of items on the current page.
+					 */
+					count: number;
+					/**
+					 * Total number of items.
+					 */
+					total_count: number;
+				};
+				success: true;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+		  }
+		| {
+				success: false;
+				result: null;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<unknown>;
+		  };
 };
 
 export type ListChecksResponse = ListChecksResponses[keyof ListChecksResponses];
 
 export type CreateCheckData = {
 	body: CheckInput;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: never;
 	url: "/v1/checks";
@@ -4905,20 +5319,22 @@ export type CreateCheckErrors = {
 	/**
 	 * Validation error
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type CreateCheckError = CreateCheckErrors[keyof CreateCheckErrors];
 
 export type CreateCheckResponses = {
 	/**
@@ -4932,6 +5348,12 @@ export type CreateCheckResponse =
 
 export type DeleteCheckData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Uptime Check ID
@@ -4946,24 +5368,26 @@ export type DeleteCheckErrors = {
 	/**
 	 * Validation error
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Check not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type DeleteCheckError = DeleteCheckErrors[keyof DeleteCheckErrors];
 
 export type DeleteCheckResponses = {
 	/**
@@ -4977,6 +5401,12 @@ export type DeleteCheckResponse =
 
 export type GetCheckData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Uptime Check ID
@@ -4989,34 +5419,70 @@ export type GetCheckData = {
 
 export type GetCheckErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Check not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type GetCheckError = GetCheckErrors[keyof GetCheckErrors];
 
 export type GetCheckResponses = {
 	/**
-	 * Retrieve the specified OnlineOrNot Check
+	 * Retrieve the specified OnlineOrNot Check. May also return a canonical failure envelope with success: false at HTTP200.
 	 */
-	200: AnyCheckResponse;
+	200:
+		| {
+				result: AnyCheck;
+				success: true;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+		  }
+		| {
+				success: false;
+				result: null;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<unknown>;
+		  };
 };
 
 export type GetCheckResponse = GetCheckResponses[keyof GetCheckResponses];
 
 export type UpdateCheckData = {
 	body: CheckPatch;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Uptime Check ID
@@ -5031,24 +5497,26 @@ export type UpdateCheckErrors = {
 	/**
 	 * Validation error
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Check not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type UpdateCheckError = UpdateCheckErrors[keyof UpdateCheckErrors];
 
 export type UpdateCheckResponses = {
 	/**
@@ -5062,16 +5530,22 @@ export type UpdateCheckResponse =
 
 export type ListHeartbeatsData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: {
 		/**
-		 * Page number of paginated results.
+		 * Page number of paginated results, starting at 1.
 		 */
-		page?: string;
+		page?: number;
 		/**
-		 * Number of items per page.
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Search term to filter results.
 		 */
@@ -5082,50 +5556,73 @@ export type ListHeartbeatsData = {
 
 export type ListHeartbeatsErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type ListHeartbeatsError =
+	ListHeartbeatsErrors[keyof ListHeartbeatsErrors];
 
 export type ListHeartbeatsResponses = {
 	/**
-	 * Returns a list of OnlineOrNot Heartbeats
+	 * Returns a list of OnlineOrNot Heartbeats. May also return a canonical failure envelope with success: false at HTTP200.
 	 */
-	200: {
-		result: Array<Heartbeat>;
-		result_info: {
-			/**
-			 * Page number of paginated results.
-			 */
-			page?: number;
-			/**
-			 * Number of items per page.
-			 */
-			per_page?: number;
-			/**
-			 * Number of items on the current page.
-			 */
-			count: number;
-			/**
-			 * Total number of items.
-			 */
-			total_count: number;
-		};
-		/**
-		 * Whether the API call was successful
-		 */
-		success: boolean;
-		errors: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-		messages: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-	};
+	200:
+		| {
+				result: Array<Heartbeat>;
+				result_info: {
+					/**
+					 * Page number of paginated results.
+					 */
+					page?: number;
+					/**
+					 * Number of items per page.
+					 */
+					per_page?: number;
+					/**
+					 * Number of items on the current page.
+					 */
+					count: number;
+					/**
+					 * Total number of items.
+					 */
+					total_count: number;
+				};
+				success: true;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+		  }
+		| {
+				success: false;
+				result: null;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<unknown>;
+		  };
 };
 
 export type ListHeartbeatsResponse =
@@ -5198,6 +5695,12 @@ export type CreateHeartbeatData = {
 		 */
 		alert_priority?: "LOW" | "HIGH";
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: never;
 	url: "/v1/heartbeats";
@@ -5205,10 +5708,25 @@ export type CreateHeartbeatData = {
 
 export type CreateHeartbeatErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type CreateHeartbeatError =
+	CreateHeartbeatErrors[keyof CreateHeartbeatErrors];
 
 export type CreateHeartbeatResponses = {
 	/**
@@ -5223,12 +5741,12 @@ export type CreateHeartbeatResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -5238,6 +5756,12 @@ export type CreateHeartbeatResponse =
 
 export type DeleteHeartbeatData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Heartbeat ID
@@ -5250,10 +5774,25 @@ export type DeleteHeartbeatData = {
 
 export type DeleteHeartbeatErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type DeleteHeartbeatError =
+	DeleteHeartbeatErrors[keyof DeleteHeartbeatErrors];
 
 export type DeleteHeartbeatResponses = {
 	/**
@@ -5273,12 +5812,12 @@ export type DeleteHeartbeatResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -5288,6 +5827,12 @@ export type DeleteHeartbeatResponse =
 
 export type GetHeartbeatData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Heartbeat ID
@@ -5300,10 +5845,24 @@ export type GetHeartbeatData = {
 
 export type GetHeartbeatErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type GetHeartbeatError = GetHeartbeatErrors[keyof GetHeartbeatErrors];
 
 export type GetHeartbeatResponses = {
 	/**
@@ -5318,12 +5877,12 @@ export type GetHeartbeatResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -5406,6 +5965,12 @@ export type UpdateHeartbeatData = {
 		 */
 		muted?: boolean;
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Heartbeat ID
@@ -5418,10 +5983,25 @@ export type UpdateHeartbeatData = {
 
 export type UpdateHeartbeatErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type UpdateHeartbeatError =
+	UpdateHeartbeatErrors[keyof UpdateHeartbeatErrors];
 
 export type UpdateHeartbeatResponses = {
 	/**
@@ -5436,12 +6016,12 @@ export type UpdateHeartbeatResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -5451,16 +6031,22 @@ export type UpdateHeartbeatResponse =
 
 export type ListMaintenanceWindowsData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: {
 		/**
-		 * Page number of paginated results.
+		 * Page number of paginated results, starting at 1.
 		 */
-		page?: string;
+		page?: number;
 		/**
-		 * Number of items per page.
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Search term to filter maintenance windows by name
 		 */
@@ -5471,54 +6057,73 @@ export type ListMaintenanceWindowsData = {
 
 export type ListMaintenanceWindowsErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthorized - Invalid or missing API token
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type ListMaintenanceWindowsError =
+	ListMaintenanceWindowsErrors[keyof ListMaintenanceWindowsErrors];
 
 export type ListMaintenanceWindowsResponses = {
 	/**
-	 * Returns a list of maintenance windows
+	 * Returns a list of maintenance windows. May also return a canonical failure envelope with success: false at HTTP200.
 	 */
-	200: {
-		result: Array<MaintenanceWindow>;
-		result_info: {
-			/**
-			 * Page number of paginated results.
-			 */
-			page?: number;
-			/**
-			 * Number of items per page.
-			 */
-			per_page?: number;
-			/**
-			 * Number of items on the current page.
-			 */
-			count: number;
-			/**
-			 * Total number of items.
-			 */
-			total_count: number;
-		};
-		/**
-		 * Whether the API call was successful
-		 */
-		success: boolean;
-		errors: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-		messages: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-	};
+	200:
+		| {
+				result: Array<MaintenanceWindow>;
+				result_info: {
+					/**
+					 * Page number of paginated results.
+					 */
+					page?: number;
+					/**
+					 * Number of items per page.
+					 */
+					per_page?: number;
+					/**
+					 * Number of items on the current page.
+					 */
+					count: number;
+					/**
+					 * Total number of items.
+					 */
+					total_count: number;
+				};
+				success: true;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+		  }
+		| {
+				success: false;
+				result: null;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<unknown>;
+		  };
 };
 
 export type ListMaintenanceWindowsResponse =
@@ -5531,7 +6136,7 @@ export type CreateMaintenanceWindowData = {
 		 */
 		name: string;
 		/**
-		 * Start time of the maintenance window (HH:MM format)
+		 * Start date and time of the maintenance window, as a timestamp
 		 */
 		start_date: string;
 		/**
@@ -5563,6 +6168,12 @@ export type CreateMaintenanceWindowData = {
 		 */
 		heartbeats?: Array<string>;
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: never;
 	url: "/v1/maintenance-windows";
@@ -5572,16 +6183,23 @@ export type CreateMaintenanceWindowErrors = {
 	/**
 	 * Bad Request - Invalid input (e.g., invalid check/heartbeat IDs, empty name)
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthorized - Invalid or missing API token
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type CreateMaintenanceWindowError =
+	CreateMaintenanceWindowErrors[keyof CreateMaintenanceWindowErrors];
 
 export type CreateMaintenanceWindowResponses = {
 	/**
@@ -5596,12 +6214,12 @@ export type CreateMaintenanceWindowResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -5611,6 +6229,12 @@ export type CreateMaintenanceWindowResponse =
 
 export type DeleteMaintenanceWindowData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Maintenance Window ID
@@ -5623,18 +6247,29 @@ export type DeleteMaintenanceWindowData = {
 
 export type DeleteMaintenanceWindowErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthorized - Invalid or missing API token
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
 	/**
 	 * Not Found - Maintenance window does not exist or belongs to different organization
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type DeleteMaintenanceWindowError =
+	DeleteMaintenanceWindowErrors[keyof DeleteMaintenanceWindowErrors];
 
 export type DeleteMaintenanceWindowResponses = {
 	/**
@@ -5654,12 +6289,12 @@ export type DeleteMaintenanceWindowResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -5669,6 +6304,12 @@ export type DeleteMaintenanceWindowResponse =
 
 export type GetMaintenanceWindowData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Maintenance Window ID
@@ -5681,18 +6322,29 @@ export type GetMaintenanceWindowData = {
 
 export type GetMaintenanceWindowErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthorized - Invalid or missing API token
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
 	/**
 	 * Not Found - Maintenance window does not exist or belongs to different organization
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type GetMaintenanceWindowError =
+	GetMaintenanceWindowErrors[keyof GetMaintenanceWindowErrors];
 
 export type GetMaintenanceWindowResponses = {
 	/**
@@ -5707,12 +6359,12 @@ export type GetMaintenanceWindowResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -5727,7 +6379,7 @@ export type UpdateMaintenanceWindowData = {
 		 */
 		name?: string;
 		/**
-		 * Start time of the maintenance window (HH:MM format)
+		 * Start date and time of the maintenance window, as a timestamp
 		 */
 		start_date?: string;
 		/**
@@ -5763,6 +6415,12 @@ export type UpdateMaintenanceWindowData = {
 		 */
 		heartbeats?: Array<string>;
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Maintenance Window ID
@@ -5777,20 +6435,27 @@ export type UpdateMaintenanceWindowErrors = {
 	/**
 	 * Bad Request - Invalid input (e.g., invalid check/heartbeat IDs, no fields to update)
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthorized - Invalid or missing API token
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
 	/**
 	 * Not Found - Maintenance window does not exist or belongs to different organization
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type UpdateMaintenanceWindowError =
+	UpdateMaintenanceWindowErrors[keyof UpdateMaintenanceWindowErrors];
 
 export type UpdateMaintenanceWindowResponses = {
 	/**
@@ -5805,12 +6470,12 @@ export type UpdateMaintenanceWindowResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -5820,16 +6485,22 @@ export type UpdateMaintenanceWindowResponse =
 
 export type ListUsersData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: {
 		/**
-		 * Page number of paginated results.
+		 * Page number of paginated results, starting at 1.
 		 */
-		page?: string;
+		page?: number;
 		/**
-		 * Number of items per page.
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Search term to filter results.
 		 */
@@ -5840,60 +6511,84 @@ export type ListUsersData = {
 
 export type ListUsersErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type ListUsersError = ListUsersErrors[keyof ListUsersErrors];
 
 export type ListUsersResponses = {
 	/**
-	 * Returns a list of users in the organisation
+	 * Returns a list of users in the organisation. May also return a canonical failure envelope with success: false at HTTP200.
 	 */
-	200: {
-		result: Array<OrgUser>;
-		result_info: {
-			/**
-			 * Page number of paginated results.
-			 */
-			page?: number;
-			/**
-			 * Number of items per page.
-			 */
-			per_page?: number;
-			/**
-			 * Number of items on the current page.
-			 */
-			count: number;
-			/**
-			 * Total number of items.
-			 */
-			total_count: number;
-		};
-		/**
-		 * Whether the API call was successful
-		 */
-		success: boolean;
-		errors: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-		messages: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-	};
+	200:
+		| {
+				result: Array<OrgUser>;
+				result_info: {
+					/**
+					 * Page number of paginated results.
+					 */
+					page?: number;
+					/**
+					 * Number of items per page.
+					 */
+					per_page?: number;
+					/**
+					 * Number of items on the current page.
+					 */
+					count: number;
+					/**
+					 * Total number of items.
+					 */
+					total_count: number;
+				};
+				success: true;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+		  }
+		| {
+				success: false;
+				result: null;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<unknown>;
+		  };
 };
 
 export type ListUsersResponse = ListUsersResponses[keyof ListUsersResponses];
 
 export type RemoveUserData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * The unique identifier of the user
@@ -5908,24 +6603,26 @@ export type RemoveUserErrors = {
 	/**
 	 * Bad Request - Invalid user ID or cannot remove yourself
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden - Insufficient permissions
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Not Found - User not in organisation
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type RemoveUserError = RemoveUserErrors[keyof RemoveUserErrors];
 
 export type RemoveUserResponses = {
 	/**
@@ -5945,12 +6642,12 @@ export type RemoveUserResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -5959,16 +6656,22 @@ export type RemoveUserResponse = RemoveUserResponses[keyof RemoveUserResponses];
 
 export type ListInvitationsData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: {
 		/**
-		 * Page number of paginated results.
+		 * Page number of paginated results, starting at 1.
 		 */
-		page?: string;
+		page?: number;
 		/**
-		 * Number of items per page.
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Search term to filter results.
 		 */
@@ -5979,54 +6682,73 @@ export type ListInvitationsData = {
 
 export type ListInvitationsErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type ListInvitationsError =
+	ListInvitationsErrors[keyof ListInvitationsErrors];
 
 export type ListInvitationsResponses = {
 	/**
-	 * Returns a list of pending invitations
+	 * Returns a list of pending invitations. May also return a canonical failure envelope with success: false at HTTP200.
 	 */
-	200: {
-		result: Array<Invitation>;
-		result_info: {
-			/**
-			 * Page number of paginated results.
-			 */
-			page?: number;
-			/**
-			 * Number of items per page.
-			 */
-			per_page?: number;
-			/**
-			 * Number of items on the current page.
-			 */
-			count: number;
-			/**
-			 * Total number of items.
-			 */
-			total_count: number;
-		};
-		/**
-		 * Whether the API call was successful
-		 */
-		success: boolean;
-		errors: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-		messages: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-	};
+	200:
+		| {
+				result: Array<Invitation>;
+				result_info: {
+					/**
+					 * Page number of paginated results.
+					 */
+					page?: number;
+					/**
+					 * Number of items per page.
+					 */
+					per_page?: number;
+					/**
+					 * Number of items on the current page.
+					 */
+					count: number;
+					/**
+					 * Total number of items.
+					 */
+					total_count: number;
+				};
+				success: true;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+		  }
+		| {
+				success: false;
+				result: null;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<unknown>;
+		  };
 };
 
 export type ListInvitationsResponse =
@@ -6043,6 +6765,12 @@ export type CreateInvitationData = {
 		 */
 		role?: "ADMIN" | "STANDARD";
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: never;
 	url: "/v1/invitations";
@@ -6052,20 +6780,23 @@ export type CreateInvitationErrors = {
 	/**
 	 * Bad Request - Invalid email or user already invited/exists
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden - Plan limit reached
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type CreateInvitationError =
+	CreateInvitationErrors[keyof CreateInvitationErrors];
 
 export type CreateInvitationResponses = {
 	/**
@@ -6080,12 +6811,12 @@ export type CreateInvitationResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -6095,6 +6826,12 @@ export type CreateInvitationResponse =
 
 export type DeleteStatusPageData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -6107,10 +6844,29 @@ export type DeleteStatusPageData = {
 
 export type DeleteStatusPageErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource not found, unavailable, or rejected by the domain operation
+	 */
+	404: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type DeleteStatusPageError =
+	DeleteStatusPageErrors[keyof DeleteStatusPageErrors];
 
 export type DeleteStatusPageResponses = {
 	/**
@@ -6130,12 +6886,12 @@ export type DeleteStatusPageResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -6145,6 +6901,12 @@ export type DeleteStatusPageResponse =
 
 export type GetStatusPageData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -6157,10 +6919,28 @@ export type GetStatusPageData = {
 
 export type GetStatusPageErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource not found, unavailable, or rejected by the domain operation
+	 */
+	404: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type GetStatusPageError = GetStatusPageErrors[keyof GetStatusPageErrors];
 
 export type GetStatusPageResponses = {
 	/**
@@ -6175,12 +6955,12 @@ export type GetStatusPageResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -6219,6 +6999,12 @@ export type UpdateStatusPageData = {
 		 */
 		allowed_ips?: Array<string>;
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -6231,17 +7017,41 @@ export type UpdateStatusPageData = {
 
 export type UpdateStatusPageErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type UpdateStatusPageError =
+	UpdateStatusPageErrors[keyof UpdateStatusPageErrors];
 
 export type UpdateStatusPageResponses = {
 	/**
 	 * Update an existing OnlineOrNot Status Page
 	 */
 	200: {
-		result: StatusPage;
+		result: StatusPageIdentity & {
+			/**
+			 * A description of the status page
+			 */
+			description?: string | null;
+			/**
+			 * Whether the status page is hidden from search engines
+			 */
+			hide_from_search_engines: boolean | null;
+		};
 		/**
 		 * Whether the API call was successful
 		 */
@@ -6249,12 +7059,12 @@ export type UpdateStatusPageResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -6276,14 +7086,21 @@ export type GetStatusPageSummaryData = {
 
 export type GetStatusPageSummaryErrors = {
 	/**
-	 * Not found
+	 * Invalid path
 	 */
-	404: unknown;
+	400: PublicApiBadRequest;
+	/**
+	 * Not found or private status page
+	 */
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type GetStatusPageSummaryError =
+	GetStatusPageSummaryErrors[keyof GetStatusPageSummaryErrors];
 
 export type GetStatusPageSummaryResponses = {
 	/**
@@ -6302,7 +7119,7 @@ export type GetStatusPageSummaryResponses = {
 					| "Service Under Maintenance"
 					| "All Systems Operational";
 			};
-			status_page: StatusPage;
+			status_page: StatusPageIdentity;
 			components: Array<StatusPageComponent>;
 			active_incidents: Array<StatusPageIncident>;
 			scheduled_maintenance: Array<StatusPageScheduledMaintenance>;
@@ -6314,12 +7131,12 @@ export type GetStatusPageSummaryResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -6329,16 +7146,22 @@ export type GetStatusPageSummaryResponse =
 
 export type ListStatusPagesData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: {
 		/**
-		 * Page number of paginated results.
+		 * Page number of paginated results, starting at 1.
 		 */
-		page?: string;
+		page?: number;
 		/**
-		 * Number of items per page.
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Search term to filter results.
 		 */
@@ -6349,50 +7172,129 @@ export type ListStatusPagesData = {
 
 export type ListStatusPagesErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type ListStatusPagesError =
+	ListStatusPagesErrors[keyof ListStatusPagesErrors];
 
 export type ListStatusPagesResponses = {
 	/**
-	 * Returns a list of OnlineOrNot Status Pages
+	 * Returns a list of OnlineOrNot Status Pages. May also return a canonical failure envelope with success: false at HTTP200.
 	 */
-	200: {
-		result: Array<StatusPage>;
-		result_info: {
-			/**
-			 * Page number of paginated results.
-			 */
-			page?: number;
-			/**
-			 * Number of items per page.
-			 */
-			per_page?: number;
-			/**
-			 * Number of items on the current page.
-			 */
-			count: number;
-			/**
-			 * Total number of items.
-			 */
-			total_count: number;
-		};
-		/**
-		 * Whether the API call was successful
-		 */
-		success: boolean;
-		errors: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-		messages: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-	};
+	200:
+		| {
+				result: Array<{
+					/**
+					 * Status Page ID
+					 */
+					id: string;
+					/**
+					 * Name of the Status Page
+					 */
+					name: string;
+					/**
+					 * The subdomain your status page will be hosted at. For example "status" would become "status.yourdomain.com"
+					 */
+					subdomain: string;
+					/**
+					 * Stored custom-domain hostname, without a URL scheme.
+					 */
+					custom_domain?: string | null;
+					/**
+					 * The current overall status of the status page
+					 */
+					status:
+						| "ALL_SYSTEMS_OPERATIONAL"
+						| "PARTIALLY_DEGRADED_SERVICE"
+						| "MINOR_SERVICE_OUTAGE"
+						| "MAJOR_SYSTEM_OUTAGE"
+						| "SERVICE_UNDER_MAINTENANCE";
+					/**
+					 * URL to the favicon for the status page
+					 */
+					favicon_url?: string | null;
+					/**
+					 * URL to the logo for the status page
+					 */
+					logo_url?: string | null;
+					/**
+					 * URL to the dark mode logo for the status page
+					 */
+					dark_logo_url?: string | null;
+					/**
+					 * A description of the status page
+					 */
+					description?: string | null;
+					/**
+					 * Whether the status page is hidden from search engines
+					 */
+					hide_from_search_engines: boolean | null;
+					/**
+					 * Whether the status page requires a password to view
+					 */
+					has_password: boolean;
+					/**
+					 * List of IP addresses or CIDR ranges allowed to access this status page
+					 */
+					allowed_ips?: Array<string> | null;
+					custom_domain_entitled: boolean;
+					private_status_page_entitled: boolean;
+				}>;
+				result_info: {
+					/**
+					 * Page number of paginated results.
+					 */
+					page?: number;
+					/**
+					 * Number of items per page.
+					 */
+					per_page?: number;
+					/**
+					 * Number of items on the current page.
+					 */
+					count: number;
+					/**
+					 * Total number of items.
+					 */
+					total_count: number;
+				};
+				success: true;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+		  }
+		| {
+				success: false;
+				result: null;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<unknown>;
+		  };
 };
 
 export type ListStatusPagesResponse =
@@ -6429,6 +7331,12 @@ export type CreateStatusPageData = {
 		 */
 		allowed_ips?: Array<string>;
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: never;
 	url: "/v1/status_pages";
@@ -6436,17 +7344,32 @@ export type CreateStatusPageData = {
 
 export type CreateStatusPageErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type CreateStatusPageError =
+	CreateStatusPageErrors[keyof CreateStatusPageErrors];
 
 export type CreateStatusPageResponses = {
 	/**
 	 * Create a new OnlineOrNot Status Page
 	 */
 	201: {
-		result: StatusPage;
+		result: StatusPageIdentity;
 		/**
 		 * Whether the API call was successful
 		 */
@@ -6454,12 +7377,12 @@ export type CreateStatusPageResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -6469,6 +7392,12 @@ export type CreateStatusPageResponse =
 
 export type ListStatusPageComponentsData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -6477,13 +7406,13 @@ export type ListStatusPageComponentsData = {
 	};
 	query?: {
 		/**
-		 * Page number of paginated results.
+		 * Page number of paginated results, starting at 1.
 		 */
-		page?: string;
+		page?: number;
 		/**
-		 * Number of items per page.
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Search term to filter results.
 		 */
@@ -6494,50 +7423,73 @@ export type ListStatusPageComponentsData = {
 
 export type ListStatusPageComponentsErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type ListStatusPageComponentsError =
+	ListStatusPageComponentsErrors[keyof ListStatusPageComponentsErrors];
 
 export type ListStatusPageComponentsResponses = {
 	/**
-	 * Returns a list of components for a status page
+	 * Returns a list of components for a status page. May also return a canonical failure envelope with success: false at HTTP200.
 	 */
-	200: {
-		result: Array<StatusPageComponent>;
-		result_info: {
-			/**
-			 * Page number of paginated results.
-			 */
-			page?: number;
-			/**
-			 * Number of items per page.
-			 */
-			per_page?: number;
-			/**
-			 * Number of items on the current page.
-			 */
-			count: number;
-			/**
-			 * Total number of items.
-			 */
-			total_count: number;
-		};
-		/**
-		 * Whether the API call was successful
-		 */
-		success: boolean;
-		errors: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-		messages: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-	};
+	200:
+		| {
+				result: Array<StatusPageComponent>;
+				result_info: {
+					/**
+					 * Page number of paginated results.
+					 */
+					page?: number;
+					/**
+					 * Number of items per page.
+					 */
+					per_page?: number;
+					/**
+					 * Number of items on the current page.
+					 */
+					count: number;
+					/**
+					 * Total number of items.
+					 */
+					total_count: number;
+				};
+				success: true;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+		  }
+		| {
+				success: false;
+				result: null;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<unknown>;
+		  };
 };
 
 export type ListStatusPageComponentsResponse =
@@ -6568,6 +7520,12 @@ export type CreateStatusPageComponentData = {
 		 */
 		display_metrics?: boolean;
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -6580,10 +7538,25 @@ export type CreateStatusPageComponentData = {
 
 export type CreateStatusPageComponentErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type CreateStatusPageComponentError =
+	CreateStatusPageComponentErrors[keyof CreateStatusPageComponentErrors];
 
 export type CreateStatusPageComponentResponses = {
 	/**
@@ -6598,12 +7571,12 @@ export type CreateStatusPageComponentResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -6613,6 +7586,12 @@ export type CreateStatusPageComponentResponse =
 
 export type DeleteStatusPageComponentData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -6629,10 +7608,29 @@ export type DeleteStatusPageComponentData = {
 
 export type DeleteStatusPageComponentErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource not found, unavailable, or rejected by the domain operation
+	 */
+	404: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type DeleteStatusPageComponentError =
+	DeleteStatusPageComponentErrors[keyof DeleteStatusPageComponentErrors];
 
 export type DeleteStatusPageComponentResponses = {
 	/**
@@ -6652,12 +7650,12 @@ export type DeleteStatusPageComponentResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -6667,6 +7665,12 @@ export type DeleteStatusPageComponentResponse =
 
 export type GetStatusPageComponentData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -6683,10 +7687,29 @@ export type GetStatusPageComponentData = {
 
 export type GetStatusPageComponentErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource not found, unavailable, or rejected by the domain operation
+	 */
+	404: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type GetStatusPageComponentError =
+	GetStatusPageComponentErrors[keyof GetStatusPageComponentErrors];
 
 export type GetStatusPageComponentResponses = {
 	/**
@@ -6701,12 +7724,12 @@ export type GetStatusPageComponentResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -6755,6 +7778,12 @@ export type UpdateStatusPageComponentData = {
 		 */
 		override_status?: boolean;
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -6771,10 +7800,29 @@ export type UpdateStatusPageComponentData = {
 
 export type UpdateStatusPageComponentErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource not found, unavailable, or rejected by the domain operation
+	 */
+	404: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type UpdateStatusPageComponentError =
+	UpdateStatusPageComponentErrors[keyof UpdateStatusPageComponentErrors];
 
 export type UpdateStatusPageComponentResponses = {
 	/**
@@ -6789,12 +7837,12 @@ export type UpdateStatusPageComponentResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -6809,6 +7857,12 @@ export type UpdateStatusPageComponentSortOrderData = {
 		 */
 		component_ids: Array<string>;
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -6821,10 +7875,29 @@ export type UpdateStatusPageComponentSortOrderData = {
 
 export type UpdateStatusPageComponentSortOrderErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource not found, unavailable, or rejected by the domain operation
+	 */
+	404: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type UpdateStatusPageComponentSortOrderError =
+	UpdateStatusPageComponentSortOrderErrors[keyof UpdateStatusPageComponentSortOrderErrors];
 
 export type UpdateStatusPageComponentSortOrderResponses = {
 	/**
@@ -6844,12 +7917,12 @@ export type UpdateStatusPageComponentSortOrderResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -6859,6 +7932,12 @@ export type UpdateStatusPageComponentSortOrderResponse =
 
 export type ListStatusPageComponentGroupsData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -6867,13 +7946,13 @@ export type ListStatusPageComponentGroupsData = {
 	};
 	query?: {
 		/**
-		 * Page number of paginated results.
+		 * Page number of paginated results, starting at 1.
 		 */
-		page?: string;
+		page?: number;
 		/**
-		 * Number of items per page.
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Search term to filter results.
 		 */
@@ -6884,50 +7963,73 @@ export type ListStatusPageComponentGroupsData = {
 
 export type ListStatusPageComponentGroupsErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type ListStatusPageComponentGroupsError =
+	ListStatusPageComponentGroupsErrors[keyof ListStatusPageComponentGroupsErrors];
 
 export type ListStatusPageComponentGroupsResponses = {
 	/**
-	 * Returns a list of component groups for a status page
+	 * Returns a list of component groups for a status page. May also return a canonical failure envelope with success: false at HTTP200.
 	 */
-	200: {
-		result: Array<StatusPageComponentGroup>;
-		result_info: {
-			/**
-			 * Page number of paginated results.
-			 */
-			page?: number;
-			/**
-			 * Number of items per page.
-			 */
-			per_page?: number;
-			/**
-			 * Number of items on the current page.
-			 */
-			count: number;
-			/**
-			 * Total number of items.
-			 */
-			total_count: number;
-		};
-		/**
-		 * Whether the API call was successful
-		 */
-		success: boolean;
-		errors: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-		messages: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-	};
+	200:
+		| {
+				result: Array<StatusPageComponentGroup>;
+				result_info: {
+					/**
+					 * Page number of paginated results.
+					 */
+					page?: number;
+					/**
+					 * Number of items per page.
+					 */
+					per_page?: number;
+					/**
+					 * Number of items on the current page.
+					 */
+					count: number;
+					/**
+					 * Total number of items.
+					 */
+					total_count: number;
+				};
+				success: true;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+		  }
+		| {
+				success: false;
+				result: null;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<unknown>;
+		  };
 };
 
 export type ListStatusPageComponentGroupsResponse =
@@ -6944,6 +8046,12 @@ export type CreateStatusPageComponentGroupData = {
 		 */
 		description?: string;
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -6956,10 +8064,25 @@ export type CreateStatusPageComponentGroupData = {
 
 export type CreateStatusPageComponentGroupErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type CreateStatusPageComponentGroupError =
+	CreateStatusPageComponentGroupErrors[keyof CreateStatusPageComponentGroupErrors];
 
 export type CreateStatusPageComponentGroupResponses = {
 	/**
@@ -6974,12 +8097,12 @@ export type CreateStatusPageComponentGroupResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -6989,6 +8112,12 @@ export type CreateStatusPageComponentGroupResponse =
 
 export type DeleteStatusPageComponentGroupData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -7005,10 +8134,29 @@ export type DeleteStatusPageComponentGroupData = {
 
 export type DeleteStatusPageComponentGroupErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource not found, unavailable, or rejected by the domain operation
+	 */
+	404: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type DeleteStatusPageComponentGroupError =
+	DeleteStatusPageComponentGroupErrors[keyof DeleteStatusPageComponentGroupErrors];
 
 export type DeleteStatusPageComponentGroupResponses = {
 	/**
@@ -7028,12 +8176,12 @@ export type DeleteStatusPageComponentGroupResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -7043,6 +8191,12 @@ export type DeleteStatusPageComponentGroupResponse =
 
 export type GetStatusPageComponentGroupData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -7059,10 +8213,29 @@ export type GetStatusPageComponentGroupData = {
 
 export type GetStatusPageComponentGroupErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource not found, unavailable, or rejected by the domain operation
+	 */
+	404: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type GetStatusPageComponentGroupError =
+	GetStatusPageComponentGroupErrors[keyof GetStatusPageComponentGroupErrors];
 
 export type GetStatusPageComponentGroupResponses = {
 	/**
@@ -7077,12 +8250,12 @@ export type GetStatusPageComponentGroupResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -7101,6 +8274,12 @@ export type UpdateStatusPageComponentGroupData = {
 		 */
 		description?: string | null;
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -7117,10 +8296,29 @@ export type UpdateStatusPageComponentGroupData = {
 
 export type UpdateStatusPageComponentGroupErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource not found, unavailable, or rejected by the domain operation
+	 */
+	404: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type UpdateStatusPageComponentGroupError =
+	UpdateStatusPageComponentGroupErrors[keyof UpdateStatusPageComponentGroupErrors];
 
 export type UpdateStatusPageComponentGroupResponses = {
 	/**
@@ -7135,12 +8333,12 @@ export type UpdateStatusPageComponentGroupResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -7155,6 +8353,12 @@ export type UpdateStatusPageComponentGroupSortOrderData = {
 		 */
 		group_ids: Array<string>;
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -7167,10 +8371,29 @@ export type UpdateStatusPageComponentGroupSortOrderData = {
 
 export type UpdateStatusPageComponentGroupSortOrderErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource not found, unavailable, or rejected by the domain operation
+	 */
+	404: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type UpdateStatusPageComponentGroupSortOrderError =
+	UpdateStatusPageComponentGroupSortOrderErrors[keyof UpdateStatusPageComponentGroupSortOrderErrors];
 
 export type UpdateStatusPageComponentGroupSortOrderResponses = {
 	/**
@@ -7190,12 +8413,12 @@ export type UpdateStatusPageComponentGroupSortOrderResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -7209,6 +8432,12 @@ export type UpdateStatusPageGroupComponentSortOrderData = {
 		 * Ordered list of component IDs within the group
 		 */
 		component_ids: Array<string>;
+	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
 	};
 	path: {
 		/**
@@ -7226,10 +8455,29 @@ export type UpdateStatusPageGroupComponentSortOrderData = {
 
 export type UpdateStatusPageGroupComponentSortOrderErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource not found, unavailable, or rejected by the domain operation
+	 */
+	404: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type UpdateStatusPageGroupComponentSortOrderError =
+	UpdateStatusPageGroupComponentSortOrderErrors[keyof UpdateStatusPageGroupComponentSortOrderErrors];
 
 export type UpdateStatusPageGroupComponentSortOrderResponses = {
 	/**
@@ -7249,12 +8497,12 @@ export type UpdateStatusPageGroupComponentSortOrderResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -7264,6 +8512,12 @@ export type UpdateStatusPageGroupComponentSortOrderResponse =
 
 export type ListStatusPageSubscribersData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -7272,13 +8526,13 @@ export type ListStatusPageSubscribersData = {
 	};
 	query?: {
 		/**
-		 * Page number of paginated results.
+		 * Page number of paginated results, starting at 1.
 		 */
-		page?: string;
+		page?: number;
 		/**
-		 * Number of items per page.
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Search term to filter results.
 		 */
@@ -7289,18 +8543,29 @@ export type ListStatusPageSubscribersData = {
 
 export type ListStatusPageSubscribersErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Unauthorized - status page not in user's organisation
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource not found, unavailable, or rejected by the domain operation
+	 */
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type ListStatusPageSubscribersError =
+	ListStatusPageSubscribersErrors[keyof ListStatusPageSubscribersErrors];
 
 export type ListStatusPageSubscribersResponses = {
 	/**
@@ -7333,12 +8598,12 @@ export type ListStatusPageSubscribersResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -7361,6 +8626,12 @@ export type CreateStatusPageSubscriberData = {
 		 */
 		component_ids?: Array<string>;
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -7375,24 +8646,27 @@ export type CreateStatusPageSubscriberErrors = {
 	/**
 	 * Invalid email address
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Unauthorized - status page not in user's organisation
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Email already subscribed or has pending invitation
 	 */
-	409: unknown;
+	409: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type CreateStatusPageSubscriberError =
+	CreateStatusPageSubscriberErrors[keyof CreateStatusPageSubscriberErrors];
 
 export type CreateStatusPageSubscriberResponses = {
 	/**
@@ -7407,12 +8681,12 @@ export type CreateStatusPageSubscriberResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -7422,6 +8696,12 @@ export type CreateStatusPageSubscriberResponse =
 
 export type DeleteStatusPageSubscriberData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -7438,22 +8718,29 @@ export type DeleteStatusPageSubscriberData = {
 
 export type DeleteStatusPageSubscriberErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Unauthorized
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Subscriber not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type DeleteStatusPageSubscriberError =
+	DeleteStatusPageSubscriberErrors[keyof DeleteStatusPageSubscriberErrors];
 
 export type DeleteStatusPageSubscriberResponses = {
 	/**
@@ -7473,12 +8760,12 @@ export type DeleteStatusPageSubscriberResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -7488,6 +8775,12 @@ export type DeleteStatusPageSubscriberResponse =
 
 export type ListStatusPageIncidentsData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -7496,13 +8789,13 @@ export type ListStatusPageIncidentsData = {
 	};
 	query?: {
 		/**
-		 * Page number of paginated results.
+		 * Page number of paginated results, starting at 1.
 		 */
-		page?: string;
+		page?: number;
 		/**
-		 * Number of items per page.
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Search term to filter results.
 		 */
@@ -7513,50 +8806,73 @@ export type ListStatusPageIncidentsData = {
 
 export type ListStatusPageIncidentsErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type ListStatusPageIncidentsError =
+	ListStatusPageIncidentsErrors[keyof ListStatusPageIncidentsErrors];
 
 export type ListStatusPageIncidentsResponses = {
 	/**
-	 * Returns a list of incidents for a status page
+	 * Returns a list of incidents for a status page. May also return a canonical failure envelope with success: false at HTTP200.
 	 */
-	200: {
-		result: Array<StatusPageIncidentWithLatestUpdate>;
-		result_info: {
-			/**
-			 * Page number of paginated results.
-			 */
-			page?: number;
-			/**
-			 * Number of items per page.
-			 */
-			per_page?: number;
-			/**
-			 * Number of items on the current page.
-			 */
-			count: number;
-			/**
-			 * Total number of items.
-			 */
-			total_count: number;
-		};
-		/**
-		 * Whether the API call was successful
-		 */
-		success: boolean;
-		errors: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-		messages: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-	};
+	200:
+		| {
+				result: Array<StatusPageIncidentWithLatestUpdate>;
+				result_info: {
+					/**
+					 * Page number of paginated results.
+					 */
+					page?: number;
+					/**
+					 * Number of items per page.
+					 */
+					per_page?: number;
+					/**
+					 * Number of items on the current page.
+					 */
+					count: number;
+					/**
+					 * Total number of items.
+					 */
+					total_count: number;
+				};
+				success: true;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+		  }
+		| {
+				success: false;
+				result: null;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<unknown>;
+		  };
 };
 
 export type ListStatusPageIncidentsResponse =
@@ -7605,6 +8921,12 @@ export type CreateStatusPageIncidentData = {
 		 */
 		notify_subscribers?: boolean;
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -7617,10 +8939,25 @@ export type CreateStatusPageIncidentData = {
 
 export type CreateStatusPageIncidentErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type CreateStatusPageIncidentError =
+	CreateStatusPageIncidentErrors[keyof CreateStatusPageIncidentErrors];
 
 export type CreateStatusPageIncidentResponses = {
 	/**
@@ -7635,12 +8972,12 @@ export type CreateStatusPageIncidentResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -7650,6 +8987,12 @@ export type CreateStatusPageIncidentResponse =
 
 export type DeleteStatusPageIncidentData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -7666,10 +9009,29 @@ export type DeleteStatusPageIncidentData = {
 
 export type DeleteStatusPageIncidentErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource not found, unavailable, or rejected by the domain operation
+	 */
+	404: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type DeleteStatusPageIncidentError =
+	DeleteStatusPageIncidentErrors[keyof DeleteStatusPageIncidentErrors];
 
 export type DeleteStatusPageIncidentResponses = {
 	/**
@@ -7689,12 +9051,12 @@ export type DeleteStatusPageIncidentResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -7704,6 +9066,12 @@ export type DeleteStatusPageIncidentResponse =
 
 export type GetStatusPageIncidentData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -7720,10 +9088,29 @@ export type GetStatusPageIncidentData = {
 
 export type GetStatusPageIncidentErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource not found, unavailable, or rejected by the domain operation
+	 */
+	404: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type GetStatusPageIncidentError =
+	GetStatusPageIncidentErrors[keyof GetStatusPageIncidentErrors];
 
 export type GetStatusPageIncidentResponses = {
 	/**
@@ -7738,12 +9125,12 @@ export type GetStatusPageIncidentResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -7767,6 +9154,12 @@ export type UpdateStatusPageIncidentData = {
 			| "NO_IMPACT"
 			| "MAINTENANCE";
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -7783,10 +9176,29 @@ export type UpdateStatusPageIncidentData = {
 
 export type UpdateStatusPageIncidentErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource not found, unavailable, or rejected by the domain operation
+	 */
+	404: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type UpdateStatusPageIncidentError =
+	UpdateStatusPageIncidentErrors[keyof UpdateStatusPageIncidentErrors];
 
 export type UpdateStatusPageIncidentResponses = {
 	/**
@@ -7801,12 +9213,12 @@ export type UpdateStatusPageIncidentResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -7816,6 +9228,12 @@ export type UpdateStatusPageIncidentResponse =
 
 export type ListStatusPageIncidentUpdatesData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -7828,13 +9246,13 @@ export type ListStatusPageIncidentUpdatesData = {
 	};
 	query?: {
 		/**
-		 * Page number of paginated results.
+		 * Page number of paginated results, starting at 1.
 		 */
-		page?: string;
+		page?: number;
 		/**
-		 * Number of items per page.
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Search term to filter results.
 		 */
@@ -7845,58 +9263,73 @@ export type ListStatusPageIncidentUpdatesData = {
 
 export type ListStatusPageIncidentUpdatesErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Unauthorized
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type ListStatusPageIncidentUpdatesError =
+	ListStatusPageIncidentUpdatesErrors[keyof ListStatusPageIncidentUpdatesErrors];
 
 export type ListStatusPageIncidentUpdatesResponses = {
 	/**
-	 * Returns a list of updates for the incident
+	 * Returns a list of updates for the incident. May also return a canonical failure envelope with success: false at HTTP200.
 	 */
-	200: {
-		result: Array<IncidentUpdate>;
-		result_info: {
-			/**
-			 * Page number of paginated results.
-			 */
-			page?: number;
-			/**
-			 * Number of items per page.
-			 */
-			per_page?: number;
-			/**
-			 * Number of items on the current page.
-			 */
-			count: number;
-			/**
-			 * Total number of items.
-			 */
-			total_count: number;
-		};
-		/**
-		 * Whether the API call was successful
-		 */
-		success: boolean;
-		errors: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-		messages: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-	};
+	200:
+		| {
+				result: Array<IncidentUpdate>;
+				result_info: {
+					/**
+					 * Page number of paginated results.
+					 */
+					page?: number;
+					/**
+					 * Number of items per page.
+					 */
+					per_page?: number;
+					/**
+					 * Number of items on the current page.
+					 */
+					count: number;
+					/**
+					 * Total number of items.
+					 */
+					total_count: number;
+				};
+				success: true;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+		  }
+		| {
+				success: false;
+				result: null;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<unknown>;
+		  };
 };
 
 export type ListStatusPageIncidentUpdatesResponse =
@@ -7949,6 +9382,12 @@ export type CreateStatusPageIncidentUpdateData = {
 		 */
 		date_happened?: string;
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -7967,20 +9406,23 @@ export type CreateStatusPageIncidentUpdateErrors = {
 	/**
 	 * Bad Request
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Unauthorized
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type CreateStatusPageIncidentUpdateError =
+	CreateStatusPageIncidentUpdateErrors[keyof CreateStatusPageIncidentUpdateErrors];
 
 export type CreateStatusPageIncidentUpdateResponses = {
 	/**
@@ -7995,12 +9437,12 @@ export type CreateStatusPageIncidentUpdateResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -8010,6 +9452,12 @@ export type CreateStatusPageIncidentUpdateResponse =
 
 export type DeleteStatusPageIncidentUpdateData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -8030,22 +9478,29 @@ export type DeleteStatusPageIncidentUpdateData = {
 
 export type DeleteStatusPageIncidentUpdateErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Unauthorized
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Not Found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type DeleteStatusPageIncidentUpdateError =
+	DeleteStatusPageIncidentUpdateErrors[keyof DeleteStatusPageIncidentUpdateErrors];
 
 export type DeleteStatusPageIncidentUpdateResponses = {
 	/**
@@ -8065,12 +9520,12 @@ export type DeleteStatusPageIncidentUpdateResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -8080,6 +9535,12 @@ export type DeleteStatusPageIncidentUpdateResponse =
 
 export type GetStatusPageIncidentUpdateData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -8100,22 +9561,29 @@ export type GetStatusPageIncidentUpdateData = {
 
 export type GetStatusPageIncidentUpdateErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Unauthorized
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Not Found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type GetStatusPageIncidentUpdateError =
+	GetStatusPageIncidentUpdateErrors[keyof GetStatusPageIncidentUpdateErrors];
 
 export type GetStatusPageIncidentUpdateResponses = {
 	/**
@@ -8130,12 +9598,12 @@ export type GetStatusPageIncidentUpdateResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -8167,6 +9635,12 @@ export type UpdateStatusPageIncidentUpdateData = {
 		 */
 		date_happened?: string;
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -8189,24 +9663,27 @@ export type UpdateStatusPageIncidentUpdateErrors = {
 	/**
 	 * Bad Request
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
 	/**
 	 * Unauthenticated
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Unauthorized
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Not Found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type UpdateStatusPageIncidentUpdateError =
+	UpdateStatusPageIncidentUpdateErrors[keyof UpdateStatusPageIncidentUpdateErrors];
 
 export type UpdateStatusPageIncidentUpdateResponses = {
 	/**
@@ -8221,12 +9698,12 @@ export type UpdateStatusPageIncidentUpdateResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -8274,6 +9751,12 @@ export type CreateStatusPageScheduledMaintenanceData = {
 			at_end?: boolean;
 		};
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -8288,12 +9771,27 @@ export type CreateStatusPageScheduledMaintenanceErrors = {
 	/**
 	 * Bad Request - validation error
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource not found, unavailable, or rejected by the domain operation
+	 */
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type CreateStatusPageScheduledMaintenanceError =
+	CreateStatusPageScheduledMaintenanceErrors[keyof CreateStatusPageScheduledMaintenanceErrors];
 
 export type CreateStatusPageScheduledMaintenanceResponses = {
 	/**
@@ -8308,12 +9806,12 @@ export type CreateStatusPageScheduledMaintenanceResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -8323,6 +9821,12 @@ export type CreateStatusPageScheduledMaintenanceResponse =
 
 export type DeleteStatusPageScheduledMaintenanceData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -8339,14 +9843,29 @@ export type DeleteStatusPageScheduledMaintenanceData = {
 
 export type DeleteStatusPageScheduledMaintenanceErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type DeleteStatusPageScheduledMaintenanceError =
+	DeleteStatusPageScheduledMaintenanceErrors[keyof DeleteStatusPageScheduledMaintenanceErrors];
 
 export type DeleteStatusPageScheduledMaintenanceResponses = {
 	/**
@@ -8366,12 +9885,12 @@ export type DeleteStatusPageScheduledMaintenanceResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -8381,6 +9900,12 @@ export type DeleteStatusPageScheduledMaintenanceResponse =
 
 export type GetStatusPageScheduledMaintenanceData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -8397,14 +9922,29 @@ export type GetStatusPageScheduledMaintenanceData = {
 
 export type GetStatusPageScheduledMaintenanceErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
 	 * Not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type GetStatusPageScheduledMaintenanceError =
+	GetStatusPageScheduledMaintenanceErrors[keyof GetStatusPageScheduledMaintenanceErrors];
 
 export type GetStatusPageScheduledMaintenanceResponses = {
 	/**
@@ -8419,12 +9959,12 @@ export type GetStatusPageScheduledMaintenanceResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -8447,6 +9987,12 @@ export type UpdateStatusPageScheduledMaintenanceData = {
 		 */
 		duration_minutes?: number;
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Status Page ID
@@ -8465,16 +10011,27 @@ export type UpdateStatusPageScheduledMaintenanceErrors = {
 	/**
 	 * Bad Request - cannot update after maintenance has started
 	 */
-	400: unknown;
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
 	/**
 	 * Not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type UpdateStatusPageScheduledMaintenanceError =
+	UpdateStatusPageScheduledMaintenanceErrors[keyof UpdateStatusPageScheduledMaintenanceErrors];
 
 export type UpdateStatusPageScheduledMaintenanceResponses = {
 	/**
@@ -8489,12 +10046,12 @@ export type UpdateStatusPageScheduledMaintenanceResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -8504,16 +10061,22 @@ export type UpdateStatusPageScheduledMaintenanceResponse =
 
 export type ListWebhooksData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: {
 		/**
-		 * Page number of paginated results.
+		 * Page number of paginated results, starting at 1.
 		 */
-		page?: string;
+		page?: number;
 		/**
-		 * Number of items per page.
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
-		per_page?: string;
+		per_page?: number;
 		/**
 		 * Search term to filter results.
 		 */
@@ -8524,60 +10087,81 @@ export type ListWebhooksData = {
 
 export type ListWebhooksErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthorized
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type ListWebhooksError = ListWebhooksErrors[keyof ListWebhooksErrors];
 
 export type ListWebhooksResponses = {
 	/**
-	 * Returns a list of webhooks
+	 * Returns a list of webhooks. May also return a canonical failure envelope with success: false at HTTP200.
 	 */
-	200: {
-		result: Array<Webhook>;
-		result_info: {
-			/**
-			 * Page number of paginated results.
-			 */
-			page?: number;
-			/**
-			 * Number of items per page.
-			 */
-			per_page?: number;
-			/**
-			 * Number of items on the current page.
-			 */
-			count: number;
-			/**
-			 * Total number of items.
-			 */
-			total_count: number;
-		};
-		/**
-		 * Whether the API call was successful
-		 */
-		success: boolean;
-		errors: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-		messages: Array<{
-			code: number;
-			message: string;
-			type?: string;
-		}>;
-	};
+	200:
+		| {
+				result: Array<Webhook>;
+				result_info: {
+					/**
+					 * Page number of paginated results.
+					 */
+					page?: number;
+					/**
+					 * Number of items per page.
+					 */
+					per_page?: number;
+					/**
+					 * Number of items on the current page.
+					 */
+					count: number;
+					/**
+					 * Total number of items.
+					 */
+					total_count: number;
+				};
+				success: true;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+		  }
+		| {
+				success: false;
+				result: null;
+				errors: Array<{
+					code: number;
+					message: string;
+					type?: string | null;
+				}>;
+				messages: Array<unknown>;
+		  };
 };
 
 export type ListWebhooksResponse =
 	ListWebhooksResponses[keyof ListWebhooksResponses];
 
 export type CreateWebhookData = {
+	/**
+	 * At least one nonempty status_page_ids, check_ids, or heartbeat_ids association is required.
+	 */
 	body: {
 		/**
 		 * Webhook endpoint URL
@@ -8612,6 +10196,12 @@ export type CreateWebhookData = {
 		 */
 		heartbeat_ids?: Array<string>;
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path?: never;
 	query?: never;
 	url: "/v1/webhooks";
@@ -8619,18 +10209,24 @@ export type CreateWebhookData = {
 
 export type CreateWebhookErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthorized
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
 	/**
 	 * Forbidden - Webhooks require a paid plan
 	 */
-	403: unknown;
+	403: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type CreateWebhookError = CreateWebhookErrors[keyof CreateWebhookErrors];
 
 export type CreateWebhookResponses = {
 	/**
@@ -8645,12 +10241,12 @@ export type CreateWebhookResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -8660,6 +10256,12 @@ export type CreateWebhookResponse =
 
 export type DeleteWebhookData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Webhook ID
@@ -8672,18 +10274,28 @@ export type DeleteWebhookData = {
 
 export type DeleteWebhookErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthorized
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
 	/**
 	 * Webhook not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type DeleteWebhookError = DeleteWebhookErrors[keyof DeleteWebhookErrors];
 
 export type DeleteWebhookResponses = {
 	/**
@@ -8703,12 +10315,12 @@ export type DeleteWebhookResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -8718,6 +10330,12 @@ export type DeleteWebhookResponse =
 
 export type GetWebhookData = {
 	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Webhook ID
@@ -8730,18 +10348,28 @@ export type GetWebhookData = {
 
 export type GetWebhookErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthorized
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
 	/**
 	 * Webhook not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type GetWebhookError = GetWebhookErrors[keyof GetWebhookErrors];
 
 export type GetWebhookResponses = {
 	/**
@@ -8756,12 +10384,12 @@ export type GetWebhookResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };
@@ -8803,6 +10431,12 @@ export type UpdateWebhookData = {
 		 */
 		heartbeat_ids?: Array<string>;
 	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
 	path: {
 		/**
 		 * Webhook ID
@@ -8815,18 +10449,28 @@ export type UpdateWebhookData = {
 
 export type UpdateWebhookErrors = {
 	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
 	 * Unauthorized
 	 */
-	401: unknown;
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
 	/**
 	 * Webhook not found
 	 */
-	404: unknown;
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
-	500: unknown;
+	500: PublicApiServerError;
 };
+
+export type UpdateWebhookError = UpdateWebhookErrors[keyof UpdateWebhookErrors];
 
 export type UpdateWebhookResponses = {
 	/**
@@ -8841,12 +10485,12 @@ export type UpdateWebhookResponses = {
 		errors: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 		messages: Array<{
 			code: number;
 			message: string;
-			type?: string;
+			type?: string | null;
 		}>;
 	};
 };

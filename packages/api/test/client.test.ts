@@ -5,6 +5,7 @@ import {
 	createClient,
 	listChecks,
 	pingHeartbeat,
+	pingHeartbeatGet,
 	type CheckListItem,
 	type CheckListResponse,
 	type ListChecksResponses,
@@ -40,7 +41,7 @@ describe("generated client", () => {
 				request = input instanceof Request ? input : new Request(input);
 				return ok();
 			},
-			query: { page: "2", per_page: "10", search: "website" },
+			query: { page: 2, per_page: 10, search: "website" },
 		});
 		expect(request?.url).toBe(
 			"https://api.onlineornot.com/v1/checks?page=2&per_page=10&search=website",
@@ -103,6 +104,50 @@ describe("generated client", () => {
 			path: { heartbeat_id: "heartbeat-id" },
 		});
 		expect(urls).toEqual(["https://oonchk.com/heartbeat-id"]);
+	});
+
+	it.each([pingHeartbeatGet, pingHeartbeat])(
+		"accepts empty heartbeat responses and preserves text errors (%#)",
+		async (ping) => {
+			const accepted = await ping({
+				path: { heartbeat_id: "heartbeat-id" },
+				fetch: async () => new Response(null, { status: 200 }),
+			});
+			expect(accepted.response?.status).toBe(200);
+			expect(accepted.error).toBeUndefined();
+
+			const rejected = await ping({
+				path: { heartbeat_id: "heartbeat-id" },
+				fetch: async () =>
+					new Response("Too many requests", {
+						status: 429,
+						headers: { "content-type": "text/plain" },
+					}),
+			});
+			expect(rejected.error).toBe("Too many requests");
+			expect(rejected.response?.status).toBe(429);
+		},
+	);
+
+	it("preserves documented HTTP 200 failure envelopes as data", async () => {
+		const failure = {
+			success: false,
+			result: null,
+			errors: [{ code: 1000, message: "Unable to list checks" }],
+			messages: [],
+		};
+		const response = await listChecks({
+			fetch: async () =>
+				new Response(JSON.stringify(failure), {
+					status: 200,
+					headers: { "content-type": "application/json" },
+				}),
+		});
+		expect(response.error).toBeUndefined();
+		expect(response.data).toEqual(failure);
+		if (response.data?.success === false) {
+			expectTypeOf(response.data.result).toEqualTypeOf<null>();
+		}
 	});
 
 	it("retains generated success and documented error types", () => {
