@@ -30,8 +30,8 @@ export async function listChecks(): Promise<CheckListItem[]> {
 			await sdkListChecks({
 				...config,
 				query: {
-					page: String(page),
-					per_page: String(pageSize),
+					page,
+					per_page: pageSize,
 				},
 			}),
 			CHECKS_RESOURCE,
