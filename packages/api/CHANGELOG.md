@@ -1,5 +1,11 @@
 # @onlineornot/api
 
+## 0.2.1
+
+### Patch Changes
+
+- [#95](https://github.com/OnlineOrNot/onlineornot/pull/95) [`5d17a8a`](https://github.com/OnlineOrNot/onlineornot/commit/5d17a8a93107b506e31190864f441d9452ba63b3) Thanks [@rozenmd](https://github.com/rozenmd)! - Refresh the SDK from OnlineOrNot/api-schemas commit 14d505afb15e62969e21f8c497a45199f7f4a050. Document HIGH as the API default for omitted check creation alert priority and preserve omission on PATCH. Add the documented heartbeat lookup 404 error type.
+
 ## 0.2.0
 
 ### Minor Changes
