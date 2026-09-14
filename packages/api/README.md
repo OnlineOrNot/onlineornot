@@ -48,6 +48,10 @@ if (error) {
 console.log(data.result);
 ```
 
+For check creation, omitting `alert_priority` lets the API default to `HIGH`. On PATCH, omission preserves the current priority. The SDK does not insert defaults; send `alert_priority: "LOW"` or `"HIGH"` to set it explicitly.
+
+`getHeartbeat` includes the documented HTTP 404 error for a heartbeat that is missing or unavailable. Read it through the generated `error` result.
+
 Operations preserve the generated `{ data, error, request, response }` result and the API's wire envelopes. The package does not unwrap `result`, throw by default, or automatically paginate.
 
 ## Isolated and custom clients

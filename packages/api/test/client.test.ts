@@ -3,12 +3,16 @@ import { describe, expect, expectTypeOf, it } from "vitest";
 import {
 	createCheck,
 	createClient,
+	getHeartbeat,
 	listChecks,
 	pingHeartbeat,
 	pingHeartbeatGet,
+	updateCheck,
 	type CheckListItem,
 	type CheckListResponse,
+	type GetHeartbeatErrors,
 	type ListChecksResponses,
+	type PublicApiErrorResponse,
 	type VerifyTokenErrors,
 } from "../src/index";
 
@@ -75,6 +79,61 @@ describe("generated client", () => {
 			url: "https://example.com",
 			test_interval: 60,
 		});
+	});
+
+	it.each([undefined, "LOW", "HIGH"] satisfies Array<
+		"LOW" | "HIGH" | undefined
+	>)(
+		"preserves alert priority %s without injecting defaults",
+		async (priority) => {
+			const requests: Request[] = [];
+			const isolated = createClient({
+				baseUrl: "https://api.example.test",
+				throwOnError: true,
+				fetch: async (input) => {
+					requests.push(input instanceof Request ? input : new Request(input));
+					return ok();
+				},
+			});
+			const alert = priority === undefined ? {} : { alert_priority: priority };
+			const body = { name: "Website", url: "https://example.com", ...alert };
+			await createCheck({ client: isolated, body });
+			await updateCheck({
+				client: isolated,
+				path: { check_id: "check-id" },
+				body: alert,
+			});
+			expect(requests.map((request) => request.method)).toEqual([
+				"POST",
+				"PATCH",
+			]);
+			expect(
+				await Promise.all(requests.map((request) => request.json())),
+			).toEqual([body, alert]);
+		},
+	);
+
+	it("preserves the documented heartbeat 404 error envelope", async () => {
+		expectTypeOf<
+			GetHeartbeatErrors[404]
+		>().toEqualTypeOf<PublicApiErrorResponse>();
+		const failure = {
+			success: false,
+			result: null,
+			errors: [{ code: 1000, message: "Heartbeat not found or unavailable" }],
+			messages: [],
+		} satisfies GetHeartbeatErrors[404];
+		const response = await getHeartbeat({
+			path: { heartbeat_id: "missing-heartbeat" },
+			fetch: async () =>
+				new Response(JSON.stringify(failure), {
+					status: 404,
+					headers: { "content-type": "application/json" },
+				}),
+		});
+		expect(response.response?.status).toBe(404);
+		expect(response.data).toBeUndefined();
+		expect(response.error).toEqual(failure);
 	});
 
 	it("supports an isolated client with custom fetch", async () => {

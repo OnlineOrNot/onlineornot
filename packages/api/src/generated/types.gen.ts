@@ -903,7 +903,7 @@ export type DnsCheckInput = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert Priority
+	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
@@ -974,7 +974,7 @@ export type DnsCheckPatch = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert Priority
+	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
@@ -1081,7 +1081,7 @@ export type TcpCheckInput = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert Priority
+	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
@@ -1156,7 +1156,7 @@ export type TcpCheckPatch = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert Priority
+	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
@@ -1247,7 +1247,7 @@ export type UptimeCheckInput = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert Priority
+	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
@@ -1369,7 +1369,7 @@ export type UptimeCheckPatch = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert Priority
+	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
@@ -1513,7 +1513,7 @@ export type BrowserCheckInput = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert Priority
+	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
@@ -1643,7 +1643,7 @@ export type BrowserCheckPatch = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert Priority
+	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
@@ -2153,7 +2153,7 @@ export type CheckInput = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert Priority
+	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
@@ -2283,7 +2283,7 @@ export type CheckPatch = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert Priority
+	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
@@ -5856,6 +5856,10 @@ export type GetHeartbeatErrors = {
 	 * Insufficient permissions
 	 */
 	403: PublicApiErrorResponse;
+	/**
+	 * Heartbeat not found or unavailable
+	 */
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
