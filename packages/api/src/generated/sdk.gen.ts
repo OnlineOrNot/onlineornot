@@ -1183,7 +1183,7 @@ export const listHeartbeats = <ThrowOnError extends boolean = false>(
 /**
  * Create a new heartbeat monitor for cron jobs or scheduled tasks
  *
- * Create a heartbeat
+ * Create a heartbeat.
  *
  * Requires HEARTBEAT_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
@@ -1255,7 +1255,7 @@ export const getHeartbeat = <ThrowOnError extends boolean = false>(
 /**
  * Modify the configuration of an existing heartbeat monitor
  *
- * Modify a heartbeat
+ * Update a heartbeat.
  *
  * Requires HEARTBEAT_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
  */
