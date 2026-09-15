@@ -69,6 +69,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
+          RELEASE_TAG_TOKEN: ${{ secrets.RELEASE_TAG_TOKEN }}
         run: |
           VERSION=$(node -p 'require("./packages/onlineornot/package.json").version')
           TAG="onlineornot@$VERSION"
@@ -100,7 +101,7 @@ jobs:
               fi
               git tag "$TAG" "$RELEASE_COMMIT"
             fi
-            git push origin "refs/tags/$TAG"
+            node .github/push-release-tag.mjs "$TAG"
           fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "release_pending=$RELEASE_PENDING" >> "$GITHUB_OUTPUT"
@@ -110,6 +111,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
+          RELEASE_TAG_TOKEN: ${{ secrets.RELEASE_TAG_TOKEN }}
         run: |
           VERSION=$(node -p 'require("./packages/api/package.json").version')
           TAG="@onlineornot/api@$VERSION"
@@ -141,7 +143,7 @@ jobs:
               fi
               git tag "$TAG" "$RELEASE_COMMIT"
             fi
-            git push origin "refs/tags/$TAG"
+            node .github/push-release-tag.mjs "$TAG"
           fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "release_pending=$RELEASE_PENDING" >> "$GITHUB_OUTPUT"

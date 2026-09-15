@@ -56,13 +56,28 @@ it("uses the v3 publication bridge and recovers missing CLI tags from version hi
 	);
 });
 
+it("scopes the optional recovery token to the two tag inspection steps", () => {
+	const workflow = readFileSync(
+		new URL("../../../.github/workflows/release.yml", import.meta.url),
+		"utf8",
+	);
+	expect(
+		workflow.match(/RELEASE_TAG_TOKEN: \$\{\{ secrets.RELEASE_TAG_TOKEN \}\}/g),
+	).toHaveLength(2);
+	expect(
+		workflow.match(/node \.github\/push-release-tag\.mjs "\$TAG"/g),
+	).toHaveLength(2);
+	expect(workflow).not.toContain("workflows: write");
+	expect(workflow).not.toContain('git push origin "refs/tags/$TAG"');
+});
+
 it.each([
 	{ pending: true, localTag: true },
 	{ pending: true, localTag: false },
 	{ pending: false, localTag: true },
 	{ pending: false, localTag: false },
 ])(
-	"handles SDK tag push with $pending pending and $localTag local tag",
+	"handles SDK tag publication with $pending pending and $localTag local tag",
 	({ pending, localTag }) => {
 		const workflow = readFileSync(
 			new URL("../../../.github/workflows/release.yml", import.meta.url),
@@ -92,6 +107,9 @@ it.each([
 				printf '%s\\n' "$*"
 			fi
 		}
+		node() {
+			printf '%s\\n' "$*"
+		}
 		${tagBlock}
 	`,
 			],
@@ -107,7 +125,7 @@ it.each([
 			},
 		);
 		const expected = pending
-			? `${localTag ? "" : "tag @onlineornot/api@0.2.1 release-commit\n"}push origin refs/tags/@onlineornot/api@0.2.1\n`
+			? `${localTag ? "" : "tag @onlineornot/api@0.2.1 release-commit\n"}.github/push-release-tag.mjs @onlineornot/api@0.2.1\n`
 			: "";
 		expect(output).toBe(expected);
 	},
