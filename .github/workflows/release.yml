@@ -140,8 +140,8 @@ jobs:
                 RELEASE_COMMIT=$(node .github/find-package-version-commit.mjs packages/api/package.json "$VERSION")
               fi
               git tag "$TAG" "$RELEASE_COMMIT"
-              git push origin "refs/tags/$TAG"
             fi
+            git push origin "refs/tags/$TAG"
           fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "release_pending=$RELEASE_PENDING" >> "$GITHUB_OUTPUT"

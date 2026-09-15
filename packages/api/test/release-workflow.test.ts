@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -54,6 +55,63 @@ it("uses the v3 publication bridge and recovers missing CLI tags from version hi
 		'node .github/npm-package-version.mjs "onlineornot@$VERSION"',
 	);
 });
+
+it.each([
+	{ pending: true, localTag: true },
+	{ pending: true, localTag: false },
+	{ pending: false, localTag: true },
+	{ pending: false, localTag: false },
+])(
+	"handles SDK tag push with $pending pending and $localTag local tag",
+	({ pending, localTag }) => {
+		const workflow = readFileSync(
+			new URL("../../../.github/workflows/release.yml", import.meta.url),
+			"utf8",
+		);
+		const sdkStep = workflow
+			.split("id: inspect-api-release")[1]
+			?.split("- name: Publish API SDK")[0];
+		const tagBlock = sdkStep?.match(
+			/if \[\[ "\$RELEASE_PENDING" == "true" \]\]; then[\s\S]*?(?=          echo "version=)/,
+		)?.[0];
+		if (!tagBlock) throw new Error("SDK tag handling block not found");
+
+		// Stub git so the real workflow shell cannot create or push release tags.
+		const output = execFileSync(
+			"bash",
+			[
+				"--noprofile",
+				"--norc",
+				"-eu",
+				"-c",
+				`
+		git() {
+			if [[ "$1" == "rev-parse" ]]; then
+				[[ "$LOCAL_TAG" == "true" ]]
+			else
+				printf '%s\\n' "$*"
+			fi
+		}
+		${tagBlock}
+	`,
+			],
+			{
+				encoding: "utf8",
+				env: {
+					RELEASE_PENDING: String(pending),
+					LOCAL_TAG: String(localTag),
+					API_JUST_PUBLISHED: "true",
+					GITHUB_SHA: "release-commit",
+					TAG: "@onlineornot/api@0.2.1",
+				},
+			},
+		);
+		const expected = pending
+			? `${localTag ? "" : "tag @onlineornot/api@0.2.1 release-commit\n"}push origin refs/tags/@onlineornot/api@0.2.1\n`
+			: "";
+		expect(output).toBe(expected);
+	},
+);
 
 it("builds the workspace SDK in each binary job before bundling the CLI", () => {
 	const workflow = readFileSync(
