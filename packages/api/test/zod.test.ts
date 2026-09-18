@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { zCheckDeleteResponse, zCreateCheckBody } from "../src/zod";
+import {
+	zCheckDeleteResponse,
+	zCreateCheckBody,
+	zStatusPageComponent,
+} from "../src/zod";
 
 describe("generated Zod schemas", () => {
 	it("parses a representative request body", () => {
@@ -28,7 +32,7 @@ describe("generated Zod schemas", () => {
 		expect(zCheckDeleteResponse.parse(response)).toEqual(response);
 	});
 
-	it("rejects a response missing its required success field", () => {
+	it("rejects responses missing required fields with API defaults", () => {
 		expect(() =>
 			zCheckDeleteResponse.parse({
 				result: { id: "check-id" },
@@ -36,6 +40,12 @@ describe("generated Zod schemas", () => {
 				messages: [],
 			}),
 		).toThrow();
+		expect(
+			zStatusPageComponent.shape.display_uptime.safeParse(undefined).success,
+		).toBe(false);
+		expect(
+			zStatusPageComponent.shape.display_metrics.safeParse(undefined).success,
+		).toBe(false);
 	});
 
 	it("rejects invalid request and response values", () => {
