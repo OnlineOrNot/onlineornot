@@ -69,7 +69,9 @@ export const zExpandedUptimeCheck = z.object({
 	recovery_period_seconds: z.number(),
 	test_interval: z.number(),
 	timeout: z.number(),
-	version: z.enum(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
+	version: z
+		.enum(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"])
+		.nullable(),
 	script: z.string().nullable(),
 	alert_priority: z.enum(["LOW", "HIGH"]),
 	verify_ssl: z.boolean(),
@@ -141,7 +143,6 @@ export const zExpandedBrowserCheck = z.object({
 	recovery_period_seconds: z.number(),
 	test_interval: z.number(),
 	timeout: z.number().nullable(),
-	version: z.enum(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
 	script: z.string().nullable(),
 	alert_priority: z.enum(["LOW", "HIGH"]),
 	verify_ssl: z.boolean(),
@@ -188,6 +189,7 @@ export const zExpandedBrowserCheck = z.object({
 	pushover_alerts: z.array(z.string()),
 	oncall_alerts: z.array(z.string()),
 	webhook_alerts: z.array(z.string()),
+	version: z.enum(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
 	check_type: z.enum(["BROWSER"]),
 });
 
@@ -357,12 +359,12 @@ export const zCheckListItem = z.object({
 	dns_domain: z.string().nullish(),
 	dns_record_type: z
 		.enum(["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"])
-		.optional(),
+		.nullish(),
 	dns_resolver: z.string().nullish(),
-	dns_protocol: z.enum(["UDP", "TCP"]).optional(),
+	dns_protocol: z.enum(["UDP", "TCP"]).nullish(),
 	tcp_hostname: z.string().nullish(),
 	tcp_port: z.int().gte(1).lte(65535).nullish(),
-	tcp_ip_family: z.enum(["IPv4", "IPv6"]).optional(),
+	tcp_ip_family: z.enum(["IPv4", "IPv6"]).nullish(),
 });
 
 export const zCheckListResponse = z.object({
@@ -926,16 +928,18 @@ export const zPublicCheckResultBodyAvailability = z.enum([
 export const zPublicHttpCheckResult = z.object({
 	id: z.string().min(1),
 	checked_at: z.iso.datetime(),
-	checked_from: z.enum([
-		"aws:us-east-1",
-		"aws:us-east-2",
-		"aws:us-west-1",
-		"aws:eu-central-1",
-		"aws:eu-west-2",
-		"aws:ap-south-1",
-		"aws:ap-southeast-2",
-		"aws:ap-northeast-1",
-	]),
+	checked_from: z
+		.enum([
+			"aws:us-east-1",
+			"aws:us-east-2",
+			"aws:us-west-1",
+			"aws:eu-central-1",
+			"aws:eu-west-2",
+			"aws:ap-south-1",
+			"aws:ap-southeast-2",
+			"aws:ap-northeast-1",
+		])
+		.nullable(),
 	passing: z.boolean().nullable(),
 	response_time_ms: z.number().gte(0),
 	attempt_number: z.int().gte(0).nullable(),
@@ -984,16 +988,18 @@ export const zPublicBrowserCheckResultsResponse = z.object({
 export const zPublicDnsCheckResult = z.object({
 	id: z.string().min(1),
 	checked_at: z.iso.datetime(),
-	checked_from: z.enum([
-		"aws:us-east-1",
-		"aws:us-east-2",
-		"aws:us-west-1",
-		"aws:eu-central-1",
-		"aws:eu-west-2",
-		"aws:ap-south-1",
-		"aws:ap-southeast-2",
-		"aws:ap-northeast-1",
-	]),
+	checked_from: z
+		.enum([
+			"aws:us-east-1",
+			"aws:us-east-2",
+			"aws:us-west-1",
+			"aws:eu-central-1",
+			"aws:eu-west-2",
+			"aws:ap-south-1",
+			"aws:ap-southeast-2",
+			"aws:ap-northeast-1",
+		])
+		.nullable(),
 	passing: z.boolean().nullable(),
 	response_time_ms: z.number().gte(0),
 	attempt_number: z.int().gte(0).nullable(),
@@ -1002,7 +1008,7 @@ export const zPublicDnsCheckResult = z.object({
 	response_body: z.string().nullable(),
 	body_availability: zPublicCheckResultBodyAvailability,
 	dns_status: z.string().nullable(),
-	failure_source: z.enum(["TRANSPORT", "ASSERTION"]),
+	failure_source: z.enum(["TRANSPORT", "ASSERTION"]).nullable(),
 	failure_type: z.string().nullable(),
 	resolver: z.string().nullable(),
 	parsed_response: z.string().nullable(),
@@ -1024,16 +1030,18 @@ export const zPublicDnsCheckResultsResponse = z.object({
 export const zPublicTcpCheckResult = z.object({
 	id: z.string().min(1),
 	checked_at: z.iso.datetime(),
-	checked_from: z.enum([
-		"aws:us-east-1",
-		"aws:us-east-2",
-		"aws:us-west-1",
-		"aws:eu-central-1",
-		"aws:eu-west-2",
-		"aws:ap-south-1",
-		"aws:ap-southeast-2",
-		"aws:ap-northeast-1",
-	]),
+	checked_from: z
+		.enum([
+			"aws:us-east-1",
+			"aws:us-east-2",
+			"aws:us-west-1",
+			"aws:eu-central-1",
+			"aws:eu-west-2",
+			"aws:ap-south-1",
+			"aws:ap-southeast-2",
+			"aws:ap-northeast-1",
+		])
+		.nullable(),
 	passing: z.boolean().nullable(),
 	response_time_ms: z.number().gte(0),
 	attempt_number: z.int().gte(0).nullable(),
@@ -1042,7 +1050,7 @@ export const zPublicTcpCheckResult = z.object({
 	response_body: z.string().nullable(),
 	body_availability: zPublicCheckResultBodyAvailability,
 	tcp_status: z.string().nullable(),
-	failure_source: z.enum(["TRANSPORT", "ASSERTION"]),
+	failure_source: z.enum(["TRANSPORT", "ASSERTION"]).nullable(),
 	failure_type: z.string().nullable(),
 	dns_time_ms: z.number().gte(0).nullable(),
 	connect_time_ms: z.number().gte(0).nullable(),
@@ -1089,7 +1097,9 @@ export const zExpandedCheck = zCheck.and(
 		recovery_period_seconds: z.number(),
 		test_interval: z.number(),
 		timeout: z.number().nullable(),
-		version: z.enum(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
+		version: z
+			.enum(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"])
+			.nullable(),
 		script: z.string().nullable(),
 		alert_priority: z.enum(["LOW", "HIGH"]),
 		verify_ssl: z.boolean(),
@@ -1297,8 +1307,8 @@ export const zHeartbeat = z.object({
 	grace_period: z.number(),
 	reminder_alert_interval_minutes: z.number().nullable(),
 	alert_priority: z.enum(["LOW", "HIGH"]),
-	created_at: z.string().nullable(),
-	updated_at: z.string().nullable(),
+	created_at: z.string(),
+	updated_at: z.string(),
 });
 
 export const zExpandedHeartbeat = zHeartbeat.and(
@@ -1374,7 +1384,7 @@ export const zStatusPage = z.object({
 	logo_url: z.string().nullish(),
 	dark_logo_url: z.string().nullish(),
 	description: z.string().nullish(),
-	hide_from_search_engines: z.boolean().nullable(),
+	hide_from_search_engines: z.boolean(),
 	has_password: z.boolean(),
 	allowed_ips: z.array(z.string()).nullish(),
 });
@@ -1388,7 +1398,7 @@ export const zStatusPageIdentity = z.object({
 
 export const zStatusPageComponent = z.object({
 	id: z.string(),
-	name: z.string().nullable(),
+	name: z.string(),
 	status: z.enum([
 		"OPERATIONAL",
 		"MAJOR_OUTAGE",
@@ -1397,8 +1407,8 @@ export const zStatusPageComponent = z.object({
 		"MAINTENANCE",
 		"NO_IMPACT",
 	]),
-	display_uptime: z.boolean().nullable(),
-	display_metrics: z.boolean().nullable(),
+	display_uptime: z.boolean(),
+	display_metrics: z.boolean(),
 	created_at: z.string(),
 	updated_at: z.string(),
 	group_id: z.string().nullable(),
@@ -1408,7 +1418,7 @@ export const zStatusPageComponent = z.object({
 
 export const zStatusPageIncident = z.object({
 	id: z.string(),
-	title: z.string().min(1).max(256).nullable(),
+	title: z.string().min(1).max(256),
 	impact: z.enum([
 		"MAJOR_OUTAGE",
 		"PARTIAL_OUTAGE",
@@ -1418,13 +1428,12 @@ export const zStatusPageIncident = z.object({
 	]),
 	started: z.string().nullable(),
 	ended: z.string().nullish(),
-	created_at: z.string().nullable(),
-	updated_at: z.string().nullable(),
+	created_at: z.string(),
+	updated_at: z.string(),
 });
 
 export const zStatusPageScheduledMaintenance = zStatusPageIncident.and(
 	z.object({
-		title: z.string().min(1).max(256).optional(),
 		start_date: z.string(),
 		duration_minutes: z.int().gte(1),
 		notifications: z
@@ -1489,7 +1498,7 @@ export const zStatusPageIncidentWithLatestUpdate = zStatusPageIncident.and(
 			.object({
 				id: z.string(),
 				start_date: z.string(),
-				duration_minutes: z.number().nullable(),
+				duration_minutes: z.number(),
 				notify_subscribers_at_start: z.boolean(),
 				notify_subscribers_at_end: z.boolean(),
 			})
@@ -3199,7 +3208,7 @@ export const zUpdateStatusPageResponse = z.object({
 	result: zStatusPageIdentity.and(
 		z.object({
 			description: z.string().nullish(),
-			hide_from_search_engines: z.boolean().nullable(),
+			hide_from_search_engines: z.boolean(),
 		}),
 	),
 	success: z.boolean(),
@@ -3291,7 +3300,7 @@ export const zListStatusPagesResponse = z.union([
 				logo_url: z.string().nullish(),
 				dark_logo_url: z.string().nullish(),
 				description: z.string().nullish(),
-				hide_from_search_engines: z.boolean().nullable(),
+				hide_from_search_engines: z.boolean(),
 				has_password: z.boolean(),
 				allowed_ips: z.array(z.string()).nullish(),
 				custom_domain_entitled: z.boolean(),

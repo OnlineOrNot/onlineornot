@@ -41,6 +41,38 @@ export type PublicApiServerError = {
 	messages: Array<unknown>;
 };
 
+export type AnyCheckResponse = {
+	result: AnyCheck;
+	/**
+	 * Whether the API call was successful
+	 */
+	success: boolean;
+	errors: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+	messages: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+};
+
+export type AnyCheck =
+	| ({
+			check_type: "UPTIME";
+	  } & ExpandedUptimeCheck)
+	| ({
+			check_type: "BROWSER";
+	  } & ExpandedBrowserCheck)
+	| ({
+			check_type: "DNS";
+	  } & ExpandedDnsCheck)
+	| ({
+			check_type: "TCP";
+	  } & ExpandedTcpCheck);
+
 export type ExpandedUptimeCheck = {
 	/**
 	 * Uptime Check ID
@@ -97,7 +129,7 @@ export type ExpandedUptimeCheck = {
 	/**
 	 * Runtime version for browser checks (null for standard uptime checks)
 	 */
-	version: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT" | "CLOUDFLARE";
+	version: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT" | "CLOUDFLARE" | null;
 	/**
 	 * Playwright Test script loaded by GET for scripted browser checks; null for URL-based checks or when script content was not loaded. Mutation responses do not load script content.
 	 */
@@ -260,10 +292,6 @@ export type ExpandedBrowserCheck = {
 	 */
 	timeout: number | null;
 	/**
-	 * Runtime version for browser checks (null for standard uptime checks)
-	 */
-	version: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT" | "CLOUDFLARE";
-	/**
 	 * Playwright Test script loaded by GET for scripted browser checks; null for URL-based checks or when script content was not loaded. Mutation responses do not load script content.
 	 */
 	script: string | null;
@@ -365,38 +393,11 @@ export type ExpandedBrowserCheck = {
 	 * Webhook IDs to notify
 	 */
 	webhook_alerts: Array<string>;
+	/**
+	 * Runtime version for browser checks.
+	 */
+	version: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT" | "CLOUDFLARE";
 	check_type: "BROWSER";
-};
-
-export type DnsAssertion = {
-	/**
-	 * Type of DNS assertion
-	 */
-	type: "DNS_RESPONSE_CODE" | "DNS_TEXT_ANSWER" | "DNS_JSON_ANSWER";
-	/**
-	 * Property to assert on. Use JSONPath for DNS_JSON_ANSWER, status for DNS_RESPONSE_CODE, and an empty string for DNS_TEXT_ANSWER.
-	 */
-	property: string;
-	/**
-	 * Comparison operator
-	 */
-	comparison:
-		| "EQUALS"
-		| "NOT_EQUALS"
-		| "GREATER_THAN"
-		| "LESS_THAN"
-		| "NULL"
-		| "NOT_NULL"
-		| "EMPTY"
-		| "NOT_EMPTY"
-		| "CONTAINS"
-		| "NOT_CONTAINS"
-		| "FALSE"
-		| "TRUE";
-	/**
-	 * Expected value
-	 */
-	expected: string;
 };
 
 export type ExpandedDnsCheck = {
@@ -513,13 +514,13 @@ export type ExpandedDnsCheck = {
 	assertions: Array<DnsAssertion> | null;
 };
 
-export type TcpAssertion = {
+export type DnsAssertion = {
 	/**
-	 * Type of TCP assertion
+	 * Type of DNS assertion
 	 */
-	type: "TCP_RESPONSE_TIME" | "TCP_RESPONSE_DATA";
+	type: "DNS_RESPONSE_CODE" | "DNS_TEXT_ANSWER" | "DNS_JSON_ANSWER";
 	/**
-	 * Property to assert on. Use an empty string for raw TCP response data and responseTime for response time assertions.
+	 * Property to assert on. Use JSONPath for DNS_JSON_ANSWER, status for DNS_RESPONSE_CODE, and an empty string for DNS_TEXT_ANSWER.
 	 */
 	property: string;
 	/**
@@ -662,22 +663,57 @@ export type ExpandedTcpCheck = {
 	assertions: Array<TcpAssertion> | null;
 };
 
-export type AnyCheck =
-	| ({
-			check_type: "UPTIME";
-	  } & ExpandedUptimeCheck)
-	| ({
-			check_type: "BROWSER";
-	  } & ExpandedBrowserCheck)
-	| ({
-			check_type: "DNS";
-	  } & ExpandedDnsCheck)
-	| ({
-			check_type: "TCP";
-	  } & ExpandedTcpCheck);
+export type TcpAssertion = {
+	/**
+	 * Type of TCP assertion
+	 */
+	type: "TCP_RESPONSE_TIME" | "TCP_RESPONSE_DATA";
+	/**
+	 * Property to assert on. Use an empty string for raw TCP response data and responseTime for response time assertions.
+	 */
+	property: string;
+	/**
+	 * Comparison operator
+	 */
+	comparison:
+		| "EQUALS"
+		| "NOT_EQUALS"
+		| "GREATER_THAN"
+		| "LESS_THAN"
+		| "NULL"
+		| "NOT_NULL"
+		| "EMPTY"
+		| "NOT_EMPTY"
+		| "CONTAINS"
+		| "NOT_CONTAINS"
+		| "FALSE"
+		| "TRUE";
+	/**
+	 * Expected value
+	 */
+	expected: string;
+};
 
-export type AnyCheckResponse = {
-	result: AnyCheck;
+export type CheckListResponse = {
+	result: Array<CheckListItem>;
+	result_info: {
+		/**
+		 * Page number of paginated results.
+		 */
+		page?: number;
+		/**
+		 * Number of items per page.
+		 */
+		per_page?: number;
+		/**
+		 * Number of items on the current page.
+		 */
+		count: number;
+		/**
+		 * Total number of items.
+		 */
+		total_count: number;
+	};
 	/**
 	 * Whether the API call was successful
 	 */
@@ -728,7 +764,7 @@ export type CheckListItem = {
 	/**
 	 * DNS record type queried by this check. Present for DNS checks.
 	 */
-	dns_record_type?: "A" | "AAAA" | "CNAME" | "MX" | "NS" | "SOA" | "TXT";
+	dns_record_type?: "A" | "AAAA" | "CNAME" | "MX" | "NS" | "SOA" | "TXT" | null;
 	/**
 	 * Custom resolver used by this DNS check, or null for the default resolver.
 	 */
@@ -736,7 +772,7 @@ export type CheckListItem = {
 	/**
 	 * DNS transport protocol used by this check. Present for DNS checks.
 	 */
-	dns_protocol?: "UDP" | "TCP";
+	dns_protocol?: "UDP" | "TCP" | null;
 	/**
 	 * TCP hostname connected to by this check. Present for TCP checks.
 	 */
@@ -748,43 +784,7 @@ export type CheckListItem = {
 	/**
 	 * IP family used by this check. Present for TCP checks.
 	 */
-	tcp_ip_family?: "IPv4" | "IPv6";
-};
-
-export type CheckListResponse = {
-	result: Array<CheckListItem>;
-	result_info: {
-		/**
-		 * Page number of paginated results.
-		 */
-		page?: number;
-		/**
-		 * Number of items per page.
-		 */
-		per_page?: number;
-		/**
-		 * Number of items on the current page.
-		 */
-		count: number;
-		/**
-		 * Total number of items.
-		 */
-		total_count: number;
-	};
-	/**
-	 * Whether the API call was successful
-	 */
-	success: boolean;
-	errors: Array<{
-		code: number;
-		message: string;
-		type?: string | null;
-	}>;
-	messages: Array<{
-		code: number;
-		message: string;
-		type?: string | null;
-	}>;
+	tcp_ip_family?: "IPv4" | "IPv6" | null;
 };
 
 export type PublicApiValidationError = {
@@ -1667,20 +1667,6 @@ export type BrowserCheckPatch = {
 	script?: string;
 };
 
-export type PublicCheckIncident = {
-	id: string;
-	check_id: string;
-	started_at: string;
-	ended_at: string | null;
-};
-
-export type PublicCheckIncidentResultInfo = {
-	page: number;
-	per_page: number;
-	count: number;
-	total_count: number;
-};
-
 export type PublicCheckIncidentListResponse = {
 	success: true;
 	result: Array<PublicCheckIncident>;
@@ -1689,51 +1675,14 @@ export type PublicCheckIncidentListResponse = {
 	messages: Array<unknown>;
 };
 
-export type PublicCheckResultWindow = {
-	/**
-	 * Inclusive start of the returned result window
-	 */
-	from: string;
-	/**
-	 * Exclusive end of the returned result window
-	 */
-	to: string;
-};
-
-export type PublicCheckResultBodyAvailability =
-	| "AVAILABLE"
-	| "NOT_RECORDED"
-	| "EXPIRED"
-	| "TRACE_ONLY";
-
-export type PublicHttpCheckResult = {
+export type PublicCheckIncident = {
 	id: string;
-	checked_at: string;
-	/**
-	 * Region identifier in format aws:{region}
-	 */
-	checked_from:
-		| "aws:us-east-1"
-		| "aws:us-east-2"
-		| "aws:us-west-1"
-		| "aws:eu-central-1"
-		| "aws:eu-west-2"
-		| "aws:ap-south-1"
-		| "aws:ap-southeast-2"
-		| "aws:ap-northeast-1";
-	passing: boolean | null;
-	response_time_ms: number;
-	attempt_number: number | null;
-	is_final_attempt: boolean | null;
-	dispatched_at_ms: number | null;
-	response_body: string | null;
-	body_availability: PublicCheckResultBodyAvailability;
-	response_code: number | null;
-	result_summary: string | null;
-	has_stored_response: boolean;
+	check_id: string;
+	started_at: string;
+	ended_at: string | null;
 };
 
-export type PublicCheckResultsResultInfo = {
+export type PublicCheckIncidentResultInfo = {
 	page: number;
 	per_page: number;
 	count: number;
@@ -1753,6 +1702,58 @@ export type PublicUptimeCheckResultsResponse = {
 	messages: Array<unknown>;
 };
 
+export type PublicCheckResultWindow = {
+	/**
+	 * Inclusive start of the returned result window
+	 */
+	from: string;
+	/**
+	 * Exclusive end of the returned result window
+	 */
+	to: string;
+};
+
+export type PublicHttpCheckResult = {
+	id: string;
+	checked_at: string;
+	/**
+	 * Region identifier in format aws:{region}
+	 */
+	checked_from:
+		| "aws:us-east-1"
+		| "aws:us-east-2"
+		| "aws:us-west-1"
+		| "aws:eu-central-1"
+		| "aws:eu-west-2"
+		| "aws:ap-south-1"
+		| "aws:ap-southeast-2"
+		| "aws:ap-northeast-1"
+		| null;
+	passing: boolean | null;
+	response_time_ms: number;
+	attempt_number: number | null;
+	is_final_attempt: boolean | null;
+	dispatched_at_ms: number | null;
+	response_body: string | null;
+	body_availability: PublicCheckResultBodyAvailability;
+	response_code: number | null;
+	result_summary: string | null;
+	has_stored_response: boolean;
+};
+
+export type PublicCheckResultBodyAvailability =
+	| "AVAILABLE"
+	| "NOT_RECORDED"
+	| "EXPIRED"
+	| "TRACE_ONLY";
+
+export type PublicCheckResultsResultInfo = {
+	page: number;
+	per_page: number;
+	count: number;
+	total_count: number;
+};
+
 export type PublicBrowserCheckResultsResponse = {
 	success: true;
 	result: {
@@ -1760,6 +1761,19 @@ export type PublicBrowserCheckResultsResponse = {
 		check_type: "BROWSER";
 		window: PublicCheckResultWindow;
 		results: Array<PublicHttpCheckResult>;
+		result_info: PublicCheckResultsResultInfo;
+	};
+	errors: Array<unknown>;
+	messages: Array<unknown>;
+};
+
+export type PublicDnsCheckResultsResponse = {
+	success: true;
+	result: {
+		check_id: string;
+		check_type: "DNS";
+		window: PublicCheckResultWindow;
+		results: Array<PublicDnsCheckResult>;
 		result_info: PublicCheckResultsResultInfo;
 	};
 	errors: Array<unknown>;
@@ -1780,7 +1794,8 @@ export type PublicDnsCheckResult = {
 		| "aws:eu-west-2"
 		| "aws:ap-south-1"
 		| "aws:ap-southeast-2"
-		| "aws:ap-northeast-1";
+		| "aws:ap-northeast-1"
+		| null;
 	passing: boolean | null;
 	response_time_ms: number;
 	attempt_number: number | null;
@@ -1789,19 +1804,19 @@ export type PublicDnsCheckResult = {
 	response_body: string | null;
 	body_availability: PublicCheckResultBodyAvailability;
 	dns_status: string | null;
-	failure_source: "TRANSPORT" | "ASSERTION";
+	failure_source: "TRANSPORT" | "ASSERTION" | null;
 	failure_type: string | null;
 	resolver: string | null;
 	parsed_response: string | null;
 };
 
-export type PublicDnsCheckResultsResponse = {
+export type PublicTcpCheckResultsResponse = {
 	success: true;
 	result: {
 		check_id: string;
-		check_type: "DNS";
+		check_type: "TCP";
 		window: PublicCheckResultWindow;
-		results: Array<PublicDnsCheckResult>;
+		results: Array<PublicTcpCheckResult>;
 		result_info: PublicCheckResultsResultInfo;
 	};
 	errors: Array<unknown>;
@@ -1822,7 +1837,8 @@ export type PublicTcpCheckResult = {
 		| "aws:eu-west-2"
 		| "aws:ap-south-1"
 		| "aws:ap-southeast-2"
-		| "aws:ap-northeast-1";
+		| "aws:ap-northeast-1"
+		| null;
 	passing: boolean | null;
 	response_time_ms: number;
 	attempt_number: number | null;
@@ -1831,56 +1847,29 @@ export type PublicTcpCheckResult = {
 	response_body: string | null;
 	body_availability: PublicCheckResultBodyAvailability;
 	tcp_status: string | null;
-	failure_source: "TRANSPORT" | "ASSERTION";
+	failure_source: "TRANSPORT" | "ASSERTION" | null;
 	failure_type: string | null;
 	dns_time_ms: number | null;
 	connect_time_ms: number | null;
 	data_time_ms: number | null;
 };
 
-export type PublicTcpCheckResultsResponse = {
-	success: true;
-	result: {
-		check_id: string;
-		check_type: "TCP";
-		window: PublicCheckResultWindow;
-		results: Array<PublicTcpCheckResult>;
-		result_info: PublicCheckResultsResultInfo;
-	};
-	errors: Array<unknown>;
-	messages: Array<unknown>;
-};
-
-export type Check = {
+export type CheckResponse = {
+	result: ExpandedCheck;
 	/**
-	 * Uptime Check ID
+	 * Whether the API call was successful
 	 */
-	id: string;
-	name: string;
-	/**
-	 * URL to check (null for script-based browser checks)
-	 */
-	url: string | null;
-	/**
-	 * Indicates whether the check is a regular uptime check or browser check.
-	 */
-	check_type: "UPTIME" | "BROWSER";
-	/**
-	 * Last time the check was queued
-	 */
-	last_queued: string | null;
-	/**
-	 * Current status of the check based on the latest uptime event
-	 */
-	status:
-		| "UP"
-		| "DOWN"
-		| "PENDING"
-		| "PAUSED"
-		| "MUTED"
-		| "MAINTENANCE"
-		| "RECOVERING"
-		| "VERIFYING";
+	success: boolean;
+	errors: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+	messages: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
 };
 
 export type ExpandedCheck = Check & {
@@ -1917,7 +1906,7 @@ export type ExpandedCheck = Check & {
 	/**
 	 * Runtime version for browser checks (null for standard uptime checks)
 	 */
-	version: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT" | "CLOUDFLARE";
+	version: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT" | "CLOUDFLARE" | null;
 	/**
 	 * Playwright Test script loaded by GET for scripted browser checks; null for URL-based checks or when script content was not loaded. Mutation responses do not load script content.
 	 */
@@ -2022,22 +2011,36 @@ export type ExpandedCheck = Check & {
 	webhook_alerts: Array<string>;
 };
 
-export type CheckResponse = {
-	result: ExpandedCheck;
+export type Check = {
 	/**
-	 * Whether the API call was successful
+	 * Uptime Check ID
 	 */
-	success: boolean;
-	errors: Array<{
-		code: number;
-		message: string;
-		type?: string | null;
-	}>;
-	messages: Array<{
-		code: number;
-		message: string;
-		type?: string | null;
-	}>;
+	id: string;
+	name: string;
+	/**
+	 * URL to check (null for script-based browser checks)
+	 */
+	url: string | null;
+	/**
+	 * Indicates whether the check is a regular uptime check or browser check.
+	 */
+	check_type: "UPTIME" | "BROWSER";
+	/**
+	 * Last time the check was queued
+	 */
+	last_queued: string | null;
+	/**
+	 * Current status of the check based on the latest uptime event
+	 */
+	status:
+		| "UP"
+		| "DOWN"
+		| "PENDING"
+		| "PAUSED"
+		| "MUTED"
+		| "MAINTENANCE"
+		| "RECOVERING"
+		| "VERIFYING";
 };
 
 export type CheckInput = {
@@ -2328,11 +2331,11 @@ export type Heartbeat = {
 	/**
 	 * When the heartbeat was created
 	 */
-	created_at: string | null;
+	created_at: string;
 	/**
 	 * When the heartbeat was last updated
 	 */
-	updated_at: string | null;
+	updated_at: string;
 };
 
 export type ExpandedHeartbeat = Heartbeat & {
@@ -2506,7 +2509,7 @@ export type StatusPage = {
 	/**
 	 * Whether the status page is hidden from search engines
 	 */
-	hide_from_search_engines: boolean | null;
+	hide_from_search_engines: boolean;
 	/**
 	 * Whether the status page requires a password to view
 	 */
@@ -2541,7 +2544,7 @@ export type StatusPageComponent = {
 	/**
 	 * a name for the component
 	 */
-	name: string | null;
+	name: string;
 	/**
 	 * Status of the component
 	 */
@@ -2555,11 +2558,11 @@ export type StatusPageComponent = {
 	/**
 	 * Show this component's uptime and historical incidents on the status page.
 	 */
-	display_uptime: boolean | null;
+	display_uptime: boolean;
 	/**
 	 * Show this component's response time metrics on the status page.
 	 */
-	display_metrics: boolean | null;
+	display_metrics: boolean;
 	/**
 	 * When the component was created
 	 */
@@ -2590,7 +2593,7 @@ export type StatusPageIncident = {
 	/**
 	 * a title for the incident
 	 */
-	title: string | null;
+	title: string;
 	/**
 	 * Impact of the incident
 	 */
@@ -2611,15 +2614,14 @@ export type StatusPageIncident = {
 	/**
 	 * When the incident was created
 	 */
-	created_at: string | null;
+	created_at: string;
 	/**
 	 * When the incident was last updated
 	 */
-	updated_at: string | null;
+	updated_at: string;
 };
 
 export type StatusPageScheduledMaintenance = StatusPageIncident & {
-	title?: string;
 	/**
 	 * When the scheduled maintenance is expected to start
 	 */
@@ -2756,7 +2758,7 @@ export type StatusPageIncidentWithLatestUpdate = StatusPageIncident & {
 		/**
 		 * Duration in minutes
 		 */
-		duration_minutes: number | null;
+		duration_minutes: number;
 		/**
 		 * Notify subscribers when maintenance starts
 		 */
@@ -2766,6 +2768,20 @@ export type StatusPageIncidentWithLatestUpdate = StatusPageIncident & {
 		 */
 		notify_subscribers_at_end: boolean;
 	};
+};
+
+export type StatusPageIncidentDetail = StatusPageIncidentWithLatestUpdate & {
+	components?: Array<{
+		/**
+		 * Component ID
+		 */
+		id: string;
+		/**
+		 * Component name
+		 */
+		name: string;
+	}>;
+	updates?: Array<IncidentUpdate>;
 };
 
 export type IncidentUpdate = {
@@ -2827,20 +2843,6 @@ export type IncidentUpdate = {
 		 */
 		new_status: string;
 	}>;
-};
-
-export type StatusPageIncidentDetail = StatusPageIncidentWithLatestUpdate & {
-	components?: Array<{
-		/**
-		 * Component ID
-		 */
-		id: string;
-		/**
-		 * Component name
-		 */
-		name: string;
-	}>;
-	updates?: Array<IncidentUpdate>;
 };
 
 export type Webhook = {
@@ -6916,7 +6918,7 @@ export type UpdateStatusPageResponses = {
 			/**
 			 * Whether the status page is hidden from search engines
 			 */
-			hide_from_search_engines: boolean | null;
+			hide_from_search_engines: boolean;
 		};
 		/**
 		 * Whether the API call was successful
@@ -7106,7 +7108,7 @@ export type ListStatusPagesResponses = {
 					/**
 					 * Whether the status page is hidden from search engines
 					 */
-					hide_from_search_engines: boolean | null;
+					hide_from_search_engines: boolean;
 					/**
 					 * Whether the status page requires a password to view
 					 */
