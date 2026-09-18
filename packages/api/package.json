@@ -1,6 +1,6 @@
 {
 	"name": "@onlineornot/api",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"description": "Generated TypeScript client for the OnlineOrNot REST API",
 	"keywords": [
 		"onlineornot",
