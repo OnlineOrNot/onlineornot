@@ -64,7 +64,7 @@ export const zExpandedUptimeCheck = z.object({
 	]),
 	headers: z.record(z.string(), z.string()).nullable(),
 	text_to_search_for: z.string().nullable(),
-	reminder_alert_interval_minutes: z.number(),
+	reminder_alert_interval_minutes: z.number().nullable(),
 	confirmation_period_seconds: z.number(),
 	recovery_period_seconds: z.number(),
 	test_interval: z.number(),
@@ -136,7 +136,7 @@ export const zExpandedBrowserCheck = z.object({
 	]),
 	headers: z.record(z.string(), z.string()).nullable(),
 	text_to_search_for: z.string().nullable(),
-	reminder_alert_interval_minutes: z.number(),
+	reminder_alert_interval_minutes: z.number().nullable(),
 	confirmation_period_seconds: z.number(),
 	recovery_period_seconds: z.number(),
 	test_interval: z.number(),
@@ -225,7 +225,7 @@ export const zExpandedDnsCheck = z.object({
 		"RECOVERING",
 		"VERIFYING",
 	]),
-	reminder_alert_interval_minutes: z.number(),
+	reminder_alert_interval_minutes: z.number().nullable(),
 	confirmation_period_seconds: z.number(),
 	recovery_period_seconds: z.number(),
 	test_interval: z.number(),
@@ -285,7 +285,7 @@ export const zExpandedTcpCheck = z.object({
 		"RECOVERING",
 		"VERIFYING",
 	]),
-	reminder_alert_interval_minutes: z.number(),
+	reminder_alert_interval_minutes: z.number().nullable(),
 	confirmation_period_seconds: z.number(),
 	recovery_period_seconds: z.number(),
 	test_interval: z.number(),
@@ -1084,7 +1084,7 @@ export const zExpandedCheck = zCheck.and(
 	z.object({
 		headers: z.record(z.string(), z.string()).nullable(),
 		text_to_search_for: z.string().nullable(),
-		reminder_alert_interval_minutes: z.number(),
+		reminder_alert_interval_minutes: z.number().nullable(),
 		confirmation_period_seconds: z.number(),
 		recovery_period_seconds: z.number(),
 		test_interval: z.number(),
@@ -1295,7 +1295,7 @@ export const zHeartbeat = z.object({
 	report_period_cron: z.string().nullable(),
 	timezone: z.string().nullable(),
 	grace_period: z.number(),
-	reminder_alert_interval_minutes: z.number(),
+	reminder_alert_interval_minutes: z.number().nullable(),
 	alert_priority: z.enum(["LOW", "HIGH"]),
 	created_at: z.string().nullable(),
 	updated_at: z.string().nullable(),
@@ -1394,8 +1394,8 @@ export const zStatusPageComponent = z.object({
 		"MAJOR_OUTAGE",
 		"PARTIAL_OUTAGE",
 		"DEGRADED_PERFORMANCE",
-		"NO_IMPACT",
 		"MAINTENANCE",
+		"NO_IMPACT",
 	]),
 	display_uptime: z.boolean().nullable(),
 	display_metrics: z.boolean().nullable(),
@@ -1592,8 +1592,8 @@ export const zListAuditLogsHeaders = z.object({
 });
 
 export const zListAuditLogsQuery = z.object({
-	page: z.int().gte(1).optional().default(1),
-	per_page: z.int().gte(1).optional().default(20),
+	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -1646,7 +1646,7 @@ export const zListAuditLogsResponse = z.object({
 });
 
 /**
- * Verification result. OAuth success omits result.id; invalid tokens have success: false.. May also return a canonical failure envelope with success: false at HTTP200.
+ * Verification result. Valid API tokens include result.id; valid OAuth tokens omit it. May also return a canonical failure envelope with success: false at HTTP200.
  */
 export const zVerifyTokenResponse = z.union([
 	z.object({
@@ -1731,8 +1731,8 @@ export const zListTokensHeaders = z.object({
 });
 
 export const zListTokensQuery = z.object({
-	page: z.int().gte(1).optional().default(1),
-	per_page: z.int().gte(1).optional().default(10),
+	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	per_page: z.int().gte(1).lte(9007199254740991).optional().default(10),
 	search: z.string().optional(),
 });
 
@@ -2365,8 +2365,8 @@ export const zListChecksHeaders = z.object({
 });
 
 export const zListChecksQuery = z.object({
-	page: z.int().gte(1).optional().default(1),
-	per_page: z.int().gte(1).optional().default(20),
+	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
 	search: z.string().optional(),
 	filter: z
 		.enum([
@@ -2516,8 +2516,8 @@ export const zListHeartbeatsHeaders = z.object({
 });
 
 export const zListHeartbeatsQuery = z.object({
-	page: z.int().gte(1).optional().default(1),
-	per_page: z.int().gte(1).optional().default(20),
+	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -2728,8 +2728,8 @@ export const zListMaintenanceWindowsHeaders = z.object({
 });
 
 export const zListMaintenanceWindowsQuery = z.object({
-	page: z.int().gte(1).optional().default(1),
-	per_page: z.int().gte(1).optional().default(20),
+	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -2946,8 +2946,8 @@ export const zListUsersHeaders = z.object({
 });
 
 export const zListUsersQuery = z.object({
-	page: z.int().gte(1).optional().default(1),
-	per_page: z.int().gte(1).optional().default(20),
+	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -3032,8 +3032,8 @@ export const zListInvitationsHeaders = z.object({
 });
 
 export const zListInvitationsQuery = z.object({
-	page: z.int().gte(1).optional().default(1),
-	per_page: z.int().gte(1).optional().default(20),
+	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -3264,8 +3264,8 @@ export const zListStatusPagesHeaders = z.object({
 });
 
 export const zListStatusPagesQuery = z.object({
-	page: z.int().gte(1).optional().default(1),
-	per_page: z.int().gte(1).optional().default(20),
+	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -3381,8 +3381,8 @@ export const zListStatusPageComponentsPath = z.object({
 });
 
 export const zListStatusPageComponentsQuery = z.object({
-	page: z.int().gte(1).optional().default(1),
-	per_page: z.int().gte(1).optional().default(20),
+	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -3637,8 +3637,8 @@ export const zListStatusPageComponentGroupsPath = z.object({
 });
 
 export const zListStatusPageComponentGroupsQuery = z.object({
-	page: z.int().gte(1).optional().default(1),
-	per_page: z.int().gte(1).optional().default(20),
+	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -3903,8 +3903,8 @@ export const zListStatusPageSubscribersPath = z.object({
 });
 
 export const zListStatusPageSubscribersQuery = z.object({
-	page: z.int().gte(1).optional().default(1),
-	per_page: z.int().gte(1).optional().default(20),
+	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -4017,8 +4017,8 @@ export const zListStatusPageIncidentsPath = z.object({
 });
 
 export const zListStatusPageIncidentsQuery = z.object({
-	page: z.int().gte(1).optional().default(1),
-	per_page: z.int().gte(1).optional().default(20),
+	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -4240,8 +4240,8 @@ export const zListStatusPageIncidentUpdatesPath = z.object({
 });
 
 export const zListStatusPageIncidentUpdatesQuery = z.object({
-	page: z.int().gte(1).optional().default(1),
-	per_page: z.int().gte(1).optional().default(20),
+	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -4619,8 +4619,8 @@ export const zListWebhooksHeaders = z.object({
 });
 
 export const zListWebhooksQuery = z.object({
-	page: z.int().gte(1).optional().default(1),
-	per_page: z.int().gte(1).optional().default(20),
+	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
 	search: z.string().optional(),
 });
 

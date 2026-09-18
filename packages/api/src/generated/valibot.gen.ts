@@ -67,7 +67,7 @@ export const vExpandedUptimeCheck = v.object({
 	]),
 	headers: v.nullable(v.record(v.string(), v.string())),
 	text_to_search_for: v.nullable(v.string()),
-	reminder_alert_interval_minutes: v.number(),
+	reminder_alert_interval_minutes: v.nullable(v.number()),
 	confirmation_period_seconds: v.number(),
 	recovery_period_seconds: v.number(),
 	test_interval: v.number(),
@@ -139,7 +139,7 @@ export const vExpandedBrowserCheck = v.object({
 	]),
 	headers: v.nullable(v.record(v.string(), v.string())),
 	text_to_search_for: v.nullable(v.string()),
-	reminder_alert_interval_minutes: v.number(),
+	reminder_alert_interval_minutes: v.nullable(v.number()),
 	confirmation_period_seconds: v.number(),
 	recovery_period_seconds: v.number(),
 	test_interval: v.number(),
@@ -228,7 +228,7 @@ export const vExpandedDnsCheck = v.object({
 		"RECOVERING",
 		"VERIFYING",
 	]),
-	reminder_alert_interval_minutes: v.number(),
+	reminder_alert_interval_minutes: v.nullable(v.number()),
 	confirmation_period_seconds: v.number(),
 	recovery_period_seconds: v.number(),
 	test_interval: v.number(),
@@ -288,7 +288,7 @@ export const vExpandedTcpCheck = v.object({
 		"RECOVERING",
 		"VERIFYING",
 	]),
-	reminder_alert_interval_minutes: v.number(),
+	reminder_alert_interval_minutes: v.nullable(v.number()),
 	confirmation_period_seconds: v.number(),
 	recovery_period_seconds: v.number(),
 	test_interval: v.number(),
@@ -1183,7 +1183,7 @@ export const vExpandedCheck = v.intersect([
 	v.object({
 		headers: v.nullable(v.record(v.string(), v.string())),
 		text_to_search_for: v.nullable(v.string()),
-		reminder_alert_interval_minutes: v.number(),
+		reminder_alert_interval_minutes: v.nullable(v.number()),
 		confirmation_period_seconds: v.number(),
 		recovery_period_seconds: v.number(),
 		test_interval: v.number(),
@@ -1422,7 +1422,7 @@ export const vHeartbeat = v.object({
 	report_period_cron: v.nullable(v.string()),
 	timezone: v.nullable(v.string()),
 	grace_period: v.number(),
-	reminder_alert_interval_minutes: v.number(),
+	reminder_alert_interval_minutes: v.nullable(v.number()),
 	alert_priority: v.picklist(["LOW", "HIGH"]),
 	created_at: v.nullable(v.string()),
 	updated_at: v.nullable(v.string()),
@@ -1523,8 +1523,8 @@ export const vStatusPageComponent = v.object({
 		"MAJOR_OUTAGE",
 		"PARTIAL_OUTAGE",
 		"DEGRADED_PERFORMANCE",
-		"NO_IMPACT",
 		"MAINTENANCE",
+		"NO_IMPACT",
 	]),
 	display_uptime: v.nullable(v.boolean()),
 	display_metrics: v.nullable(v.boolean()),
@@ -1723,8 +1723,24 @@ export const vListAuditLogsHeaders = v.object({
 });
 
 export const vListAuditLogsQuery = v.object({
-	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
-	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+	page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		1,
+	),
+	per_page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		20,
+	),
 	search: v.optional(v.string()),
 });
 
@@ -1777,7 +1793,7 @@ export const vListAuditLogsResponse = v.object({
 });
 
 /**
- * Verification result. OAuth success omits result.id; invalid tokens have success: false.. May also return a canonical failure envelope with success: false at HTTP200.
+ * Verification result. Valid API tokens include result.id; valid OAuth tokens omit it. May also return a canonical failure envelope with success: false at HTTP200.
  */
 export const vVerifyTokenResponse = v.union([
 	v.object({
@@ -1864,8 +1880,24 @@ export const vListTokensHeaders = v.object({
 });
 
 export const vListTokensQuery = v.object({
-	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
-	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 10),
+	page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		1,
+	),
+	per_page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		10,
+	),
 	search: v.optional(v.string()),
 });
 
@@ -2588,8 +2620,24 @@ export const vListChecksHeaders = v.object({
 });
 
 export const vListChecksQuery = v.object({
-	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
-	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+	page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		1,
+	),
+	per_page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		20,
+	),
 	search: v.optional(v.string()),
 	filter: v.optional(
 		v.picklist([
@@ -2741,8 +2789,24 @@ export const vListHeartbeatsHeaders = v.object({
 });
 
 export const vListHeartbeatsQuery = v.object({
-	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
-	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+	page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		1,
+	),
+	per_page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		20,
+	),
 	search: v.optional(v.string()),
 });
 
@@ -2959,8 +3023,24 @@ export const vListMaintenanceWindowsHeaders = v.object({
 });
 
 export const vListMaintenanceWindowsQuery = v.object({
-	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
-	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+	page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		1,
+	),
+	per_page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		20,
+	),
 	search: v.optional(v.string()),
 });
 
@@ -3181,8 +3261,24 @@ export const vListUsersHeaders = v.object({
 });
 
 export const vListUsersQuery = v.object({
-	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
-	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+	page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		1,
+	),
+	per_page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		20,
+	),
 	search: v.optional(v.string()),
 });
 
@@ -3268,8 +3364,24 @@ export const vListInvitationsHeaders = v.object({
 });
 
 export const vListInvitationsQuery = v.object({
-	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
-	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+	page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		1,
+	),
+	per_page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		20,
+	),
 	search: v.optional(v.string()),
 });
 
@@ -3502,8 +3614,24 @@ export const vListStatusPagesHeaders = v.object({
 });
 
 export const vListStatusPagesQuery = v.object({
-	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
-	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+	page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		1,
+	),
+	per_page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		20,
+	),
 	search: v.optional(v.string()),
 });
 
@@ -3620,8 +3748,24 @@ export const vListStatusPageComponentsPath = v.object({
 });
 
 export const vListStatusPageComponentsQuery = v.object({
-	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
-	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+	page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		1,
+	),
+	per_page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		20,
+	),
 	search: v.optional(v.string()),
 });
 
@@ -3877,8 +4021,24 @@ export const vListStatusPageComponentGroupsPath = v.object({
 });
 
 export const vListStatusPageComponentGroupsQuery = v.object({
-	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
-	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+	page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		1,
+	),
+	per_page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		20,
+	),
 	search: v.optional(v.string()),
 });
 
@@ -4144,8 +4304,24 @@ export const vListStatusPageSubscribersPath = v.object({
 });
 
 export const vListStatusPageSubscribersQuery = v.object({
-	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
-	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+	page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		1,
+	),
+	per_page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		20,
+	),
 	search: v.optional(v.string()),
 });
 
@@ -4258,8 +4434,24 @@ export const vListStatusPageIncidentsPath = v.object({
 });
 
 export const vListStatusPageIncidentsQuery = v.object({
-	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
-	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+	page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		1,
+	),
+	per_page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		20,
+	),
 	search: v.optional(v.string()),
 });
 
@@ -4482,8 +4674,24 @@ export const vListStatusPageIncidentUpdatesPath = v.object({
 });
 
 export const vListStatusPageIncidentUpdatesQuery = v.object({
-	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
-	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+	page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		1,
+	),
+	per_page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		20,
+	),
 	search: v.optional(v.string()),
 });
 
@@ -4862,8 +5070,24 @@ export const vListWebhooksHeaders = v.object({
 });
 
 export const vListWebhooksQuery = v.object({
-	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
-	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+	page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		1,
+	),
+	per_page: v.optional(
+		v.pipe(
+			v.number(),
+			v.integer(),
+			v.minValue(1),
+			v.maxValue(9007199254740991),
+		),
+		20,
+	),
 	search: v.optional(v.string()),
 });
 
