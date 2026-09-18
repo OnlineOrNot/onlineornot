@@ -1,6 +1,6 @@
 # `@onlineornot/api`
 
-A low-level, generated TypeScript client for the public [OnlineOrNot REST API](https://onlineornot.com). It uses the Fetch API, ships as ESM with declarations, and has no runtime dependencies.
+A low-level, generated TypeScript client for the public [OnlineOrNot REST API](https://onlineornot.com). It uses the Fetch API and ships as ESM with declarations. The root client has no runtime dependencies.
 
 > This package is initially `0.x`. Generated operation names and behavior may change between minor releases while the API is exercised.
 
@@ -53,6 +53,28 @@ For check creation, omitting `alert_priority` lets the API default to `HIGH`. On
 `getHeartbeat` includes the documented HTTP 404 error for a heartbeat that is missing or unavailable. Read it through the generated `error` result.
 
 Operations preserve the generated `{ data, error, request, response }` result and the API's wire envelopes. The package does not unwrap `result`, throw by default, or automatically paginate.
+
+## Runtime validation with Zod
+
+Schemas generated from the same OpenAPI document are available from the optional `@onlineornot/api/zod` entrypoint. Install Zod 4 only when you use this entrypoint:
+
+```sh
+npm install @onlineornot/api zod
+```
+
+```ts
+import { zCreateCheckBody, zVerifyTokenResponse } from "@onlineornot/api/zod";
+
+const input = zCreateCheckBody.parse({
+	name: "Website",
+	url: "https://example.com",
+	test_interval: 60,
+});
+
+const response = zVerifyTokenResponse.parse(await fetchResponse.json());
+```
+
+Importing `@onlineornot/api` does not import Zod. Request, response, and reusable model schemas are regenerated alongside the client; their names use a `z` prefix.
 
 ## Isolated and custom clients
 

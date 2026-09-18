@@ -9,12 +9,23 @@ const packageDirectory = path.resolve(
 	fileURLToPath(new URL("..", import.meta.url)),
 );
 
-it("imports the built package root", async () => {
-	const sdk = await import(
-		pathToFileURL(path.join(packageDirectory, "dist/index.js")).href
+it("keeps Zod isolated to the zod subpath", async () => {
+	const rootPath = path.join(packageDirectory, "dist/index.js");
+	const zodPath = path.join(packageDirectory, "dist/zod.js");
+	const [rootSource, zodSource] = [rootPath, zodPath].map((file) =>
+		readFileSync(file, "utf8"),
 	);
+
+	expect(rootSource).not.toMatch(/from\s+["']zod(?:\/[^"']*)?["']/);
+	expect(zodSource).toMatch(/from\s+["']zod(?:\/[^"']*)?["']/);
+
+	const sdk = await import(pathToFileURL(rootPath).href);
 	expect(sdk.listChecks).toBeTypeOf("function");
 	expect(sdk.createClient).toBeTypeOf("function");
+	expect(sdk.zCreateCheckBody).toBeUndefined();
+
+	const schemas = await import(pathToFileURL(zodPath).href);
+	expect(schemas.zCreateCheckBody).toBeTypeOf("object");
 });
 
 it("packs only intended public files", () => {
@@ -36,6 +47,9 @@ it("packs only intended public files", () => {
 		"dist/index.d.ts",
 		"dist/index.js",
 		"dist/index.js.map",
+		"dist/zod.d.ts",
+		"dist/zod.js",
+		"dist/zod.js.map",
 		"package.json",
 	]);
 	for (const file of files)

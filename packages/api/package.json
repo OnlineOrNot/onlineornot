@@ -34,6 +34,10 @@
 		".": {
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js"
+		},
+		"./zod": {
+			"types": "./dist/zod.d.ts",
+			"import": "./dist/zod.js"
 		}
 	},
 	"publishConfig": {
@@ -42,6 +46,14 @@
 	},
 	"engines": {
 		"node": ">=18"
+	},
+	"peerDependencies": {
+		"zod": "^4.0.0"
+	},
+	"peerDependenciesMeta": {
+		"zod": {
+			"optional": true
+		}
 	},
 	"scripts": {
 		"build": "tsup",
@@ -56,10 +68,11 @@
 	},
 	"devDependencies": {
 		"@hey-api/openapi-ts": "0.99.0",
+		"@types/node": "^22.19.15",
 		"rimraf": "^6.1.3",
 		"tsup": "^8.5.1",
 		"typescript": "5.9.3",
 		"vitest": "^4.1.11",
-		"@types/node": "^22.19.15"
+		"zod": "^4.6.5"
 	}
 }

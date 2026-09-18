@@ -11,5 +11,14 @@ export default defineConfig({
 		clean: true,
 		path: "./src/generated",
 	},
-	plugins: ["@hey-api/typescript", "@hey-api/sdk", "@hey-api/client-fetch"],
+	plugins: [
+		"@hey-api/typescript",
+		"@hey-api/sdk",
+		"@hey-api/client-fetch",
+		{
+			name: "zod",
+			compatibilityVersion: 4,
+			includeInEntry: false,
+		},
+	],
 });
