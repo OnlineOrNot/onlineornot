@@ -1,5 +1,11 @@
 # @onlineornot/api
 
+## 0.3.1
+
+### Patch Changes
+
+- [#101](https://github.com/OnlineOrNot/onlineornot/pull/101) [`8258049`](https://github.com/OnlineOrNot/onlineornot/commit/825804927bfe3027d4daa01babc31af527cfb431) Thanks [@rozenmd](https://github.com/rozenmd)! - Refresh the TypeScript, Zod, and Valibot SDK outputs from OnlineOrNot/api-schemas commit cd4dd1109039ce731bcddbb44303f15859535f82.
+
 ## 0.3.0
 
 ### Minor Changes
