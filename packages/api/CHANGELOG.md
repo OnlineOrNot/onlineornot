@@ -1,5 +1,11 @@
 # @onlineornot/api
 
+## 0.3.0
+
+### Minor Changes
+
+- [#99](https://github.com/OnlineOrNot/onlineornot/pull/99) [`53daa80`](https://github.com/OnlineOrNot/onlineornot/commit/53daa806b18fb17bff8777b247c6d239bdfee782) Thanks [@open-session-jcjv](https://github.com/apps/open-session-jcjv)! - Add generated Zod and Valibot request, response, and model schemas through the optional `@onlineornot/api/zod` and `@onlineornot/api/valibot` entrypoints.
+
 ## 0.2.1
 
 ### Patch Changes
