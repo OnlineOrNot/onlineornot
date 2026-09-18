@@ -1,10 +1,11 @@
+import { parse } from "valibot";
 import { describe, expect, it } from "vitest";
 
-import { zCheckDeleteResponse, zCreateCheckBody } from "../src/zod";
+import { vCheckDeleteResponse, vCreateCheckBody } from "../src/valibot";
 
-describe("generated Zod schemas", () => {
+describe("generated Valibot schemas", () => {
 	it("parses a representative request body", () => {
-		const result = zCreateCheckBody.parse({
+		const result = parse(vCreateCheckBody, {
 			name: "Website",
 			url: "https://example.com",
 			test_interval: 60,
@@ -25,12 +26,12 @@ describe("generated Zod schemas", () => {
 			messages: [],
 		};
 
-		expect(zCheckDeleteResponse.parse(response)).toEqual(response);
+		expect(parse(vCheckDeleteResponse, response)).toEqual(response);
 	});
 
 	it("rejects a response missing its required success field", () => {
 		expect(() =>
-			zCheckDeleteResponse.parse({
+			parse(vCheckDeleteResponse, {
 				result: { id: "check-id" },
 				errors: [],
 				messages: [],
@@ -40,14 +41,14 @@ describe("generated Zod schemas", () => {
 
 	it("rejects invalid request and response values", () => {
 		expect(() =>
-			zCreateCheckBody.parse({
+			parse(vCreateCheckBody, {
 				name: "Website",
 				url: "not a URL",
 				test_interval: 10,
 			}),
 		).toThrow();
 		expect(() =>
-			zCheckDeleteResponse.parse({
+			parse(vCheckDeleteResponse, {
 				success: true,
 				result: { id: 123 },
 				errors: [],

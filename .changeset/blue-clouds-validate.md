@@ -2,4 +2,4 @@
 "@onlineornot/api": minor
 ---
 
-Add generated Zod request, response, and model schemas through the optional `@onlineornot/api/zod` entrypoint.
+Add generated Zod and Valibot request, response, and model schemas through the optional `@onlineornot/api/zod` and `@onlineornot/api/valibot` entrypoints.

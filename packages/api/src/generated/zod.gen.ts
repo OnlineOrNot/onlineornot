@@ -321,7 +321,7 @@ export const zAnyCheck = z.discriminatedUnion("check_type", [
 
 export const zAnyCheckResponse = z.object({
 	result: zAnyCheck,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -373,7 +373,7 @@ export const zCheckListResponse = z.object({
 		count: z.number(),
 		total_count: z.number(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -437,7 +437,7 @@ export const zPublicCheckResultsErrorResponse = z.object({
 
 export const zDnsCheckResponse = z.object({
 	result: zExpandedDnsCheck,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -513,7 +513,7 @@ export const zCheckDeleteResponse = z.object({
 	result: z.object({
 		id: z.string(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -532,7 +532,7 @@ export const zCheckDeleteResponse = z.object({
 
 export const zTcpCheckResponse = z.object({
 	result: zExpandedTcpCheck,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -606,7 +606,7 @@ export const zTcpCheckPatch = z.object({
 
 export const zUptimeCheckResponse = z.object({
 	result: zExpandedUptimeCheck,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -745,7 +745,7 @@ export const zUptimeCheckPatch = z.object({
 
 export const zBrowserCheckResponse = z.object({
 	result: zExpandedBrowserCheck,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -1141,7 +1141,7 @@ export const zExpandedCheck = zCheck.and(
 
 export const zCheckResponse = z.object({
 	result: zExpandedCheck,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -1397,8 +1397,8 @@ export const zStatusPageComponent = z.object({
 		"NO_IMPACT",
 		"MAINTENANCE",
 	]),
-	display_uptime: z.boolean().nullable().default(true),
-	display_metrics: z.boolean().nullable().default(true),
+	display_uptime: z.boolean().nullable(),
+	display_metrics: z.boolean().nullable(),
 	created_at: z.string(),
 	updated_at: z.string(),
 	group_id: z.string().nullable(),
@@ -1628,7 +1628,7 @@ export const zListAuditLogsResponse = z.object({
 		count: z.number(),
 		total_count: z.number(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -1771,7 +1771,7 @@ export const zListTokensResponse = z.object({
 			total_pages: z.number(),
 		}),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -1823,7 +1823,7 @@ export const zCreateTokenResponse = z.object({
 		createdAt: z.string(),
 		token: z.string(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -1855,7 +1855,7 @@ export const zDeleteTokenResponse = z.object({
 	result: z.object({
 		deleted: z.boolean(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -1905,7 +1905,7 @@ export const zGetTokenResponse = z.object({
 			}),
 		),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -2593,7 +2593,7 @@ export const zCreateHeartbeatHeaders = z.object({
  */
 export const zCreateHeartbeatResponse = z.object({
 	result: zExpandedHeartbeat,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -2625,7 +2625,7 @@ export const zDeleteHeartbeatResponse = z.object({
 	result: z.object({
 		id: z.string(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -2655,7 +2655,7 @@ export const zGetHeartbeatPath = z.object({
  */
 export const zGetHeartbeatResponse = z.object({
 	result: zExpandedHeartbeat,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -2706,7 +2706,7 @@ export const zUpdateHeartbeatPath = z.object({
  */
 export const zUpdateHeartbeatResponse = z.object({
 	result: zExpandedHeartbeat,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -2808,7 +2808,7 @@ export const zCreateMaintenanceWindowHeaders = z.object({
  */
 export const zCreateMaintenanceWindowResponse = z.object({
 	result: zFullMaintenanceWindow,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -2840,7 +2840,7 @@ export const zDeleteMaintenanceWindowResponse = z.object({
 	result: z.object({
 		id: z.string(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -2870,7 +2870,7 @@ export const zGetMaintenanceWindowPath = z.object({
  */
 export const zGetMaintenanceWindowResponse = z.object({
 	result: zFullMaintenanceWindow,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -2924,7 +2924,7 @@ export const zUpdateMaintenanceWindowPath = z.object({
  */
 export const zUpdateMaintenanceWindowResponse = z.object({
 	result: zFullMaintenanceWindow,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3010,7 +3010,7 @@ export const zRemoveUserResponse = z.object({
 	result: z.object({
 		id: z.string(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3095,7 +3095,7 @@ export const zCreateInvitationHeaders = z.object({
  */
 export const zCreateInvitationResponse = z.object({
 	result: zInvitation,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3127,7 +3127,7 @@ export const zDeleteStatusPageResponse = z.object({
 	result: z.object({
 		id: z.string(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3157,7 +3157,7 @@ export const zGetStatusPagePath = z.object({
  */
 export const zGetStatusPageResponse = z.object({
 	result: zStatusPage,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3202,7 +3202,7 @@ export const zUpdateStatusPageResponse = z.object({
 			hide_from_search_engines: z.boolean().nullable(),
 		}),
 	),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3242,7 +3242,7 @@ export const zGetStatusPageSummaryResponse = z.object({
 		active_incidents: z.array(zStatusPageIncident),
 		scheduled_maintenance: z.array(zStatusPageScheduledMaintenance),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3355,7 +3355,7 @@ export const zCreateStatusPageHeaders = z.object({
  */
 export const zCreateStatusPageResponse = z.object({
 	result: zStatusPageIdentity,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3460,7 +3460,7 @@ export const zCreateStatusPageComponentPath = z.object({
  */
 export const zCreateStatusPageComponentResponse = z.object({
 	result: zStatusPageComponent,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3493,7 +3493,7 @@ export const zDeleteStatusPageComponentResponse = z.object({
 	result: z.object({
 		id: z.string(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3524,7 +3524,7 @@ export const zGetStatusPageComponentPath = z.object({
  */
 export const zGetStatusPageComponentResponse = z.object({
 	result: zStatusPageComponent,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3575,7 +3575,7 @@ export const zUpdateStatusPageComponentPath = z.object({
  */
 export const zUpdateStatusPageComponentResponse = z.object({
 	result: zStatusPageComponent,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3611,7 +3611,7 @@ export const zUpdateStatusPageComponentSortOrderResponse = z.object({
 	result: z.object({
 		message: z.string(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3704,7 +3704,7 @@ export const zCreateStatusPageComponentGroupPath = z.object({
  */
 export const zCreateStatusPageComponentGroupResponse = z.object({
 	result: zStatusPageComponentGroup,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3737,7 +3737,7 @@ export const zDeleteStatusPageComponentGroupResponse = z.object({
 	result: z.object({
 		id: z.string(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3768,7 +3768,7 @@ export const zGetStatusPageComponentGroupPath = z.object({
  */
 export const zGetStatusPageComponentGroupResponse = z.object({
 	result: zStatusPageComponentGroup,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3804,7 +3804,7 @@ export const zUpdateStatusPageComponentGroupPath = z.object({
  */
 export const zUpdateStatusPageComponentGroupResponse = z.object({
 	result: zStatusPageComponentGroup,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3840,7 +3840,7 @@ export const zUpdateStatusPageComponentGroupSortOrderResponse = z.object({
 	result: z.object({
 		message: z.string(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3877,7 +3877,7 @@ export const zUpdateStatusPageGroupComponentSortOrderResponse = z.object({
 	result: z.object({
 		message: z.string(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3919,7 +3919,7 @@ export const zListStatusPageSubscribersResponse = z.object({
 		count: z.number(),
 		total_count: z.number(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3958,7 +3958,7 @@ export const zCreateStatusPageSubscriberPath = z.object({
  */
 export const zCreateStatusPageSubscriberResponse = z.object({
 	result: zSubscriber,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -3991,7 +3991,7 @@ export const zDeleteStatusPageSubscriberResponse = z.object({
 	result: z.object({
 		id: z.string(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -4107,7 +4107,7 @@ export const zCreateStatusPageIncidentPath = z.object({
  */
 export const zCreateStatusPageIncidentResponse = z.object({
 	result: zStatusPageIncidentDetail,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -4140,7 +4140,7 @@ export const zDeleteStatusPageIncidentResponse = z.object({
 	result: z.object({
 		id: z.string(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -4171,7 +4171,7 @@ export const zGetStatusPageIncidentPath = z.object({
  */
 export const zGetStatusPageIncidentResponse = z.object({
 	result: zStatusPageIncidentDetail,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -4213,7 +4213,7 @@ export const zUpdateStatusPageIncidentPath = z.object({
  */
 export const zUpdateStatusPageIncidentResponse = z.object({
 	result: zStatusPageIncidentDetail,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -4335,7 +4335,7 @@ export const zCreateStatusPageIncidentUpdatePath = z.object({
  */
 export const zCreateStatusPageIncidentUpdateResponse = z.object({
 	result: zIncidentUpdate,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -4369,7 +4369,7 @@ export const zDeleteStatusPageIncidentUpdateResponse = z.object({
 	result: z.object({
 		id: z.string(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -4401,7 +4401,7 @@ export const zGetStatusPageIncidentUpdatePath = z.object({
  */
 export const zGetStatusPageIncidentUpdateResponse = z.object({
 	result: zIncidentUpdate,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -4451,7 +4451,7 @@ export const zUpdateStatusPageIncidentUpdatePath = z.object({
  */
 export const zUpdateStatusPageIncidentUpdateResponse = z.object({
 	result: zIncidentUpdate,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -4496,7 +4496,7 @@ export const zCreateStatusPageScheduledMaintenancePath = z.object({
  */
 export const zCreateStatusPageScheduledMaintenanceResponse = z.object({
 	result: zStatusPageScheduledMaintenance,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -4529,7 +4529,7 @@ export const zDeleteStatusPageScheduledMaintenanceResponse = z.object({
 	result: z.object({
 		id: z.string(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -4560,7 +4560,7 @@ export const zGetStatusPageScheduledMaintenancePath = z.object({
  */
 export const zGetStatusPageScheduledMaintenanceResponse = z.object({
 	result: zStatusPageScheduledMaintenance,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -4597,7 +4597,7 @@ export const zUpdateStatusPageScheduledMaintenancePath = z.object({
  */
 export const zUpdateStatusPageScheduledMaintenanceResponse = z.object({
 	result: zStatusPageScheduledMaintenance,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -4701,7 +4701,7 @@ export const zCreateWebhookHeaders = z.object({
  */
 export const zCreateWebhookResponse = z.object({
 	result: zWebhook,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -4733,7 +4733,7 @@ export const zDeleteWebhookResponse = z.object({
 	result: z.object({
 		id: z.string(),
 	}),
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -4763,7 +4763,7 @@ export const zGetWebhookPath = z.object({
  */
 export const zGetWebhookResponse = z.object({
 	result: zWebhook,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),
@@ -4815,7 +4815,7 @@ export const zUpdateWebhookPath = z.object({
  */
 export const zUpdateWebhookResponse = z.object({
 	result: zWebhook,
-	success: z.boolean().default(true),
+	success: z.boolean(),
 	errors: z.array(
 		z.object({
 			code: z.number(),

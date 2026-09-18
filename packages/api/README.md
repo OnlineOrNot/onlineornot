@@ -54,13 +54,17 @@ For check creation, omitting `alert_priority` lets the API default to `HIGH`. On
 
 Operations preserve the generated `{ data, error, request, response }` result and the API's wire envelopes. The package does not unwrap `result`, throw by default, or automatically paginate.
 
-## Runtime validation with Zod
+## Runtime validation
 
-Schemas generated from the same OpenAPI document are available from the optional `@onlineornot/api/zod` entrypoint. Install Zod 4 only when you use this entrypoint:
+Schemas generated from the same OpenAPI document are available from optional Zod 4 and Valibot 1 entrypoints. Install only the validator you use:
 
 ```sh
 npm install @onlineornot/api zod
+# or
+npm install @onlineornot/api valibot
 ```
+
+With Zod, import schemas with a `z` prefix:
 
 ```ts
 import { zCreateCheckBody, zVerifyTokenResponse } from "@onlineornot/api/zod";
@@ -70,11 +74,27 @@ const input = zCreateCheckBody.parse({
 	url: "https://example.com",
 	test_interval: 60,
 });
-
 const response = zVerifyTokenResponse.parse(await fetchResponse.json());
 ```
 
-Importing `@onlineornot/api` does not import Zod. Request, response, and reusable model schemas are regenerated alongside the client; their names use a `z` prefix.
+With Valibot, import schemas with a `v` prefix and use the Valibot parsing functions:
+
+```ts
+import { parse } from "valibot";
+import {
+	vCreateCheckBody,
+	vVerifyTokenResponse,
+} from "@onlineornot/api/valibot";
+
+const input = parse(vCreateCheckBody, {
+	name: "Website",
+	url: "https://example.com",
+	test_interval: 60,
+});
+const response = parse(vVerifyTokenResponse, await fetchResponse.json());
+```
+
+Importing `@onlineornot/api` does not import either validator. Request, response, and reusable model schemas are regenerated alongside the client.
 
 ## Isolated and custom clients
 
