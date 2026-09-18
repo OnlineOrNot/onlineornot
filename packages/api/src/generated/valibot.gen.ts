@@ -72,7 +72,9 @@ export const vExpandedUptimeCheck = v.object({
 	recovery_period_seconds: v.number(),
 	test_interval: v.number(),
 	timeout: v.number(),
-	version: v.picklist(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
+	version: v.nullable(
+		v.picklist(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
+	),
 	script: v.nullable(v.string()),
 	alert_priority: v.picklist(["LOW", "HIGH"]),
 	verify_ssl: v.boolean(),
@@ -144,7 +146,6 @@ export const vExpandedBrowserCheck = v.object({
 	recovery_period_seconds: v.number(),
 	test_interval: v.number(),
 	timeout: v.nullable(v.number()),
-	version: v.picklist(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
 	script: v.nullable(v.string()),
 	alert_priority: v.picklist(["LOW", "HIGH"]),
 	verify_ssl: v.boolean(),
@@ -191,6 +192,7 @@ export const vExpandedBrowserCheck = v.object({
 	pushover_alerts: v.array(v.string()),
 	oncall_alerts: v.array(v.string()),
 	webhook_alerts: v.array(v.string()),
+	version: v.picklist(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
 	check_type: v.picklist(["BROWSER"]),
 });
 
@@ -378,16 +380,16 @@ export const vCheckListItem = v.object({
 		"VERIFYING",
 	]),
 	dns_domain: v.nullish(v.string()),
-	dns_record_type: v.optional(
+	dns_record_type: v.nullish(
 		v.picklist(["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"]),
 	),
 	dns_resolver: v.nullish(v.string()),
-	dns_protocol: v.optional(v.picklist(["UDP", "TCP"])),
+	dns_protocol: v.nullish(v.picklist(["UDP", "TCP"])),
 	tcp_hostname: v.nullish(v.string()),
 	tcp_port: v.nullish(
 		v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(65535)),
 	),
-	tcp_ip_family: v.optional(v.picklist(["IPv4", "IPv6"])),
+	tcp_ip_family: v.nullish(v.picklist(["IPv4", "IPv6"])),
 });
 
 export const vCheckListResponse = v.object({
@@ -1022,16 +1024,18 @@ export const vPublicCheckResultBodyAvailability = v.picklist([
 export const vPublicHttpCheckResult = v.strictObject({
 	id: v.pipe(v.string(), v.minLength(1)),
 	checked_at: v.pipe(v.string(), v.isoTimestamp()),
-	checked_from: v.picklist([
-		"aws:us-east-1",
-		"aws:us-east-2",
-		"aws:us-west-1",
-		"aws:eu-central-1",
-		"aws:eu-west-2",
-		"aws:ap-south-1",
-		"aws:ap-southeast-2",
-		"aws:ap-northeast-1",
-	]),
+	checked_from: v.nullable(
+		v.picklist([
+			"aws:us-east-1",
+			"aws:us-east-2",
+			"aws:us-west-1",
+			"aws:eu-central-1",
+			"aws:eu-west-2",
+			"aws:ap-south-1",
+			"aws:ap-southeast-2",
+			"aws:ap-northeast-1",
+		]),
+	),
 	passing: v.nullable(v.boolean()),
 	response_time_ms: v.pipe(v.number(), v.minValue(0)),
 	attempt_number: v.nullable(v.pipe(v.number(), v.integer(), v.minValue(0))),
@@ -1082,16 +1086,18 @@ export const vPublicBrowserCheckResultsResponse = v.strictObject({
 export const vPublicDnsCheckResult = v.strictObject({
 	id: v.pipe(v.string(), v.minLength(1)),
 	checked_at: v.pipe(v.string(), v.isoTimestamp()),
-	checked_from: v.picklist([
-		"aws:us-east-1",
-		"aws:us-east-2",
-		"aws:us-west-1",
-		"aws:eu-central-1",
-		"aws:eu-west-2",
-		"aws:ap-south-1",
-		"aws:ap-southeast-2",
-		"aws:ap-northeast-1",
-	]),
+	checked_from: v.nullable(
+		v.picklist([
+			"aws:us-east-1",
+			"aws:us-east-2",
+			"aws:us-west-1",
+			"aws:eu-central-1",
+			"aws:eu-west-2",
+			"aws:ap-south-1",
+			"aws:ap-southeast-2",
+			"aws:ap-northeast-1",
+		]),
+	),
 	passing: v.nullable(v.boolean()),
 	response_time_ms: v.pipe(v.number(), v.minValue(0)),
 	attempt_number: v.nullable(v.pipe(v.number(), v.integer(), v.minValue(0))),
@@ -1100,7 +1106,7 @@ export const vPublicDnsCheckResult = v.strictObject({
 	response_body: v.nullable(v.string()),
 	body_availability: vPublicCheckResultBodyAvailability,
 	dns_status: v.nullable(v.string()),
-	failure_source: v.picklist(["TRANSPORT", "ASSERTION"]),
+	failure_source: v.nullable(v.picklist(["TRANSPORT", "ASSERTION"])),
 	failure_type: v.nullable(v.string()),
 	resolver: v.nullable(v.string()),
 	parsed_response: v.nullable(v.string()),
@@ -1122,16 +1128,18 @@ export const vPublicDnsCheckResultsResponse = v.strictObject({
 export const vPublicTcpCheckResult = v.strictObject({
 	id: v.pipe(v.string(), v.minLength(1)),
 	checked_at: v.pipe(v.string(), v.isoTimestamp()),
-	checked_from: v.picklist([
-		"aws:us-east-1",
-		"aws:us-east-2",
-		"aws:us-west-1",
-		"aws:eu-central-1",
-		"aws:eu-west-2",
-		"aws:ap-south-1",
-		"aws:ap-southeast-2",
-		"aws:ap-northeast-1",
-	]),
+	checked_from: v.nullable(
+		v.picklist([
+			"aws:us-east-1",
+			"aws:us-east-2",
+			"aws:us-west-1",
+			"aws:eu-central-1",
+			"aws:eu-west-2",
+			"aws:ap-south-1",
+			"aws:ap-southeast-2",
+			"aws:ap-northeast-1",
+		]),
+	),
 	passing: v.nullable(v.boolean()),
 	response_time_ms: v.pipe(v.number(), v.minValue(0)),
 	attempt_number: v.nullable(v.pipe(v.number(), v.integer(), v.minValue(0))),
@@ -1140,7 +1148,7 @@ export const vPublicTcpCheckResult = v.strictObject({
 	response_body: v.nullable(v.string()),
 	body_availability: vPublicCheckResultBodyAvailability,
 	tcp_status: v.nullable(v.string()),
-	failure_source: v.picklist(["TRANSPORT", "ASSERTION"]),
+	failure_source: v.nullable(v.picklist(["TRANSPORT", "ASSERTION"])),
 	failure_type: v.nullable(v.string()),
 	dns_time_ms: v.nullable(v.pipe(v.number(), v.minValue(0))),
 	connect_time_ms: v.nullable(v.pipe(v.number(), v.minValue(0))),
@@ -1188,11 +1196,9 @@ export const vExpandedCheck = v.intersect([
 		recovery_period_seconds: v.number(),
 		test_interval: v.number(),
 		timeout: v.nullable(v.number()),
-		version: v.picklist([
-			"NODE20_PLAYWRIGHT",
-			"NODE24_PLAYWRIGHT",
-			"CLOUDFLARE",
-		]),
+		version: v.nullable(
+			v.picklist(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
+		),
 		script: v.nullable(v.string()),
 		alert_priority: v.picklist(["LOW", "HIGH"]),
 		verify_ssl: v.boolean(),
@@ -1424,8 +1430,8 @@ export const vHeartbeat = v.object({
 	grace_period: v.number(),
 	reminder_alert_interval_minutes: v.nullable(v.number()),
 	alert_priority: v.picklist(["LOW", "HIGH"]),
-	created_at: v.nullable(v.string()),
-	updated_at: v.nullable(v.string()),
+	created_at: v.string(),
+	updated_at: v.string(),
 });
 
 export const vExpandedHeartbeat = v.intersect([
@@ -1503,7 +1509,7 @@ export const vStatusPage = v.object({
 	logo_url: v.nullish(v.string()),
 	dark_logo_url: v.nullish(v.string()),
 	description: v.nullish(v.string()),
-	hide_from_search_engines: v.nullable(v.boolean()),
+	hide_from_search_engines: v.boolean(),
 	has_password: v.boolean(),
 	allowed_ips: v.nullish(v.array(v.string())),
 });
@@ -1517,7 +1523,7 @@ export const vStatusPageIdentity = v.object({
 
 export const vStatusPageComponent = v.object({
 	id: v.string(),
-	name: v.nullable(v.string()),
+	name: v.string(),
 	status: v.picklist([
 		"OPERATIONAL",
 		"MAJOR_OUTAGE",
@@ -1526,8 +1532,8 @@ export const vStatusPageComponent = v.object({
 		"MAINTENANCE",
 		"NO_IMPACT",
 	]),
-	display_uptime: v.nullable(v.boolean()),
-	display_metrics: v.nullable(v.boolean()),
+	display_uptime: v.boolean(),
+	display_metrics: v.boolean(),
 	created_at: v.string(),
 	updated_at: v.string(),
 	group_id: v.nullable(v.string()),
@@ -1537,7 +1543,7 @@ export const vStatusPageComponent = v.object({
 
 export const vStatusPageIncident = v.object({
 	id: v.string(),
-	title: v.nullable(v.pipe(v.string(), v.minLength(1), v.maxLength(256))),
+	title: v.pipe(v.string(), v.minLength(1), v.maxLength(256)),
 	impact: v.picklist([
 		"MAJOR_OUTAGE",
 		"PARTIAL_OUTAGE",
@@ -1547,14 +1553,13 @@ export const vStatusPageIncident = v.object({
 	]),
 	started: v.nullable(v.string()),
 	ended: v.nullish(v.string()),
-	created_at: v.nullable(v.string()),
-	updated_at: v.nullable(v.string()),
+	created_at: v.string(),
+	updated_at: v.string(),
 });
 
 export const vStatusPageScheduledMaintenance = v.intersect([
 	vStatusPageIncident,
 	v.object({
-		title: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(256))),
 		start_date: v.string(),
 		duration_minutes: v.pipe(v.number(), v.integer(), v.minValue(1)),
 		notifications: v.optional(
@@ -1620,7 +1625,7 @@ export const vStatusPageIncidentWithLatestUpdate = v.intersect([
 			v.object({
 				id: v.string(),
 				start_date: v.string(),
-				duration_minutes: v.nullable(v.number()),
+				duration_minutes: v.number(),
 				notify_subscribers_at_start: v.boolean(),
 				notify_subscribers_at_end: v.boolean(),
 			}),
@@ -3549,7 +3554,7 @@ export const vUpdateStatusPageResponse = v.object({
 		vStatusPageIdentity,
 		v.object({
 			description: v.nullish(v.string()),
-			hide_from_search_engines: v.nullable(v.boolean()),
+			hide_from_search_engines: v.boolean(),
 		}),
 	]),
 	success: v.boolean(),
@@ -3657,7 +3662,7 @@ export const vListStatusPagesResponse = v.union([
 				logo_url: v.nullish(v.string()),
 				dark_logo_url: v.nullish(v.string()),
 				description: v.nullish(v.string()),
-				hide_from_search_engines: v.nullable(v.boolean()),
+				hide_from_search_engines: v.boolean(),
 				has_password: v.boolean(),
 				allowed_ips: v.nullish(v.array(v.string())),
 				custom_domain_entitled: v.boolean(),
