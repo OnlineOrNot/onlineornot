@@ -42,6 +42,15 @@ for (const operation of ["pingHeartbeatGet", "pingHeartbeat"]) {
 	sdk = `${sdk.slice(0, start)}${patched}${sdk.slice(end)}`;
 }
 await writeFile(sdkPath, sdk);
+
+const zodPath = path.join(packageDirectory, "src/generated/zod.gen.ts");
+let zod = await readFile(zodPath, "utf8");
+const defaultedSuccess = "success: z.boolean().default(true),";
+if (!zod.includes(defaultedSuccess))
+	throw new Error("Expected generated response success defaults");
+zod = zod.replaceAll(defaultedSuccess, "success: z.boolean(),");
+await writeFile(zodPath, zod);
+
 execFileSync("pnpm", ["exec", "oxfmt", "--write", "src/generated"], {
 	cwd: packageDirectory,
 	stdio: "inherit",

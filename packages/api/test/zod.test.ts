@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { zCreateCheckBody, zVerifyTokenResponse } from "../src/zod";
+import {
+	zCreateCheckBody,
+	zCreateCheckResponse,
+	zVerifyTokenResponse,
+} from "../src/zod";
 
 describe("generated Zod schemas", () => {
 	it("parses a representative request body", () => {
@@ -26,6 +30,12 @@ describe("generated Zod schemas", () => {
 		};
 
 		expect(zVerifyTokenResponse.parse(response)).toEqual(response);
+	});
+
+	it("requires success in response schemas", () => {
+		expect(
+			zCreateCheckResponse.shape.success.safeParse(undefined).success,
+		).toBe(false);
 	});
 
 	it("rejects invalid request and response values", () => {
