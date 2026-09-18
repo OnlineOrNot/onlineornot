@@ -1,5 +1,5 @@
 {
-	"schema": "https://raw.githubusercontent.com/OnlineOrNot/api-schemas/14d505afb15e62969e21f8c497a45199f7f4a050/openapi.json",
+	"schema": "https://raw.githubusercontent.com/OnlineOrNot/api-schemas/51204bfdcec0ec0a64758d23a927a5ea66a6fe4e/openapi.json",
 	"count": 93,
 	"operations": [
 		"createBrowserCheck",

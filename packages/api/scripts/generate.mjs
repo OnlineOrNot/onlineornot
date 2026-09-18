@@ -42,6 +42,7 @@ for (const operation of ["pingHeartbeatGet", "pingHeartbeat"]) {
 	sdk = `${sdk.slice(0, start)}${patched}${sdk.slice(end)}`;
 }
 await writeFile(sdkPath, sdk);
+
 execFileSync("pnpm", ["exec", "oxfmt", "--write", "src/generated"], {
 	cwd: packageDirectory,
 	stdio: "inherit",

@@ -9,12 +9,30 @@ const packageDirectory = path.resolve(
 	fileURLToPath(new URL("..", import.meta.url)),
 );
 
-it("imports the built package root", async () => {
-	const sdk = await import(
-		pathToFileURL(path.join(packageDirectory, "dist/index.js")).href
-	);
+it("keeps validators isolated to their subpaths", async () => {
+	const rootPath = path.join(packageDirectory, "dist/index.js");
+	const valibotPath = path.join(packageDirectory, "dist/valibot.js");
+	const zodPath = path.join(packageDirectory, "dist/zod.js");
+	const [rootSource, valibotSource, zodSource] = [
+		rootPath,
+		valibotPath,
+		zodPath,
+	].map((file) => readFileSync(file, "utf8"));
+
+	expect(rootSource).not.toMatch(/from\s+["'](?:valibot|zod)(?:\/[^"']*)?["']/);
+	expect(valibotSource).toMatch(/from\s+["']valibot["']/);
+	expect(zodSource).toMatch(/from\s+["']zod(?:\/[^"']*)?["']/);
+
+	const sdk = await import(pathToFileURL(rootPath).href);
 	expect(sdk.listChecks).toBeTypeOf("function");
 	expect(sdk.createClient).toBeTypeOf("function");
+	expect(sdk.vCreateCheckBody).toBeUndefined();
+	expect(sdk.zCreateCheckBody).toBeUndefined();
+
+	const valibotSchemas = await import(pathToFileURL(valibotPath).href);
+	expect(valibotSchemas.vCreateCheckBody).toBeTypeOf("object");
+	const zodSchemas = await import(pathToFileURL(zodPath).href);
+	expect(zodSchemas.zCreateCheckBody).toBeTypeOf("object");
 });
 
 it("packs only intended public files", () => {
@@ -36,6 +54,12 @@ it("packs only intended public files", () => {
 		"dist/index.d.ts",
 		"dist/index.js",
 		"dist/index.js.map",
+		"dist/valibot.d.ts",
+		"dist/valibot.js",
+		"dist/valibot.js.map",
+		"dist/zod.d.ts",
+		"dist/zod.js",
+		"dist/zod.js.map",
 		"package.json",
 	]);
 	for (const file of files)

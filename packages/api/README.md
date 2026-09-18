@@ -1,6 +1,6 @@
 # `@onlineornot/api`
 
-A low-level, generated TypeScript client for the public [OnlineOrNot REST API](https://onlineornot.com). It uses the Fetch API, ships as ESM with declarations, and has no runtime dependencies.
+A low-level, generated TypeScript client for the public [OnlineOrNot REST API](https://onlineornot.com). It uses the Fetch API and ships as ESM with declarations. The root client has no runtime dependencies.
 
 > This package is initially `0.x`. Generated operation names and behavior may change between minor releases while the API is exercised.
 
@@ -53,6 +53,48 @@ For check creation, omitting `alert_priority` lets the API default to `HIGH`. On
 `getHeartbeat` includes the documented HTTP 404 error for a heartbeat that is missing or unavailable. Read it through the generated `error` result.
 
 Operations preserve the generated `{ data, error, request, response }` result and the API's wire envelopes. The package does not unwrap `result`, throw by default, or automatically paginate.
+
+## Runtime validation
+
+Schemas generated from the same OpenAPI document are available from optional Zod 4 and Valibot 1 entrypoints. Install only the validator you use:
+
+```sh
+npm install @onlineornot/api zod
+# or
+npm install @onlineornot/api valibot
+```
+
+With Zod, import schemas with a `z` prefix:
+
+```ts
+import { zCreateCheckBody, zVerifyTokenResponse } from "@onlineornot/api/zod";
+
+const input = zCreateCheckBody.parse({
+	name: "Website",
+	url: "https://example.com",
+	test_interval: 60,
+});
+const response = zVerifyTokenResponse.parse(await fetchResponse.json());
+```
+
+With Valibot, import schemas with a `v` prefix and use the Valibot parsing functions:
+
+```ts
+import { parse } from "valibot";
+import {
+	vCreateCheckBody,
+	vVerifyTokenResponse,
+} from "@onlineornot/api/valibot";
+
+const input = parse(vCreateCheckBody, {
+	name: "Website",
+	url: "https://example.com",
+	test_interval: 60,
+});
+const response = parse(vVerifyTokenResponse, await fetchResponse.json());
+```
+
+Importing `@onlineornot/api` does not import either validator. Request, response, and reusable model schemas are regenerated alongside the client.
 
 ## Isolated and custom clients
 

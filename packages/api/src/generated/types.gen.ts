@@ -46,9 +46,6 @@ export type ExpandedUptimeCheck = {
 	 * Uptime Check ID
 	 */
 	id: string;
-	/**
-	 * Name of the check
-	 */
 	name: string;
 	/**
 	 * URL to check (null for script-based browser checks)
@@ -81,15 +78,15 @@ export type ExpandedUptimeCheck = {
 	 */
 	text_to_search_for: string | null;
 	/**
-	 * Interval in minutes between reminder alerts (-1 for never)
+	 * Interval in minutes between reminder alerts (-1 for never); null for legacy checks without a configured interval
 	 */
-	reminder_alert_interval_minutes: number;
+	reminder_alert_interval_minutes: number | null;
 	/**
-	 * Seconds to wait before confirming a down status
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
 	 */
 	confirmation_period_seconds: number;
 	/**
-	 * Seconds to wait before confirming recovery
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
 	 */
 	recovery_period_seconds: number;
 	/**
@@ -106,7 +103,7 @@ export type ExpandedUptimeCheck = {
 	 */
 	script: string | null;
 	/**
-	 * Priority level for alerts
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
 	 */
 	alert_priority: "LOW" | "HIGH";
 	/**
@@ -121,9 +118,6 @@ export type ExpandedUptimeCheck = {
 	 * Request body for POST/PUT/PATCH requests
 	 */
 	body: string | null;
-	/**
-	 * Whether to follow HTTP redirects
-	 */
 	follow_redirects: boolean;
 	/**
 	 * Assertions to validate the response
@@ -206,9 +200,6 @@ export type ExpandedUptimeCheck = {
 	 * Webhook IDs to notify
 	 */
 	webhook_alerts: Array<string>;
-	/**
-	 * Indicates this monitor is an uptime check.
-	 */
 	check_type: "UPTIME";
 };
 
@@ -217,9 +208,6 @@ export type ExpandedBrowserCheck = {
 	 * Uptime Check ID
 	 */
 	id: string;
-	/**
-	 * Name of the check
-	 */
 	name: string;
 	/**
 	 * URL to check (null for script-based browser checks)
@@ -252,15 +240,15 @@ export type ExpandedBrowserCheck = {
 	 */
 	text_to_search_for: string | null;
 	/**
-	 * Interval in minutes between reminder alerts (-1 for never)
+	 * Interval in minutes between reminder alerts (-1 for never); null for legacy checks without a configured interval
 	 */
-	reminder_alert_interval_minutes: number;
+	reminder_alert_interval_minutes: number | null;
 	/**
-	 * Seconds to wait before confirming a down status
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
 	 */
 	confirmation_period_seconds: number;
 	/**
-	 * Seconds to wait before confirming recovery
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
 	 */
 	recovery_period_seconds: number;
 	/**
@@ -280,7 +268,7 @@ export type ExpandedBrowserCheck = {
 	 */
 	script: string | null;
 	/**
-	 * Priority level for alerts
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
 	 */
 	alert_priority: "LOW" | "HIGH";
 	/**
@@ -295,9 +283,6 @@ export type ExpandedBrowserCheck = {
 	 * Request body for POST/PUT/PATCH requests
 	 */
 	body: string | null;
-	/**
-	 * Whether to follow HTTP redirects
-	 */
 	follow_redirects: boolean;
 	/**
 	 * Assertions to validate the response
@@ -380,9 +365,6 @@ export type ExpandedBrowserCheck = {
 	 * Webhook IDs to notify
 	 */
 	webhook_alerts: Array<string>;
-	/**
-	 * Indicates this monitor is a browser check.
-	 */
 	check_type: "BROWSER";
 };
 
@@ -422,9 +404,6 @@ export type ExpandedDnsCheck = {
 	 * Uptime Check ID
 	 */
 	id: string;
-	/**
-	 * Name of the check
-	 */
 	name: string;
 	/**
 	 * Last time the check was queued
@@ -443,15 +422,15 @@ export type ExpandedDnsCheck = {
 		| "RECOVERING"
 		| "VERIFYING";
 	/**
-	 * Interval in minutes between reminder alerts (-1 for never)
+	 * Interval in minutes between reminder alerts (-1 for never); null for legacy checks without a configured interval
 	 */
-	reminder_alert_interval_minutes: number;
+	reminder_alert_interval_minutes: number | null;
 	/**
-	 * Seconds to wait before confirming a down status
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
 	 */
 	confirmation_period_seconds: number;
 	/**
-	 * Seconds to wait before confirming recovery
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
 	 */
 	recovery_period_seconds: number;
 	/**
@@ -460,7 +439,7 @@ export type ExpandedDnsCheck = {
 	test_interval: number;
 	timeout: number;
 	/**
-	 * Priority level for alerts
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
 	 */
 	alert_priority: "LOW" | "HIGH";
 	/**
@@ -503,9 +482,6 @@ export type ExpandedDnsCheck = {
 	 * Webhook IDs to notify
 	 */
 	webhook_alerts: Array<string>;
-	/**
-	 * Indicates this monitor is a DNS check.
-	 */
 	check_type: "DNS";
 	/**
 	 * DNS checks do not use a URL target.
@@ -573,9 +549,6 @@ export type ExpandedTcpCheck = {
 	 * Uptime Check ID
 	 */
 	id: string;
-	/**
-	 * Name of the check
-	 */
 	name: string;
 	/**
 	 * Last time the check was queued
@@ -594,15 +567,15 @@ export type ExpandedTcpCheck = {
 		| "RECOVERING"
 		| "VERIFYING";
 	/**
-	 * Interval in minutes between reminder alerts (-1 for never)
+	 * Interval in minutes between reminder alerts (-1 for never); null for legacy checks without a configured interval
 	 */
-	reminder_alert_interval_minutes: number;
+	reminder_alert_interval_minutes: number | null;
 	/**
-	 * Seconds to wait before confirming a down status
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
 	 */
 	confirmation_period_seconds: number;
 	/**
-	 * Seconds to wait before confirming recovery
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
 	 */
 	recovery_period_seconds: number;
 	/**
@@ -611,7 +584,7 @@ export type ExpandedTcpCheck = {
 	test_interval: number;
 	timeout: number;
 	/**
-	 * Priority level for alerts
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
 	 */
 	alert_priority: "LOW" | "HIGH";
 	/**
@@ -654,9 +627,6 @@ export type ExpandedTcpCheck = {
 	 * Webhook IDs to notify
 	 */
 	webhook_alerts: Array<string>;
-	/**
-	 * Indicates this monitor is a TCP check.
-	 */
 	check_type: "TCP";
 	/**
 	 * TCP checks do not use a URL target.
@@ -729,17 +699,11 @@ export type CheckListItem = {
 	 * Uptime Check ID
 	 */
 	id: string;
-	/**
-	 * Name of the check
-	 */
 	name: string;
 	/**
 	 * URL to check (null for DNS or script-based browser checks)
 	 */
 	url: string | null;
-	/**
-	 * Indicates whether the check is an uptime, browser, DNS, or TCP check.
-	 */
 	check_type: "UPTIME" | "BROWSER" | "DNS" | "TCP";
 	/**
 	 * Last time the check was queued
@@ -875,9 +839,6 @@ export type DnsCheckResponse = {
 };
 
 export type DnsCheckInput = {
-	/**
-	 * Name of the monitor
-	 */
 	name: string;
 	/**
 	 * Interval in seconds between checks
@@ -903,15 +864,15 @@ export type DnsCheckInput = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
-	 * Confirmation period in seconds
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
 	 */
 	confirmation_period_seconds?: number;
 	/**
-	 * Recovery period in seconds
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
 	 */
 	recovery_period_seconds?: number;
 	/**
@@ -946,9 +907,6 @@ export type DnsCheckInput = {
 };
 
 export type DnsCheckPatch = {
-	/**
-	 * Name of the monitor
-	 */
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -974,15 +932,15 @@ export type DnsCheckPatch = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
-	 * Confirmation period in seconds
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
 	 */
 	confirmation_period_seconds?: number;
 	/**
-	 * Recovery period in seconds
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
 	 */
 	recovery_period_seconds?: number;
 	/**
@@ -994,11 +952,11 @@ export type DnsCheckPatch = {
 	 */
 	timeout?: number;
 	/**
-	 * Whether the monitor is paused (completely stops execution) or actively running
+	 * Stops check execution when true.
 	 */
 	paused?: boolean;
 	/**
-	 * Whether the monitor is muted (continues running but suppresses alerts) or sending alerts normally
+	 * Suppresses alerts without stopping checks.
 	 */
 	muted?: boolean;
 	dns_domain?: string;
@@ -1053,9 +1011,6 @@ export type TcpCheckResponse = {
 };
 
 export type TcpCheckInput = {
-	/**
-	 * Name of the monitor
-	 */
 	name: string;
 	/**
 	 * Interval in seconds between checks
@@ -1081,15 +1036,15 @@ export type TcpCheckInput = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
-	 * Confirmation period in seconds
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
 	 */
 	confirmation_period_seconds?: number;
 	/**
-	 * Recovery period in seconds
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
 	 */
 	recovery_period_seconds?: number;
 	/**
@@ -1128,9 +1083,6 @@ export type TcpCheckInput = {
 };
 
 export type TcpCheckPatch = {
-	/**
-	 * Name of the monitor
-	 */
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -1156,15 +1108,15 @@ export type TcpCheckPatch = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
-	 * Confirmation period in seconds
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
 	 */
 	confirmation_period_seconds?: number;
 	/**
-	 * Recovery period in seconds
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
 	 */
 	recovery_period_seconds?: number;
 	/**
@@ -1176,11 +1128,11 @@ export type TcpCheckPatch = {
 	 */
 	timeout?: number;
 	/**
-	 * Whether the monitor is paused (completely stops execution) or actively running
+	 * Stops check execution when true.
 	 */
 	paused?: boolean;
 	/**
-	 * Whether the monitor is muted (continues running but suppresses alerts) or sending alerts normally
+	 * Suppresses alerts without stopping checks.
 	 */
 	muted?: boolean;
 	/**
@@ -1219,9 +1171,6 @@ export type UptimeCheckResponse = {
 };
 
 export type UptimeCheckInput = {
-	/**
-	 * Name of the monitor
-	 */
 	name: string;
 	/**
 	 * Interval in seconds between checks
@@ -1247,15 +1196,15 @@ export type UptimeCheckInput = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
-	 * Confirmation period in seconds
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
 	 */
 	confirmation_period_seconds?: number;
 	/**
-	 * Recovery period in seconds
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
 	 */
 	recovery_period_seconds?: number;
 	/**
@@ -1274,9 +1223,6 @@ export type UptimeCheckInput = {
 	 * Text to search for in the response
 	 */
 	text_to_search_for?: string;
-	/**
-	 * Type of check
-	 */
 	type?: "UPTIME_CHECK";
 	/**
 	 * Headers to send with the request
@@ -1289,9 +1235,6 @@ export type UptimeCheckInput = {
 	 */
 	method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
 	body?: string;
-	/**
-	 * Whether to follow redirects
-	 */
 	follow_redirects?: boolean;
 	/**
 	 * Assertions to run on the response
@@ -1341,9 +1284,6 @@ export type UptimeCheckInput = {
 };
 
 export type UptimeCheckPatch = {
-	/**
-	 * Name of the monitor
-	 */
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -1369,15 +1309,15 @@ export type UptimeCheckPatch = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
-	 * Confirmation period in seconds
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
 	 */
 	confirmation_period_seconds?: number;
 	/**
-	 * Recovery period in seconds
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
 	 */
 	recovery_period_seconds?: number;
 	/**
@@ -1389,11 +1329,11 @@ export type UptimeCheckPatch = {
 	 */
 	timeout?: number;
 	/**
-	 * Whether the monitor is paused (completely stops execution) or actively running
+	 * Stops check execution when true.
 	 */
 	paused?: boolean;
 	/**
-	 * Whether the monitor is muted (continues running but suppresses alerts) or sending alerts normally
+	 * Suppresses alerts without stopping checks.
 	 */
 	muted?: boolean;
 	/**
@@ -1415,9 +1355,6 @@ export type UptimeCheckPatch = {
 	 */
 	method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
 	body?: string;
-	/**
-	 * Whether to follow redirects
-	 */
 	follow_redirects?: boolean;
 	assertions?: Array<{
 		/**
@@ -1485,9 +1422,6 @@ export type BrowserCheckResponse = {
  * Browser check create payload. Provide either url for a URL-based browser check or script for a scripted Playwright check.
  */
 export type BrowserCheckInput = {
-	/**
-	 * Name of the monitor
-	 */
 	name: string;
 	/**
 	 * Interval in seconds between checks
@@ -1513,15 +1447,15 @@ export type BrowserCheckInput = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
-	 * Confirmation period in seconds
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
 	 */
 	confirmation_period_seconds?: number;
 	/**
-	 * Recovery period in seconds
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
 	 */
 	recovery_period_seconds?: number;
 	/**
@@ -1540,9 +1474,6 @@ export type BrowserCheckInput = {
 	 * Text to search for in the response
 	 */
 	text_to_search_for?: string;
-	/**
-	 * Type of check
-	 */
 	type?: "BROWSER_CHECK";
 	/**
 	 * Headers to send with the request
@@ -1555,9 +1486,6 @@ export type BrowserCheckInput = {
 	 */
 	method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
 	body?: string;
-	/**
-	 * Whether to follow redirects
-	 */
 	follow_redirects?: boolean;
 	/**
 	 * Assertions to run on the response
@@ -1615,9 +1543,6 @@ export type BrowserCheckInput = {
 };
 
 export type BrowserCheckPatch = {
-	/**
-	 * Name of the monitor
-	 */
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -1643,15 +1568,15 @@ export type BrowserCheckPatch = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
-	 * Confirmation period in seconds
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
 	 */
 	confirmation_period_seconds?: number;
 	/**
-	 * Recovery period in seconds
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
 	 */
 	recovery_period_seconds?: number;
 	/**
@@ -1663,11 +1588,11 @@ export type BrowserCheckPatch = {
 	 */
 	timeout?: number;
 	/**
-	 * Whether the monitor is paused (completely stops execution) or actively running
+	 * Stops check execution when true.
 	 */
 	paused?: boolean;
 	/**
-	 * Whether the monitor is muted (continues running but suppresses alerts) or sending alerts normally
+	 * Suppresses alerts without stopping checks.
 	 */
 	muted?: boolean;
 	/**
@@ -1689,9 +1614,6 @@ export type BrowserCheckPatch = {
 	 */
 	method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
 	body?: string;
-	/**
-	 * Whether to follow redirects
-	 */
 	follow_redirects?: boolean;
 	assertions?: Array<{
 		/**
@@ -1934,9 +1856,6 @@ export type Check = {
 	 * Uptime Check ID
 	 */
 	id: string;
-	/**
-	 * Name of the check
-	 */
 	name: string;
 	/**
 	 * URL to check (null for script-based browser checks)
@@ -1976,15 +1895,15 @@ export type ExpandedCheck = Check & {
 	 */
 	text_to_search_for: string | null;
 	/**
-	 * Interval in minutes between reminder alerts (-1 for never)
+	 * Interval in minutes between reminder alerts (-1 for never); null for legacy checks without a configured interval
 	 */
-	reminder_alert_interval_minutes: number;
+	reminder_alert_interval_minutes: number | null;
 	/**
-	 * Seconds to wait before confirming a down status
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
 	 */
 	confirmation_period_seconds: number;
 	/**
-	 * Seconds to wait before confirming recovery
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
 	 */
 	recovery_period_seconds: number;
 	/**
@@ -2004,7 +1923,7 @@ export type ExpandedCheck = Check & {
 	 */
 	script: string | null;
 	/**
-	 * Priority level for alerts
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
 	 */
 	alert_priority: "LOW" | "HIGH";
 	/**
@@ -2019,9 +1938,6 @@ export type ExpandedCheck = Check & {
 	 * Request body for POST/PUT/PATCH requests
 	 */
 	body: string | null;
-	/**
-	 * Whether to follow HTTP redirects
-	 */
 	follow_redirects: boolean;
 	/**
 	 * Assertions to validate the response
@@ -2125,9 +2041,6 @@ export type CheckResponse = {
 };
 
 export type CheckInput = {
-	/**
-	 * Name of the monitor
-	 */
 	name: string;
 	/**
 	 * Interval in seconds between checks
@@ -2153,15 +2066,15 @@ export type CheckInput = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
-	 * Confirmation period in seconds
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
 	 */
 	confirmation_period_seconds?: number;
 	/**
-	 * Recovery period in seconds
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
 	 */
 	recovery_period_seconds?: number;
 	/**
@@ -2180,9 +2093,6 @@ export type CheckInput = {
 	 * Text to search for in the response
 	 */
 	text_to_search_for?: string;
-	/**
-	 * Type of check
-	 */
 	type?: "UPTIME_CHECK" | "BROWSER_CHECK";
 	/**
 	 * Headers to send with the request
@@ -2195,9 +2105,6 @@ export type CheckInput = {
 	 */
 	method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
 	body?: string;
-	/**
-	 * Whether to follow redirects
-	 */
 	follow_redirects?: boolean;
 	/**
 	 * Assertions to run on the response
@@ -2255,9 +2162,6 @@ export type CheckInput = {
 };
 
 export type CheckPatch = {
-	/**
-	 * Name of the monitor
-	 */
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -2283,15 +2187,15 @@ export type CheckPatch = {
 	 */
 	oncall_alerts?: Array<string>;
 	/**
-	 * Alert priority. Omitted creation defaults to HIGH; omission on PATCH preserves the current priority.
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
 	 */
 	alert_priority?: "LOW" | "HIGH";
 	/**
-	 * Confirmation period in seconds
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
 	 */
 	confirmation_period_seconds?: number;
 	/**
-	 * Recovery period in seconds
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
 	 */
 	recovery_period_seconds?: number;
 	/**
@@ -2303,11 +2207,11 @@ export type CheckPatch = {
 	 */
 	timeout?: number;
 	/**
-	 * Whether the monitor is paused (completely stops execution) or actively running
+	 * Stops check execution when true.
 	 */
 	paused?: boolean;
 	/**
-	 * Whether the monitor is muted (continues running but suppresses alerts) or sending alerts normally
+	 * Suppresses alerts without stopping checks.
 	 */
 	muted?: boolean;
 	/**
@@ -2318,9 +2222,6 @@ export type CheckPatch = {
 	 * Text to search for in the response
 	 */
 	text_to_search_for?: string;
-	/**
-	 * Type of check
-	 */
 	type?: "UPTIME_CHECK" | "BROWSER_CHECK";
 	/**
 	 * Headers to send with the request
@@ -2333,9 +2234,6 @@ export type CheckPatch = {
 	 */
 	method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
 	body?: string;
-	/**
-	 * Whether to follow redirects
-	 */
 	follow_redirects?: boolean;
 	assertions?: Array<{
 		/**
@@ -2394,9 +2292,6 @@ export type Heartbeat = {
 	 * Heartbeat ID
 	 */
 	id: string;
-	/**
-	 * Name of the heartbeat monitor
-	 */
 	name: string;
 	/**
 	 * Current status of the heartbeat
@@ -2425,9 +2320,9 @@ export type Heartbeat = {
 	/**
 	 * Interval in minutes between reminder alerts
 	 */
-	reminder_alert_interval_minutes: number;
+	reminder_alert_interval_minutes: number | null;
 	/**
-	 * Alert priority level
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
 	 */
 	alert_priority: "LOW" | "HIGH";
 	/**
@@ -2442,39 +2337,39 @@ export type Heartbeat = {
 
 export type ExpandedHeartbeat = Heartbeat & {
 	/**
-	 * Array of user IDs subscribed to alerts
+	 * User IDs subscribed to alerts
 	 */
 	user_alerts: Array<string>;
 	/**
-	 * Array of Slack integration IDs subscribed to alerts
+	 * Slack integration IDs subscribed to alerts
 	 */
 	slack_alerts: Array<string>;
 	/**
-	 * Array of Discord integration IDs subscribed to alerts
+	 * Discord integration IDs subscribed to alerts
 	 */
 	discord_alerts: Array<string>;
 	/**
-	 * Array of generic webhook IDs subscribed to alerts
+	 * Webhook IDs subscribed to alerts
 	 */
 	webhook_alerts: Array<string>;
 	/**
-	 * Array of on-call integration IDs (PagerDuty, Opsgenie, etc.) subscribed to alerts
+	 * On-call integration IDs (PagerDuty, Opsgenie, etc.) subscribed to alerts
 	 */
 	oncall_alerts: Array<string>;
 	/**
-	 * Array of incident.io integration IDs subscribed to alerts
+	 * incident.io integration IDs subscribed to alerts
 	 */
 	incident_io_alerts: Array<string>;
 	/**
-	 * Array of Microsoft Teams integration IDs subscribed to alerts
+	 * Microsoft Teams integration IDs subscribed to alerts
 	 */
 	microsoft_teams_alerts: Array<string>;
 	/**
-	 * Array of Telegram integration IDs subscribed to alerts
+	 * Telegram integration IDs subscribed to alerts
 	 */
 	telegram_alerts: Array<string>;
 	/**
-	 * Array of Pushover integration IDs subscribed to alerts
+	 * Pushover integration IDs subscribed to alerts
 	 */
 	pushover_alerts: Array<string>;
 };
@@ -2484,9 +2379,6 @@ export type MaintenanceWindow = {
 	 * Maintenance Window ID
 	 */
 	id: string;
-	/**
-	 * Name of the maintenance window
-	 */
 	name: string;
 	/**
 	 * Start date and time of the maintenance window, as a timestamp
@@ -2512,9 +2404,6 @@ export type MaintenanceWindow = {
 		| "FRIDAY"
 		| "SATURDAY"
 	>;
-	/**
-	 * Whether the maintenance window is enabled or disabled
-	 */
 	status: "ENABLED" | "DISABLED";
 };
 
@@ -2580,9 +2469,6 @@ export type StatusPage = {
 	 * Status Page ID
 	 */
 	id: string;
-	/**
-	 * Name of the Status Page
-	 */
 	name: string;
 	/**
 	 * The subdomain your status page will be hosted at. For example "status" would become "status.yourdomain.com"
@@ -2636,9 +2522,6 @@ export type StatusPageIdentity = {
 	 * Status Page ID
 	 */
 	id: string;
-	/**
-	 * Name of the Status Page
-	 */
 	name: string;
 	/**
 	 * The subdomain your status page will be hosted at. For example "status" would become "status.yourdomain.com"
@@ -2667,8 +2550,8 @@ export type StatusPageComponent = {
 		| "MAJOR_OUTAGE"
 		| "PARTIAL_OUTAGE"
 		| "DEGRADED_PERFORMANCE"
-		| "NO_IMPACT"
-		| "MAINTENANCE";
+		| "MAINTENANCE"
+		| "NO_IMPACT";
 	/**
 	 * Show this component's uptime and historical incidents on the status page.
 	 */
@@ -3244,7 +3127,7 @@ export type VerifyTokenError = VerifyTokenErrors[keyof VerifyTokenErrors];
 
 export type VerifyTokenResponses = {
 	/**
-	 * Verification result. OAuth success omits result.id; invalid tokens have success: false.. May also return a canonical failure envelope with success: false at HTTP200.
+	 * Verification result. Valid API tokens include result.id; valid OAuth tokens omit it. May also return a canonical failure envelope with success: false at HTTP200.
 	 */
 	200:
 		| {
@@ -5630,9 +5513,6 @@ export type ListHeartbeatsResponse =
 
 export type CreateHeartbeatData = {
 	body: {
-		/**
-		 * Name of the heartbeat monitor
-		 */
 		name: string;
 		/**
 		 * Expected interval in seconds between heartbeat pings (for simple schedule)
@@ -5655,15 +5535,15 @@ export type CreateHeartbeatData = {
 		 */
 		reminder_alert_interval_minutes?: number;
 		/**
-		 * Array of user IDs to alert
+		 * User IDs to notify
 		 */
 		user_alerts?: Array<string>;
 		/**
-		 * Array of Slack integration IDs to alert
+		 * Slack integration IDs to notify
 		 */
 		slack_alerts?: Array<string>;
 		/**
-		 * Array of Discord integration IDs to alert
+		 * Discord integration IDs to notify
 		 */
 		discord_alerts?: Array<string>;
 		/**
@@ -5675,23 +5555,23 @@ export type CreateHeartbeatData = {
 		 */
 		oncall_alerts?: Array<string>;
 		/**
-		 * Array of incident.io integration IDs to alert
+		 * incident.io integration IDs to notify
 		 */
 		incident_io_alerts?: Array<string>;
 		/**
-		 * Array of Microsoft Teams integration IDs to alert
+		 * Microsoft Teams integration IDs to notify
 		 */
 		microsoft_teams_alerts?: Array<string>;
 		/**
-		 * Array of Telegram integration IDs to alert
+		 * Telegram integration IDs to notify
 		 */
 		telegram_alerts?: Array<string>;
 		/**
-		 * Array of Pushover integration IDs to alert
+		 * Pushover integration IDs to notify
 		 */
 		pushover_alerts?: Array<string>;
 		/**
-		 * Alert priority level
+		 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
 		 */
 		alert_priority?: "LOW" | "HIGH";
 	};
@@ -5896,9 +5776,6 @@ export type GetHeartbeatResponse =
 
 export type UpdateHeartbeatData = {
 	body: {
-		/**
-		 * Name of the heartbeat monitor
-		 */
 		name?: string;
 		/**
 		 * Expected interval in seconds between heartbeat pings (for simple schedule)
@@ -5921,15 +5798,15 @@ export type UpdateHeartbeatData = {
 		 */
 		reminder_alert_interval_minutes?: number;
 		/**
-		 * Array of user IDs to alert
+		 * User IDs to notify
 		 */
 		user_alerts?: Array<string>;
 		/**
-		 * Array of Slack integration IDs to alert
+		 * Slack integration IDs to notify
 		 */
 		slack_alerts?: Array<string>;
 		/**
-		 * Array of Discord integration IDs to alert
+		 * Discord integration IDs to notify
 		 */
 		discord_alerts?: Array<string>;
 		/**
@@ -5941,23 +5818,23 @@ export type UpdateHeartbeatData = {
 		 */
 		oncall_alerts?: Array<string>;
 		/**
-		 * Array of incident.io integration IDs to alert
+		 * incident.io integration IDs to notify
 		 */
 		incident_io_alerts?: Array<string>;
 		/**
-		 * Array of Microsoft Teams integration IDs to alert
+		 * Microsoft Teams integration IDs to notify
 		 */
 		microsoft_teams_alerts?: Array<string>;
 		/**
-		 * Array of Telegram integration IDs to alert
+		 * Telegram integration IDs to notify
 		 */
 		telegram_alerts?: Array<string>;
 		/**
-		 * Array of Pushover integration IDs to alert
+		 * Pushover integration IDs to notify
 		 */
 		pushover_alerts?: Array<string>;
 		/**
-		 * Alert priority level
+		 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
 		 */
 		alert_priority?: "LOW" | "HIGH";
 		/**
@@ -5965,7 +5842,7 @@ export type UpdateHeartbeatData = {
 		 */
 		paused?: boolean;
 		/**
-		 * Whether the heartbeat is muted (continues monitoring but suppresses alerts)
+		 * Suppresses alerts without stopping heartbeat monitoring.
 		 */
 		muted?: boolean;
 	};
@@ -6135,9 +6012,6 @@ export type ListMaintenanceWindowsResponse =
 
 export type CreateMaintenanceWindowData = {
 	body: {
-		/**
-		 * Name of the maintenance window
-		 */
 		name: string;
 		/**
 		 * Start date and time of the maintenance window, as a timestamp
@@ -6164,11 +6038,11 @@ export type CreateMaintenanceWindowData = {
 			| "SATURDAY"
 		>;
 		/**
-		 * Array of uptime check IDs to associate with this maintenance window
+		 * Uptime check IDs to associate with this maintenance window
 		 */
 		checks?: Array<string>;
 		/**
-		 * Array of heartbeat IDs to associate with this maintenance window
+		 * Heartbeat IDs to associate with this maintenance window
 		 */
 		heartbeats?: Array<string>;
 	};
@@ -6378,9 +6252,6 @@ export type GetMaintenanceWindowResponse =
 
 export type UpdateMaintenanceWindowData = {
 	body: {
-		/**
-		 * Name of the maintenance window
-		 */
 		name?: string;
 		/**
 		 * Start date and time of the maintenance window, as a timestamp
@@ -6406,16 +6277,13 @@ export type UpdateMaintenanceWindowData = {
 			| "FRIDAY"
 			| "SATURDAY"
 		>;
-		/**
-		 * Whether the maintenance window is enabled or disabled
-		 */
 		status?: "ENABLED" | "DISABLED";
 		/**
-		 * Array of uptime check IDs to associate (replaces existing associations)
+		 * Uptime check IDs. Replaces existing associations.
 		 */
 		checks?: Array<string>;
 		/**
-		 * Array of heartbeat IDs to associate (replaces existing associations)
+		 * Heartbeat IDs. Replaces existing associations.
 		 */
 		heartbeats?: Array<string>;
 	};
@@ -6974,9 +6842,6 @@ export type GetStatusPageResponse =
 
 export type UpdateStatusPageData = {
 	body: {
-		/**
-		 * Name of the Status Page
-		 */
 		name: string;
 		/**
 		 * The subdomain your status page will be hosted at. For example "status" would become "status.onlineornot.com"
@@ -6987,12 +6852,9 @@ export type UpdateStatusPageData = {
 		 */
 		custom_domain?: string;
 		/**
-		 * The password required to view your status page. If omitted, keeps existing password. If null or empty string, removes password protection. If non-empty string, sets new password.
+		 * Password protection. Send null or an empty string to remove it; omit to leave it unchanged.
 		 */
 		password?: string | null;
-		/**
-		 * A description of your status page
-		 */
 		description?: string;
 		/**
 		 * Whether to hide the status page from search engines
@@ -7207,9 +7069,6 @@ export type ListStatusPagesResponses = {
 					 * Status Page ID
 					 */
 					id: string;
-					/**
-					 * Name of the Status Page
-					 */
 					name: string;
 					/**
 					 * The subdomain your status page will be hosted at. For example "status" would become "status.yourdomain.com"
@@ -7306,9 +7165,6 @@ export type ListStatusPagesResponse =
 
 export type CreateStatusPageData = {
 	body: {
-		/**
-		 * Name of the Status Page
-		 */
 		name: string;
 		/**
 		 * The subdomain your status page will be hosted at. For example "status" would become "status.onlineornot.com"
@@ -7319,12 +7175,9 @@ export type CreateStatusPageData = {
 		 */
 		custom_domain?: string;
 		/**
-		 * The password required to view your status page. If omitted, keeps existing password. If null or empty string, removes password protection. If non-empty string, sets new password.
+		 * Password protection. Send null or an empty string to remove it; omit to leave it unchanged.
 		 */
 		password?: string | null;
-		/**
-		 * A description of your status page
-		 */
 		description?: string;
 		/**
 		 * Whether to hide the status page from search engines
