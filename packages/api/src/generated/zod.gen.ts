@@ -681,7 +681,7 @@ export const zUptimeCheckInput = z.object({
 			}),
 		)
 		.optional(),
-	verify_ssl: z.boolean().optional().default(false),
+	verify_ssl: z.boolean().optional().default(true),
 	auth_username: z.string().optional(),
 	auth_password: z.string().optional(),
 });
@@ -823,7 +823,7 @@ export const zBrowserCheckInput = z.object({
 			}),
 		)
 		.optional(),
-	verify_ssl: z.boolean().optional().default(false),
+	verify_ssl: z.boolean().optional().default(true),
 	auth_username: z.string().optional(),
 	auth_password: z.string().optional(),
 	version: z.enum(["NODE24_PLAYWRIGHT"]).optional(),
@@ -1227,7 +1227,7 @@ export const zCheckInput = z.object({
 			}),
 		)
 		.optional(),
-	verify_ssl: z.boolean().optional().default(false),
+	verify_ssl: z.boolean().optional().default(true),
 	auth_username: z.string().optional(),
 	auth_password: z.string().optional(),
 	version: z.enum(["NODE24_PLAYWRIGHT"]).optional(),
@@ -1294,6 +1294,15 @@ export const zCheckPatch = z.object({
 	auth_password: z.string().optional(),
 	version: z.enum(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT"]).optional(),
 	script: z.string().optional(),
+});
+
+export const zEnvironmentVariableMetadata = z.object({
+	id: z.string(),
+	name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
+	type: z.enum(["config", "secret"]),
+	has_value: z.literal(true),
+	created_at: z.iso.datetime(),
+	updated_at: z.iso.datetime(),
 });
 
 export const zHeartbeat = z.object({
@@ -1601,8 +1610,8 @@ export const zListAuditLogsHeaders = z.object({
 });
 
 export const zListAuditLogsQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
-	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -1740,8 +1749,8 @@ export const zListTokensHeaders = z.object({
 });
 
 export const zListTokensQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
-	per_page: z.int().gte(1).lte(9007199254740991).optional().default(10),
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(10),
 	search: z.string().optional(),
 });
 
@@ -1767,6 +1776,7 @@ export const zListTokensResponse = z.object({
 							"INTEGRATIONS",
 							"API_TOKENS",
 							"WEBHOOKS",
+							"ENVIRONMENT_VARIABLES",
 						]),
 						permission: z.enum(["READ", "EDIT"]),
 					}),
@@ -1810,6 +1820,7 @@ export const zCreateTokenBody = z.object({
 				"INTEGRATIONS",
 				"API_TOKENS",
 				"WEBHOOKS",
+				"ENVIRONMENT_VARIABLES",
 			]),
 			permission: z.enum(["READ", "EDIT"]),
 		}),
@@ -1909,6 +1920,7 @@ export const zGetTokenResponse = z.object({
 					"INTEGRATIONS",
 					"API_TOKENS",
 					"WEBHOOKS",
+					"ENVIRONMENT_VARIABLES",
 				]),
 				permission: z.enum(["READ", "EDIT"]),
 			}),
@@ -2214,7 +2226,7 @@ export const zListUptimeCheckIncidentsPath = z.object({
 });
 
 export const zListUptimeCheckIncidentsQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).lte(100).optional().default(20),
 	from: z.iso.datetime().optional(),
 	to: z.iso.datetime().optional(),
@@ -2235,7 +2247,7 @@ export const zListBrowserCheckIncidentsPath = z.object({
 });
 
 export const zListBrowserCheckIncidentsQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).lte(100).optional().default(20),
 	from: z.iso.datetime().optional(),
 	to: z.iso.datetime().optional(),
@@ -2256,7 +2268,7 @@ export const zListDnsCheckIncidentsPath = z.object({
 });
 
 export const zListDnsCheckIncidentsQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).lte(100).optional().default(20),
 	from: z.iso.datetime().optional(),
 	to: z.iso.datetime().optional(),
@@ -2276,7 +2288,7 @@ export const zListTcpCheckIncidentsPath = z.object({
 });
 
 export const zListTcpCheckIncidentsQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).lte(100).optional().default(20),
 	from: z.iso.datetime().optional(),
 	to: z.iso.datetime().optional(),
@@ -2296,7 +2308,7 @@ export const zListUptimeCheckResultsPath = z.object({
 });
 
 export const zListUptimeCheckResultsQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).lte(100).optional().default(20),
 	from: z.iso.datetime(),
 	to: z.iso.datetime(),
@@ -2317,7 +2329,7 @@ export const zListBrowserCheckResultsPath = z.object({
 });
 
 export const zListBrowserCheckResultsQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).lte(100).optional().default(20),
 	from: z.iso.datetime(),
 	to: z.iso.datetime(),
@@ -2338,7 +2350,7 @@ export const zListDnsCheckResultsPath = z.object({
 });
 
 export const zListDnsCheckResultsQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).lte(100).optional().default(20),
 	from: z.iso.datetime(),
 	to: z.iso.datetime(),
@@ -2358,7 +2370,7 @@ export const zListTcpCheckResultsPath = z.object({
 });
 
 export const zListTcpCheckResultsQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
+	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).lte(100).optional().default(20),
 	from: z.iso.datetime(),
 	to: z.iso.datetime(),
@@ -2374,8 +2386,8 @@ export const zListChecksHeaders = z.object({
 });
 
 export const zListChecksQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
-	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
 	filter: z
 		.enum([
@@ -2520,13 +2532,236 @@ export const zUpdateCheckPath = z.object({
  */
 export const zUpdateCheckResponse = zCheckResponse;
 
+export const zListEnvironmentVariablesHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zListEnvironmentVariablesQuery = z.object({
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
+});
+
+/**
+ * Paginated environment variable metadata.
+ */
+export const zListEnvironmentVariablesResponse = z.object({
+	result: z.array(zEnvironmentVariableMetadata),
+	result_info: z.object({
+		page: z.number().optional().default(1),
+		per_page: z.number().optional().default(20),
+		count: z.number(),
+		total_count: z.number(),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zCreateEnvironmentVariableBody = z.object({
+	name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
+	type: z.enum(["config", "secret"]),
+	value: z.string(),
+});
+
+export const zCreateEnvironmentVariableHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+/**
+ * Environment variable created. Config responses include the value; secret responses contain metadata only.
+ */
+export const zCreateEnvironmentVariableResponse = z.object({
+	result: z.union([
+		z.object({
+			id: z.string(),
+			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
+			type: z.enum(["secret"]),
+			has_value: z.literal(true),
+			created_at: z.iso.datetime(),
+			updated_at: z.iso.datetime(),
+		}),
+		z.object({
+			id: z.string(),
+			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
+			type: z.enum(["config"]),
+			has_value: z.literal(true),
+			created_at: z.iso.datetime(),
+			updated_at: z.iso.datetime(),
+			value: z.string(),
+		}),
+	]),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zDeleteEnvironmentVariableHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zDeleteEnvironmentVariablePath = z.object({
+	environment_variable_id: z.string().min(1),
+});
+
+/**
+ * Environment variable deleted.
+ */
+export const zDeleteEnvironmentVariableResponse = z.object({
+	result: z.object({
+		id: z.string(),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zGetEnvironmentVariableHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zGetEnvironmentVariablePath = z.object({
+	environment_variable_id: z.string().min(1),
+});
+
+/**
+ * Environment variable detail.
+ */
+export const zGetEnvironmentVariableResponse = z.object({
+	result: z.union([
+		z.object({
+			id: z.string(),
+			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
+			type: z.enum(["secret"]),
+			has_value: z.literal(true),
+			created_at: z.iso.datetime(),
+			updated_at: z.iso.datetime(),
+		}),
+		z.object({
+			id: z.string(),
+			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
+			type: z.enum(["config"]),
+			has_value: z.literal(true),
+			created_at: z.iso.datetime(),
+			updated_at: z.iso.datetime(),
+			value: z.string(),
+		}),
+	]),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zUpdateEnvironmentVariableBody = z.object({
+	name: z
+		.string()
+		.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)
+		.optional(),
+	value: z.string().optional(),
+});
+
+export const zUpdateEnvironmentVariableHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zUpdateEnvironmentVariablePath = z.object({
+	environment_variable_id: z.string().min(1),
+});
+
+/**
+ * Environment variable updated. Config responses include the value; secret responses contain metadata only.
+ */
+export const zUpdateEnvironmentVariableResponse = z.object({
+	result: z.union([
+		z.object({
+			id: z.string(),
+			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
+			type: z.enum(["secret"]),
+			has_value: z.literal(true),
+			created_at: z.iso.datetime(),
+			updated_at: z.iso.datetime(),
+		}),
+		z.object({
+			id: z.string(),
+			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
+			type: z.enum(["config"]),
+			has_value: z.literal(true),
+			created_at: z.iso.datetime(),
+			updated_at: z.iso.datetime(),
+			value: z.string(),
+		}),
+	]),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
 export const zListHeartbeatsHeaders = z.object({
 	"X-OnlineOrNot-Organisation": z.string().optional(),
 });
 
 export const zListHeartbeatsQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
-	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -2737,8 +2972,8 @@ export const zListMaintenanceWindowsHeaders = z.object({
 });
 
 export const zListMaintenanceWindowsQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
-	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -2955,8 +3190,8 @@ export const zListUsersHeaders = z.object({
 });
 
 export const zListUsersQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
-	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -3041,8 +3276,8 @@ export const zListInvitationsHeaders = z.object({
 });
 
 export const zListInvitationsQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
-	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -3273,8 +3508,8 @@ export const zListStatusPagesHeaders = z.object({
 });
 
 export const zListStatusPagesQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
-	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -3390,8 +3625,8 @@ export const zListStatusPageComponentsPath = z.object({
 });
 
 export const zListStatusPageComponentsQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
-	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -3646,8 +3881,8 @@ export const zListStatusPageComponentGroupsPath = z.object({
 });
 
 export const zListStatusPageComponentGroupsQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
-	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -3912,8 +4147,8 @@ export const zListStatusPageSubscribersPath = z.object({
 });
 
 export const zListStatusPageSubscribersQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
-	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -4026,8 +4261,8 @@ export const zListStatusPageIncidentsPath = z.object({
 });
 
 export const zListStatusPageIncidentsQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
-	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -4249,8 +4484,8 @@ export const zListStatusPageIncidentUpdatesPath = z.object({
 });
 
 export const zListStatusPageIncidentUpdatesQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
-	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
 });
 
@@ -4628,8 +4863,8 @@ export const zListWebhooksHeaders = z.object({
 });
 
 export const zListWebhooksQuery = z.object({
-	page: z.int().gte(1).lte(9007199254740991).optional().default(1),
-	per_page: z.int().gte(1).lte(9007199254740991).optional().default(20),
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
 });
 

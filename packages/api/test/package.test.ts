@@ -72,5 +72,5 @@ it("keeps public operation names unique and pinned", () => {
 	);
 	expect(manifest.operations).toHaveLength(manifest.count);
 	expect(new Set(manifest.operations).size).toBe(manifest.count);
-	expect(manifest.count).toBe(93);
+	expect(manifest.count).toBe(98);
 });

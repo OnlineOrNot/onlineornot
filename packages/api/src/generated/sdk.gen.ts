@@ -18,6 +18,9 @@ import type {
 	CreateDnsCheckData,
 	CreateDnsCheckErrors,
 	CreateDnsCheckResponses,
+	CreateEnvironmentVariableData,
+	CreateEnvironmentVariableErrors,
+	CreateEnvironmentVariableResponses,
 	CreateHeartbeatData,
 	CreateHeartbeatErrors,
 	CreateHeartbeatResponses,
@@ -69,6 +72,9 @@ import type {
 	DeleteDnsCheckData,
 	DeleteDnsCheckErrors,
 	DeleteDnsCheckResponses,
+	DeleteEnvironmentVariableData,
+	DeleteEnvironmentVariableErrors,
+	DeleteEnvironmentVariableResponses,
 	DeleteHeartbeatData,
 	DeleteHeartbeatErrors,
 	DeleteHeartbeatResponses,
@@ -117,6 +123,9 @@ import type {
 	GetDnsCheckData,
 	GetDnsCheckErrors,
 	GetDnsCheckResponses,
+	GetEnvironmentVariableData,
+	GetEnvironmentVariableErrors,
+	GetEnvironmentVariableResponses,
 	GetHeartbeatData,
 	GetHeartbeatErrors,
 	GetHeartbeatResponses,
@@ -177,6 +186,9 @@ import type {
 	ListDnsCheckResultsData,
 	ListDnsCheckResultsErrors,
 	ListDnsCheckResultsResponses,
+	ListEnvironmentVariablesData,
+	ListEnvironmentVariablesErrors,
+	ListEnvironmentVariablesResponses,
 	ListHeartbeatsData,
 	ListHeartbeatsErrors,
 	ListHeartbeatsResponses,
@@ -243,6 +255,9 @@ import type {
 	UpdateDnsCheckData,
 	UpdateDnsCheckErrors,
 	UpdateDnsCheckResponses,
+	UpdateEnvironmentVariableData,
+	UpdateEnvironmentVariableErrors,
+	UpdateEnvironmentVariableResponses,
 	UpdateHeartbeatData,
 	UpdateHeartbeatErrors,
 	UpdateHeartbeatResponses,
@@ -1157,6 +1172,134 @@ export const updateCheck = <ThrowOnError extends boolean = false>(
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
 		url: "/v1/checks/{check_id}",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
+ * List environment variables
+ *
+ * List environment variables. Values are omitted for both config and secret variables.
+ *
+ * Requires ENVIRONMENT_VARIABLES:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
+ */
+export const listEnvironmentVariables = <ThrowOnError extends boolean = false>(
+	options?: Options<ListEnvironmentVariablesData, ThrowOnError>,
+): RequestResult<
+	ListEnvironmentVariablesResponses,
+	ListEnvironmentVariablesErrors,
+	ThrowOnError
+> =>
+	(options?.client ?? client).get<
+		ListEnvironmentVariablesResponses,
+		ListEnvironmentVariablesErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/env",
+		...options,
+	});
+
+/**
+ * Create an environment variable
+ *
+ * Create a reusable config or secret for uptime check request headers. Config values are readable; secrets are write-only. A variable's type cannot be changed after creation. Anyone who can edit uptime checks can use variables from the same organization. Exact secret values are automatically redacted from results; encoded or transformed values may remain visible.
+ *
+ * Requires ENVIRONMENT_VARIABLES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
+ */
+export const createEnvironmentVariable = <ThrowOnError extends boolean = false>(
+	options: Options<CreateEnvironmentVariableData, ThrowOnError>,
+): RequestResult<
+	CreateEnvironmentVariableResponses,
+	CreateEnvironmentVariableErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).post<
+		CreateEnvironmentVariableResponses,
+		CreateEnvironmentVariableErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/env",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
+ * Delete an environment variable
+ *
+ * Delete an environment variable that is not referenced by a saved check. References from paused checks also block deletion.
+ *
+ * Requires ENVIRONMENT_VARIABLES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
+ */
+export const deleteEnvironmentVariable = <ThrowOnError extends boolean = false>(
+	options: Options<DeleteEnvironmentVariableData, ThrowOnError>,
+): RequestResult<
+	DeleteEnvironmentVariableResponses,
+	DeleteEnvironmentVariableErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).delete<
+		DeleteEnvironmentVariableResponses,
+		DeleteEnvironmentVariableErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/env/{environment_variable_id}",
+		...options,
+	});
+
+/**
+ * Get an environment variable
+ *
+ * Get an environment variable. Config responses include the value; secret responses do not.
+ *
+ * Requires ENVIRONMENT_VARIABLES:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
+ */
+export const getEnvironmentVariable = <ThrowOnError extends boolean = false>(
+	options: Options<GetEnvironmentVariableData, ThrowOnError>,
+): RequestResult<
+	GetEnvironmentVariableResponses,
+	GetEnvironmentVariableErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		GetEnvironmentVariableResponses,
+		GetEnvironmentVariableErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/env/{environment_variable_id}",
+		...options,
+	});
+
+/**
+ * Update an environment variable
+ *
+ * Rename a variable, replace its value, or both. Renaming updates saved check header references. Type cannot be changed; secret values are never returned.
+ *
+ * Requires ENVIRONMENT_VARIABLES:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied.
+ */
+export const updateEnvironmentVariable = <ThrowOnError extends boolean = false>(
+	options: Options<UpdateEnvironmentVariableData, ThrowOnError>,
+): RequestResult<
+	UpdateEnvironmentVariableResponses,
+	UpdateEnvironmentVariableErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).patch<
+		UpdateEnvironmentVariableResponses,
+		UpdateEnvironmentVariableErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/env/{environment_variable_id}",
 		...options,
 		headers: {
 			"Content-Type": "application/json",
