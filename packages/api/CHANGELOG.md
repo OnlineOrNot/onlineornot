@@ -1,5 +1,11 @@
 # @onlineornot/api
 
+## 0.4.0
+
+### Minor Changes
+
+- [#103](https://github.com/OnlineOrNot/onlineornot/pull/103) [`30586a5`](https://github.com/OnlineOrNot/onlineornot/commit/30586a5883d36894638ed79db9310fbc9f360c7c) Thanks [@rozenmd](https://github.com/rozenmd)! - Refresh the generated API client and validation schemas from the latest published OnlineOrNot API schema, including environment variable operations and the corrected default for SSL verification.
+
 ## 0.3.1
 
 ### Patch Changes
