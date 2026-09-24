@@ -752,7 +752,7 @@ export const vUptimeCheckInput = v.strictObject({
 			}),
 		),
 	),
-	verify_ssl: v.optional(v.boolean(), false),
+	verify_ssl: v.optional(v.boolean(), true),
 	auth_username: v.optional(v.string()),
 	auth_password: v.optional(v.string()),
 });
@@ -911,7 +911,7 @@ export const vBrowserCheckInput = v.strictObject({
 			}),
 		),
 	),
-	verify_ssl: v.optional(v.boolean(), false),
+	verify_ssl: v.optional(v.boolean(), true),
 	auth_username: v.optional(v.string()),
 	auth_password: v.optional(v.string()),
 	version: v.optional(v.picklist(["NODE24_PLAYWRIGHT"])),
@@ -1335,7 +1335,7 @@ export const vCheckInput = v.object({
 			}),
 		),
 	),
-	verify_ssl: v.optional(v.boolean(), false),
+	verify_ssl: v.optional(v.boolean(), true),
 	auth_username: v.optional(v.string()),
 	auth_password: v.optional(v.string()),
 	version: v.optional(v.picklist(["NODE24_PLAYWRIGHT"])),
@@ -1410,6 +1410,15 @@ export const vCheckPatch = v.object({
 	auth_password: v.optional(v.string()),
 	version: v.optional(v.picklist(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT"])),
 	script: v.optional(v.string()),
+});
+
+export const vEnvironmentVariableMetadata = v.object({
+	id: v.string(),
+	name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
+	type: v.picklist(["config", "secret"]),
+	has_value: v.literal(true),
+	created_at: v.pipe(v.string(), v.isoTimestamp()),
+	updated_at: v.pipe(v.string(), v.isoTimestamp()),
 });
 
 export const vHeartbeat = v.object({
@@ -1728,24 +1737,8 @@ export const vListAuditLogsHeaders = v.object({
 });
 
 export const vListAuditLogsQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
-	per_page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		20,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
 });
 
@@ -1885,24 +1878,8 @@ export const vListTokensHeaders = v.object({
 });
 
 export const vListTokensQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
-	per_page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		10,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 10),
 	search: v.optional(v.string()),
 });
 
@@ -1928,6 +1905,7 @@ export const vListTokensResponse = v.object({
 							"INTEGRATIONS",
 							"API_TOKENS",
 							"WEBHOOKS",
+							"ENVIRONMENT_VARIABLES",
 						]),
 						permission: v.picklist(["READ", "EDIT"]),
 					}),
@@ -1971,6 +1949,7 @@ export const vCreateTokenBody = v.object({
 				"INTEGRATIONS",
 				"API_TOKENS",
 				"WEBHOOKS",
+				"ENVIRONMENT_VARIABLES",
 			]),
 			permission: v.picklist(["READ", "EDIT"]),
 		}),
@@ -2070,6 +2049,7 @@ export const vGetTokenResponse = v.object({
 					"INTEGRATIONS",
 					"API_TOKENS",
 					"WEBHOOKS",
+					"ENVIRONMENT_VARIABLES",
 				]),
 				permission: v.picklist(["READ", "EDIT"]),
 			}),
@@ -2377,15 +2357,7 @@ export const vListUptimeCheckIncidentsPath = v.object({
 });
 
 export const vListUptimeCheckIncidentsQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(
 		v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(100)),
 		20,
@@ -2409,15 +2381,7 @@ export const vListBrowserCheckIncidentsPath = v.object({
 });
 
 export const vListBrowserCheckIncidentsQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(
 		v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(100)),
 		20,
@@ -2441,15 +2405,7 @@ export const vListDnsCheckIncidentsPath = v.object({
 });
 
 export const vListDnsCheckIncidentsQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(
 		v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(100)),
 		20,
@@ -2472,15 +2428,7 @@ export const vListTcpCheckIncidentsPath = v.object({
 });
 
 export const vListTcpCheckIncidentsQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(
 		v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(100)),
 		20,
@@ -2503,15 +2451,7 @@ export const vListUptimeCheckResultsPath = v.object({
 });
 
 export const vListUptimeCheckResultsQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(
 		v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(100)),
 		20,
@@ -2535,15 +2475,7 @@ export const vListBrowserCheckResultsPath = v.object({
 });
 
 export const vListBrowserCheckResultsQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(
 		v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(100)),
 		20,
@@ -2567,15 +2499,7 @@ export const vListDnsCheckResultsPath = v.object({
 });
 
 export const vListDnsCheckResultsQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(
 		v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(100)),
 		20,
@@ -2598,15 +2522,7 @@ export const vListTcpCheckResultsPath = v.object({
 });
 
 export const vListTcpCheckResultsQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(
 		v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(100)),
 		20,
@@ -2625,24 +2541,8 @@ export const vListChecksHeaders = v.object({
 });
 
 export const vListChecksQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
-	per_page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		20,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
 	filter: v.optional(
 		v.picklist([
@@ -2789,29 +2689,233 @@ export const vUpdateCheckPath = v.object({
  */
 export const vUpdateCheckResponse = vCheckResponse;
 
+export const vListEnvironmentVariablesHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vListEnvironmentVariablesQuery = v.object({
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+});
+
+/**
+ * Paginated environment variable metadata.
+ */
+export const vListEnvironmentVariablesResponse = v.object({
+	result: v.array(vEnvironmentVariableMetadata),
+	result_info: v.object({
+		page: v.optional(v.number(), 1),
+		per_page: v.optional(v.number(), 20),
+		count: v.number(),
+		total_count: v.number(),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vCreateEnvironmentVariableBody = v.strictObject({
+	name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
+	type: v.picklist(["config", "secret"]),
+	value: v.string(),
+});
+
+export const vCreateEnvironmentVariableHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+/**
+ * Environment variable created. Config responses include the value; secret responses contain metadata only.
+ */
+export const vCreateEnvironmentVariableResponse = v.object({
+	result: v.union([
+		v.strictObject({
+			id: v.string(),
+			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
+			type: v.picklist(["secret"]),
+			has_value: v.literal(true),
+			created_at: v.pipe(v.string(), v.isoTimestamp()),
+			updated_at: v.pipe(v.string(), v.isoTimestamp()),
+		}),
+		v.strictObject({
+			id: v.string(),
+			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
+			type: v.picklist(["config"]),
+			has_value: v.literal(true),
+			created_at: v.pipe(v.string(), v.isoTimestamp()),
+			updated_at: v.pipe(v.string(), v.isoTimestamp()),
+			value: v.string(),
+		}),
+	]),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vDeleteEnvironmentVariableHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vDeleteEnvironmentVariablePath = v.object({
+	environment_variable_id: v.pipe(v.string(), v.minLength(1)),
+});
+
+/**
+ * Environment variable deleted.
+ */
+export const vDeleteEnvironmentVariableResponse = v.object({
+	result: v.object({
+		id: v.string(),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vGetEnvironmentVariableHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vGetEnvironmentVariablePath = v.object({
+	environment_variable_id: v.pipe(v.string(), v.minLength(1)),
+});
+
+/**
+ * Environment variable detail.
+ */
+export const vGetEnvironmentVariableResponse = v.object({
+	result: v.union([
+		v.strictObject({
+			id: v.string(),
+			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
+			type: v.picklist(["secret"]),
+			has_value: v.literal(true),
+			created_at: v.pipe(v.string(), v.isoTimestamp()),
+			updated_at: v.pipe(v.string(), v.isoTimestamp()),
+		}),
+		v.strictObject({
+			id: v.string(),
+			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
+			type: v.picklist(["config"]),
+			has_value: v.literal(true),
+			created_at: v.pipe(v.string(), v.isoTimestamp()),
+			updated_at: v.pipe(v.string(), v.isoTimestamp()),
+			value: v.string(),
+		}),
+	]),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vUpdateEnvironmentVariableBody = v.strictObject({
+	name: v.optional(v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/))),
+	value: v.optional(v.string()),
+});
+
+export const vUpdateEnvironmentVariableHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vUpdateEnvironmentVariablePath = v.object({
+	environment_variable_id: v.pipe(v.string(), v.minLength(1)),
+});
+
+/**
+ * Environment variable updated. Config responses include the value; secret responses contain metadata only.
+ */
+export const vUpdateEnvironmentVariableResponse = v.object({
+	result: v.union([
+		v.strictObject({
+			id: v.string(),
+			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
+			type: v.picklist(["secret"]),
+			has_value: v.literal(true),
+			created_at: v.pipe(v.string(), v.isoTimestamp()),
+			updated_at: v.pipe(v.string(), v.isoTimestamp()),
+		}),
+		v.strictObject({
+			id: v.string(),
+			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
+			type: v.picklist(["config"]),
+			has_value: v.literal(true),
+			created_at: v.pipe(v.string(), v.isoTimestamp()),
+			updated_at: v.pipe(v.string(), v.isoTimestamp()),
+			value: v.string(),
+		}),
+	]),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
 export const vListHeartbeatsHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
 });
 
 export const vListHeartbeatsQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
-	per_page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		20,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
 });
 
@@ -3028,24 +3132,8 @@ export const vListMaintenanceWindowsHeaders = v.object({
 });
 
 export const vListMaintenanceWindowsQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
-	per_page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		20,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
 });
 
@@ -3266,24 +3354,8 @@ export const vListUsersHeaders = v.object({
 });
 
 export const vListUsersQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
-	per_page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		20,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
 });
 
@@ -3369,24 +3441,8 @@ export const vListInvitationsHeaders = v.object({
 });
 
 export const vListInvitationsQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
-	per_page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		20,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
 });
 
@@ -3619,24 +3675,8 @@ export const vListStatusPagesHeaders = v.object({
 });
 
 export const vListStatusPagesQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
-	per_page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		20,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
 });
 
@@ -3753,24 +3793,8 @@ export const vListStatusPageComponentsPath = v.object({
 });
 
 export const vListStatusPageComponentsQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
-	per_page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		20,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
 });
 
@@ -4026,24 +4050,8 @@ export const vListStatusPageComponentGroupsPath = v.object({
 });
 
 export const vListStatusPageComponentGroupsQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
-	per_page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		20,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
 });
 
@@ -4309,24 +4317,8 @@ export const vListStatusPageSubscribersPath = v.object({
 });
 
 export const vListStatusPageSubscribersQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
-	per_page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		20,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
 });
 
@@ -4439,24 +4431,8 @@ export const vListStatusPageIncidentsPath = v.object({
 });
 
 export const vListStatusPageIncidentsQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
-	per_page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		20,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
 });
 
@@ -4679,24 +4655,8 @@ export const vListStatusPageIncidentUpdatesPath = v.object({
 });
 
 export const vListStatusPageIncidentUpdatesQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
-	per_page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		20,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
 });
 
@@ -5075,24 +5035,8 @@ export const vListWebhooksHeaders = v.object({
 });
 
 export const vListWebhooksQuery = v.object({
-	page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		1,
-	),
-	per_page: v.optional(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(9007199254740991),
-		),
-		20,
-	),
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
 });
 

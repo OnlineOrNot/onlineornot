@@ -1225,7 +1225,7 @@ export type UptimeCheckInput = {
 	text_to_search_for?: string;
 	type?: "UPTIME_CHECK";
 	/**
-	 * Headers to send with the request
+	 * Headers to send. Uptime checks support environment variable references such as {{API_TOKEN}}. Terraform example: Authorization = "Bearer {{API_TOKEN}}". Terraform stores the template; create the referenced variable separately.
 	 */
 	headers?: {
 		[key: string]: string;
@@ -1345,7 +1345,7 @@ export type UptimeCheckPatch = {
 	 */
 	text_to_search_for?: string;
 	/**
-	 * Headers to send with the request
+	 * Headers to send. Uptime checks support environment variable references such as {{API_TOKEN}}. Terraform example: Authorization = "Bearer {{API_TOKEN}}". Terraform stores the template; create the referenced variable separately.
 	 */
 	headers?: {
 		[key: string]: string;
@@ -1476,7 +1476,7 @@ export type BrowserCheckInput = {
 	text_to_search_for?: string;
 	type?: "BROWSER_CHECK";
 	/**
-	 * Headers to send with the request
+	 * Headers to send with the browser request. Environment variable references are not supported.
 	 */
 	headers?: {
 		[key: string]: string;
@@ -1604,7 +1604,7 @@ export type BrowserCheckPatch = {
 	 */
 	text_to_search_for?: string;
 	/**
-	 * Headers to send with the request
+	 * Headers to send with the browser request. Environment variable references are not supported.
 	 */
 	headers?: {
 		[key: string]: string;
@@ -2098,7 +2098,7 @@ export type CheckInput = {
 	text_to_search_for?: string;
 	type?: "UPTIME_CHECK" | "BROWSER_CHECK";
 	/**
-	 * Headers to send with the request
+	 * Headers to send. Uptime checks support environment variable references such as {{API_TOKEN}}. Terraform example: Authorization = "Bearer {{API_TOKEN}}". Terraform stores the template; create the referenced variable separately.
 	 */
 	headers?: {
 		[key: string]: string;
@@ -2227,7 +2227,7 @@ export type CheckPatch = {
 	text_to_search_for?: string;
 	type?: "UPTIME_CHECK" | "BROWSER_CHECK";
 	/**
-	 * Headers to send with the request
+	 * Headers to send. Uptime checks support environment variable references such as {{API_TOKEN}}. Terraform example: Authorization = "Bearer {{API_TOKEN}}". Terraform stores the template; create the referenced variable separately.
 	 */
 	headers?: {
 		[key: string]: string;
@@ -2288,6 +2288,33 @@ export type CheckPatch = {
 	 * Playwright Test script to run. Must import from @playwright/test and contain at least one test() block.
 	 */
 	script?: string;
+};
+
+export type EnvironmentVariableMetadata = {
+	/**
+	 * Stable public environment variable ID.
+	 */
+	id: string;
+	/**
+	 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
+	 */
+	name: string;
+	/**
+	 * Immutable variable type. Config values are readable and unsuitable for credentials; secret values are write-only.
+	 */
+	type: "config" | "secret";
+	/**
+	 * Confirms that a value is stored without revealing write-only secret values.
+	 */
+	has_value: true;
+	/**
+	 * Creation timestamp in ISO 8601 format.
+	 */
+	created_at: string;
+	/**
+	 * Last update timestamp in ISO 8601 format.
+	 */
+	updated_at: string;
 };
 
 export type Heartbeat = {
@@ -3313,7 +3340,8 @@ export type ListTokensResponses = {
 						| "PEOPLE"
 						| "INTEGRATIONS"
 						| "API_TOKENS"
-						| "WEBHOOKS";
+						| "WEBHOOKS"
+						| "ENVIRONMENT_VARIABLES";
 					permission: "READ" | "EDIT";
 				}>;
 			}>;
@@ -3361,7 +3389,8 @@ export type CreateTokenData = {
 				| "PEOPLE"
 				| "INTEGRATIONS"
 				| "API_TOKENS"
-				| "WEBHOOKS";
+				| "WEBHOOKS"
+				| "ENVIRONMENT_VARIABLES";
 			permission: "READ" | "EDIT";
 		}>;
 		/**
@@ -3596,7 +3625,8 @@ export type GetTokenResponses = {
 					| "PEOPLE"
 					| "INTEGRATIONS"
 					| "API_TOKENS"
-					| "WEBHOOKS";
+					| "WEBHOOKS"
+					| "ENVIRONMENT_VARIABLES";
 				permission: "READ" | "EDIT";
 			}>;
 		};
@@ -5412,6 +5442,579 @@ export type UpdateCheckResponses = {
 
 export type UpdateCheckResponse =
 	UpdateCheckResponses[keyof UpdateCheckResponses];
+
+export type ListEnvironmentVariablesData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path?: never;
+	query?: {
+		/**
+		 * Page number of paginated results, starting at 1.
+		 */
+		page?: number;
+		/**
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
+		 */
+		per_page?: number;
+	};
+	url: "/v1/env";
+};
+
+export type ListEnvironmentVariablesErrors = {
+	/**
+	 * Validation error
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Unauthenticated
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Forbidden
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Feature disabled
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Rate limit exceeded
+	 */
+	429: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type ListEnvironmentVariablesError =
+	ListEnvironmentVariablesErrors[keyof ListEnvironmentVariablesErrors];
+
+export type ListEnvironmentVariablesResponses = {
+	/**
+	 * Paginated environment variable metadata.
+	 */
+	200: {
+		result: Array<EnvironmentVariableMetadata>;
+		result_info: {
+			/**
+			 * Page number of paginated results.
+			 */
+			page?: number;
+			/**
+			 * Number of items per page.
+			 */
+			per_page?: number;
+			/**
+			 * Number of items on the current page.
+			 */
+			count: number;
+			/**
+			 * Total number of items.
+			 */
+			total_count: number;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type ListEnvironmentVariablesResponse =
+	ListEnvironmentVariablesResponses[keyof ListEnvironmentVariablesResponses];
+
+export type CreateEnvironmentVariableData = {
+	body: {
+		/**
+		 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
+		 */
+		name: string;
+		/**
+		 * Immutable variable type. Config values are readable and unsuitable for credentials; secret values are write-only.
+		 */
+		type: "config" | "secret";
+		/**
+		 * Value of the variable, limited to 8 KiB of UTF-8. Secret values are write-only and never appear in API responses.
+		 */
+		value: string;
+	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path?: never;
+	query?: never;
+	url: "/v1/env";
+};
+
+export type CreateEnvironmentVariableErrors = {
+	/**
+	 * Validation error
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Unauthenticated
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Forbidden
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Feature disabled
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * The organization has 1,000 variables (environment_variable_limit_reached) or the name already exists (environment_variable_name_conflict)
+	 */
+	409: PublicApiErrorResponse;
+	/**
+	 * Rate limit exceeded
+	 */
+	429: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type CreateEnvironmentVariableError =
+	CreateEnvironmentVariableErrors[keyof CreateEnvironmentVariableErrors];
+
+export type CreateEnvironmentVariableResponses = {
+	/**
+	 * Environment variable created. Config responses include the value; secret responses contain metadata only.
+	 */
+	201: {
+		result:
+			| {
+					/**
+					 * Stable public environment variable ID.
+					 */
+					id: string;
+					/**
+					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
+					 */
+					name: string;
+					type: "secret";
+					/**
+					 * Confirms that a value is stored without revealing write-only secret values.
+					 */
+					has_value: true;
+					/**
+					 * Creation timestamp in ISO 8601 format.
+					 */
+					created_at: string;
+					/**
+					 * Last update timestamp in ISO 8601 format.
+					 */
+					updated_at: string;
+			  }
+			| {
+					/**
+					 * Stable public environment variable ID.
+					 */
+					id: string;
+					/**
+					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
+					 */
+					name: string;
+					type: "config";
+					/**
+					 * Confirms that a value is stored without revealing write-only secret values.
+					 */
+					has_value: true;
+					/**
+					 * Creation timestamp in ISO 8601 format.
+					 */
+					created_at: string;
+					/**
+					 * Last update timestamp in ISO 8601 format.
+					 */
+					updated_at: string;
+					/**
+					 * Readable config value.
+					 */
+					value: string;
+			  };
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type CreateEnvironmentVariableResponse =
+	CreateEnvironmentVariableResponses[keyof CreateEnvironmentVariableResponses];
+
+export type DeleteEnvironmentVariableData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Environment variable ID.
+		 */
+		environment_variable_id: string;
+	};
+	query?: never;
+	url: "/v1/env/{environment_variable_id}";
+};
+
+export type DeleteEnvironmentVariableErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Unauthenticated
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Forbidden
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Environment variable not found or feature disabled
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * The variable is referenced by a saved check (environment_variable_in_use)
+	 */
+	409: PublicApiErrorResponse;
+	/**
+	 * Rate limit exceeded
+	 */
+	429: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type DeleteEnvironmentVariableError =
+	DeleteEnvironmentVariableErrors[keyof DeleteEnvironmentVariableErrors];
+
+export type DeleteEnvironmentVariableResponses = {
+	/**
+	 * Environment variable deleted.
+	 */
+	200: {
+		result: {
+			id: string;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type DeleteEnvironmentVariableResponse =
+	DeleteEnvironmentVariableResponses[keyof DeleteEnvironmentVariableResponses];
+
+export type GetEnvironmentVariableData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Environment variable ID.
+		 */
+		environment_variable_id: string;
+	};
+	query?: never;
+	url: "/v1/env/{environment_variable_id}";
+};
+
+export type GetEnvironmentVariableErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Unauthenticated
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Forbidden
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Environment variable not found or feature disabled
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Rate limit exceeded
+	 */
+	429: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type GetEnvironmentVariableError =
+	GetEnvironmentVariableErrors[keyof GetEnvironmentVariableErrors];
+
+export type GetEnvironmentVariableResponses = {
+	/**
+	 * Environment variable detail.
+	 */
+	200: {
+		result:
+			| {
+					/**
+					 * Stable public environment variable ID.
+					 */
+					id: string;
+					/**
+					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
+					 */
+					name: string;
+					type: "secret";
+					/**
+					 * Confirms that a value is stored without revealing write-only secret values.
+					 */
+					has_value: true;
+					/**
+					 * Creation timestamp in ISO 8601 format.
+					 */
+					created_at: string;
+					/**
+					 * Last update timestamp in ISO 8601 format.
+					 */
+					updated_at: string;
+			  }
+			| {
+					/**
+					 * Stable public environment variable ID.
+					 */
+					id: string;
+					/**
+					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
+					 */
+					name: string;
+					type: "config";
+					/**
+					 * Confirms that a value is stored without revealing write-only secret values.
+					 */
+					has_value: true;
+					/**
+					 * Creation timestamp in ISO 8601 format.
+					 */
+					created_at: string;
+					/**
+					 * Last update timestamp in ISO 8601 format.
+					 */
+					updated_at: string;
+					/**
+					 * Readable config value.
+					 */
+					value: string;
+			  };
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type GetEnvironmentVariableResponse =
+	GetEnvironmentVariableResponses[keyof GetEnvironmentVariableResponses];
+
+export type UpdateEnvironmentVariableData = {
+	body: {
+		/**
+		 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
+		 */
+		name?: string;
+		/**
+		 * Value of the variable, limited to 8 KiB of UTF-8. Secret values are write-only and never appear in API responses.
+		 */
+		value?: string;
+	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Environment variable ID.
+		 */
+		environment_variable_id: string;
+	};
+	query?: never;
+	url: "/v1/env/{environment_variable_id}";
+};
+
+export type UpdateEnvironmentVariableErrors = {
+	/**
+	 * Validation error
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Unauthenticated
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Forbidden
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Environment variable not found or feature disabled
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * The new name already exists (environment_variable_name_conflict)
+	 */
+	409: PublicApiErrorResponse;
+	/**
+	 * Rate limit exceeded
+	 */
+	429: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type UpdateEnvironmentVariableError =
+	UpdateEnvironmentVariableErrors[keyof UpdateEnvironmentVariableErrors];
+
+export type UpdateEnvironmentVariableResponses = {
+	/**
+	 * Environment variable updated. Config responses include the value; secret responses contain metadata only.
+	 */
+	200: {
+		result:
+			| {
+					/**
+					 * Stable public environment variable ID.
+					 */
+					id: string;
+					/**
+					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
+					 */
+					name: string;
+					type: "secret";
+					/**
+					 * Confirms that a value is stored without revealing write-only secret values.
+					 */
+					has_value: true;
+					/**
+					 * Creation timestamp in ISO 8601 format.
+					 */
+					created_at: string;
+					/**
+					 * Last update timestamp in ISO 8601 format.
+					 */
+					updated_at: string;
+			  }
+			| {
+					/**
+					 * Stable public environment variable ID.
+					 */
+					id: string;
+					/**
+					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
+					 */
+					name: string;
+					type: "config";
+					/**
+					 * Confirms that a value is stored without revealing write-only secret values.
+					 */
+					has_value: true;
+					/**
+					 * Creation timestamp in ISO 8601 format.
+					 */
+					created_at: string;
+					/**
+					 * Last update timestamp in ISO 8601 format.
+					 */
+					updated_at: string;
+					/**
+					 * Readable config value.
+					 */
+					value: string;
+			  };
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type UpdateEnvironmentVariableResponse =
+	UpdateEnvironmentVariableResponses[keyof UpdateEnvironmentVariableResponses];
 
 export type ListHeartbeatsData = {
 	body?: never;
