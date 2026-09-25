@@ -1,102 +1,83 @@
-# OnlineOrNot CLI
+# OnlineOrNot CLI Workspace
 
-**Generated:** 2026-03-06 | **Commit:** 053e957 | **Branch:** main
+**Generated:** 2026-09-25 | **Commit:** 2125dc1 | **Branch:** main
 
 ## Overview
 
-CLI for OnlineOrNot uptime monitoring service. pnpm monorepo with single package.
+Two-package pnpm workspace: the `onlineornot` CLI and its generated
+`@onlineornot/api` SDK. The CLI ships through npm and standalone Node SEA binaries.
 
 ## Structure
 
-```
+```text
 onlineornot-cli/
-├── packages/
-│   └── onlineornot/          # Main CLI (npm: onlineornot) <- AGENTS.md
-├── .changeset/               # Changesets version management
-└── .github/workflows/        # CI/CD (2 workflows)
+├── packages/onlineornot/     # CLI, installer, standalone updater; AGENTS.md
+├── packages/api/            # Generated SDK and optional validators; AGENTS.md
+├── .github/                 # Release helpers and three workflows; AGENTS.md
+├── .changeset/              # Package-scoped release notes
+└── tools/oxlint/anti-slop/   # Vendored lint plugin; AGENTS.md
 ```
-
-## Build/Test/Lint
-
-| Command          | Description                          |
-| ---------------- | ------------------------------------ |
-| `pnpm run build` | Build CLI with esbuild               |
-| `pnpm run check` | Format + lint + typecheck (parallel) |
-| `pnpm run fix`   | Auto-fix lint + format issues        |
-| `pnpm run test`  | (TODO) No tests implemented          |
 
 ## Where to Look
 
-| Task          | Location                          | Notes                |
-| ------------- | --------------------------------- | -------------------- |
-| CLI commands  | `packages/onlineornot/src/`       | yargs-based commands |
-| API client    | `packages/onlineornot/src/fetch/` | undici + pagination  |
-| CI workflows  | `.github/workflows/`              | releases, previews   |
-| Version bumps | `.changeset/`                     | Run `pnpm changeset` |
+| Task                                | Location                                             | Starting point                                  |
+| ----------------------------------- | ---------------------------------------------------- | ----------------------------------------------- |
+| Add commands or change CLI behavior | `packages/onlineornot/AGENTS.md`                     | Parser, handlers, auth, API adapters            |
+| Change SDK surface or schema pin    | `packages/api/AGENTS.md`                             | Generation ownership and public export rules    |
+| Change npm or binary releases       | `.github/AGENTS.md`                                  | Publishing, immutable tags, asset verification  |
+| Change lint enforcement             | `.oxlintrc.json`, `tools/oxlint/anti-slop/AGENTS.md` | Enabled rules differ from available rules       |
+| Change formatting                   | `.oxfmtrc.json`                                      | Tabs, double quotes, semicolons, sorted imports |
+| Add a release note                  | `.changeset/`, `CONTRIBUTING.md`                     | Select affected package; `TYPE: TITLE` format   |
 
-## Code Conventions
+## Dependency and Toolchain Boundaries
 
-### Formatting
+- Build the SDK before the CLI: `onlineornot` depends on `@onlineornot/api`
+  through `workspace:^`; root recursive builds respect that dependency.
+- Install from this root with pnpm. CI uses pnpm 12; root development engines
+  require Node >=22.15.0, while Volta pins 22.16.0.
+- Published runtimes differ: CLI Node >=22, SDK Node >=18. SEA builds require
+  Node >=25; release and preview workflows use Node 26.
+- TypeScript is package-specific: root uses 7.x, SDK pins 5.9.3. Use package
+  scripts rather than assuming one compiler/version for the entire tree.
+- `CONTRIBUTING.md` still describes npm workspaces, ESLint, Prettier, and Jest.
+  Current manifests and workflows are authoritative: pnpm, Oxlint, Oxfmt, Vitest.
 
-- **Tabs, not spaces** (`useTabs: true`, width 2)
-- **Double quotes** (not single)
-- **Semicolons required**
+## Commands
 
-### TypeScript
+Run from this repository root:
 
-- `strict: true` but `alwaysStrict: false` (prevents esbuild issues)
-- `import type` enforced for type-only imports
-- `@typescript-eslint/no-explicit-any: error`
-- Unused vars allowed if prefixed with `_`
+```bash
+pnpm install --frozen-lockfile
+pnpm run build             # SDK, then CLI
+pnpm run check             # Format, lint, package typechecks
+pnpm run test:ci           # One-shot tests; run build first
+pnpm changeset             # Release-worthy changes
+```
 
-### Imports
+- Root `test` cleans the CLI, builds packages, then runs package tests; the CLI's
+  `test` invokes interactive Vitest. Prefer `test:ci` for unattended verification.
+- SDK packaging tests inspect `dist/`; `test:ci` does not build it for you.
+- `check` does not run SDK `check:generated`; consult the SDK guide before schema
+  verification because that command regenerates tracked output.
 
-- Alphabetized: `builtin > external > internal > parent > sibling`
-- Unused imports auto-removed
+## Project Conventions
 
-## Anti-Patterns (THIS PROJECT)
+- `.oxlintrc.json` loads the local anti-slop plugin. It rejects module mocking,
+  chained assertions, unsafe widening, and other patterns beyond ordinary lint.
+- Non-const type assertions require a nearby `SAFETY:` comment stating the
+  checked invariant. Boundary exceptions use narrow, explained lint suppressions.
+- Tests use injected dependencies, custom Fetch implementations, temporary
+  files, and subprocess fixtures. CLI tests are colocated; SDK tests live in `test/`.
+- Prefer E2E/integration verification for complex changes, with a repeatable
+  artifact. Never add unit tests after writing implementation code.
+- Keep generated SDK changes in the generation workflow; keep vendored lint
+  changes traceable to the upstream provenance documented in its child guide.
 
-### TypeScript Workarounds
+## Release Notes
 
-- `packages/onlineornot/src/fetch/index.ts:126` - `@ts-expect-error` for non-standard Error.code
-- `packages/onlineornot/src/index.ts:154` - yargs workaround: re-parse with `--help`
-
-### Type Safety Gaps
-
-- Multiple `as Type` casts bypass generic inference in fetch utilities
-- `packages/onlineornot/src/logger.ts:37` - env var cast without runtime validation
-
-### Unused Code
-
-- `packages/onlineornot/src/errors.ts` - `DeprecationError` defined but never used
-
-### Silent Failures
-
-- `packages/onlineornot/src/update-check.ts:12-14` - update check errors ignored
-- `packages/onlineornot/src/whoami.ts:45-48` - token validation returns null silently
-
-## Release Process
-
-1. Create changeset: `pnpm changeset`
-2. Commit changeset file
-3. Push to main - CI creates "Version Packages" PR
-4. Merge PR - triggers npm publish (Trusted Publishing)
-
-## CI Workflows
-
-| Workflow          | Trigger            | Purpose                                             |
-| ----------------- | ------------------ | --------------------------------------------------- |
-| `release.yml`     | push to main       | Changesets versioning + npm publish with provenance |
-| `prereleases.yml` | push, pull_request | Preview releases via pkg.pr.new                     |
-
-## Non-Standard Patterns
-
-- **Output dir**: `onlineornot-dist/` instead of `dist/`
-- **Node version check**: `bin/onlineornot.js` spawns cli.js with `--experimental-vm-modules`
-- **Preview releases**: Via pkg.pr.new (`npm i https://pkg.pr.new/onlineornot@<sha>`)
-
-## Environment
-
-- **Node**: >=22
-- **pnpm**: 10
-- **TypeScript**: 5.9
+- Changesets track the two published packages independently. Include a changeset
+  for changes intended for their changelogs.
+- Main pushes run versioning/publication; pull requests and non-main pushes can
+  publish previews. Read `.github/AGENTS.md` before changing those workflows.
+- Local `build`, `check`, and `test:ci` are verification commands; publication,
+  installer execution, and self-update/uninstall commands have external effects.
