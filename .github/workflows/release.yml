@@ -25,6 +25,9 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.sha }}
 
+      - name: Require a released schema pin
+        run: test ! -f packages/api/schema.candidate.lock.json
+
       - name: Install pnpm
         uses: pnpm/setup@703c52620218391530e48b9e8870d5c0082e1b9b # v2.1.0
         with:

@@ -1,15 +1,18 @@
 import type {
-	CheckInput,
-	CheckListItem as ApiCheckListItem,
-	CheckPatch,
-	ExpandedCheck,
+	CreateCheckData,
+	UpdateCheckData,
+	CreateCheckResponses,
+	ListChecksResponses,
 } from "@onlineornot/api";
 
-export type Check = ExpandedCheck;
-export type CheckListItem = ApiCheckListItem;
-export type CreateCheckParams = CheckInput;
-export type UpdateCheckParams = CheckPatch;
-export type Assertion = NonNullable<CheckInput["assertions"]>[number];
+export type Check = CreateCheckResponses[201]["result"];
+export type CheckListItem = Exclude<
+	ListChecksResponses[200],
+	{ success: false }
+>["result"][number];
+export type CreateCheckParams = CreateCheckData["body"];
+export type UpdateCheckParams = UpdateCheckData["body"];
+export type Assertion = NonNullable<CreateCheckParams["assertions"]>[number];
 
 export type CheckStatus = CheckListItem["status"];
 

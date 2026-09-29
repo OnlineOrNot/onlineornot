@@ -12,6 +12,10 @@ import { VALID_METHODS, VALID_REGIONS } from "./types";
 
 export function options(yargs: CommonYargsArgv) {
 	return yargs
+		.option("project-id", {
+			describe: "Encoded project ID; omit for Default (candidate API)",
+			type: "string",
+		})
 		.positional("name", {
 			describe: "The name of your new uptime check",
 			type: "string",
@@ -164,6 +168,7 @@ export async function handler(
 		url: args.url,
 	};
 
+	if (args.projectId !== undefined) params.project_id = args.projectId;
 	if (args.textToSearchFor) params.text_to_search_for = args.textToSearchFor;
 	if (args.testInterval) params.test_interval = args.testInterval;
 	if (args.reminderAlertIntervalMinutes !== undefined)

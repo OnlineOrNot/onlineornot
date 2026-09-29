@@ -129,7 +129,7 @@ export type ExpandedUptimeCheck = {
 	/**
 	 * Runtime version for browser checks (null for standard uptime checks)
 	 */
-	version: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT" | "CLOUDFLARE" | null;
+	version: "NODE24_PLAYWRIGHT" | "CLOUDFLARE" | null;
 	/**
 	 * Playwright Test script loaded by GET for scripted browser checks; null for URL-based checks or when script content was not loaded. Mutation responses do not load script content.
 	 */
@@ -396,7 +396,7 @@ export type ExpandedBrowserCheck = {
 	/**
 	 * Runtime version for browser checks.
 	 */
-	version: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT" | "CLOUDFLARE";
+	version: "NODE24_PLAYWRIGHT" | "CLOUDFLARE";
 	check_type: "BROWSER";
 };
 
@@ -1274,11 +1274,11 @@ export type UptimeCheckInput = {
 	 */
 	verify_ssl?: boolean;
 	/**
-	 * Username to use for URLs behind HTTP Basic Auth. An empty string represents an empty user-id.
+	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
 	 */
 	auth_username?: string;
 	/**
-	 * Password to use for URLs behind HTTP Basic Auth. Empty strings are preserved.
+	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
 	 */
 	auth_password?: string;
 };
@@ -1391,11 +1391,11 @@ export type UptimeCheckPatch = {
 	 */
 	verify_ssl?: boolean;
 	/**
-	 * Username to use for URLs behind HTTP Basic Auth. An empty string represents an empty user-id.
+	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
 	 */
 	auth_username?: string;
 	/**
-	 * Password to use for URLs behind HTTP Basic Auth. Empty strings are preserved.
+	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
 	 */
 	auth_password?: string;
 };
@@ -1525,11 +1525,11 @@ export type BrowserCheckInput = {
 	 */
 	verify_ssl?: boolean;
 	/**
-	 * Username to use for URLs behind HTTP Basic Auth. An empty string represents an empty user-id.
+	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
 	 */
 	auth_username?: string;
 	/**
-	 * Password to use for URLs behind HTTP Basic Auth. Empty strings are preserved.
+	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
 	 */
 	auth_password?: string;
 	/**
@@ -1650,17 +1650,17 @@ export type BrowserCheckPatch = {
 	 */
 	verify_ssl?: boolean;
 	/**
-	 * Username to use for URLs behind HTTP Basic Auth. An empty string represents an empty user-id.
+	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
 	 */
 	auth_username?: string;
 	/**
-	 * Password to use for URLs behind HTTP Basic Auth. Empty strings are preserved.
+	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
 	 */
 	auth_password?: string;
 	/**
-	 * Runtime version for browser checks. NODE20_PLAYWRIGHT is deprecated; existing checks can keep this version but new checks should use NODE24_PLAYWRIGHT.
+	 * Runtime version for browser checks.
 	 */
-	version?: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT";
+	version?: "NODE24_PLAYWRIGHT";
 	/**
 	 * Playwright Test script to run. Must import from @playwright/test and contain at least one test() block.
 	 */
@@ -1906,7 +1906,7 @@ export type ExpandedCheck = Check & {
 	/**
 	 * Runtime version for browser checks (null for standard uptime checks)
 	 */
-	version: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT" | "CLOUDFLARE" | null;
+	version: "NODE24_PLAYWRIGHT" | "CLOUDFLARE" | null;
 	/**
 	 * Playwright Test script loaded by GET for scripted browser checks; null for URL-based checks or when script content was not loaded. Mutation responses do not load script content.
 	 */
@@ -2147,11 +2147,11 @@ export type CheckInput = {
 	 */
 	verify_ssl?: boolean;
 	/**
-	 * Username to use for URLs behind HTTP Basic Auth. An empty string represents an empty user-id.
+	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
 	 */
 	auth_username?: string;
 	/**
-	 * Password to use for URLs behind HTTP Basic Auth. Empty strings are preserved.
+	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
 	 */
 	auth_password?: string;
 	/**
@@ -2273,17 +2273,17 @@ export type CheckPatch = {
 	 */
 	verify_ssl?: boolean;
 	/**
-	 * Username to use for URLs behind HTTP Basic Auth. An empty string represents an empty user-id.
+	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
 	 */
 	auth_username?: string;
 	/**
-	 * Password to use for URLs behind HTTP Basic Auth. Empty strings are preserved.
+	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
 	 */
 	auth_password?: string;
 	/**
-	 * Runtime version for browser checks. NODE20_PLAYWRIGHT is deprecated; existing checks can keep this version but new checks should use NODE24_PLAYWRIGHT.
+	 * Runtime version for browser checks.
 	 */
-	version?: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT";
+	version?: "NODE24_PLAYWRIGHT";
 	/**
 	 * Playwright Test script to run. Must import from @playwright/test and contain at least one test() block.
 	 */
@@ -2946,6 +2946,2069 @@ export type Webhook = {
 	}>;
 };
 
+/**
+ * Encoded project ID, not a project name or raw database ID.
+ */
+export type ProjectOperationProjectSelectionId = string;
+
+/**
+ * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the project. No inheritance or cross-project fallback.
+ */
+export type ProjectOperationProjectVariableName = string;
+
+export type ProjectOperationProject = {
+	/**
+	 * Encoded project ID, not a project name or raw database ID.
+	 */
+	id: string;
+	/**
+	 * Editable display label. Project names need not be unique.
+	 */
+	name: string;
+	/**
+	 * Stable Default identity, independent of the editable name.
+	 */
+	is_default: boolean;
+	created_at: string;
+	updated_at: string;
+};
+
+export type ProjectRolloutCreateDnsCheckInput = {
+	name: string;
+	/**
+	 * Interval in seconds between checks
+	 */
+	test_interval?: number;
+	/**
+	 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
+	 */
+	test_regions?: Array<string>;
+	user_alerts?: Array<string>;
+	slack_alerts?: Array<string>;
+	discord_alerts?: Array<string>;
+	incident_io_alerts?: Array<string>;
+	microsoft_teams_alerts?: Array<string>;
+	telegram_alerts?: Array<string>;
+	pushover_alerts?: Array<string>;
+	/**
+	 * IDs of webhooks to associate with this check
+	 */
+	webhook_alerts?: Array<string>;
+	/**
+	 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
+	 */
+	oncall_alerts?: Array<string>;
+	/**
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+	 */
+	alert_priority?: "LOW" | "HIGH";
+	/**
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
+	 */
+	confirmation_period_seconds?: number;
+	/**
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
+	 */
+	recovery_period_seconds?: number;
+	/**
+	 * Interval in minutes between reminders (-1 for never)
+	 */
+	reminder_alert_interval_minutes?: number;
+	/**
+	 * Timeout in milliseconds
+	 */
+	timeout?: number;
+	type?: "DNS_CHECK";
+	/**
+	 * DNS name to query
+	 */
+	dns_domain: string;
+	/**
+	 * DNS record type to query
+	 */
+	dns_record_type: "A" | "AAAA" | "CNAME" | "MX" | "NS" | "SOA" | "TXT";
+	/**
+	 * Custom DNS resolver in host:port format. IPv6 must use bracket notation.
+	 */
+	dns_resolver?: string | null;
+	/**
+	 * DNS transport protocol
+	 */
+	dns_protocol?: "UDP" | "TCP";
+	/**
+	 * DNS assertions to run on the response
+	 */
+	assertions?: Array<DnsAssertion>;
+	/**
+	 * Omit to select the organisation's stable Default project.
+	 */
+	project_id?: ProjectOperationProjectSelectionId;
+};
+
+export type ProjectRolloutEnvelopeDnsCheckResponse = {
+	result: ProjectRolloutResourceExpandedDnsCheck;
+	/**
+	 * Whether the API call was successful
+	 */
+	success: boolean;
+	errors: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+	messages: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+};
+
+export type ProjectRolloutResourceExpandedDnsCheck = {
+	/**
+	 * Uptime Check ID
+	 */
+	id: string;
+	name: string;
+	/**
+	 * Last time the check was queued
+	 */
+	last_queued: string | null;
+	/**
+	 * Current status of the check based on the latest uptime event
+	 */
+	status:
+		| "UP"
+		| "DOWN"
+		| "PENDING"
+		| "PAUSED"
+		| "MUTED"
+		| "MAINTENANCE"
+		| "RECOVERING"
+		| "VERIFYING";
+	/**
+	 * Interval in minutes between reminder alerts (-1 for never); null for legacy checks without a configured interval
+	 */
+	reminder_alert_interval_minutes: number | null;
+	/**
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
+	 */
+	confirmation_period_seconds: number;
+	/**
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
+	 */
+	recovery_period_seconds: number;
+	/**
+	 * Interval in seconds between checks
+	 */
+	test_interval: number;
+	timeout: number;
+	/**
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+	 */
+	alert_priority: "LOW" | "HIGH";
+	/**
+	 * Regions the check runs from. Format: aws:{region}
+	 */
+	test_regions: Array<string>;
+	/**
+	 * User IDs to notify on alerts
+	 */
+	user_alerts: Array<string>;
+	/**
+	 * Slack integration IDs to notify
+	 */
+	slack_alerts: Array<string>;
+	/**
+	 * Discord integration IDs to notify
+	 */
+	discord_alerts: Array<string>;
+	/**
+	 * Incident.io integration IDs to notify
+	 */
+	incident_io_alerts: Array<string>;
+	/**
+	 * Microsoft Teams integration IDs to notify
+	 */
+	microsoft_teams_alerts: Array<string>;
+	/**
+	 * Telegram integration IDs to notify
+	 */
+	telegram_alerts: Array<string>;
+	/**
+	 * Pushover integration IDs to notify
+	 */
+	pushover_alerts: Array<string>;
+	/**
+	 * On-call integration IDs (PagerDuty, Opsgenie, Grafana, Spike)
+	 */
+	oncall_alerts: Array<string>;
+	/**
+	 * Webhook IDs to notify
+	 */
+	webhook_alerts: Array<string>;
+	check_type: "DNS";
+	/**
+	 * DNS checks do not use a URL target.
+	 */
+	url: null;
+	/**
+	 * Runtime version for DNS checks.
+	 */
+	version: "NODE24_DNS";
+	/**
+	 * DNS name queried by this check.
+	 */
+	dns_domain: string;
+	/**
+	 * DNS record type queried by this check.
+	 */
+	dns_record_type: "A" | "AAAA" | "CNAME" | "MX" | "NS" | "SOA" | "TXT";
+	/**
+	 * Custom resolver used by this check, or null for the default resolver.
+	 */
+	dns_resolver: string | null;
+	/**
+	 * DNS transport protocol used by this check.
+	 */
+	dns_protocol: "UDP" | "TCP";
+	/**
+	 * DNS assertions to validate the response.
+	 */
+	assertions: Array<DnsAssertion> | null;
+	project_id: ProjectOperationProjectSelectionId;
+};
+
+export type ProjectRolloutPatchDnsCheckPatch = {
+	name?: string;
+	/**
+	 * Interval in seconds between checks
+	 */
+	test_interval?: number;
+	/**
+	 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
+	 */
+	test_regions?: Array<string>;
+	user_alerts?: Array<string>;
+	slack_alerts?: Array<string>;
+	discord_alerts?: Array<string>;
+	incident_io_alerts?: Array<string>;
+	microsoft_teams_alerts?: Array<string>;
+	telegram_alerts?: Array<string>;
+	pushover_alerts?: Array<string>;
+	/**
+	 * IDs of webhooks to associate with this check
+	 */
+	webhook_alerts?: Array<string>;
+	/**
+	 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
+	 */
+	oncall_alerts?: Array<string>;
+	/**
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+	 */
+	alert_priority?: "LOW" | "HIGH";
+	/**
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
+	 */
+	confirmation_period_seconds?: number;
+	/**
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
+	 */
+	recovery_period_seconds?: number;
+	/**
+	 * Interval in minutes between reminders (-1 for never)
+	 */
+	reminder_alert_interval_minutes?: number;
+	/**
+	 * Timeout in milliseconds
+	 */
+	timeout?: number;
+	/**
+	 * Stops check execution when true.
+	 */
+	paused?: boolean;
+	/**
+	 * Suppresses alerts without stopping checks.
+	 */
+	muted?: boolean;
+	dns_domain?: string;
+	dns_record_type?: "A" | "AAAA" | "CNAME" | "MX" | "NS" | "SOA" | "TXT";
+	/**
+	 * Custom DNS resolver in host:port format. IPv6 must use bracket notation.
+	 */
+	dns_resolver?: string | null;
+	dns_protocol?: "UDP" | "TCP";
+	assertions?: Array<DnsAssertion>;
+	project_id?: never;
+};
+
+export type ProjectRolloutCreateTcpCheckInput = {
+	name: string;
+	/**
+	 * Interval in seconds between checks
+	 */
+	test_interval?: number;
+	/**
+	 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
+	 */
+	test_regions?: Array<string>;
+	user_alerts?: Array<string>;
+	slack_alerts?: Array<string>;
+	discord_alerts?: Array<string>;
+	incident_io_alerts?: Array<string>;
+	microsoft_teams_alerts?: Array<string>;
+	telegram_alerts?: Array<string>;
+	pushover_alerts?: Array<string>;
+	/**
+	 * IDs of webhooks to associate with this check
+	 */
+	webhook_alerts?: Array<string>;
+	/**
+	 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
+	 */
+	oncall_alerts?: Array<string>;
+	/**
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+	 */
+	alert_priority?: "LOW" | "HIGH";
+	/**
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
+	 */
+	confirmation_period_seconds?: number;
+	/**
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
+	 */
+	recovery_period_seconds?: number;
+	/**
+	 * Interval in minutes between reminders (-1 for never)
+	 */
+	reminder_alert_interval_minutes?: number;
+	/**
+	 * Timeout in milliseconds
+	 */
+	timeout?: number;
+	type?: "TCP_CHECK";
+	/**
+	 * Publicly reachable hostname or IP address to connect to
+	 */
+	tcp_hostname: string;
+	/**
+	 * TCP port to connect to
+	 */
+	tcp_port: number;
+	/**
+	 * IP family to use for DNS resolution and socket connection
+	 */
+	tcp_ip_family?: "IPv4" | "IPv6";
+	/**
+	 * Optional TCP payload to send immediately after connecting
+	 */
+	tcp_data?: string | null;
+	/**
+	 * Whether a failed TCP connection should be treated as passing
+	 */
+	tcp_should_fail?: boolean;
+	/**
+	 * TCP assertions to run on response time or response data
+	 */
+	assertions?: Array<TcpAssertion>;
+	/**
+	 * Omit to select the organisation's stable Default project.
+	 */
+	project_id?: ProjectOperationProjectSelectionId;
+};
+
+export type ProjectRolloutEnvelopeTcpCheckResponse = {
+	result: ProjectRolloutResourceExpandedTcpCheck;
+	/**
+	 * Whether the API call was successful
+	 */
+	success: boolean;
+	errors: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+	messages: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+};
+
+export type ProjectRolloutResourceExpandedTcpCheck = {
+	/**
+	 * Uptime Check ID
+	 */
+	id: string;
+	name: string;
+	/**
+	 * Last time the check was queued
+	 */
+	last_queued: string | null;
+	/**
+	 * Current status of the check based on the latest uptime event
+	 */
+	status:
+		| "UP"
+		| "DOWN"
+		| "PENDING"
+		| "PAUSED"
+		| "MUTED"
+		| "MAINTENANCE"
+		| "RECOVERING"
+		| "VERIFYING";
+	/**
+	 * Interval in minutes between reminder alerts (-1 for never); null for legacy checks without a configured interval
+	 */
+	reminder_alert_interval_minutes: number | null;
+	/**
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
+	 */
+	confirmation_period_seconds: number;
+	/**
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
+	 */
+	recovery_period_seconds: number;
+	/**
+	 * Interval in seconds between checks
+	 */
+	test_interval: number;
+	timeout: number;
+	/**
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+	 */
+	alert_priority: "LOW" | "HIGH";
+	/**
+	 * Regions the check runs from. Format: aws:{region}
+	 */
+	test_regions: Array<string>;
+	/**
+	 * User IDs to notify on alerts
+	 */
+	user_alerts: Array<string>;
+	/**
+	 * Slack integration IDs to notify
+	 */
+	slack_alerts: Array<string>;
+	/**
+	 * Discord integration IDs to notify
+	 */
+	discord_alerts: Array<string>;
+	/**
+	 * Incident.io integration IDs to notify
+	 */
+	incident_io_alerts: Array<string>;
+	/**
+	 * Microsoft Teams integration IDs to notify
+	 */
+	microsoft_teams_alerts: Array<string>;
+	/**
+	 * Telegram integration IDs to notify
+	 */
+	telegram_alerts: Array<string>;
+	/**
+	 * Pushover integration IDs to notify
+	 */
+	pushover_alerts: Array<string>;
+	/**
+	 * On-call integration IDs (PagerDuty, Opsgenie, Grafana, Spike)
+	 */
+	oncall_alerts: Array<string>;
+	/**
+	 * Webhook IDs to notify
+	 */
+	webhook_alerts: Array<string>;
+	check_type: "TCP";
+	/**
+	 * TCP checks do not use a URL target.
+	 */
+	url: null;
+	/**
+	 * Runtime version for TCP checks.
+	 */
+	version: "NODE24_TCP";
+	/**
+	 * TCP hostname connected to by this check.
+	 */
+	tcp_hostname: string;
+	/**
+	 * TCP port to connect to
+	 */
+	tcp_port: number;
+	/**
+	 * IP family used by this check.
+	 */
+	tcp_ip_family: "IPv4" | "IPv6";
+	/**
+	 * Optional TCP payload sent by this check.
+	 */
+	tcp_data: string | null;
+	/**
+	 * Whether failed TCP connections are expected.
+	 */
+	tcp_should_fail: boolean;
+	/**
+	 * TCP assertions to validate the response.
+	 */
+	assertions: Array<TcpAssertion> | null;
+	project_id: ProjectOperationProjectSelectionId;
+};
+
+export type ProjectRolloutPatchTcpCheckPatch = {
+	name?: string;
+	/**
+	 * Interval in seconds between checks
+	 */
+	test_interval?: number;
+	/**
+	 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
+	 */
+	test_regions?: Array<string>;
+	user_alerts?: Array<string>;
+	slack_alerts?: Array<string>;
+	discord_alerts?: Array<string>;
+	incident_io_alerts?: Array<string>;
+	microsoft_teams_alerts?: Array<string>;
+	telegram_alerts?: Array<string>;
+	pushover_alerts?: Array<string>;
+	/**
+	 * IDs of webhooks to associate with this check
+	 */
+	webhook_alerts?: Array<string>;
+	/**
+	 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
+	 */
+	oncall_alerts?: Array<string>;
+	/**
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+	 */
+	alert_priority?: "LOW" | "HIGH";
+	/**
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
+	 */
+	confirmation_period_seconds?: number;
+	/**
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
+	 */
+	recovery_period_seconds?: number;
+	/**
+	 * Interval in minutes between reminders (-1 for never)
+	 */
+	reminder_alert_interval_minutes?: number;
+	/**
+	 * Timeout in milliseconds
+	 */
+	timeout?: number;
+	/**
+	 * Stops check execution when true.
+	 */
+	paused?: boolean;
+	/**
+	 * Suppresses alerts without stopping checks.
+	 */
+	muted?: boolean;
+	/**
+	 * Publicly reachable hostname or IP address to connect to
+	 */
+	tcp_hostname?: string;
+	/**
+	 * TCP port to connect to
+	 */
+	tcp_port?: number;
+	tcp_ip_family?: "IPv4" | "IPv6";
+	/**
+	 * Optional TCP payload to send immediately after connecting
+	 */
+	tcp_data?: string | null;
+	tcp_should_fail?: boolean;
+	assertions?: Array<TcpAssertion>;
+	project_id?: never;
+};
+
+export type ProjectRolloutCreateUptimeCheckInput = {
+	name: string;
+	/**
+	 * Interval in seconds between checks
+	 */
+	test_interval?: number;
+	/**
+	 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
+	 */
+	test_regions?: Array<string>;
+	user_alerts?: Array<string>;
+	slack_alerts?: Array<string>;
+	discord_alerts?: Array<string>;
+	incident_io_alerts?: Array<string>;
+	microsoft_teams_alerts?: Array<string>;
+	telegram_alerts?: Array<string>;
+	pushover_alerts?: Array<string>;
+	/**
+	 * IDs of webhooks to associate with this check
+	 */
+	webhook_alerts?: Array<string>;
+	/**
+	 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
+	 */
+	oncall_alerts?: Array<string>;
+	/**
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+	 */
+	alert_priority?: "LOW" | "HIGH";
+	/**
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
+	 */
+	confirmation_period_seconds?: number;
+	/**
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
+	 */
+	recovery_period_seconds?: number;
+	/**
+	 * Interval in minutes between reminders (-1 for never)
+	 */
+	reminder_alert_interval_minutes?: number;
+	/**
+	 * Timeout in milliseconds
+	 */
+	timeout?: number;
+	/**
+	 * URL to check.
+	 */
+	url: string;
+	/**
+	 * Text to search for in the response
+	 */
+	text_to_search_for?: string;
+	type?: "UPTIME_CHECK";
+	/**
+	 * Headers to send. Uptime checks support environment variable references such as {{API_TOKEN}}. Terraform example: Authorization = "Bearer {{API_TOKEN}}". Terraform stores the template; create the referenced variable separately.
+	 */
+	headers?: {
+		[key: string]: string;
+	};
+	/**
+	 * HTTP Method
+	 */
+	method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
+	body?: string;
+	follow_redirects?: boolean;
+	/**
+	 * Assertions to run on the response
+	 */
+	assertions?: Array<{
+		/**
+		 * Type of assertion
+		 */
+		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+		/**
+		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+		 */
+		property: string;
+		/**
+		 * Comparison operator
+		 */
+		comparison:
+			| "EQUALS"
+			| "NOT_EQUALS"
+			| "GREATER_THAN"
+			| "LESS_THAN"
+			| "NULL"
+			| "NOT_NULL"
+			| "EMPTY"
+			| "NOT_EMPTY"
+			| "CONTAINS"
+			| "NOT_CONTAINS"
+			| "FALSE"
+			| "TRUE";
+		/**
+		 * Expected value
+		 */
+		expected: string;
+	}>;
+	/**
+	 * Whether to fail a check if SSL verification fails
+	 */
+	verify_ssl?: boolean;
+	/**
+	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
+	 */
+	auth_username?: string;
+	/**
+	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
+	 */
+	auth_password?: string;
+	/**
+	 * Omit to select the organisation's stable Default project.
+	 */
+	project_id?: ProjectOperationProjectSelectionId;
+};
+
+export type ProjectRolloutEnvelopeUptimeCheckResponse = {
+	result: ProjectRolloutResourceExpandedUptimeCheck;
+	/**
+	 * Whether the API call was successful
+	 */
+	success: boolean;
+	errors: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+	messages: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+};
+
+export type ProjectRolloutResourceExpandedUptimeCheck = {
+	/**
+	 * Uptime Check ID
+	 */
+	id: string;
+	name: string;
+	/**
+	 * URL to check (null for script-based browser checks)
+	 */
+	url: string | null;
+	/**
+	 * Last time the check was queued
+	 */
+	last_queued: string | null;
+	/**
+	 * Current status of the check based on the latest uptime event
+	 */
+	status:
+		| "UP"
+		| "DOWN"
+		| "PENDING"
+		| "PAUSED"
+		| "MUTED"
+		| "MAINTENANCE"
+		| "RECOVERING"
+		| "VERIFYING";
+	/**
+	 * Headers to send with the request
+	 */
+	headers: {
+		[key: string]: string;
+	} | null;
+	/**
+	 * Text to search for in the response
+	 */
+	text_to_search_for: string | null;
+	/**
+	 * Interval in minutes between reminder alerts (-1 for never); null for legacy checks without a configured interval
+	 */
+	reminder_alert_interval_minutes: number | null;
+	/**
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
+	 */
+	confirmation_period_seconds: number;
+	/**
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
+	 */
+	recovery_period_seconds: number;
+	/**
+	 * Interval in seconds between checks
+	 */
+	test_interval: number;
+	timeout: number;
+	/**
+	 * Runtime version for browser checks (null for standard uptime checks)
+	 */
+	version: "NODE24_PLAYWRIGHT" | "CLOUDFLARE" | null;
+	/**
+	 * Playwright Test script loaded by GET for scripted browser checks; null for URL-based checks or when script content was not loaded. Mutation responses do not load script content.
+	 */
+	script: string | null;
+	/**
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+	 */
+	alert_priority: "LOW" | "HIGH";
+	/**
+	 * Whether to verify SSL certificates
+	 */
+	verify_ssl: boolean;
+	/**
+	 * HTTP method to use
+	 */
+	method: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
+	/**
+	 * Request body for POST/PUT/PATCH requests
+	 */
+	body: string | null;
+	follow_redirects: boolean;
+	/**
+	 * Assertions to validate the response
+	 */
+	assertions: Array<{
+		/**
+		 * Type of assertion
+		 */
+		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+		/**
+		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+		 */
+		property: string;
+		/**
+		 * Comparison operator
+		 */
+		comparison:
+			| "EQUALS"
+			| "NOT_EQUALS"
+			| "GREATER_THAN"
+			| "LESS_THAN"
+			| "NULL"
+			| "NOT_NULL"
+			| "EMPTY"
+			| "NOT_EMPTY"
+			| "CONTAINS"
+			| "NOT_CONTAINS"
+			| "FALSE"
+			| "TRUE";
+		/**
+		 * Expected value
+		 */
+		expected: string;
+	}> | null;
+	/**
+	 * Username for HTTP Basic Auth. Null when unset; an empty string represents an empty user-id.
+	 */
+	auth_username: string | null;
+	/**
+	 * Password for HTTP Basic Auth. Null when unset; empty strings are preserved.
+	 */
+	auth_password: string | null;
+	/**
+	 * Regions the check runs from. Format: aws:{region}
+	 */
+	test_regions: Array<string>;
+	/**
+	 * User IDs to notify on alerts
+	 */
+	user_alerts: Array<string>;
+	/**
+	 * Slack integration IDs to notify
+	 */
+	slack_alerts: Array<string>;
+	/**
+	 * Discord integration IDs to notify
+	 */
+	discord_alerts: Array<string>;
+	/**
+	 * Incident.io integration IDs to notify
+	 */
+	incident_io_alerts: Array<string>;
+	/**
+	 * Microsoft Teams integration IDs to notify
+	 */
+	microsoft_teams_alerts: Array<string>;
+	/**
+	 * Telegram integration IDs to notify
+	 */
+	telegram_alerts: Array<string>;
+	/**
+	 * Pushover integration IDs to notify
+	 */
+	pushover_alerts: Array<string>;
+	/**
+	 * On-call integration IDs (PagerDuty, Opsgenie, Grafana, Spike)
+	 */
+	oncall_alerts: Array<string>;
+	/**
+	 * Webhook IDs to notify
+	 */
+	webhook_alerts: Array<string>;
+	check_type: "UPTIME";
+	project_id: ProjectOperationProjectSelectionId;
+};
+
+export type ProjectRolloutPatchUptimeCheckPatch = {
+	name?: string;
+	/**
+	 * Interval in seconds between checks
+	 */
+	test_interval?: number;
+	/**
+	 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
+	 */
+	test_regions?: Array<string>;
+	user_alerts?: Array<string>;
+	slack_alerts?: Array<string>;
+	discord_alerts?: Array<string>;
+	incident_io_alerts?: Array<string>;
+	microsoft_teams_alerts?: Array<string>;
+	telegram_alerts?: Array<string>;
+	pushover_alerts?: Array<string>;
+	/**
+	 * IDs of webhooks to associate with this check
+	 */
+	webhook_alerts?: Array<string>;
+	/**
+	 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
+	 */
+	oncall_alerts?: Array<string>;
+	/**
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+	 */
+	alert_priority?: "LOW" | "HIGH";
+	/**
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
+	 */
+	confirmation_period_seconds?: number;
+	/**
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
+	 */
+	recovery_period_seconds?: number;
+	/**
+	 * Interval in minutes between reminders (-1 for never)
+	 */
+	reminder_alert_interval_minutes?: number;
+	/**
+	 * Timeout in milliseconds
+	 */
+	timeout?: number;
+	/**
+	 * Stops check execution when true.
+	 */
+	paused?: boolean;
+	/**
+	 * Suppresses alerts without stopping checks.
+	 */
+	muted?: boolean;
+	/**
+	 * URL to check
+	 */
+	url?: string;
+	/**
+	 * Text to search for in the response
+	 */
+	text_to_search_for?: string;
+	/**
+	 * Headers to send. Uptime checks support environment variable references such as {{API_TOKEN}}. Terraform example: Authorization = "Bearer {{API_TOKEN}}". Terraform stores the template; create the referenced variable separately.
+	 */
+	headers?: {
+		[key: string]: string;
+	};
+	/**
+	 * HTTP Method
+	 */
+	method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
+	body?: string;
+	follow_redirects?: boolean;
+	assertions?: Array<{
+		/**
+		 * Type of assertion
+		 */
+		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+		/**
+		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+		 */
+		property: string;
+		/**
+		 * Comparison operator
+		 */
+		comparison:
+			| "EQUALS"
+			| "NOT_EQUALS"
+			| "GREATER_THAN"
+			| "LESS_THAN"
+			| "NULL"
+			| "NOT_NULL"
+			| "EMPTY"
+			| "NOT_EMPTY"
+			| "CONTAINS"
+			| "NOT_CONTAINS"
+			| "FALSE"
+			| "TRUE";
+		/**
+		 * Expected value
+		 */
+		expected: string;
+	}>;
+	/**
+	 * Whether to fail a check if SSL verification fails
+	 */
+	verify_ssl?: boolean;
+	/**
+	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
+	 */
+	auth_username?: string;
+	/**
+	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
+	 */
+	auth_password?: string;
+	project_id?: never;
+};
+
+/**
+ * Browser check create payload. Provide either url for a URL-based browser check or script for a scripted Playwright check.
+ */
+export type ProjectRolloutCreateBrowserCheckInput = {
+	name: string;
+	/**
+	 * Interval in seconds between checks
+	 */
+	test_interval?: number;
+	/**
+	 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
+	 */
+	test_regions?: Array<string>;
+	user_alerts?: Array<string>;
+	slack_alerts?: Array<string>;
+	discord_alerts?: Array<string>;
+	incident_io_alerts?: Array<string>;
+	microsoft_teams_alerts?: Array<string>;
+	telegram_alerts?: Array<string>;
+	pushover_alerts?: Array<string>;
+	/**
+	 * IDs of webhooks to associate with this check
+	 */
+	webhook_alerts?: Array<string>;
+	/**
+	 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
+	 */
+	oncall_alerts?: Array<string>;
+	/**
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+	 */
+	alert_priority?: "LOW" | "HIGH";
+	/**
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
+	 */
+	confirmation_period_seconds?: number;
+	/**
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
+	 */
+	recovery_period_seconds?: number;
+	/**
+	 * Interval in minutes between reminders (-1 for never)
+	 */
+	reminder_alert_interval_minutes?: number;
+	/**
+	 * Timeout in milliseconds
+	 */
+	timeout?: number;
+	/**
+	 * URL to load for URL-based browser checks. Optional when script is provided.
+	 */
+	url?: string | null;
+	/**
+	 * Text to search for in the response
+	 */
+	text_to_search_for?: string;
+	type?: "BROWSER_CHECK";
+	/**
+	 * Headers to send with the browser request. Environment variable references are not supported.
+	 */
+	headers?: {
+		[key: string]: string;
+	};
+	/**
+	 * HTTP Method
+	 */
+	method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
+	body?: string;
+	follow_redirects?: boolean;
+	/**
+	 * Assertions to run on the response
+	 */
+	assertions?: Array<{
+		/**
+		 * Type of assertion
+		 */
+		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+		/**
+		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+		 */
+		property: string;
+		/**
+		 * Comparison operator
+		 */
+		comparison:
+			| "EQUALS"
+			| "NOT_EQUALS"
+			| "GREATER_THAN"
+			| "LESS_THAN"
+			| "NULL"
+			| "NOT_NULL"
+			| "EMPTY"
+			| "NOT_EMPTY"
+			| "CONTAINS"
+			| "NOT_CONTAINS"
+			| "FALSE"
+			| "TRUE";
+		/**
+		 * Expected value
+		 */
+		expected: string;
+	}>;
+	/**
+	 * Whether to fail a check if SSL verification fails
+	 */
+	verify_ssl?: boolean;
+	/**
+	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
+	 */
+	auth_username?: string;
+	/**
+	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
+	 */
+	auth_password?: string;
+	/**
+	 * Runtime version for browser checks.
+	 */
+	version?: "NODE24_PLAYWRIGHT";
+	/**
+	 * Playwright Test script for scripted browser checks. Optional when url is provided.
+	 */
+	script?: string;
+	/**
+	 * Omit to select the organisation's stable Default project.
+	 */
+	project_id?: ProjectOperationProjectSelectionId;
+};
+
+export type ProjectRolloutEnvelopeBrowserCheckResponse = {
+	result: ProjectRolloutResourceExpandedBrowserCheck;
+	/**
+	 * Whether the API call was successful
+	 */
+	success: boolean;
+	errors: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+	messages: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+};
+
+export type ProjectRolloutResourceExpandedBrowserCheck = {
+	/**
+	 * Uptime Check ID
+	 */
+	id: string;
+	name: string;
+	/**
+	 * URL to check (null for script-based browser checks)
+	 */
+	url: string | null;
+	/**
+	 * Last time the check was queued
+	 */
+	last_queued: string | null;
+	/**
+	 * Current status of the check based on the latest uptime event
+	 */
+	status:
+		| "UP"
+		| "DOWN"
+		| "PENDING"
+		| "PAUSED"
+		| "MUTED"
+		| "MAINTENANCE"
+		| "RECOVERING"
+		| "VERIFYING";
+	/**
+	 * Headers to send with the request
+	 */
+	headers: {
+		[key: string]: string;
+	} | null;
+	/**
+	 * Text to search for in the response
+	 */
+	text_to_search_for: string | null;
+	/**
+	 * Interval in minutes between reminder alerts (-1 for never); null for legacy checks without a configured interval
+	 */
+	reminder_alert_interval_minutes: number | null;
+	/**
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
+	 */
+	confirmation_period_seconds: number;
+	/**
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
+	 */
+	recovery_period_seconds: number;
+	/**
+	 * Interval in seconds between checks
+	 */
+	test_interval: number;
+	/**
+	 * Timeout in milliseconds
+	 */
+	timeout: number | null;
+	/**
+	 * Playwright Test script loaded by GET for scripted browser checks; null for URL-based checks or when script content was not loaded. Mutation responses do not load script content.
+	 */
+	script: string | null;
+	/**
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+	 */
+	alert_priority: "LOW" | "HIGH";
+	/**
+	 * Whether to verify SSL certificates
+	 */
+	verify_ssl: boolean;
+	/**
+	 * HTTP method to use
+	 */
+	method: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
+	/**
+	 * Request body for POST/PUT/PATCH requests
+	 */
+	body: string | null;
+	follow_redirects: boolean;
+	/**
+	 * Assertions to validate the response
+	 */
+	assertions: Array<{
+		/**
+		 * Type of assertion
+		 */
+		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+		/**
+		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+		 */
+		property: string;
+		/**
+		 * Comparison operator
+		 */
+		comparison:
+			| "EQUALS"
+			| "NOT_EQUALS"
+			| "GREATER_THAN"
+			| "LESS_THAN"
+			| "NULL"
+			| "NOT_NULL"
+			| "EMPTY"
+			| "NOT_EMPTY"
+			| "CONTAINS"
+			| "NOT_CONTAINS"
+			| "FALSE"
+			| "TRUE";
+		/**
+		 * Expected value
+		 */
+		expected: string;
+	}> | null;
+	/**
+	 * Username for HTTP Basic Auth. Null when unset; an empty string represents an empty user-id.
+	 */
+	auth_username: string | null;
+	/**
+	 * Password for HTTP Basic Auth. Null when unset; empty strings are preserved.
+	 */
+	auth_password: string | null;
+	/**
+	 * Regions the check runs from. Format: aws:{region}
+	 */
+	test_regions: Array<string>;
+	/**
+	 * User IDs to notify on alerts
+	 */
+	user_alerts: Array<string>;
+	/**
+	 * Slack integration IDs to notify
+	 */
+	slack_alerts: Array<string>;
+	/**
+	 * Discord integration IDs to notify
+	 */
+	discord_alerts: Array<string>;
+	/**
+	 * Incident.io integration IDs to notify
+	 */
+	incident_io_alerts: Array<string>;
+	/**
+	 * Microsoft Teams integration IDs to notify
+	 */
+	microsoft_teams_alerts: Array<string>;
+	/**
+	 * Telegram integration IDs to notify
+	 */
+	telegram_alerts: Array<string>;
+	/**
+	 * Pushover integration IDs to notify
+	 */
+	pushover_alerts: Array<string>;
+	/**
+	 * On-call integration IDs (PagerDuty, Opsgenie, Grafana, Spike)
+	 */
+	oncall_alerts: Array<string>;
+	/**
+	 * Webhook IDs to notify
+	 */
+	webhook_alerts: Array<string>;
+	/**
+	 * Runtime version for browser checks.
+	 */
+	version: "NODE24_PLAYWRIGHT" | "CLOUDFLARE";
+	check_type: "BROWSER";
+	project_id: ProjectOperationProjectSelectionId;
+};
+
+export type ProjectRolloutPatchBrowserCheckPatch = {
+	name?: string;
+	/**
+	 * Interval in seconds between checks
+	 */
+	test_interval?: number;
+	/**
+	 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
+	 */
+	test_regions?: Array<string>;
+	user_alerts?: Array<string>;
+	slack_alerts?: Array<string>;
+	discord_alerts?: Array<string>;
+	incident_io_alerts?: Array<string>;
+	microsoft_teams_alerts?: Array<string>;
+	telegram_alerts?: Array<string>;
+	pushover_alerts?: Array<string>;
+	/**
+	 * IDs of webhooks to associate with this check
+	 */
+	webhook_alerts?: Array<string>;
+	/**
+	 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
+	 */
+	oncall_alerts?: Array<string>;
+	/**
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+	 */
+	alert_priority?: "LOW" | "HIGH";
+	/**
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
+	 */
+	confirmation_period_seconds?: number;
+	/**
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
+	 */
+	recovery_period_seconds?: number;
+	/**
+	 * Interval in minutes between reminders (-1 for never)
+	 */
+	reminder_alert_interval_minutes?: number;
+	/**
+	 * Timeout in milliseconds
+	 */
+	timeout?: number;
+	/**
+	 * Stops check execution when true.
+	 */
+	paused?: boolean;
+	/**
+	 * Suppresses alerts without stopping checks.
+	 */
+	muted?: boolean;
+	/**
+	 * URL to check
+	 */
+	url?: string | null;
+	/**
+	 * Text to search for in the response
+	 */
+	text_to_search_for?: string;
+	/**
+	 * Headers to send with the browser request. Environment variable references are not supported.
+	 */
+	headers?: {
+		[key: string]: string;
+	};
+	/**
+	 * HTTP Method
+	 */
+	method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
+	body?: string;
+	follow_redirects?: boolean;
+	assertions?: Array<{
+		/**
+		 * Type of assertion
+		 */
+		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+		/**
+		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+		 */
+		property: string;
+		/**
+		 * Comparison operator
+		 */
+		comparison:
+			| "EQUALS"
+			| "NOT_EQUALS"
+			| "GREATER_THAN"
+			| "LESS_THAN"
+			| "NULL"
+			| "NOT_NULL"
+			| "EMPTY"
+			| "NOT_EMPTY"
+			| "CONTAINS"
+			| "NOT_CONTAINS"
+			| "FALSE"
+			| "TRUE";
+		/**
+		 * Expected value
+		 */
+		expected: string;
+	}>;
+	/**
+	 * Whether to fail a check if SSL verification fails
+	 */
+	verify_ssl?: boolean;
+	/**
+	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
+	 */
+	auth_username?: string;
+	/**
+	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
+	 */
+	auth_password?: string;
+	/**
+	 * Runtime version for browser checks.
+	 */
+	version?: "NODE24_PLAYWRIGHT";
+	/**
+	 * Playwright Test script to run. Must import from @playwright/test and contain at least one test() block.
+	 */
+	script?: string;
+	project_id?: never;
+};
+
+export type ProjectRolloutResourceCheckListItem = {
+	/**
+	 * Uptime Check ID
+	 */
+	id: string;
+	name: string;
+	/**
+	 * URL to check (null for DNS or script-based browser checks)
+	 */
+	url: string | null;
+	check_type: "UPTIME" | "BROWSER" | "DNS" | "TCP";
+	/**
+	 * Last time the check was queued
+	 */
+	last_queued: string | null;
+	/**
+	 * Current status of the check based on the latest event
+	 */
+	status:
+		| "UP"
+		| "DOWN"
+		| "PENDING"
+		| "PAUSED"
+		| "MUTED"
+		| "MAINTENANCE"
+		| "RECOVERING"
+		| "VERIFYING";
+	/**
+	 * DNS name queried by this check. Present for DNS checks.
+	 */
+	dns_domain?: string | null;
+	/**
+	 * DNS record type queried by this check. Present for DNS checks.
+	 */
+	dns_record_type?: "A" | "AAAA" | "CNAME" | "MX" | "NS" | "SOA" | "TXT" | null;
+	/**
+	 * Custom resolver used by this DNS check, or null for the default resolver.
+	 */
+	dns_resolver?: string | null;
+	/**
+	 * DNS transport protocol used by this check. Present for DNS checks.
+	 */
+	dns_protocol?: "UDP" | "TCP" | null;
+	/**
+	 * TCP hostname connected to by this check. Present for TCP checks.
+	 */
+	tcp_hostname?: string | null;
+	/**
+	 * TCP port to connect to
+	 */
+	tcp_port?: number | null;
+	/**
+	 * IP family used by this check. Present for TCP checks.
+	 */
+	tcp_ip_family?: "IPv4" | "IPv6" | null;
+	project_id: ProjectOperationProjectSelectionId;
+};
+
+export type ProjectRolloutCreateCheckInput = {
+	name: string;
+	/**
+	 * Interval in seconds between checks
+	 */
+	test_interval?: number;
+	/**
+	 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
+	 */
+	test_regions?: Array<string>;
+	user_alerts?: Array<string>;
+	slack_alerts?: Array<string>;
+	discord_alerts?: Array<string>;
+	incident_io_alerts?: Array<string>;
+	microsoft_teams_alerts?: Array<string>;
+	telegram_alerts?: Array<string>;
+	pushover_alerts?: Array<string>;
+	/**
+	 * IDs of webhooks to associate with this check
+	 */
+	webhook_alerts?: Array<string>;
+	/**
+	 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
+	 */
+	oncall_alerts?: Array<string>;
+	/**
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+	 */
+	alert_priority?: "LOW" | "HIGH";
+	/**
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
+	 */
+	confirmation_period_seconds?: number;
+	/**
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
+	 */
+	recovery_period_seconds?: number;
+	/**
+	 * Interval in minutes between reminders (-1 for never)
+	 */
+	reminder_alert_interval_minutes?: number;
+	/**
+	 * Timeout in milliseconds
+	 */
+	timeout?: number;
+	/**
+	 * URL to check. Required for URL-based checks, optional for script-based checks.
+	 */
+	url?: string | null;
+	/**
+	 * Text to search for in the response
+	 */
+	text_to_search_for?: string;
+	type?: "UPTIME_CHECK" | "BROWSER_CHECK";
+	/**
+	 * Headers to send. Uptime checks support environment variable references such as {{API_TOKEN}}. Terraform example: Authorization = "Bearer {{API_TOKEN}}". Terraform stores the template; create the referenced variable separately.
+	 */
+	headers?: {
+		[key: string]: string;
+	};
+	/**
+	 * HTTP Method
+	 */
+	method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
+	body?: string;
+	follow_redirects?: boolean;
+	/**
+	 * Assertions to run on the response
+	 */
+	assertions?: Array<{
+		/**
+		 * Type of assertion
+		 */
+		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+		/**
+		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+		 */
+		property: string;
+		/**
+		 * Comparison operator
+		 */
+		comparison:
+			| "EQUALS"
+			| "NOT_EQUALS"
+			| "GREATER_THAN"
+			| "LESS_THAN"
+			| "NULL"
+			| "NOT_NULL"
+			| "EMPTY"
+			| "NOT_EMPTY"
+			| "CONTAINS"
+			| "NOT_CONTAINS"
+			| "FALSE"
+			| "TRUE";
+		/**
+		 * Expected value
+		 */
+		expected: string;
+	}>;
+	/**
+	 * Whether to fail a check if SSL verification fails
+	 */
+	verify_ssl?: boolean;
+	/**
+	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
+	 */
+	auth_username?: string;
+	/**
+	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
+	 */
+	auth_password?: string;
+	/**
+	 * Runtime version for browser checks.
+	 */
+	version?: "NODE24_PLAYWRIGHT";
+	/**
+	 * Playwright Test script for scripted browser checks. Required for script-based checks, optional for URL-based checks.
+	 */
+	script?: string;
+	/**
+	 * Omit to select the organisation's stable Default project.
+	 */
+	project_id?: ProjectOperationProjectSelectionId;
+};
+
+export type ProjectRolloutEnvelopeCheckResponse = {
+	result: ProjectRolloutResourceExpandedCheck;
+	/**
+	 * Whether the API call was successful
+	 */
+	success: boolean;
+	errors: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+	messages: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+};
+
+export type ProjectRolloutResourceExpandedCheck =
+	ProjectRolloutResourceCheck & {
+		/**
+		 * Headers to send with the request
+		 */
+		headers: {
+			[key: string]: string;
+		} | null;
+		/**
+		 * Text to search for in the response
+		 */
+		text_to_search_for: string | null;
+		/**
+		 * Interval in minutes between reminder alerts (-1 for never); null for legacy checks without a configured interval
+		 */
+		reminder_alert_interval_minutes: number | null;
+		/**
+		 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
+		 */
+		confirmation_period_seconds: number;
+		/**
+		 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
+		 */
+		recovery_period_seconds: number;
+		/**
+		 * Interval in seconds between checks
+		 */
+		test_interval: number;
+		/**
+		 * Timeout in milliseconds
+		 */
+		timeout: number | null;
+		/**
+		 * Runtime version for browser checks (null for standard uptime checks)
+		 */
+		version: "NODE24_PLAYWRIGHT" | "CLOUDFLARE" | null;
+		/**
+		 * Playwright Test script loaded by GET for scripted browser checks; null for URL-based checks or when script content was not loaded. Mutation responses do not load script content.
+		 */
+		script: string | null;
+		/**
+		 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+		 */
+		alert_priority: "LOW" | "HIGH";
+		/**
+		 * Whether to verify SSL certificates
+		 */
+		verify_ssl: boolean;
+		/**
+		 * HTTP method to use
+		 */
+		method: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
+		/**
+		 * Request body for POST/PUT/PATCH requests
+		 */
+		body: string | null;
+		follow_redirects: boolean;
+		/**
+		 * Assertions to validate the response
+		 */
+		assertions: Array<{
+			/**
+			 * Type of assertion
+			 */
+			type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+			/**
+			 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+			 */
+			property: string;
+			/**
+			 * Comparison operator
+			 */
+			comparison:
+				| "EQUALS"
+				| "NOT_EQUALS"
+				| "GREATER_THAN"
+				| "LESS_THAN"
+				| "NULL"
+				| "NOT_NULL"
+				| "EMPTY"
+				| "NOT_EMPTY"
+				| "CONTAINS"
+				| "NOT_CONTAINS"
+				| "FALSE"
+				| "TRUE";
+			/**
+			 * Expected value
+			 */
+			expected: string;
+		}> | null;
+		/**
+		 * Username for HTTP Basic Auth. Null when unset; an empty string represents an empty user-id.
+		 */
+		auth_username: string | null;
+		/**
+		 * Password for HTTP Basic Auth. Null when unset; empty strings are preserved.
+		 */
+		auth_password: string | null;
+		/**
+		 * Regions the check runs from. Format: aws:{region}
+		 */
+		test_regions: Array<string>;
+		/**
+		 * User IDs to notify on alerts
+		 */
+		user_alerts: Array<string>;
+		/**
+		 * Slack integration IDs to notify
+		 */
+		slack_alerts: Array<string>;
+		/**
+		 * Discord integration IDs to notify
+		 */
+		discord_alerts: Array<string>;
+		/**
+		 * Incident.io integration IDs to notify
+		 */
+		incident_io_alerts: Array<string>;
+		/**
+		 * Microsoft Teams integration IDs to notify
+		 */
+		microsoft_teams_alerts: Array<string>;
+		/**
+		 * Telegram integration IDs to notify
+		 */
+		telegram_alerts: Array<string>;
+		/**
+		 * Pushover integration IDs to notify
+		 */
+		pushover_alerts: Array<string>;
+		/**
+		 * On-call integration IDs (PagerDuty, Opsgenie, Grafana, Spike)
+		 */
+		oncall_alerts: Array<string>;
+		/**
+		 * Webhook IDs to notify
+		 */
+		webhook_alerts: Array<string>;
+	};
+
+export type ProjectRolloutResourceCheck = {
+	/**
+	 * Uptime Check ID
+	 */
+	id: string;
+	name: string;
+	/**
+	 * URL to check (null for script-based browser checks)
+	 */
+	url: string | null;
+	/**
+	 * Indicates whether the check is a regular uptime check or browser check.
+	 */
+	check_type: "UPTIME" | "BROWSER";
+	/**
+	 * Last time the check was queued
+	 */
+	last_queued: string | null;
+	/**
+	 * Current status of the check based on the latest uptime event
+	 */
+	status:
+		| "UP"
+		| "DOWN"
+		| "PENDING"
+		| "PAUSED"
+		| "MUTED"
+		| "MAINTENANCE"
+		| "RECOVERING"
+		| "VERIFYING";
+	project_id: ProjectOperationProjectSelectionId;
+};
+
+export type ProjectRolloutResourceAnyCheck =
+	| ({
+			check_type: "UPTIME";
+	  } & ProjectRolloutResourceExpandedUptimeCheck)
+	| ({
+			check_type: "BROWSER";
+	  } & ProjectRolloutResourceExpandedBrowserCheck)
+	| ({
+			check_type: "DNS";
+	  } & ProjectRolloutResourceExpandedDnsCheck)
+	| ({
+			check_type: "TCP";
+	  } & ProjectRolloutResourceExpandedTcpCheck);
+
+export type ProjectRolloutPatchCheckPatch = {
+	name?: string;
+	/**
+	 * Interval in seconds between checks
+	 */
+	test_interval?: number;
+	/**
+	 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
+	 */
+	test_regions?: Array<string>;
+	user_alerts?: Array<string>;
+	slack_alerts?: Array<string>;
+	discord_alerts?: Array<string>;
+	incident_io_alerts?: Array<string>;
+	microsoft_teams_alerts?: Array<string>;
+	telegram_alerts?: Array<string>;
+	pushover_alerts?: Array<string>;
+	/**
+	 * IDs of webhooks to associate with this check
+	 */
+	webhook_alerts?: Array<string>;
+	/**
+	 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
+	 */
+	oncall_alerts?: Array<string>;
+	/**
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+	 */
+	alert_priority?: "LOW" | "HIGH";
+	/**
+	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
+	 */
+	confirmation_period_seconds?: number;
+	/**
+	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
+	 */
+	recovery_period_seconds?: number;
+	/**
+	 * Interval in minutes between reminders (-1 for never)
+	 */
+	reminder_alert_interval_minutes?: number;
+	/**
+	 * Timeout in milliseconds
+	 */
+	timeout?: number;
+	/**
+	 * Stops check execution when true.
+	 */
+	paused?: boolean;
+	/**
+	 * Suppresses alerts without stopping checks.
+	 */
+	muted?: boolean;
+	/**
+	 * URL to check
+	 */
+	url?: string | null;
+	/**
+	 * Text to search for in the response
+	 */
+	text_to_search_for?: string;
+	type?: "UPTIME_CHECK" | "BROWSER_CHECK";
+	/**
+	 * Headers to send. Uptime checks support environment variable references such as {{API_TOKEN}}. Terraform example: Authorization = "Bearer {{API_TOKEN}}". Terraform stores the template; create the referenced variable separately.
+	 */
+	headers?: {
+		[key: string]: string;
+	};
+	/**
+	 * HTTP Method
+	 */
+	method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
+	body?: string;
+	follow_redirects?: boolean;
+	assertions?: Array<{
+		/**
+		 * Type of assertion
+		 */
+		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+		/**
+		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+		 */
+		property: string;
+		/**
+		 * Comparison operator
+		 */
+		comparison:
+			| "EQUALS"
+			| "NOT_EQUALS"
+			| "GREATER_THAN"
+			| "LESS_THAN"
+			| "NULL"
+			| "NOT_NULL"
+			| "EMPTY"
+			| "NOT_EMPTY"
+			| "CONTAINS"
+			| "NOT_CONTAINS"
+			| "FALSE"
+			| "TRUE";
+		/**
+		 * Expected value
+		 */
+		expected: string;
+	}>;
+	/**
+	 * Whether to fail a check if SSL verification fails
+	 */
+	verify_ssl?: boolean;
+	/**
+	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
+	 */
+	auth_username?: string;
+	/**
+	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
+	 */
+	auth_password?: string;
+	/**
+	 * Runtime version for browser checks.
+	 */
+	version?: "NODE24_PLAYWRIGHT";
+	/**
+	 * Playwright Test script to run. Must import from @playwright/test and contain at least one test() block.
+	 */
+	script?: string;
+	project_id?: never;
+};
+
+export type ProjectRolloutResourceVariableEnvironmentVariableMetadata = {
+	/**
+	 * Stable public environment variable ID.
+	 */
+	id: string;
+	name: ProjectOperationProjectVariableName;
+	/**
+	 * Immutable variable type. Config values are readable and unsuitable for credentials; secret values are write-only.
+	 */
+	type: "config" | "secret";
+	/**
+	 * Confirms that a value is stored without revealing write-only secret values.
+	 */
+	has_value: true;
+	/**
+	 * Creation timestamp in ISO 8601 format.
+	 */
+	created_at: string;
+	/**
+	 * Last update timestamp in ISO 8601 format.
+	 */
+	updated_at: string;
+	project_id: ProjectOperationProjectSelectionId;
+};
+
+export type ProjectRolloutResourceHeartbeat = {
+	/**
+	 * Heartbeat ID
+	 */
+	id: string;
+	name: string;
+	/**
+	 * Current status of the heartbeat
+	 */
+	status: "UP" | "DOWN" | "PENDING" | "PAUSED" | "MAINTENANCE" | "MUTED";
+	/**
+	 * Last time a heartbeat ping was received
+	 */
+	last_seen: string | null;
+	/**
+	 * Expected interval in seconds between heartbeat pings
+	 */
+	report_period: number | null;
+	/**
+	 * Cron expression for expected heartbeat schedule
+	 */
+	report_period_cron: string | null;
+	/**
+	 * Timezone for cron schedule
+	 */
+	timezone: string | null;
+	/**
+	 * Grace period in seconds before alerting
+	 */
+	grace_period: number;
+	/**
+	 * Interval in minutes between reminder alerts
+	 */
+	reminder_alert_interval_minutes: number | null;
+	/**
+	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+	 */
+	alert_priority: "LOW" | "HIGH";
+	/**
+	 * When the heartbeat was created
+	 */
+	created_at: string;
+	/**
+	 * When the heartbeat was last updated
+	 */
+	updated_at: string;
+	project_id: ProjectOperationProjectSelectionId;
+};
+
+export type ProjectRolloutResourceExpandedHeartbeat =
+	ProjectRolloutResourceHeartbeat & {
+		/**
+		 * User IDs subscribed to alerts
+		 */
+		user_alerts: Array<string>;
+		/**
+		 * Slack integration IDs subscribed to alerts
+		 */
+		slack_alerts: Array<string>;
+		/**
+		 * Discord integration IDs subscribed to alerts
+		 */
+		discord_alerts: Array<string>;
+		/**
+		 * Webhook IDs subscribed to alerts
+		 */
+		webhook_alerts: Array<string>;
+		/**
+		 * On-call integration IDs (PagerDuty, Opsgenie, etc.) subscribed to alerts
+		 */
+		oncall_alerts: Array<string>;
+		/**
+		 * incident.io integration IDs subscribed to alerts
+		 */
+		incident_io_alerts: Array<string>;
+		/**
+		 * Microsoft Teams integration IDs subscribed to alerts
+		 */
+		microsoft_teams_alerts: Array<string>;
+		/**
+		 * Telegram integration IDs subscribed to alerts
+		 */
+		telegram_alerts: Array<string>;
+		/**
+		 * Pushover integration IDs subscribed to alerts
+		 */
+		pushover_alerts: Array<string>;
+	};
+
 export type PingHeartbeatGetData = {
 	body?: never;
 	path: {
@@ -3341,7 +5404,8 @@ export type ListTokensResponses = {
 						| "INTEGRATIONS"
 						| "API_TOKENS"
 						| "WEBHOOKS"
-						| "ENVIRONMENT_VARIABLES";
+						| "ENVIRONMENT_VARIABLES"
+						| "PROJECTS";
 					permission: "READ" | "EDIT";
 				}>;
 			}>;
@@ -3390,7 +5454,8 @@ export type CreateTokenData = {
 				| "INTEGRATIONS"
 				| "API_TOKENS"
 				| "WEBHOOKS"
-				| "ENVIRONMENT_VARIABLES";
+				| "ENVIRONMENT_VARIABLES"
+				| "PROJECTS";
 			permission: "READ" | "EDIT";
 		}>;
 		/**
@@ -3626,7 +5691,8 @@ export type GetTokenResponses = {
 					| "INTEGRATIONS"
 					| "API_TOKENS"
 					| "WEBHOOKS"
-					| "ENVIRONMENT_VARIABLES";
+					| "ENVIRONMENT_VARIABLES"
+					| "PROJECTS";
 				permission: "READ" | "EDIT";
 			}>;
 		};
@@ -3650,7 +5716,7 @@ export type GetTokenResponses = {
 export type GetTokenResponse = GetTokenResponses[keyof GetTokenResponses];
 
 export type CreateDnsCheckData = {
-	body: DnsCheckInput;
+	body: ProjectRolloutCreateDnsCheckInput;
 	headers?: {
 		/**
 		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
@@ -3676,6 +5742,19 @@ export type CreateDnsCheckErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
+	 * Resource not found; foreign organisation IDs are indistinguishable from missing IDs.
+	 */
+	404: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
 	 * Internal Server Error
 	 */
 	500: PublicApiServerError;
@@ -3688,7 +5767,7 @@ export type CreateDnsCheckResponses = {
 	/**
 	 * Create a new OnlineOrNot DNS Check
 	 */
-	201: DnsCheckResponse;
+	201: ProjectRolloutEnvelopeDnsCheckResponse;
 };
 
 export type CreateDnsCheckResponse =
@@ -3797,7 +5876,7 @@ export type GetDnsCheckResponses = {
 	 */
 	200:
 		| {
-				result: ExpandedDnsCheck;
+				result: ProjectRolloutResourceExpandedDnsCheck;
 				success: true;
 				errors: Array<{
 					code: number;
@@ -3826,7 +5905,7 @@ export type GetDnsCheckResponse =
 	GetDnsCheckResponses[keyof GetDnsCheckResponses];
 
 export type UpdateDnsCheckData = {
-	body: DnsCheckPatch;
+	body: ProjectRolloutPatchDnsCheckPatch;
 	headers?: {
 		/**
 		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
@@ -3873,14 +5952,14 @@ export type UpdateDnsCheckResponses = {
 	/**
 	 * Modify an OnlineOrNot DNS Check
 	 */
-	200: DnsCheckResponse;
+	200: ProjectRolloutEnvelopeDnsCheckResponse;
 };
 
 export type UpdateDnsCheckResponse =
 	UpdateDnsCheckResponses[keyof UpdateDnsCheckResponses];
 
 export type CreateTcpCheckData = {
-	body: TcpCheckInput;
+	body: ProjectRolloutCreateTcpCheckInput;
 	headers?: {
 		/**
 		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
@@ -3906,6 +5985,19 @@ export type CreateTcpCheckErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
+	 * Resource not found; foreign organisation IDs are indistinguishable from missing IDs.
+	 */
+	404: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
 	 * Internal Server Error
 	 */
 	500: PublicApiServerError;
@@ -3918,7 +6010,7 @@ export type CreateTcpCheckResponses = {
 	/**
 	 * Create a new OnlineOrNot TCP Check
 	 */
-	201: TcpCheckResponse;
+	201: ProjectRolloutEnvelopeTcpCheckResponse;
 };
 
 export type CreateTcpCheckResponse =
@@ -4027,7 +6119,7 @@ export type GetTcpCheckResponses = {
 	 */
 	200:
 		| {
-				result: ExpandedTcpCheck;
+				result: ProjectRolloutResourceExpandedTcpCheck;
 				success: true;
 				errors: Array<{
 					code: number;
@@ -4056,7 +6148,7 @@ export type GetTcpCheckResponse =
 	GetTcpCheckResponses[keyof GetTcpCheckResponses];
 
 export type UpdateTcpCheckData = {
-	body: TcpCheckPatch;
+	body: ProjectRolloutPatchTcpCheckPatch;
 	headers?: {
 		/**
 		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
@@ -4103,14 +6195,14 @@ export type UpdateTcpCheckResponses = {
 	/**
 	 * Modify an OnlineOrNot TCP Check
 	 */
-	200: TcpCheckResponse;
+	200: ProjectRolloutEnvelopeTcpCheckResponse;
 };
 
 export type UpdateTcpCheckResponse =
 	UpdateTcpCheckResponses[keyof UpdateTcpCheckResponses];
 
 export type CreateUptimeCheckData = {
-	body: UptimeCheckInput;
+	body: ProjectRolloutCreateUptimeCheckInput;
 	headers?: {
 		/**
 		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
@@ -4136,6 +6228,19 @@ export type CreateUptimeCheckErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
+	 * Resource not found; foreign organisation IDs are indistinguishable from missing IDs.
+	 */
+	404: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
 	 * Internal Server Error
 	 */
 	500: PublicApiServerError;
@@ -4148,7 +6253,7 @@ export type CreateUptimeCheckResponses = {
 	/**
 	 * Create a new OnlineOrNot Uptime Check
 	 */
-	201: UptimeCheckResponse;
+	201: ProjectRolloutEnvelopeUptimeCheckResponse;
 };
 
 export type CreateUptimeCheckResponse =
@@ -4256,14 +6361,14 @@ export type GetUptimeCheckResponses = {
 	/**
 	 * Retrieve the specified OnlineOrNot Uptime Check
 	 */
-	200: UptimeCheckResponse;
+	200: ProjectRolloutEnvelopeUptimeCheckResponse;
 };
 
 export type GetUptimeCheckResponse =
 	GetUptimeCheckResponses[keyof GetUptimeCheckResponses];
 
 export type UpdateUptimeCheckData = {
-	body: UptimeCheckPatch;
+	body: ProjectRolloutPatchUptimeCheckPatch;
 	headers?: {
 		/**
 		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
@@ -4310,14 +6415,14 @@ export type UpdateUptimeCheckResponses = {
 	/**
 	 * Modify an OnlineOrNot Uptime Check
 	 */
-	200: UptimeCheckResponse;
+	200: ProjectRolloutEnvelopeUptimeCheckResponse;
 };
 
 export type UpdateUptimeCheckResponse =
 	UpdateUptimeCheckResponses[keyof UpdateUptimeCheckResponses];
 
 export type CreateBrowserCheckData = {
-	body: BrowserCheckInput;
+	body: ProjectRolloutCreateBrowserCheckInput;
 	headers?: {
 		/**
 		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
@@ -4343,6 +6448,19 @@ export type CreateBrowserCheckErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
+	 * Resource not found; foreign organisation IDs are indistinguishable from missing IDs.
+	 */
+	404: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
 	 * Internal Server Error
 	 */
 	500: PublicApiServerError;
@@ -4355,7 +6473,7 @@ export type CreateBrowserCheckResponses = {
 	/**
 	 * Create a new OnlineOrNot Browser Check
 	 */
-	201: BrowserCheckResponse;
+	201: ProjectRolloutEnvelopeBrowserCheckResponse;
 };
 
 export type CreateBrowserCheckResponse =
@@ -4463,14 +6581,14 @@ export type GetBrowserCheckResponses = {
 	/**
 	 * Retrieve the specified OnlineOrNot Browser Check
 	 */
-	200: BrowserCheckResponse;
+	200: ProjectRolloutEnvelopeBrowserCheckResponse;
 };
 
 export type GetBrowserCheckResponse =
 	GetBrowserCheckResponses[keyof GetBrowserCheckResponses];
 
 export type UpdateBrowserCheckData = {
-	body: BrowserCheckPatch;
+	body: ProjectRolloutPatchBrowserCheckPatch;
 	headers?: {
 		/**
 		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
@@ -4517,7 +6635,7 @@ export type UpdateBrowserCheckResponses = {
 	/**
 	 * Modify an OnlineOrNot Browser Check
 	 */
-	200: BrowserCheckResponse;
+	200: ProjectRolloutEnvelopeBrowserCheckResponse;
 };
 
 export type UpdateBrowserCheckResponse =
@@ -5141,6 +7259,10 @@ export type ListChecksData = {
 			| "RECOVERING"
 			| "UP"
 			| "VERIFYING";
+		/**
+		 * Omit to list resources across all authorized projects.
+		 */
+		project_id?: ProjectOperationProjectSelectionId;
 	};
 	url: "/v1/checks";
 };
@@ -5159,6 +7281,19 @@ export type ListChecksErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
+	 * Resource not found; foreign organisation IDs are indistinguishable from missing IDs.
+	 */
+	404: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
 	 * Internal Server Error
 	 */
 	500: PublicApiServerError;
@@ -5172,7 +7307,7 @@ export type ListChecksResponses = {
 	 */
 	200:
 		| {
-				result: Array<CheckListItem>;
+				result: Array<ProjectRolloutResourceCheckListItem>;
 				result_info: {
 					/**
 					 * Page number of paginated results.
@@ -5218,7 +7353,7 @@ export type ListChecksResponses = {
 export type ListChecksResponse = ListChecksResponses[keyof ListChecksResponses];
 
 export type CreateCheckData = {
-	body: CheckInput;
+	body: ProjectRolloutCreateCheckInput;
 	headers?: {
 		/**
 		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
@@ -5244,6 +7379,19 @@ export type CreateCheckErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
+	 * Resource not found; foreign organisation IDs are indistinguishable from missing IDs.
+	 */
+	404: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
 	 * Internal Server Error
 	 */
 	500: PublicApiServerError;
@@ -5255,7 +7403,7 @@ export type CreateCheckResponses = {
 	/**
 	 * Create a new OnlineOrNot Check
 	 */
-	201: CheckResponse;
+	201: ProjectRolloutEnvelopeCheckResponse;
 };
 
 export type CreateCheckResponse =
@@ -5363,7 +7511,7 @@ export type GetCheckResponses = {
 	 */
 	200:
 		| {
-				result: AnyCheck;
+				result: ProjectRolloutResourceAnyCheck;
 				success: true;
 				errors: Array<{
 					code: number;
@@ -5391,7 +7539,7 @@ export type GetCheckResponses = {
 export type GetCheckResponse = GetCheckResponses[keyof GetCheckResponses];
 
 export type UpdateCheckData = {
-	body: CheckPatch;
+	body: ProjectRolloutPatchCheckPatch;
 	headers?: {
 		/**
 		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
@@ -5437,7 +7585,7 @@ export type UpdateCheckResponses = {
 	/**
 	 * Modify an OnlineOrNot Check
 	 */
-	200: CheckResponse;
+	200: ProjectRolloutEnvelopeCheckResponse;
 };
 
 export type UpdateCheckResponse =
@@ -5461,6 +7609,14 @@ export type ListEnvironmentVariablesData = {
 		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
 		per_page?: number;
+		/**
+		 * Case-insensitive substring search on environment variable names.
+		 */
+		search?: string;
+		/**
+		 * Omit to list resources across all authorized projects.
+		 */
+		project_id?: ProjectOperationProjectSelectionId;
 	};
 	url: "/v1/env";
 };
@@ -5500,7 +7656,7 @@ export type ListEnvironmentVariablesResponses = {
 	 * Paginated environment variable metadata.
 	 */
 	200: {
-		result: Array<EnvironmentVariableMetadata>;
+		result: Array<ProjectRolloutResourceVariableEnvironmentVariableMetadata>;
 		result_info: {
 			/**
 			 * Page number of paginated results.
@@ -5541,10 +7697,7 @@ export type ListEnvironmentVariablesResponse =
 
 export type CreateEnvironmentVariableData = {
 	body: {
-		/**
-		 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
-		 */
-		name: string;
+		name: ProjectOperationProjectVariableName;
 		/**
 		 * Immutable variable type. Config values are readable and unsuitable for credentials; secret values are write-only.
 		 */
@@ -5553,6 +7706,10 @@ export type CreateEnvironmentVariableData = {
 		 * Value of the variable, limited to 8 KiB of UTF-8. Secret values are write-only and never appear in API responses.
 		 */
 		value: string;
+		/**
+		 * Omit to select the organisation's stable Default project.
+		 */
+		project_id?: ProjectOperationProjectSelectionId;
 	};
 	headers?: {
 		/**
@@ -5610,10 +7767,7 @@ export type CreateEnvironmentVariableResponses = {
 					 * Stable public environment variable ID.
 					 */
 					id: string;
-					/**
-					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
-					 */
-					name: string;
+					name: ProjectOperationProjectVariableName;
 					type: "secret";
 					/**
 					 * Confirms that a value is stored without revealing write-only secret values.
@@ -5627,16 +7781,14 @@ export type CreateEnvironmentVariableResponses = {
 					 * Last update timestamp in ISO 8601 format.
 					 */
 					updated_at: string;
+					project_id: ProjectOperationProjectSelectionId;
 			  }
 			| {
 					/**
 					 * Stable public environment variable ID.
 					 */
 					id: string;
-					/**
-					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
-					 */
-					name: string;
+					name: ProjectOperationProjectVariableName;
 					type: "config";
 					/**
 					 * Confirms that a value is stored without revealing write-only secret values.
@@ -5654,6 +7806,7 @@ export type CreateEnvironmentVariableResponses = {
 					 * Readable config value.
 					 */
 					value: string;
+					project_id: ProjectOperationProjectSelectionId;
 			  };
 		/**
 		 * Whether the API call was successful
@@ -5814,10 +7967,7 @@ export type GetEnvironmentVariableResponses = {
 					 * Stable public environment variable ID.
 					 */
 					id: string;
-					/**
-					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
-					 */
-					name: string;
+					name: ProjectOperationProjectVariableName;
 					type: "secret";
 					/**
 					 * Confirms that a value is stored without revealing write-only secret values.
@@ -5831,16 +7981,14 @@ export type GetEnvironmentVariableResponses = {
 					 * Last update timestamp in ISO 8601 format.
 					 */
 					updated_at: string;
+					project_id: ProjectOperationProjectSelectionId;
 			  }
 			| {
 					/**
 					 * Stable public environment variable ID.
 					 */
 					id: string;
-					/**
-					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
-					 */
-					name: string;
+					name: ProjectOperationProjectVariableName;
 					type: "config";
 					/**
 					 * Confirms that a value is stored without revealing write-only secret values.
@@ -5858,6 +8006,7 @@ export type GetEnvironmentVariableResponses = {
 					 * Readable config value.
 					 */
 					value: string;
+					project_id: ProjectOperationProjectSelectionId;
 			  };
 		/**
 		 * Whether the API call was successful
@@ -5881,14 +8030,12 @@ export type GetEnvironmentVariableResponse =
 
 export type UpdateEnvironmentVariableData = {
 	body: {
-		/**
-		 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
-		 */
-		name?: string;
+		name?: ProjectOperationProjectVariableName;
 		/**
 		 * Value of the variable, limited to 8 KiB of UTF-8. Secret values are write-only and never appear in API responses.
 		 */
 		value?: string;
+		project_id?: never;
 	};
 	headers?: {
 		/**
@@ -5951,10 +8098,7 @@ export type UpdateEnvironmentVariableResponses = {
 					 * Stable public environment variable ID.
 					 */
 					id: string;
-					/**
-					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
-					 */
-					name: string;
+					name: ProjectOperationProjectVariableName;
 					type: "secret";
 					/**
 					 * Confirms that a value is stored without revealing write-only secret values.
@@ -5968,16 +8112,14 @@ export type UpdateEnvironmentVariableResponses = {
 					 * Last update timestamp in ISO 8601 format.
 					 */
 					updated_at: string;
+					project_id: ProjectOperationProjectSelectionId;
 			  }
 			| {
 					/**
 					 * Stable public environment variable ID.
 					 */
 					id: string;
-					/**
-					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
-					 */
-					name: string;
+					name: ProjectOperationProjectVariableName;
 					type: "config";
 					/**
 					 * Confirms that a value is stored without revealing write-only secret values.
@@ -5995,6 +8137,7 @@ export type UpdateEnvironmentVariableResponses = {
 					 * Readable config value.
 					 */
 					value: string;
+					project_id: ProjectOperationProjectSelectionId;
 			  };
 		/**
 		 * Whether the API call was successful
@@ -6038,6 +8181,10 @@ export type ListHeartbeatsData = {
 		 * Search term to filter results.
 		 */
 		search?: string;
+		/**
+		 * Omit to list resources across all authorized projects.
+		 */
+		project_id?: ProjectOperationProjectSelectionId;
 	};
 	url: "/v1/heartbeats";
 };
@@ -6056,6 +8203,19 @@ export type ListHeartbeatsErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
+	 * Resource not found; foreign organisation IDs are indistinguishable from missing IDs.
+	 */
+	404: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
 	 * Internal Server Error
 	 */
 	500: PublicApiServerError;
@@ -6070,7 +8230,7 @@ export type ListHeartbeatsResponses = {
 	 */
 	200:
 		| {
-				result: Array<Heartbeat>;
+				result: Array<ProjectRolloutResourceHeartbeat>;
 				result_info: {
 					/**
 					 * Page number of paginated results.
@@ -6179,6 +8339,10 @@ export type CreateHeartbeatData = {
 		 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
 		 */
 		alert_priority?: "LOW" | "HIGH";
+		/**
+		 * Omit to select the organisation's stable Default project.
+		 */
+		project_id?: ProjectOperationProjectSelectionId;
 	};
 	headers?: {
 		/**
@@ -6205,6 +8369,19 @@ export type CreateHeartbeatErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
+	 * Resource not found; foreign organisation IDs are indistinguishable from missing IDs.
+	 */
+	404: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
 	 * Internal Server Error
 	 */
 	500: PublicApiServerError;
@@ -6218,7 +8395,7 @@ export type CreateHeartbeatResponses = {
 	 * Create a new OnlineOrNot Heartbeat
 	 */
 	201: {
-		result: ExpandedHeartbeat;
+		result: ProjectRolloutResourceExpandedHeartbeat;
 		/**
 		 * Whether the API call was successful
 		 */
@@ -6358,7 +8535,7 @@ export type GetHeartbeatResponses = {
 	 * Retrieve the specified OnlineOrNot Heartbeat
 	 */
 	200: {
-		result: ExpandedHeartbeat;
+		result: ProjectRolloutResourceExpandedHeartbeat;
 		/**
 		 * Whether the API call was successful
 		 */
@@ -6450,6 +8627,7 @@ export type UpdateHeartbeatData = {
 		 * Suppresses alerts without stopping heartbeat monitoring.
 		 */
 		muted?: boolean;
+		project_id?: never;
 	};
 	headers?: {
 		/**
@@ -6494,7 +8672,7 @@ export type UpdateHeartbeatResponses = {
 	 * Modify an OnlineOrNot Heartbeat
 	 */
 	200: {
-		result: ExpandedHeartbeat;
+		result: ProjectRolloutResourceExpandedHeartbeat;
 		/**
 		 * Whether the API call was successful
 		 */
@@ -10959,3 +13137,934 @@ export type UpdateWebhookResponses = {
 
 export type UpdateWebhookResponse =
 	UpdateWebhookResponses[keyof UpdateWebhookResponses];
+
+export type ListProjectsData = {
+	body?: never;
+	path?: never;
+	query?: {
+		/**
+		 * Page number of paginated results, starting at 1.
+		 */
+		page?: number;
+		/**
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
+		 */
+		per_page?: number;
+	};
+	url: "/v1/projects";
+};
+
+export type ListProjectsErrors = {
+	/**
+	 * Malformed request or noncanonical ID.
+	 */
+	400: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Missing or invalid credentials.
+	 */
+	401: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Insufficient permissions.
+	 */
+	403: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Resource not found; foreign organisation IDs are indistinguishable from missing IDs.
+	 */
+	404: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Rate limit exceeded.
+	 */
+	429: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Internal server error.
+	 */
+	500: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+};
+
+export type ListProjectsError = ListProjectsErrors[keyof ListProjectsErrors];
+
+export type ListProjectsResponses = {
+	/**
+	 * Paginated projects.
+	 */
+	200: {
+		result: Array<ProjectOperationProject>;
+		result_info: {
+			/**
+			 * Page number of paginated results.
+			 */
+			page?: number;
+			/**
+			 * Number of items per page.
+			 */
+			per_page?: number;
+			/**
+			 * Number of items on the current page.
+			 */
+			count: number;
+			/**
+			 * Total number of items.
+			 */
+			total_count: number;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type ListProjectsResponse =
+	ListProjectsResponses[keyof ListProjectsResponses];
+
+export type CreateProjectData = {
+	body: {
+		/**
+		 * Editable display label. Project names need not be unique.
+		 */
+		name: string;
+	};
+	path?: never;
+	query?: never;
+	url: "/v1/projects";
+};
+
+export type CreateProjectErrors = {
+	/**
+	 * Malformed request or noncanonical ID.
+	 */
+	400: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Missing or invalid credentials.
+	 */
+	401: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Insufficient permissions.
+	 */
+	403: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Resource not found; foreign organisation IDs are indistinguishable from missing IDs.
+	 */
+	404: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Rate limit exceeded.
+	 */
+	429: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Internal server error.
+	 */
+	500: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+};
+
+export type CreateProjectError = CreateProjectErrors[keyof CreateProjectErrors];
+
+export type CreateProjectResponses = {
+	/**
+	 * Project created.
+	 */
+	201: {
+		result: ProjectOperationProject;
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type CreateProjectResponse =
+	CreateProjectResponses[keyof CreateProjectResponses];
+
+export type DeleteProjectData = {
+	body?: never;
+	path: {
+		/**
+		 * Encoded project ID, not a project name or raw database ID.
+		 */
+		project_id: string;
+	};
+	query?: never;
+	url: "/v1/projects/{project_id}";
+};
+
+export type DeleteProjectErrors = {
+	/**
+	 * Malformed request or noncanonical ID.
+	 */
+	400: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Missing or invalid credentials.
+	 */
+	401: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Insufficient permissions.
+	 */
+	403: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Resource not found; foreign organisation IDs are indistinguishable from missing IDs.
+	 */
+	404: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Default or nonempty project.
+	 */
+	409: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: 10010;
+			message: string;
+			type: "project_is_default" | "project_not_empty";
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Rate limit exceeded.
+	 */
+	429: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Internal server error.
+	 */
+	500: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+};
+
+export type DeleteProjectError = DeleteProjectErrors[keyof DeleteProjectErrors];
+
+export type DeleteProjectResponses = {
+	/**
+	 * Project deleted.
+	 */
+	200: {
+		result: {
+			/**
+			 * Encoded project ID, not a project name or raw database ID.
+			 */
+			id: string;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type DeleteProjectResponse =
+	DeleteProjectResponses[keyof DeleteProjectResponses];
+
+export type GetProjectData = {
+	body?: never;
+	path: {
+		/**
+		 * Encoded project ID, not a project name or raw database ID.
+		 */
+		project_id: string;
+	};
+	query?: never;
+	url: "/v1/projects/{project_id}";
+};
+
+export type GetProjectErrors = {
+	/**
+	 * Malformed request or noncanonical ID.
+	 */
+	400: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Missing or invalid credentials.
+	 */
+	401: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Insufficient permissions.
+	 */
+	403: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Resource not found; foreign organisation IDs are indistinguishable from missing IDs.
+	 */
+	404: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Rate limit exceeded.
+	 */
+	429: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Internal server error.
+	 */
+	500: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+};
+
+export type GetProjectError = GetProjectErrors[keyof GetProjectErrors];
+
+export type GetProjectResponses = {
+	/**
+	 * Project detail.
+	 */
+	200: {
+		result: ProjectOperationProject;
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type GetProjectResponse = GetProjectResponses[keyof GetProjectResponses];
+
+export type UpdateProjectData = {
+	body: {
+		/**
+		 * Editable display label. Project names need not be unique.
+		 */
+		name: string;
+	};
+	path: {
+		/**
+		 * Encoded project ID, not a project name or raw database ID.
+		 */
+		project_id: string;
+	};
+	query?: never;
+	url: "/v1/projects/{project_id}";
+};
+
+export type UpdateProjectErrors = {
+	/**
+	 * Malformed request or noncanonical ID.
+	 */
+	400: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Missing or invalid credentials.
+	 */
+	401: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Insufficient permissions.
+	 */
+	403: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Resource not found; foreign organisation IDs are indistinguishable from missing IDs.
+	 */
+	404: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Rate limit exceeded.
+	 */
+	429: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Internal server error.
+	 */
+	500: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+};
+
+export type UpdateProjectError = UpdateProjectErrors[keyof UpdateProjectErrors];
+
+export type UpdateProjectResponses = {
+	/**
+	 * Project renamed.
+	 */
+	200: {
+		result: ProjectOperationProject;
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type UpdateProjectResponse =
+	UpdateProjectResponses[keyof UpdateProjectResponses];
+
+export type MoveCheckData = {
+	body: {
+		/**
+		 * Encoded project ID, not a project name or raw database ID.
+		 */
+		project_id: string;
+	};
+	path: {
+		/**
+		 * Uptime Check ID
+		 */
+		check_id: string;
+	};
+	query?: never;
+	url: "/v1/checks/{check_id}/move";
+};
+
+export type MoveCheckErrors = {
+	/**
+	 * Malformed request or noncanonical ID.
+	 */
+	400: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Missing or invalid credentials.
+	 */
+	401: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Insufficient permissions.
+	 */
+	403: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Resource not found; foreign organisation IDs are indistinguishable from missing IDs.
+	 */
+	404: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Required destination variable missing or incompatible.
+	 */
+	409: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: 10010;
+			message: string;
+			type: "project_move_variable_conflict";
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Rate limit exceeded.
+	 */
+	429: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Internal server error.
+	 */
+	500: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+};
+
+export type MoveCheckError = MoveCheckErrors[keyof MoveCheckErrors];
+
+export type MoveCheckResponses = {
+	/**
+	 * Check moved or authorized same-project no-op.
+	 */
+	200: {
+		result: {
+			/**
+			 * Uptime Check ID
+			 */
+			id: string;
+			/**
+			 * Encoded project ID, not a project name or raw database ID.
+			 */
+			project_id: string;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type MoveCheckResponse = MoveCheckResponses[keyof MoveCheckResponses];
+
+export type MoveHeartbeatData = {
+	body: {
+		/**
+		 * Encoded project ID, not a project name or raw database ID.
+		 */
+		project_id: string;
+	};
+	path: {
+		/**
+		 * Heartbeat ID
+		 */
+		heartbeat_id: string;
+	};
+	query?: never;
+	url: "/v1/heartbeats/{heartbeat_id}/move";
+};
+
+export type MoveHeartbeatErrors = {
+	/**
+	 * Malformed request or noncanonical ID.
+	 */
+	400: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Missing or invalid credentials.
+	 */
+	401: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Insufficient permissions.
+	 */
+	403: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Resource not found; foreign organisation IDs are indistinguishable from missing IDs.
+	 */
+	404: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Rate limit exceeded.
+	 */
+	429: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+	/**
+	 * Internal server error.
+	 */
+	500: {
+		success: false;
+		result: null;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<unknown>;
+	};
+};
+
+export type MoveHeartbeatError = MoveHeartbeatErrors[keyof MoveHeartbeatErrors];
+
+export type MoveHeartbeatResponses = {
+	/**
+	 * Heartbeat moved or authorized same-project no-op.
+	 */
+	200: {
+		result: {
+			/**
+			 * Heartbeat ID
+			 */
+			id: string;
+			/**
+			 * Encoded project ID, not a project name or raw database ID.
+			 */
+			project_id: string;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type MoveHeartbeatResponse =
+	MoveHeartbeatResponses[keyof MoveHeartbeatResponses];

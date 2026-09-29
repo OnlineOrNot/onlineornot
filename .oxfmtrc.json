@@ -6,5 +6,8 @@
 	"useTabs": true,
 	"sortImports": true,
 	"sortPackageJson": false,
-	"ignorePatterns": ["tools/oxlint/anti-slop/**"]
+	"ignorePatterns": [
+		"tools/oxlint/anti-slop/**",
+		"packages/api/candidates/projects/openapi.json"
+	]
 }

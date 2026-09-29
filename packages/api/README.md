@@ -147,3 +147,10 @@ Hey API 0.99.0 does not emit operation-level OpenAPI `servers` into SDK calls. T
 ## First publication
 
 The repository release workflow publishes this package with npm provenance through GitHub Actions. Before its first release, a package owner must create or reserve `@onlineornot/api` on npm and configure npm Trusted Publishing for repository `OnlineOrNot/onlineornot` and workflow `.github/workflows/release.yml`. Trusted Publisher configuration is per npm package, so the existing `onlineornot` setup does not automatically cover this package.
+
+## Unreleased projects candidate
+
+This branch prepares project CRUD, resource `project_id` selection/filtering and
+explicit `moveCheck` / `moveHeartbeat` operations against an **unreleased local
+candidate**. It does not assert that these routes are deployed or published.
+See [candidate provenance and verification](candidates/projects/README.md).

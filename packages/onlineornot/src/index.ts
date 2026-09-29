@@ -9,6 +9,8 @@ import { docsHandler, docsOptions } from "./docs";
 import { logger } from "./logger";
 import { loginHandler, loginOptions } from "./login";
 import { logoutHandler, logoutOptions } from "./logout";
+import { moveOptions, moveHeartbeatHandler } from "./move";
+import { projects } from "./projects";
 import { setupHandler, setupOptions } from "./setup";
 import { uninstallHandler, uninstallOptions } from "./uninstall";
 import { updateHandler, updateOptions } from "./update";
@@ -100,6 +102,23 @@ export function createCLIParser(argv: string[]) {
 	onlineornot.command("checks", "✅ Manage your uptime checks", (d1Yargs) => {
 		return checks(d1Yargs.command(subHelp));
 	});
+
+	onlineornot.command("projects", "Manage projects (candidate API)", (args) =>
+		projects(args.command(subHelp)),
+	);
+	onlineornot.command(
+		"heartbeats",
+		"Manage heartbeat project ownership (candidate API)",
+		(args) =>
+			args
+				.command(subHelp)
+				.command(
+					"move <id>",
+					"Move a heartbeat without changing scheduling or ping URLs",
+					moveOptions,
+					moveHeartbeatHandler,
+				),
+	);
 
 	// billing
 	onlineornot.command(

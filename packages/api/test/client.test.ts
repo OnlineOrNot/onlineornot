@@ -8,7 +8,7 @@ import {
 	pingHeartbeat,
 	pingHeartbeatGet,
 	updateCheck,
-	type CheckListItem,
+	type ProjectRolloutResourceCheckListItem,
 	type CheckListResponse,
 	type GetHeartbeatErrors,
 	type ListChecksResponses,
@@ -216,7 +216,7 @@ describe("generated client", () => {
 		>;
 		expectTypeOf<ListChecksSuccess>().toMatchTypeOf<CheckListResponse>();
 		expectTypeOf<ListChecksSuccess["result"]>().toEqualTypeOf<
-			CheckListItem[]
+			ProjectRolloutResourceCheckListItem[]
 		>();
 		expectTypeOf<
 			ListChecksSuccess["result_info"]["total_count"]

@@ -130,3 +130,23 @@ it("builds the workspace SDK in each binary job before bundling the CLI", () => 
 		/run: pnpm install --frozen-lockfile[\s\S]*run: pnpm --filter @onlineornot\/api run build[\s\S]*run: pnpm run build:sea/,
 	);
 });
+
+it("does not publish previews or releases from a candidate schema pin", () => {
+	const preview = readFileSync(
+		new URL("../../../.github/workflows/prereleases.yml", import.meta.url),
+		"utf8",
+	);
+	const release = readFileSync(
+		new URL("../../../.github/workflows/release.yml", import.meta.url),
+		"utf8",
+	);
+	expect(preview).toContain(
+		"if: ${{ hashFiles('packages/api/schema.candidate.lock.json') == '' }}",
+	);
+	expect(release).toContain(
+		"test ! -f packages/api/schema.candidate.lock.json",
+	);
+	expect(
+		release.indexOf("test ! -f packages/api/schema.candidate.lock.json"),
+	).toBeLessThan(release.indexOf("uses: changesets/action@"));
+});

@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { writeFile } from "node:fs/promises";
+import { access, writeFile } from "node:fs/promises";
 
 import {
 	digest,
@@ -8,6 +8,15 @@ import {
 	schemaUrl,
 	validateFullCommit,
 } from "./lib.mjs";
+
+try {
+	await access(new URL("../schema.candidate.lock.json", import.meta.url));
+	throw new Error(
+		"Remove the unreleased candidate lock before advancing the released schema pin.",
+	);
+} catch (error) {
+	if (error.code !== "ENOENT") throw error;
+}
 
 const commit = process.argv[2];
 validateFullCommit(commit ?? "");

@@ -2,7 +2,9 @@ import { execFileSync } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
+import { applyCandidateCompatibility } from "./candidate-compatibility.mjs";
 import {
+	digest,
 	obtainVerifiedSchema,
 	packageDirectory,
 	readLock,
@@ -16,7 +18,35 @@ const lock = await readLock();
 validateFullCommit(lock.commit);
 if (!/^[0-9a-f]{64}$/.test(lock.sha256))
 	throw new Error("Invalid SHA-256 digest in schema.lock.json");
-const schema = await obtainVerifiedSchema(lock);
+// The released lock remains unchanged while an explicitly pinned candidate is reviewed.
+// Removing the candidate lock returns generation to the released schema.
+let candidate;
+try {
+	candidate = JSON.parse(
+		await readFile(
+			path.join(packageDirectory, "schema.candidate.lock.json"),
+			"utf8",
+		),
+	);
+} catch (error) {
+	if (error.code !== "ENOENT") throw error;
+}
+let schema;
+let provenance = schemaUrl(lock);
+if (candidate) {
+	if (
+		candidate.status !== "unreleased-candidate" ||
+		candidate.path !== "candidates/projects/openapi.json"
+	)
+		throw new Error("Invalid candidate schema lock");
+	schema = path.join(packageDirectory, candidate.path);
+	const bytes = await readFile(schema);
+	if (digest(bytes) !== candidate.sha256)
+		throw new Error("Candidate schema digest mismatch");
+	provenance = `unreleased-candidate:${candidate.path}#sha256=${candidate.sha256}`;
+} else {
+	schema = await obtainVerifiedSchema(lock);
+}
 
 execFileSync("pnpm", ["exec", "openapi-ts"], {
 	cwd: packageDirectory,
@@ -48,13 +78,18 @@ execFileSync("pnpm", ["exec", "oxfmt", "--write", "src/generated"], {
 	stdio: "inherit",
 });
 
+if (candidate)
+	await applyCandidateCompatibility(
+		path.join(packageDirectory, "src/generated"),
+	);
+
 const operations = [...sdk.matchAll(/^export const ([A-Za-z_$][\w$]*)\s*=/gm)]
 	.map((match) => match[1])
 	.sort();
 if (operations.length !== new Set(operations).size)
 	throw new Error("Generated operation names collide");
 const manifestPath = path.join(packageDirectory, "operations.json");
-const manifest = `${JSON.stringify({ schema: schemaUrl(lock), count: operations.length, operations }, null, "\t")}\n`;
+const manifest = `${JSON.stringify({ schema: provenance, count: operations.length, operations }, null, "\t")}\n`;
 if (updateOperations) {
 	await writeFile(manifestPath, manifest);
 } else {
@@ -76,4 +111,4 @@ if (check) {
 		},
 	);
 }
-console.log(`Generated ${operations.length} operations from ${lock.commit}`);
+console.log(`Generated ${operations.length} operations from ${provenance}`);

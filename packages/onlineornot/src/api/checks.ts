@@ -1,4 +1,5 @@
 import {
+	type GetCheckResponses,
 	createCheck as sdkCreateCheck,
 	deleteCheck as sdkDeleteCheck,
 	getCheck as sdkGetCheck,
@@ -23,7 +24,7 @@ import { paginateAllPages } from "./pagination";
 
 const CHECKS_RESOURCE = "/checks";
 
-export async function listChecks(): Promise<CheckListItem[]> {
+export async function listChecks(projectId?: string): Promise<CheckListItem[]> {
 	const config = await authenticatedConfig();
 	return paginateAllPages(async (page, pageSize) => {
 		const response = unwrapApiEnvelope(
@@ -32,6 +33,7 @@ export async function listChecks(): Promise<CheckListItem[]> {
 				query: {
 					page,
 					per_page: pageSize,
+					project_id: projectId,
 				},
 			}),
 			CHECKS_RESOURCE,
@@ -57,16 +59,9 @@ export async function getCheck(checkId: string): Promise<Check> {
 		path: { check_id: checkId },
 	});
 
-	const check = unwrapApiResult(result, `${CHECKS_RESOURCE}/${checkId}`);
-	if (check.check_type !== "UPTIME" && check.check_type !== "BROWSER") {
-		throw new ParseError({
-			text: `Check type ${check.check_type} is not supported by this command.`,
-		});
-	}
-
-	// SAFETY: The generated API discriminant above establishes that this is one
-	// of the check variants rendered by the CLI's uptime/browser check command.
-	return check as Check;
+	return supportedCheck(
+		unwrapApiResult(result, `${CHECKS_RESOURCE}/${checkId}`),
+	);
 }
 
 export async function updateCheck(
@@ -92,4 +87,16 @@ export async function deleteCheck(checkId: string): Promise<void> {
 async function authenticatedConfig() {
 	const { apiToken } = await getTokenAsync();
 	return getApiConfig(apiToken);
+}
+
+function supportedCheck(
+	check: Exclude<GetCheckResponses[200], { success: false }>["result"],
+): Check {
+	if (check.check_type !== "UPTIME" && check.check_type !== "BROWSER") {
+		throw new ParseError({
+			text: `Check type ${check.check_type} is not supported by this command.`,
+		});
+	}
+	// SAFETY: The check discriminant above restricts the polymorphic response to uptime/browser checks rendered here.
+	return check as Check;
 }

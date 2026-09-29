@@ -103,7 +103,15 @@ export function options(yargs: CommonYargsArgv) {
 		.option("version", {
 			describe: "Version of the Browser Check",
 			type: "string",
-			choices: ["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT"] as const,
+			choices: ["NODE24_PLAYWRIGHT"] as const,
+			coerce: (value: string) => {
+				if (value === "NODE20_PLAYWRIGHT") {
+					throw new Error(
+						"NODE20_PLAYWRIGHT is no longer supported; use NODE24_PLAYWRIGHT",
+					);
+				}
+				return value;
+			},
 		})
 		.option("webhook-alerts", {
 			describe: "IDs of webhooks to associate with this check",
@@ -178,7 +186,7 @@ export async function handler(
 	if (args.verifySsl !== undefined) params.verify_ssl = args.verifySsl;
 	if (args.authUsername) params.auth_username = args.authUsername;
 	if (args.authPassword) params.auth_password = args.authPassword;
-	if (args.version) params.version = args.version;
+	if (args.version === "NODE24_PLAYWRIGHT") params.version = args.version;
 	if (args.webhookAlerts) params.webhook_alerts = args.webhookAlerts;
 	if (args.oncallAlerts) params.oncall_alerts = args.oncallAlerts;
 	if (args.paused !== undefined) params.paused = args.paused;

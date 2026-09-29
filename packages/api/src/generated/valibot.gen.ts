@@ -72,9 +72,7 @@ export const vExpandedUptimeCheck = v.object({
 	recovery_period_seconds: v.number(),
 	test_interval: v.number(),
 	timeout: v.number(),
-	version: v.nullable(
-		v.picklist(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
-	),
+	version: v.nullable(v.picklist(["NODE24_PLAYWRIGHT", "CLOUDFLARE"])),
 	script: v.nullable(v.string()),
 	alert_priority: v.picklist(["LOW", "HIGH"]),
 	verify_ssl: v.boolean(),
@@ -192,7 +190,7 @@ export const vExpandedBrowserCheck = v.object({
 	pushover_alerts: v.array(v.string()),
 	oncall_alerts: v.array(v.string()),
 	webhook_alerts: v.array(v.string()),
-	version: v.picklist(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
+	version: v.picklist(["NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
 	check_type: v.picklist(["BROWSER"]),
 });
 
@@ -983,7 +981,7 @@ export const vBrowserCheckPatch = v.strictObject({
 	verify_ssl: v.optional(v.boolean()),
 	auth_username: v.optional(v.string()),
 	auth_password: v.optional(v.string()),
-	version: v.optional(v.picklist(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT"])),
+	version: v.optional(v.picklist(["NODE24_PLAYWRIGHT"])),
 	script: v.optional(v.string()),
 });
 
@@ -1196,9 +1194,7 @@ export const vExpandedCheck = v.intersect([
 		recovery_period_seconds: v.number(),
 		test_interval: v.number(),
 		timeout: v.nullable(v.number()),
-		version: v.nullable(
-			v.picklist(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
-		),
+		version: v.nullable(v.picklist(["NODE24_PLAYWRIGHT", "CLOUDFLARE"])),
 		script: v.nullable(v.string()),
 		alert_priority: v.picklist(["LOW", "HIGH"]),
 		verify_ssl: v.boolean(),
@@ -1408,7 +1404,7 @@ export const vCheckPatch = v.object({
 	verify_ssl: v.optional(v.boolean()),
 	auth_username: v.optional(v.string()),
 	auth_password: v.optional(v.string()),
-	version: v.optional(v.picklist(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT"])),
+	version: v.optional(v.picklist(["NODE24_PLAYWRIGHT"])),
 	script: v.optional(v.string()),
 });
 
@@ -1724,6 +1720,1126 @@ export const vWebhook = v.object({
 	),
 });
 
+/**
+ * Encoded project ID, not a project name or raw database ID.
+ */
+export const vProjectOperationProjectSelectionId = v.pipe(
+	v.string(),
+	v.minLength(16),
+	v.maxLength(128),
+	v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+);
+
+/**
+ * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the project. No inheritance or cross-project fallback.
+ */
+export const vProjectOperationProjectVariableName = v.pipe(
+	v.string(),
+	v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
+);
+
+export const vProjectOperationProject = v.strictObject({
+	id: v.pipe(
+		v.string(),
+		v.minLength(16),
+		v.maxLength(128),
+		v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+	),
+	name: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+	is_default: v.boolean(),
+	created_at: v.pipe(v.string(), v.isoTimestamp()),
+	updated_at: v.pipe(v.string(), v.isoTimestamp()),
+});
+
+export const vProjectRolloutCreateDnsCheckInput = v.strictObject({
+	name: v.string(),
+	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
+	test_regions: v.optional(v.array(v.string())),
+	user_alerts: v.optional(v.array(v.string())),
+	slack_alerts: v.optional(v.array(v.string())),
+	discord_alerts: v.optional(v.array(v.string())),
+	incident_io_alerts: v.optional(v.array(v.string())),
+	microsoft_teams_alerts: v.optional(v.array(v.string())),
+	telegram_alerts: v.optional(v.array(v.string())),
+	pushover_alerts: v.optional(v.array(v.string())),
+	webhook_alerts: v.optional(v.array(v.string())),
+	oncall_alerts: v.optional(v.array(v.string())),
+	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
+	confirmation_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+		60,
+	),
+	recovery_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+		180,
+	),
+	reminder_alert_interval_minutes: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(-1)),
+		1440,
+	),
+	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
+	type: v.optional(v.picklist(["DNS_CHECK"])),
+	dns_domain: v.pipe(v.string(), v.minLength(1), v.maxLength(253)),
+	dns_record_type: v.picklist(["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"]),
+	dns_resolver: v.nullish(v.string()),
+	dns_protocol: v.optional(v.picklist(["UDP", "TCP"]), "UDP"),
+	assertions: v.optional(v.array(vDnsAssertion)),
+	project_id: v.optional(vProjectOperationProjectSelectionId),
+});
+
+export const vProjectRolloutResourceExpandedDnsCheck = v.object({
+	id: v.string(),
+	name: v.string(),
+	last_queued: v.nullable(v.string()),
+	status: v.picklist([
+		"UP",
+		"DOWN",
+		"PENDING",
+		"PAUSED",
+		"MUTED",
+		"MAINTENANCE",
+		"RECOVERING",
+		"VERIFYING",
+	]),
+	reminder_alert_interval_minutes: v.nullable(v.number()),
+	confirmation_period_seconds: v.number(),
+	recovery_period_seconds: v.number(),
+	test_interval: v.number(),
+	timeout: v.number(),
+	alert_priority: v.picklist(["LOW", "HIGH"]),
+	test_regions: v.array(v.string()),
+	user_alerts: v.array(v.string()),
+	slack_alerts: v.array(v.string()),
+	discord_alerts: v.array(v.string()),
+	incident_io_alerts: v.array(v.string()),
+	microsoft_teams_alerts: v.array(v.string()),
+	telegram_alerts: v.array(v.string()),
+	pushover_alerts: v.array(v.string()),
+	oncall_alerts: v.array(v.string()),
+	webhook_alerts: v.array(v.string()),
+	check_type: v.picklist(["DNS"]),
+	url: v.null(),
+	version: v.picklist(["NODE24_DNS"]),
+	dns_domain: v.string(),
+	dns_record_type: v.picklist(["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"]),
+	dns_resolver: v.nullable(v.string()),
+	dns_protocol: v.picklist(["UDP", "TCP"]),
+	assertions: v.nullable(v.array(vDnsAssertion)),
+	project_id: vProjectOperationProjectSelectionId,
+});
+
+export const vProjectRolloutEnvelopeDnsCheckResponse = v.object({
+	result: vProjectRolloutResourceExpandedDnsCheck,
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vProjectRolloutPatchDnsCheckPatch = v.strictObject({
+	name: v.optional(v.string()),
+	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
+	test_regions: v.optional(v.array(v.string())),
+	user_alerts: v.optional(v.array(v.string())),
+	slack_alerts: v.optional(v.array(v.string())),
+	discord_alerts: v.optional(v.array(v.string())),
+	incident_io_alerts: v.optional(v.array(v.string())),
+	microsoft_teams_alerts: v.optional(v.array(v.string())),
+	telegram_alerts: v.optional(v.array(v.string())),
+	pushover_alerts: v.optional(v.array(v.string())),
+	webhook_alerts: v.optional(v.array(v.string())),
+	oncall_alerts: v.optional(v.array(v.string())),
+	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
+	confirmation_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+	),
+	recovery_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+	),
+	reminder_alert_interval_minutes: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(-1)),
+	),
+	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000))),
+	paused: v.optional(v.boolean()),
+	muted: v.optional(v.boolean()),
+	dns_domain: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(253))),
+	dns_record_type: v.optional(
+		v.picklist(["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"]),
+	),
+	dns_resolver: v.nullish(v.string()),
+	dns_protocol: v.optional(v.picklist(["UDP", "TCP"])),
+	assertions: v.optional(v.array(vDnsAssertion)),
+	project_id: v.optional(v.never()),
+});
+
+export const vProjectRolloutCreateTcpCheckInput = v.strictObject({
+	name: v.string(),
+	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
+	test_regions: v.optional(v.array(v.string())),
+	user_alerts: v.optional(v.array(v.string())),
+	slack_alerts: v.optional(v.array(v.string())),
+	discord_alerts: v.optional(v.array(v.string())),
+	incident_io_alerts: v.optional(v.array(v.string())),
+	microsoft_teams_alerts: v.optional(v.array(v.string())),
+	telegram_alerts: v.optional(v.array(v.string())),
+	pushover_alerts: v.optional(v.array(v.string())),
+	webhook_alerts: v.optional(v.array(v.string())),
+	oncall_alerts: v.optional(v.array(v.string())),
+	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
+	confirmation_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+		60,
+	),
+	recovery_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+		180,
+	),
+	reminder_alert_interval_minutes: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(-1)),
+		1440,
+	),
+	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
+	type: v.optional(v.picklist(["TCP_CHECK"])),
+	tcp_hostname: v.pipe(v.string(), v.minLength(1), v.maxLength(253)),
+	tcp_port: v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(65535)),
+	tcp_ip_family: v.optional(v.picklist(["IPv4", "IPv6"]), "IPv4"),
+	tcp_data: v.nullish(v.pipe(v.string(), v.maxLength(16384))),
+	tcp_should_fail: v.optional(v.boolean(), false),
+	assertions: v.optional(v.array(vTcpAssertion)),
+	project_id: v.optional(vProjectOperationProjectSelectionId),
+});
+
+export const vProjectRolloutResourceExpandedTcpCheck = v.object({
+	id: v.string(),
+	name: v.string(),
+	last_queued: v.nullable(v.string()),
+	status: v.picklist([
+		"UP",
+		"DOWN",
+		"PENDING",
+		"PAUSED",
+		"MUTED",
+		"MAINTENANCE",
+		"RECOVERING",
+		"VERIFYING",
+	]),
+	reminder_alert_interval_minutes: v.nullable(v.number()),
+	confirmation_period_seconds: v.number(),
+	recovery_period_seconds: v.number(),
+	test_interval: v.number(),
+	timeout: v.number(),
+	alert_priority: v.picklist(["LOW", "HIGH"]),
+	test_regions: v.array(v.string()),
+	user_alerts: v.array(v.string()),
+	slack_alerts: v.array(v.string()),
+	discord_alerts: v.array(v.string()),
+	incident_io_alerts: v.array(v.string()),
+	microsoft_teams_alerts: v.array(v.string()),
+	telegram_alerts: v.array(v.string()),
+	pushover_alerts: v.array(v.string()),
+	oncall_alerts: v.array(v.string()),
+	webhook_alerts: v.array(v.string()),
+	check_type: v.picklist(["TCP"]),
+	url: v.null(),
+	version: v.picklist(["NODE24_TCP"]),
+	tcp_hostname: v.string(),
+	tcp_port: v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(65535)),
+	tcp_ip_family: v.picklist(["IPv4", "IPv6"]),
+	tcp_data: v.nullable(v.string()),
+	tcp_should_fail: v.boolean(),
+	assertions: v.nullable(v.array(vTcpAssertion)),
+	project_id: vProjectOperationProjectSelectionId,
+});
+
+export const vProjectRolloutEnvelopeTcpCheckResponse = v.object({
+	result: vProjectRolloutResourceExpandedTcpCheck,
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vProjectRolloutPatchTcpCheckPatch = v.strictObject({
+	name: v.optional(v.string()),
+	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
+	test_regions: v.optional(v.array(v.string())),
+	user_alerts: v.optional(v.array(v.string())),
+	slack_alerts: v.optional(v.array(v.string())),
+	discord_alerts: v.optional(v.array(v.string())),
+	incident_io_alerts: v.optional(v.array(v.string())),
+	microsoft_teams_alerts: v.optional(v.array(v.string())),
+	telegram_alerts: v.optional(v.array(v.string())),
+	pushover_alerts: v.optional(v.array(v.string())),
+	webhook_alerts: v.optional(v.array(v.string())),
+	oncall_alerts: v.optional(v.array(v.string())),
+	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
+	confirmation_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+	),
+	recovery_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+	),
+	reminder_alert_interval_minutes: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(-1)),
+	),
+	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000))),
+	paused: v.optional(v.boolean()),
+	muted: v.optional(v.boolean()),
+	tcp_hostname: v.optional(
+		v.pipe(v.string(), v.minLength(1), v.maxLength(253)),
+	),
+	tcp_port: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(65535)),
+	),
+	tcp_ip_family: v.optional(v.picklist(["IPv4", "IPv6"])),
+	tcp_data: v.nullish(v.pipe(v.string(), v.maxLength(16384))),
+	tcp_should_fail: v.optional(v.boolean()),
+	assertions: v.optional(v.array(vTcpAssertion)),
+	project_id: v.optional(v.never()),
+});
+
+export const vProjectRolloutCreateUptimeCheckInput = v.strictObject({
+	name: v.string(),
+	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
+	test_regions: v.optional(v.array(v.string())),
+	user_alerts: v.optional(v.array(v.string())),
+	slack_alerts: v.optional(v.array(v.string())),
+	discord_alerts: v.optional(v.array(v.string())),
+	incident_io_alerts: v.optional(v.array(v.string())),
+	microsoft_teams_alerts: v.optional(v.array(v.string())),
+	telegram_alerts: v.optional(v.array(v.string())),
+	pushover_alerts: v.optional(v.array(v.string())),
+	webhook_alerts: v.optional(v.array(v.string())),
+	oncall_alerts: v.optional(v.array(v.string())),
+	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
+	confirmation_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+		60,
+	),
+	recovery_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+		180,
+	),
+	reminder_alert_interval_minutes: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(-1)),
+		1440,
+	),
+	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
+	url: v.pipe(v.string(), v.url()),
+	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
+	type: v.optional(v.picklist(["UPTIME_CHECK"]), "UPTIME_CHECK"),
+	headers: v.optional(v.record(v.string(), v.string())),
+	method: v.optional(
+		v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
+		"GET",
+	),
+	body: v.optional(v.string()),
+	follow_redirects: v.optional(v.boolean(), true),
+	assertions: v.optional(
+		v.array(
+			v.object({
+				type: v.picklist([
+					"JSON_BODY",
+					"TEXT_BODY",
+					"RESPONSE_HEADERS",
+					"HTML_BODY",
+				]),
+				property: v.string(),
+				comparison: v.picklist([
+					"EQUALS",
+					"NOT_EQUALS",
+					"GREATER_THAN",
+					"LESS_THAN",
+					"NULL",
+					"NOT_NULL",
+					"EMPTY",
+					"NOT_EMPTY",
+					"CONTAINS",
+					"NOT_CONTAINS",
+					"FALSE",
+					"TRUE",
+				]),
+				expected: v.string(),
+			}),
+		),
+	),
+	verify_ssl: v.optional(v.boolean(), true),
+	auth_username: v.optional(v.string()),
+	auth_password: v.optional(v.string()),
+	project_id: v.optional(vProjectOperationProjectSelectionId),
+});
+
+export const vProjectRolloutResourceExpandedUptimeCheck = v.object({
+	id: v.string(),
+	name: v.string(),
+	url: v.nullable(v.pipe(v.string(), v.url())),
+	last_queued: v.nullable(v.string()),
+	status: v.picklist([
+		"UP",
+		"DOWN",
+		"PENDING",
+		"PAUSED",
+		"MUTED",
+		"MAINTENANCE",
+		"RECOVERING",
+		"VERIFYING",
+	]),
+	headers: v.nullable(v.record(v.string(), v.string())),
+	text_to_search_for: v.nullable(v.string()),
+	reminder_alert_interval_minutes: v.nullable(v.number()),
+	confirmation_period_seconds: v.number(),
+	recovery_period_seconds: v.number(),
+	test_interval: v.number(),
+	timeout: v.number(),
+	version: v.nullable(v.picklist(["NODE24_PLAYWRIGHT", "CLOUDFLARE"])),
+	script: v.nullable(v.string()),
+	alert_priority: v.picklist(["LOW", "HIGH"]),
+	verify_ssl: v.boolean(),
+	method: v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
+	body: v.nullable(v.string()),
+	follow_redirects: v.boolean(),
+	assertions: v.nullable(
+		v.array(
+			v.object({
+				type: v.picklist([
+					"JSON_BODY",
+					"TEXT_BODY",
+					"RESPONSE_HEADERS",
+					"HTML_BODY",
+				]),
+				property: v.string(),
+				comparison: v.picklist([
+					"EQUALS",
+					"NOT_EQUALS",
+					"GREATER_THAN",
+					"LESS_THAN",
+					"NULL",
+					"NOT_NULL",
+					"EMPTY",
+					"NOT_EMPTY",
+					"CONTAINS",
+					"NOT_CONTAINS",
+					"FALSE",
+					"TRUE",
+				]),
+				expected: v.string(),
+			}),
+		),
+	),
+	auth_username: v.nullable(v.string()),
+	auth_password: v.nullable(v.string()),
+	test_regions: v.array(v.string()),
+	user_alerts: v.array(v.string()),
+	slack_alerts: v.array(v.string()),
+	discord_alerts: v.array(v.string()),
+	incident_io_alerts: v.array(v.string()),
+	microsoft_teams_alerts: v.array(v.string()),
+	telegram_alerts: v.array(v.string()),
+	pushover_alerts: v.array(v.string()),
+	oncall_alerts: v.array(v.string()),
+	webhook_alerts: v.array(v.string()),
+	check_type: v.picklist(["UPTIME"]),
+	project_id: vProjectOperationProjectSelectionId,
+});
+
+export const vProjectRolloutEnvelopeUptimeCheckResponse = v.object({
+	result: vProjectRolloutResourceExpandedUptimeCheck,
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vProjectRolloutPatchUptimeCheckPatch = v.strictObject({
+	name: v.optional(v.string()),
+	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
+	test_regions: v.optional(v.array(v.string())),
+	user_alerts: v.optional(v.array(v.string())),
+	slack_alerts: v.optional(v.array(v.string())),
+	discord_alerts: v.optional(v.array(v.string())),
+	incident_io_alerts: v.optional(v.array(v.string())),
+	microsoft_teams_alerts: v.optional(v.array(v.string())),
+	telegram_alerts: v.optional(v.array(v.string())),
+	pushover_alerts: v.optional(v.array(v.string())),
+	webhook_alerts: v.optional(v.array(v.string())),
+	oncall_alerts: v.optional(v.array(v.string())),
+	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
+	confirmation_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+	),
+	recovery_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+	),
+	reminder_alert_interval_minutes: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(-1)),
+	),
+	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000))),
+	paused: v.optional(v.boolean()),
+	muted: v.optional(v.boolean()),
+	url: v.optional(v.pipe(v.string(), v.url())),
+	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
+	headers: v.optional(v.record(v.string(), v.string())),
+	method: v.optional(
+		v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
+	),
+	body: v.optional(v.string()),
+	follow_redirects: v.optional(v.boolean()),
+	assertions: v.optional(
+		v.array(
+			v.object({
+				type: v.picklist([
+					"JSON_BODY",
+					"TEXT_BODY",
+					"RESPONSE_HEADERS",
+					"HTML_BODY",
+				]),
+				property: v.string(),
+				comparison: v.picklist([
+					"EQUALS",
+					"NOT_EQUALS",
+					"GREATER_THAN",
+					"LESS_THAN",
+					"NULL",
+					"NOT_NULL",
+					"EMPTY",
+					"NOT_EMPTY",
+					"CONTAINS",
+					"NOT_CONTAINS",
+					"FALSE",
+					"TRUE",
+				]),
+				expected: v.string(),
+			}),
+		),
+	),
+	verify_ssl: v.optional(v.boolean()),
+	auth_username: v.optional(v.string()),
+	auth_password: v.optional(v.string()),
+	project_id: v.optional(v.never()),
+});
+
+/**
+ * Browser check create payload. Provide either url for a URL-based browser check or script for a scripted Playwright check.
+ */
+export const vProjectRolloutCreateBrowserCheckInput = v.strictObject({
+	name: v.string(),
+	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
+	test_regions: v.optional(v.array(v.string())),
+	user_alerts: v.optional(v.array(v.string())),
+	slack_alerts: v.optional(v.array(v.string())),
+	discord_alerts: v.optional(v.array(v.string())),
+	incident_io_alerts: v.optional(v.array(v.string())),
+	microsoft_teams_alerts: v.optional(v.array(v.string())),
+	telegram_alerts: v.optional(v.array(v.string())),
+	pushover_alerts: v.optional(v.array(v.string())),
+	webhook_alerts: v.optional(v.array(v.string())),
+	oncall_alerts: v.optional(v.array(v.string())),
+	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
+	confirmation_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+		60,
+	),
+	recovery_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+		180,
+	),
+	reminder_alert_interval_minutes: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(-1)),
+		1440,
+	),
+	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
+	url: v.nullish(v.pipe(v.string(), v.url())),
+	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
+	type: v.optional(v.picklist(["BROWSER_CHECK"]), "BROWSER_CHECK"),
+	headers: v.optional(v.record(v.string(), v.string())),
+	method: v.optional(
+		v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
+		"GET",
+	),
+	body: v.optional(v.string()),
+	follow_redirects: v.optional(v.boolean(), true),
+	assertions: v.optional(
+		v.array(
+			v.object({
+				type: v.picklist([
+					"JSON_BODY",
+					"TEXT_BODY",
+					"RESPONSE_HEADERS",
+					"HTML_BODY",
+				]),
+				property: v.string(),
+				comparison: v.picklist([
+					"EQUALS",
+					"NOT_EQUALS",
+					"GREATER_THAN",
+					"LESS_THAN",
+					"NULL",
+					"NOT_NULL",
+					"EMPTY",
+					"NOT_EMPTY",
+					"CONTAINS",
+					"NOT_CONTAINS",
+					"FALSE",
+					"TRUE",
+				]),
+				expected: v.string(),
+			}),
+		),
+	),
+	verify_ssl: v.optional(v.boolean(), true),
+	auth_username: v.optional(v.string()),
+	auth_password: v.optional(v.string()),
+	version: v.optional(v.picklist(["NODE24_PLAYWRIGHT"])),
+	script: v.optional(v.string()),
+	project_id: v.optional(vProjectOperationProjectSelectionId),
+});
+
+export const vProjectRolloutResourceExpandedBrowserCheck = v.object({
+	id: v.string(),
+	name: v.string(),
+	url: v.nullable(v.pipe(v.string(), v.url())),
+	last_queued: v.nullable(v.string()),
+	status: v.picklist([
+		"UP",
+		"DOWN",
+		"PENDING",
+		"PAUSED",
+		"MUTED",
+		"MAINTENANCE",
+		"RECOVERING",
+		"VERIFYING",
+	]),
+	headers: v.nullable(v.record(v.string(), v.string())),
+	text_to_search_for: v.nullable(v.string()),
+	reminder_alert_interval_minutes: v.nullable(v.number()),
+	confirmation_period_seconds: v.number(),
+	recovery_period_seconds: v.number(),
+	test_interval: v.number(),
+	timeout: v.nullable(v.number()),
+	script: v.nullable(v.string()),
+	alert_priority: v.picklist(["LOW", "HIGH"]),
+	verify_ssl: v.boolean(),
+	method: v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
+	body: v.nullable(v.string()),
+	follow_redirects: v.boolean(),
+	assertions: v.nullable(
+		v.array(
+			v.object({
+				type: v.picklist([
+					"JSON_BODY",
+					"TEXT_BODY",
+					"RESPONSE_HEADERS",
+					"HTML_BODY",
+				]),
+				property: v.string(),
+				comparison: v.picklist([
+					"EQUALS",
+					"NOT_EQUALS",
+					"GREATER_THAN",
+					"LESS_THAN",
+					"NULL",
+					"NOT_NULL",
+					"EMPTY",
+					"NOT_EMPTY",
+					"CONTAINS",
+					"NOT_CONTAINS",
+					"FALSE",
+					"TRUE",
+				]),
+				expected: v.string(),
+			}),
+		),
+	),
+	auth_username: v.nullable(v.string()),
+	auth_password: v.nullable(v.string()),
+	test_regions: v.array(v.string()),
+	user_alerts: v.array(v.string()),
+	slack_alerts: v.array(v.string()),
+	discord_alerts: v.array(v.string()),
+	incident_io_alerts: v.array(v.string()),
+	microsoft_teams_alerts: v.array(v.string()),
+	telegram_alerts: v.array(v.string()),
+	pushover_alerts: v.array(v.string()),
+	oncall_alerts: v.array(v.string()),
+	webhook_alerts: v.array(v.string()),
+	version: v.picklist(["NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
+	check_type: v.picklist(["BROWSER"]),
+	project_id: vProjectOperationProjectSelectionId,
+});
+
+export const vProjectRolloutEnvelopeBrowserCheckResponse = v.object({
+	result: vProjectRolloutResourceExpandedBrowserCheck,
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vProjectRolloutPatchBrowserCheckPatch = v.strictObject({
+	name: v.optional(v.string()),
+	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
+	test_regions: v.optional(v.array(v.string())),
+	user_alerts: v.optional(v.array(v.string())),
+	slack_alerts: v.optional(v.array(v.string())),
+	discord_alerts: v.optional(v.array(v.string())),
+	incident_io_alerts: v.optional(v.array(v.string())),
+	microsoft_teams_alerts: v.optional(v.array(v.string())),
+	telegram_alerts: v.optional(v.array(v.string())),
+	pushover_alerts: v.optional(v.array(v.string())),
+	webhook_alerts: v.optional(v.array(v.string())),
+	oncall_alerts: v.optional(v.array(v.string())),
+	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
+	confirmation_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+	),
+	recovery_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+	),
+	reminder_alert_interval_minutes: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(-1)),
+	),
+	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000))),
+	paused: v.optional(v.boolean()),
+	muted: v.optional(v.boolean()),
+	url: v.nullish(v.pipe(v.string(), v.url())),
+	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
+	headers: v.optional(v.record(v.string(), v.string())),
+	method: v.optional(
+		v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
+	),
+	body: v.optional(v.string()),
+	follow_redirects: v.optional(v.boolean()),
+	assertions: v.optional(
+		v.array(
+			v.object({
+				type: v.picklist([
+					"JSON_BODY",
+					"TEXT_BODY",
+					"RESPONSE_HEADERS",
+					"HTML_BODY",
+				]),
+				property: v.string(),
+				comparison: v.picklist([
+					"EQUALS",
+					"NOT_EQUALS",
+					"GREATER_THAN",
+					"LESS_THAN",
+					"NULL",
+					"NOT_NULL",
+					"EMPTY",
+					"NOT_EMPTY",
+					"CONTAINS",
+					"NOT_CONTAINS",
+					"FALSE",
+					"TRUE",
+				]),
+				expected: v.string(),
+			}),
+		),
+	),
+	verify_ssl: v.optional(v.boolean()),
+	auth_username: v.optional(v.string()),
+	auth_password: v.optional(v.string()),
+	version: v.optional(v.picklist(["NODE24_PLAYWRIGHT"])),
+	script: v.optional(v.string()),
+	project_id: v.optional(v.never()),
+});
+
+export const vProjectRolloutResourceCheckListItem = v.object({
+	id: v.string(),
+	name: v.string(),
+	url: v.nullable(v.pipe(v.string(), v.url())),
+	check_type: v.picklist(["UPTIME", "BROWSER", "DNS", "TCP"]),
+	last_queued: v.nullable(v.string()),
+	status: v.picklist([
+		"UP",
+		"DOWN",
+		"PENDING",
+		"PAUSED",
+		"MUTED",
+		"MAINTENANCE",
+		"RECOVERING",
+		"VERIFYING",
+	]),
+	dns_domain: v.nullish(v.string()),
+	dns_record_type: v.nullish(
+		v.picklist(["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"]),
+	),
+	dns_resolver: v.nullish(v.string()),
+	dns_protocol: v.nullish(v.picklist(["UDP", "TCP"])),
+	tcp_hostname: v.nullish(v.string()),
+	tcp_port: v.nullish(
+		v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(65535)),
+	),
+	tcp_ip_family: v.nullish(v.picklist(["IPv4", "IPv6"])),
+	project_id: vProjectOperationProjectSelectionId,
+});
+
+export const vProjectRolloutCreateCheckInput = v.object({
+	name: v.string(),
+	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
+	test_regions: v.optional(v.array(v.string())),
+	user_alerts: v.optional(v.array(v.string())),
+	slack_alerts: v.optional(v.array(v.string())),
+	discord_alerts: v.optional(v.array(v.string())),
+	incident_io_alerts: v.optional(v.array(v.string())),
+	microsoft_teams_alerts: v.optional(v.array(v.string())),
+	telegram_alerts: v.optional(v.array(v.string())),
+	pushover_alerts: v.optional(v.array(v.string())),
+	webhook_alerts: v.optional(v.array(v.string())),
+	oncall_alerts: v.optional(v.array(v.string())),
+	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
+	confirmation_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+		60,
+	),
+	recovery_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+		180,
+	),
+	reminder_alert_interval_minutes: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(-1)),
+		1440,
+	),
+	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
+	url: v.nullish(v.pipe(v.string(), v.url())),
+	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
+	type: v.optional(
+		v.picklist(["UPTIME_CHECK", "BROWSER_CHECK"]),
+		"UPTIME_CHECK",
+	),
+	headers: v.optional(v.record(v.string(), v.string())),
+	method: v.optional(
+		v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
+		"GET",
+	),
+	body: v.optional(v.string()),
+	follow_redirects: v.optional(v.boolean(), true),
+	assertions: v.optional(
+		v.array(
+			v.object({
+				type: v.picklist([
+					"JSON_BODY",
+					"TEXT_BODY",
+					"RESPONSE_HEADERS",
+					"HTML_BODY",
+				]),
+				property: v.string(),
+				comparison: v.picklist([
+					"EQUALS",
+					"NOT_EQUALS",
+					"GREATER_THAN",
+					"LESS_THAN",
+					"NULL",
+					"NOT_NULL",
+					"EMPTY",
+					"NOT_EMPTY",
+					"CONTAINS",
+					"NOT_CONTAINS",
+					"FALSE",
+					"TRUE",
+				]),
+				expected: v.string(),
+			}),
+		),
+	),
+	verify_ssl: v.optional(v.boolean(), true),
+	auth_username: v.optional(v.string()),
+	auth_password: v.optional(v.string()),
+	version: v.optional(v.picklist(["NODE24_PLAYWRIGHT"])),
+	script: v.optional(v.string()),
+	project_id: v.optional(vProjectOperationProjectSelectionId),
+});
+
+export const vProjectRolloutResourceCheck = v.object({
+	id: v.string(),
+	name: v.string(),
+	url: v.nullable(v.pipe(v.string(), v.url())),
+	check_type: v.picklist(["UPTIME", "BROWSER"]),
+	last_queued: v.nullable(v.string()),
+	status: v.picklist([
+		"UP",
+		"DOWN",
+		"PENDING",
+		"PAUSED",
+		"MUTED",
+		"MAINTENANCE",
+		"RECOVERING",
+		"VERIFYING",
+	]),
+	project_id: vProjectOperationProjectSelectionId,
+});
+
+export const vProjectRolloutResourceExpandedCheck = v.intersect([
+	vProjectRolloutResourceCheck,
+	v.object({
+		headers: v.nullable(v.record(v.string(), v.string())),
+		text_to_search_for: v.nullable(v.string()),
+		reminder_alert_interval_minutes: v.nullable(v.number()),
+		confirmation_period_seconds: v.number(),
+		recovery_period_seconds: v.number(),
+		test_interval: v.number(),
+		timeout: v.nullable(v.number()),
+		version: v.nullable(v.picklist(["NODE24_PLAYWRIGHT", "CLOUDFLARE"])),
+		script: v.nullable(v.string()),
+		alert_priority: v.picklist(["LOW", "HIGH"]),
+		verify_ssl: v.boolean(),
+		method: v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
+		body: v.nullable(v.string()),
+		follow_redirects: v.boolean(),
+		assertions: v.nullable(
+			v.array(
+				v.object({
+					type: v.picklist([
+						"JSON_BODY",
+						"TEXT_BODY",
+						"RESPONSE_HEADERS",
+						"HTML_BODY",
+					]),
+					property: v.string(),
+					comparison: v.picklist([
+						"EQUALS",
+						"NOT_EQUALS",
+						"GREATER_THAN",
+						"LESS_THAN",
+						"NULL",
+						"NOT_NULL",
+						"EMPTY",
+						"NOT_EMPTY",
+						"CONTAINS",
+						"NOT_CONTAINS",
+						"FALSE",
+						"TRUE",
+					]),
+					expected: v.string(),
+				}),
+			),
+		),
+		auth_username: v.nullable(v.string()),
+		auth_password: v.nullable(v.string()),
+		test_regions: v.array(v.string()),
+		user_alerts: v.array(v.string()),
+		slack_alerts: v.array(v.string()),
+		discord_alerts: v.array(v.string()),
+		incident_io_alerts: v.array(v.string()),
+		microsoft_teams_alerts: v.array(v.string()),
+		telegram_alerts: v.array(v.string()),
+		pushover_alerts: v.array(v.string()),
+		oncall_alerts: v.array(v.string()),
+		webhook_alerts: v.array(v.string()),
+	}),
+]);
+
+export const vProjectRolloutEnvelopeCheckResponse = v.object({
+	result: vProjectRolloutResourceExpandedCheck,
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vProjectRolloutResourceAnyCheck = v.union([
+	v.intersect([
+		v.object({
+			check_type: v.literal("UPTIME"),
+		}),
+		vProjectRolloutResourceExpandedUptimeCheck,
+	]),
+	v.intersect([
+		v.object({
+			check_type: v.literal("BROWSER"),
+		}),
+		vProjectRolloutResourceExpandedBrowserCheck,
+	]),
+	v.intersect([
+		v.object({
+			check_type: v.literal("DNS"),
+		}),
+		vProjectRolloutResourceExpandedDnsCheck,
+	]),
+	v.intersect([
+		v.object({
+			check_type: v.literal("TCP"),
+		}),
+		vProjectRolloutResourceExpandedTcpCheck,
+	]),
+]);
+
+export const vProjectRolloutPatchCheckPatch = v.object({
+	name: v.optional(v.string()),
+	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
+	test_regions: v.optional(v.array(v.string())),
+	user_alerts: v.optional(v.array(v.string())),
+	slack_alerts: v.optional(v.array(v.string())),
+	discord_alerts: v.optional(v.array(v.string())),
+	incident_io_alerts: v.optional(v.array(v.string())),
+	microsoft_teams_alerts: v.optional(v.array(v.string())),
+	telegram_alerts: v.optional(v.array(v.string())),
+	pushover_alerts: v.optional(v.array(v.string())),
+	webhook_alerts: v.optional(v.array(v.string())),
+	oncall_alerts: v.optional(v.array(v.string())),
+	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
+	confirmation_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+	),
+	recovery_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+	),
+	reminder_alert_interval_minutes: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(-1)),
+	),
+	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000))),
+	paused: v.optional(v.boolean()),
+	muted: v.optional(v.boolean()),
+	url: v.nullish(v.pipe(v.string(), v.url())),
+	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
+	type: v.optional(v.picklist(["UPTIME_CHECK", "BROWSER_CHECK"])),
+	headers: v.optional(v.record(v.string(), v.string())),
+	method: v.optional(
+		v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
+	),
+	body: v.optional(v.string()),
+	follow_redirects: v.optional(v.boolean()),
+	assertions: v.optional(
+		v.array(
+			v.object({
+				type: v.picklist([
+					"JSON_BODY",
+					"TEXT_BODY",
+					"RESPONSE_HEADERS",
+					"HTML_BODY",
+				]),
+				property: v.string(),
+				comparison: v.picklist([
+					"EQUALS",
+					"NOT_EQUALS",
+					"GREATER_THAN",
+					"LESS_THAN",
+					"NULL",
+					"NOT_NULL",
+					"EMPTY",
+					"NOT_EMPTY",
+					"CONTAINS",
+					"NOT_CONTAINS",
+					"FALSE",
+					"TRUE",
+				]),
+				expected: v.string(),
+			}),
+		),
+	),
+	verify_ssl: v.optional(v.boolean()),
+	auth_username: v.optional(v.string()),
+	auth_password: v.optional(v.string()),
+	version: v.optional(v.picklist(["NODE24_PLAYWRIGHT"])),
+	script: v.optional(v.string()),
+	project_id: v.optional(v.never()),
+});
+
+export const vProjectRolloutResourceVariableEnvironmentVariableMetadata =
+	v.object({
+		id: v.string(),
+		name: vProjectOperationProjectVariableName,
+		type: v.picklist(["config", "secret"]),
+		has_value: v.literal(true),
+		created_at: v.pipe(v.string(), v.isoTimestamp()),
+		updated_at: v.pipe(v.string(), v.isoTimestamp()),
+		project_id: vProjectOperationProjectSelectionId,
+	});
+
+export const vProjectRolloutResourceHeartbeat = v.object({
+	id: v.string(),
+	name: v.string(),
+	status: v.picklist([
+		"UP",
+		"DOWN",
+		"PENDING",
+		"PAUSED",
+		"MAINTENANCE",
+		"MUTED",
+	]),
+	last_seen: v.nullable(v.string()),
+	report_period: v.nullable(v.number()),
+	report_period_cron: v.nullable(v.string()),
+	timezone: v.nullable(v.string()),
+	grace_period: v.number(),
+	reminder_alert_interval_minutes: v.nullable(v.number()),
+	alert_priority: v.picklist(["LOW", "HIGH"]),
+	created_at: v.string(),
+	updated_at: v.string(),
+	project_id: vProjectOperationProjectSelectionId,
+});
+
+export const vProjectRolloutResourceExpandedHeartbeat = v.intersect([
+	vProjectRolloutResourceHeartbeat,
+	v.object({
+		user_alerts: v.array(v.string()),
+		slack_alerts: v.array(v.string()),
+		discord_alerts: v.array(v.string()),
+		webhook_alerts: v.array(v.string()),
+		oncall_alerts: v.array(v.string()),
+		incident_io_alerts: v.array(v.string()),
+		microsoft_teams_alerts: v.array(v.string()),
+		telegram_alerts: v.array(v.string()),
+		pushover_alerts: v.array(v.string()),
+	}),
+]);
+
 export const vPingHeartbeatGetPath = v.object({
 	heartbeat_id: v.pipe(v.string(), v.minLength(8)),
 });
@@ -1906,6 +3022,7 @@ export const vListTokensResponse = v.object({
 							"API_TOKENS",
 							"WEBHOOKS",
 							"ENVIRONMENT_VARIABLES",
+							"PROJECTS",
 						]),
 						permission: v.picklist(["READ", "EDIT"]),
 					}),
@@ -1950,6 +3067,7 @@ export const vCreateTokenBody = v.object({
 				"API_TOKENS",
 				"WEBHOOKS",
 				"ENVIRONMENT_VARIABLES",
+				"PROJECTS",
 			]),
 			permission: v.picklist(["READ", "EDIT"]),
 		}),
@@ -2050,6 +3168,7 @@ export const vGetTokenResponse = v.object({
 					"API_TOKENS",
 					"WEBHOOKS",
 					"ENVIRONMENT_VARIABLES",
+					"PROJECTS",
 				]),
 				permission: v.picklist(["READ", "EDIT"]),
 			}),
@@ -2072,7 +3191,7 @@ export const vGetTokenResponse = v.object({
 	),
 });
 
-export const vCreateDnsCheckBody = vDnsCheckInput;
+export const vCreateDnsCheckBody = vProjectRolloutCreateDnsCheckInput;
 
 export const vCreateDnsCheckHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -2081,7 +3200,7 @@ export const vCreateDnsCheckHeaders = v.object({
 /**
  * Create a new OnlineOrNot DNS Check
  */
-export const vCreateDnsCheckResponse = vDnsCheckResponse;
+export const vCreateDnsCheckResponse = vProjectRolloutEnvelopeDnsCheckResponse;
 
 export const vDeleteDnsCheckHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -2109,7 +3228,7 @@ export const vGetDnsCheckPath = v.object({
  */
 export const vGetDnsCheckResponse = v.union([
 	v.object({
-		result: vExpandedDnsCheck,
+		result: vProjectRolloutResourceExpandedDnsCheck,
 		success: v.literal(true),
 		errors: v.array(
 			v.object({
@@ -2143,7 +3262,7 @@ export const vGetDnsCheckResponse = v.union([
 	}),
 ]);
 
-export const vUpdateDnsCheckBody = vDnsCheckPatch;
+export const vUpdateDnsCheckBody = vProjectRolloutPatchDnsCheckPatch;
 
 export const vUpdateDnsCheckHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -2156,9 +3275,9 @@ export const vUpdateDnsCheckPath = v.object({
 /**
  * Modify an OnlineOrNot DNS Check
  */
-export const vUpdateDnsCheckResponse = vDnsCheckResponse;
+export const vUpdateDnsCheckResponse = vProjectRolloutEnvelopeDnsCheckResponse;
 
-export const vCreateTcpCheckBody = vTcpCheckInput;
+export const vCreateTcpCheckBody = vProjectRolloutCreateTcpCheckInput;
 
 export const vCreateTcpCheckHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -2167,7 +3286,7 @@ export const vCreateTcpCheckHeaders = v.object({
 /**
  * Create a new OnlineOrNot TCP Check
  */
-export const vCreateTcpCheckResponse = vTcpCheckResponse;
+export const vCreateTcpCheckResponse = vProjectRolloutEnvelopeTcpCheckResponse;
 
 export const vDeleteTcpCheckHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -2195,7 +3314,7 @@ export const vGetTcpCheckPath = v.object({
  */
 export const vGetTcpCheckResponse = v.union([
 	v.object({
-		result: vExpandedTcpCheck,
+		result: vProjectRolloutResourceExpandedTcpCheck,
 		success: v.literal(true),
 		errors: v.array(
 			v.object({
@@ -2229,7 +3348,7 @@ export const vGetTcpCheckResponse = v.union([
 	}),
 ]);
 
-export const vUpdateTcpCheckBody = vTcpCheckPatch;
+export const vUpdateTcpCheckBody = vProjectRolloutPatchTcpCheckPatch;
 
 export const vUpdateTcpCheckHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -2242,9 +3361,9 @@ export const vUpdateTcpCheckPath = v.object({
 /**
  * Modify an OnlineOrNot TCP Check
  */
-export const vUpdateTcpCheckResponse = vTcpCheckResponse;
+export const vUpdateTcpCheckResponse = vProjectRolloutEnvelopeTcpCheckResponse;
 
-export const vCreateUptimeCheckBody = vUptimeCheckInput;
+export const vCreateUptimeCheckBody = vProjectRolloutCreateUptimeCheckInput;
 
 export const vCreateUptimeCheckHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -2253,7 +3372,8 @@ export const vCreateUptimeCheckHeaders = v.object({
 /**
  * Create a new OnlineOrNot Uptime Check
  */
-export const vCreateUptimeCheckResponse = vUptimeCheckResponse;
+export const vCreateUptimeCheckResponse =
+	vProjectRolloutEnvelopeUptimeCheckResponse;
 
 export const vDeleteUptimeCheckHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -2279,9 +3399,10 @@ export const vGetUptimeCheckPath = v.object({
 /**
  * Retrieve the specified OnlineOrNot Uptime Check
  */
-export const vGetUptimeCheckResponse = vUptimeCheckResponse;
+export const vGetUptimeCheckResponse =
+	vProjectRolloutEnvelopeUptimeCheckResponse;
 
-export const vUpdateUptimeCheckBody = vUptimeCheckPatch;
+export const vUpdateUptimeCheckBody = vProjectRolloutPatchUptimeCheckPatch;
 
 export const vUpdateUptimeCheckHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -2294,9 +3415,10 @@ export const vUpdateUptimeCheckPath = v.object({
 /**
  * Modify an OnlineOrNot Uptime Check
  */
-export const vUpdateUptimeCheckResponse = vUptimeCheckResponse;
+export const vUpdateUptimeCheckResponse =
+	vProjectRolloutEnvelopeUptimeCheckResponse;
 
-export const vCreateBrowserCheckBody = vBrowserCheckInput;
+export const vCreateBrowserCheckBody = vProjectRolloutCreateBrowserCheckInput;
 
 export const vCreateBrowserCheckHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -2305,7 +3427,8 @@ export const vCreateBrowserCheckHeaders = v.object({
 /**
  * Create a new OnlineOrNot Browser Check
  */
-export const vCreateBrowserCheckResponse = vBrowserCheckResponse;
+export const vCreateBrowserCheckResponse =
+	vProjectRolloutEnvelopeBrowserCheckResponse;
 
 export const vDeleteBrowserCheckHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -2331,9 +3454,10 @@ export const vGetBrowserCheckPath = v.object({
 /**
  * Retrieve the specified OnlineOrNot Browser Check
  */
-export const vGetBrowserCheckResponse = vBrowserCheckResponse;
+export const vGetBrowserCheckResponse =
+	vProjectRolloutEnvelopeBrowserCheckResponse;
 
-export const vUpdateBrowserCheckBody = vBrowserCheckPatch;
+export const vUpdateBrowserCheckBody = vProjectRolloutPatchBrowserCheckPatch;
 
 export const vUpdateBrowserCheckHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -2346,7 +3470,8 @@ export const vUpdateBrowserCheckPath = v.object({
 /**
  * Modify an OnlineOrNot Browser Check
  */
-export const vUpdateBrowserCheckResponse = vBrowserCheckResponse;
+export const vUpdateBrowserCheckResponse =
+	vProjectRolloutEnvelopeBrowserCheckResponse;
 
 export const vListUptimeCheckIncidentsHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -2556,6 +3681,7 @@ export const vListChecksQuery = v.object({
 			"VERIFYING",
 		]),
 	),
+	project_id: v.optional(vProjectOperationProjectSelectionId),
 });
 
 /**
@@ -2563,7 +3689,7 @@ export const vListChecksQuery = v.object({
  */
 export const vListChecksResponse = v.union([
 	v.object({
-		result: v.array(vCheckListItem),
+		result: v.array(vProjectRolloutResourceCheckListItem),
 		result_info: v.object({
 			page: v.optional(v.number(), 1),
 			per_page: v.optional(v.number(), 20),
@@ -2603,7 +3729,7 @@ export const vListChecksResponse = v.union([
 	}),
 ]);
 
-export const vCreateCheckBody = vCheckInput;
+export const vCreateCheckBody = vProjectRolloutCreateCheckInput;
 
 export const vCreateCheckHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -2612,7 +3738,7 @@ export const vCreateCheckHeaders = v.object({
 /**
  * Create a new OnlineOrNot Check
  */
-export const vCreateCheckResponse = vCheckResponse;
+export const vCreateCheckResponse = vProjectRolloutEnvelopeCheckResponse;
 
 export const vDeleteCheckHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -2640,7 +3766,7 @@ export const vGetCheckPath = v.object({
  */
 export const vGetCheckResponse = v.union([
 	v.object({
-		result: vAnyCheck,
+		result: vProjectRolloutResourceAnyCheck,
 		success: v.literal(true),
 		errors: v.array(
 			v.object({
@@ -2674,7 +3800,7 @@ export const vGetCheckResponse = v.union([
 	}),
 ]);
 
-export const vUpdateCheckBody = vCheckPatch;
+export const vUpdateCheckBody = vProjectRolloutPatchCheckPatch;
 
 export const vUpdateCheckHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -2687,7 +3813,7 @@ export const vUpdateCheckPath = v.object({
 /**
  * Modify an OnlineOrNot Check
  */
-export const vUpdateCheckResponse = vCheckResponse;
+export const vUpdateCheckResponse = vProjectRolloutEnvelopeCheckResponse;
 
 export const vListEnvironmentVariablesHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -2696,13 +3822,15 @@ export const vListEnvironmentVariablesHeaders = v.object({
 export const vListEnvironmentVariablesQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+	search: v.optional(v.pipe(v.string(), v.maxLength(64))),
+	project_id: v.optional(vProjectOperationProjectSelectionId),
 });
 
 /**
  * Paginated environment variable metadata.
  */
 export const vListEnvironmentVariablesResponse = v.object({
-	result: v.array(vEnvironmentVariableMetadata),
+	result: v.array(vProjectRolloutResourceVariableEnvironmentVariableMetadata),
 	result_info: v.object({
 		page: v.optional(v.number(), 1),
 		per_page: v.optional(v.number(), 20),
@@ -2727,9 +3855,10 @@ export const vListEnvironmentVariablesResponse = v.object({
 });
 
 export const vCreateEnvironmentVariableBody = v.strictObject({
-	name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
+	name: vProjectOperationProjectVariableName,
 	type: v.picklist(["config", "secret"]),
 	value: v.string(),
+	project_id: v.optional(vProjectOperationProjectSelectionId),
 });
 
 export const vCreateEnvironmentVariableHeaders = v.object({
@@ -2743,20 +3872,22 @@ export const vCreateEnvironmentVariableResponse = v.object({
 	result: v.union([
 		v.strictObject({
 			id: v.string(),
-			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
+			name: vProjectOperationProjectVariableName,
 			type: v.picklist(["secret"]),
 			has_value: v.literal(true),
 			created_at: v.pipe(v.string(), v.isoTimestamp()),
 			updated_at: v.pipe(v.string(), v.isoTimestamp()),
+			project_id: vProjectOperationProjectSelectionId,
 		}),
 		v.strictObject({
 			id: v.string(),
-			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
+			name: vProjectOperationProjectVariableName,
 			type: v.picklist(["config"]),
 			has_value: v.literal(true),
 			created_at: v.pipe(v.string(), v.isoTimestamp()),
 			updated_at: v.pipe(v.string(), v.isoTimestamp()),
 			value: v.string(),
+			project_id: vProjectOperationProjectSelectionId,
 		}),
 	]),
 	success: v.boolean(),
@@ -2823,20 +3954,22 @@ export const vGetEnvironmentVariableResponse = v.object({
 	result: v.union([
 		v.strictObject({
 			id: v.string(),
-			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
+			name: vProjectOperationProjectVariableName,
 			type: v.picklist(["secret"]),
 			has_value: v.literal(true),
 			created_at: v.pipe(v.string(), v.isoTimestamp()),
 			updated_at: v.pipe(v.string(), v.isoTimestamp()),
+			project_id: vProjectOperationProjectSelectionId,
 		}),
 		v.strictObject({
 			id: v.string(),
-			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
+			name: vProjectOperationProjectVariableName,
 			type: v.picklist(["config"]),
 			has_value: v.literal(true),
 			created_at: v.pipe(v.string(), v.isoTimestamp()),
 			updated_at: v.pipe(v.string(), v.isoTimestamp()),
 			value: v.string(),
+			project_id: vProjectOperationProjectSelectionId,
 		}),
 	]),
 	success: v.boolean(),
@@ -2857,8 +3990,9 @@ export const vGetEnvironmentVariableResponse = v.object({
 });
 
 export const vUpdateEnvironmentVariableBody = v.strictObject({
-	name: v.optional(v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/))),
+	name: v.optional(vProjectOperationProjectVariableName),
 	value: v.optional(v.string()),
+	project_id: v.optional(v.never()),
 });
 
 export const vUpdateEnvironmentVariableHeaders = v.object({
@@ -2876,20 +4010,22 @@ export const vUpdateEnvironmentVariableResponse = v.object({
 	result: v.union([
 		v.strictObject({
 			id: v.string(),
-			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
+			name: vProjectOperationProjectVariableName,
 			type: v.picklist(["secret"]),
 			has_value: v.literal(true),
 			created_at: v.pipe(v.string(), v.isoTimestamp()),
 			updated_at: v.pipe(v.string(), v.isoTimestamp()),
+			project_id: vProjectOperationProjectSelectionId,
 		}),
 		v.strictObject({
 			id: v.string(),
-			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
+			name: vProjectOperationProjectVariableName,
 			type: v.picklist(["config"]),
 			has_value: v.literal(true),
 			created_at: v.pipe(v.string(), v.isoTimestamp()),
 			updated_at: v.pipe(v.string(), v.isoTimestamp()),
 			value: v.string(),
+			project_id: vProjectOperationProjectSelectionId,
 		}),
 	]),
 	success: v.boolean(),
@@ -2917,6 +4053,7 @@ export const vListHeartbeatsQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
+	project_id: v.optional(vProjectOperationProjectSelectionId),
 });
 
 /**
@@ -2924,7 +4061,7 @@ export const vListHeartbeatsQuery = v.object({
  */
 export const vListHeartbeatsResponse = v.union([
 	v.object({
-		result: v.array(vHeartbeat),
+		result: v.array(vProjectRolloutResourceHeartbeat),
 		result_info: v.object({
 			page: v.optional(v.number(), 1),
 			per_page: v.optional(v.number(), 20),
@@ -2984,6 +4121,7 @@ export const vCreateHeartbeatBody = v.object({
 	telegram_alerts: v.optional(v.array(v.string())),
 	pushover_alerts: v.optional(v.array(v.string())),
 	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "LOW"),
+	project_id: v.optional(vProjectOperationProjectSelectionId),
 });
 
 export const vCreateHeartbeatHeaders = v.object({
@@ -2994,7 +4132,7 @@ export const vCreateHeartbeatHeaders = v.object({
  * Create a new OnlineOrNot Heartbeat
  */
 export const vCreateHeartbeatResponse = v.object({
-	result: vExpandedHeartbeat,
+	result: vProjectRolloutResourceExpandedHeartbeat,
 	success: v.boolean(),
 	errors: v.array(
 		v.object({
@@ -3056,7 +4194,7 @@ export const vGetHeartbeatPath = v.object({
  * Retrieve the specified OnlineOrNot Heartbeat
  */
 export const vGetHeartbeatResponse = v.object({
-	result: vExpandedHeartbeat,
+	result: vProjectRolloutResourceExpandedHeartbeat,
 	success: v.boolean(),
 	errors: v.array(
 		v.object({
@@ -3095,6 +4233,7 @@ export const vUpdateHeartbeatBody = v.object({
 	alert_priority: v.optional(v.picklist(["LOW", "HIGH"])),
 	paused: v.optional(v.boolean()),
 	muted: v.optional(v.boolean()),
+	project_id: v.optional(v.never()),
 });
 
 export const vUpdateHeartbeatHeaders = v.object({
@@ -3109,7 +4248,7 @@ export const vUpdateHeartbeatPath = v.object({
  * Modify an OnlineOrNot Heartbeat
  */
 export const vUpdateHeartbeatResponse = v.object({
-	result: vExpandedHeartbeat,
+	result: vProjectRolloutResourceExpandedHeartbeat,
 	success: v.boolean(),
 	errors: v.array(
 		v.object({
@@ -5235,6 +6374,255 @@ export const vUpdateWebhookPath = v.object({
  */
 export const vUpdateWebhookResponse = v.object({
 	result: vWebhook,
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vListProjectsQuery = v.object({
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+});
+
+/**
+ * Paginated projects.
+ */
+export const vListProjectsResponse = v.object({
+	result: v.array(vProjectOperationProject),
+	result_info: v.object({
+		page: v.optional(v.number(), 1),
+		per_page: v.optional(v.number(), 20),
+		count: v.number(),
+		total_count: v.number(),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vCreateProjectBody = v.strictObject({
+	name: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+});
+
+/**
+ * Project created.
+ */
+export const vCreateProjectResponse = v.object({
+	result: vProjectOperationProject,
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vDeleteProjectPath = v.object({
+	project_id: v.pipe(
+		v.string(),
+		v.minLength(16),
+		v.maxLength(128),
+		v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+	),
+});
+
+/**
+ * Project deleted.
+ */
+export const vDeleteProjectResponse = v.object({
+	result: v.strictObject({
+		id: v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vGetProjectPath = v.object({
+	project_id: v.pipe(
+		v.string(),
+		v.minLength(16),
+		v.maxLength(128),
+		v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+	),
+});
+
+/**
+ * Project detail.
+ */
+export const vGetProjectResponse = v.object({
+	result: vProjectOperationProject,
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vUpdateProjectBody = v.strictObject({
+	name: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+});
+
+export const vUpdateProjectPath = v.object({
+	project_id: v.pipe(
+		v.string(),
+		v.minLength(16),
+		v.maxLength(128),
+		v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+	),
+});
+
+/**
+ * Project renamed.
+ */
+export const vUpdateProjectResponse = v.object({
+	result: vProjectOperationProject,
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vMoveCheckBody = v.strictObject({
+	project_id: v.pipe(
+		v.string(),
+		v.minLength(16),
+		v.maxLength(128),
+		v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+	),
+});
+
+export const vMoveCheckPath = v.object({
+	check_id: v.pipe(v.string(), v.minLength(8)),
+});
+
+/**
+ * Check moved or authorized same-project no-op.
+ */
+export const vMoveCheckResponse = v.object({
+	result: v.strictObject({
+		id: v.pipe(v.string(), v.minLength(8)),
+		project_id: v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vMoveHeartbeatBody = v.strictObject({
+	project_id: v.pipe(
+		v.string(),
+		v.minLength(16),
+		v.maxLength(128),
+		v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+	),
+});
+
+export const vMoveHeartbeatPath = v.object({
+	heartbeat_id: v.pipe(v.string(), v.minLength(8)),
+});
+
+/**
+ * Heartbeat moved or authorized same-project no-op.
+ */
+export const vMoveHeartbeatResponse = v.object({
+	result: v.strictObject({
+		id: v.pipe(v.string(), v.minLength(8)),
+		project_id: v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	}),
 	success: v.boolean(),
 	errors: v.array(
 		v.object({

@@ -30,6 +30,9 @@ import type {
 	CreateMaintenanceWindowData,
 	CreateMaintenanceWindowErrors,
 	CreateMaintenanceWindowResponses,
+	CreateProjectData,
+	CreateProjectErrors,
+	CreateProjectResponses,
 	CreateStatusPageComponentData,
 	CreateStatusPageComponentErrors,
 	CreateStatusPageComponentGroupData,
@@ -81,6 +84,9 @@ import type {
 	DeleteMaintenanceWindowData,
 	DeleteMaintenanceWindowErrors,
 	DeleteMaintenanceWindowResponses,
+	DeleteProjectData,
+	DeleteProjectErrors,
+	DeleteProjectResponses,
 	DeleteStatusPageComponentData,
 	DeleteStatusPageComponentErrors,
 	DeleteStatusPageComponentGroupData,
@@ -132,6 +138,9 @@ import type {
 	GetMaintenanceWindowData,
 	GetMaintenanceWindowErrors,
 	GetMaintenanceWindowResponses,
+	GetProjectData,
+	GetProjectErrors,
+	GetProjectResponses,
 	GetStatusPageComponentData,
 	GetStatusPageComponentErrors,
 	GetStatusPageComponentGroupData,
@@ -198,6 +207,9 @@ import type {
 	ListMaintenanceWindowsData,
 	ListMaintenanceWindowsErrors,
 	ListMaintenanceWindowsResponses,
+	ListProjectsData,
+	ListProjectsErrors,
+	ListProjectsResponses,
 	ListStatusPageComponentGroupsData,
 	ListStatusPageComponentGroupsErrors,
 	ListStatusPageComponentGroupsResponses,
@@ -237,6 +249,12 @@ import type {
 	ListWebhooksData,
 	ListWebhooksErrors,
 	ListWebhooksResponses,
+	MoveCheckData,
+	MoveCheckErrors,
+	MoveCheckResponses,
+	MoveHeartbeatData,
+	MoveHeartbeatErrors,
+	MoveHeartbeatResponses,
 	PingHeartbeatData,
 	PingHeartbeatErrors,
 	PingHeartbeatGetData,
@@ -264,6 +282,9 @@ import type {
 	UpdateMaintenanceWindowData,
 	UpdateMaintenanceWindowErrors,
 	UpdateMaintenanceWindowResponses,
+	UpdateProjectData,
+	UpdateProjectErrors,
+	UpdateProjectResponses,
 	UpdateStatusPageComponentData,
 	UpdateStatusPageComponentErrors,
 	UpdateStatusPageComponentGroupData,
@@ -2632,6 +2653,148 @@ export const updateWebhook = <ThrowOnError extends boolean = false>(
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
 		url: "/v1/webhooks/{webhook_id}",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
+ * List projects accessible within the authenticated organisation.
+ *
+ * Requires PROJECTS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied. Project management grants no resource or secret permissions.
+ */
+export const listProjects = <ThrowOnError extends boolean = false>(
+	options?: Options<ListProjectsData, ThrowOnError>,
+): RequestResult<ListProjectsResponses, ListProjectsErrors, ThrowOnError> =>
+	(options?.client ?? client).get<
+		ListProjectsResponses,
+		ListProjectsErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/projects",
+		...options,
+	});
+
+/**
+ * Create an organisation-owned project. Names are editable labels, not unique identifiers.
+ *
+ * Requires PROJECTS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied. Project management grants no resource or secret permissions.
+ */
+export const createProject = <ThrowOnError extends boolean = false>(
+	options: Options<CreateProjectData, ThrowOnError>,
+): RequestResult<CreateProjectResponses, CreateProjectErrors, ThrowOnError> =>
+	(options.client ?? client).post<
+		CreateProjectResponses,
+		CreateProjectErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/projects",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
+ * Delete an empty non-Default project. Concurrent creation must not bypass the emptiness check.
+ *
+ * Requires PROJECTS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied. Project management grants no resource or secret permissions.
+ */
+export const deleteProject = <ThrowOnError extends boolean = false>(
+	options: Options<DeleteProjectData, ThrowOnError>,
+): RequestResult<DeleteProjectResponses, DeleteProjectErrors, ThrowOnError> =>
+	(options.client ?? client).delete<
+		DeleteProjectResponses,
+		DeleteProjectErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/projects/{project_id}",
+		...options,
+	});
+
+/**
+ *
+ *
+ * Requires PROJECTS:READ; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied. Project management grants no resource or secret permissions.
+ */
+export const getProject = <ThrowOnError extends boolean = false>(
+	options: Options<GetProjectData, ThrowOnError>,
+): RequestResult<GetProjectResponses, GetProjectErrors, ThrowOnError> =>
+	(options.client ?? client).get<
+		GetProjectResponses,
+		GetProjectErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/projects/{project_id}",
+		...options,
+	});
+
+/**
+ * Rename a project, including Default, without changing its stable identity.
+ *
+ * Requires PROJECTS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied. Project management grants no resource or secret permissions.
+ */
+export const updateProject = <ThrowOnError extends boolean = false>(
+	options: Options<UpdateProjectData, ThrowOnError>,
+): RequestResult<UpdateProjectResponses, UpdateProjectErrors, ThrowOnError> =>
+	(options.client ?? client).patch<
+		UpdateProjectResponses,
+		UpdateProjectErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/projects/{project_id}",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
+ * Authorize the resource, source and destination within the authenticated organisation before mutation or same-project no-op. Preserve identity, history, scheduling state and reasons. Atomically rebind referenced names and immutable types; reject missing or incompatible destination variables without changes. No variable copying or fallback. Same-project moves do not rewrite references or timestamps. Already-dispatched work may finish with its original snapshot; selection after commit uses the destination, and racing selection must observe one database snapshot.
+ *
+ * Requires UPTIME_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied. Project management grants no resource or secret permissions.
+ */
+export const moveCheck = <ThrowOnError extends boolean = false>(
+	options: Options<MoveCheckData, ThrowOnError>,
+): RequestResult<MoveCheckResponses, MoveCheckErrors, ThrowOnError> =>
+	(options.client ?? client).post<
+		MoveCheckResponses,
+		MoveCheckErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/checks/{check_id}/move",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
+ * Authorize the resource, source and destination before mutation or same-project no-op. Preserve heartbeat identity, history, ping URLs, scheduling state and reasons; do not rewrite timestamps on no-op. Heartbeats do not gain variable substitution.
+ *
+ * Requires HEARTBEAT_CHECKS:EDIT; EDIT also grants READ. Session cookies are accepted only when no bearer credential is supplied. Project management grants no resource or secret permissions.
+ */
+export const moveHeartbeat = <ThrowOnError extends boolean = false>(
+	options: Options<MoveHeartbeatData, ThrowOnError>,
+): RequestResult<MoveHeartbeatResponses, MoveHeartbeatErrors, ThrowOnError> =>
+	(options.client ?? client).post<
+		MoveHeartbeatResponses,
+		MoveHeartbeatErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/heartbeats/{heartbeat_id}/move",
 		...options,
 		headers: {
 			"Content-Type": "application/json",
