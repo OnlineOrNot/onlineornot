@@ -454,32 +454,6 @@ export const zDnsCheckResponse = z.object({
 	),
 });
 
-export const zDnsCheckInput = z.object({
-	name: z.string(),
-	test_interval: z.int().gte(30).optional(),
-	test_regions: z.array(z.string()).optional(),
-	user_alerts: z.array(z.string()).optional(),
-	slack_alerts: z.array(z.string()).optional(),
-	discord_alerts: z.array(z.string()).optional(),
-	incident_io_alerts: z.array(z.string()).optional(),
-	microsoft_teams_alerts: z.array(z.string()).optional(),
-	telegram_alerts: z.array(z.string()).optional(),
-	pushover_alerts: z.array(z.string()).optional(),
-	webhook_alerts: z.array(z.string()).optional(),
-	oncall_alerts: z.array(z.string()).optional(),
-	alert_priority: z.enum(["LOW", "HIGH"]).optional().default("HIGH"),
-	confirmation_period_seconds: z.int().gte(0).optional().default(60),
-	recovery_period_seconds: z.int().gte(0).optional().default(180),
-	reminder_alert_interval_minutes: z.int().gte(-1).optional().default(1440),
-	timeout: z.int().gte(1000).optional().default(10000),
-	type: z.enum(["DNS_CHECK"]).optional(),
-	dns_domain: z.string().min(1).max(253),
-	dns_record_type: z.enum(["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"]),
-	dns_resolver: z.string().nullish(),
-	dns_protocol: z.enum(["UDP", "TCP"]).optional().default("UDP"),
-	assertions: z.array(zDnsAssertion).optional(),
-});
-
 export const zDnsCheckPatch = z.object({
 	name: z.string().optional(),
 	test_interval: z.int().gte(30).optional(),
@@ -549,33 +523,6 @@ export const zTcpCheckResponse = z.object({
 	),
 });
 
-export const zTcpCheckInput = z.object({
-	name: z.string(),
-	test_interval: z.int().gte(30).optional(),
-	test_regions: z.array(z.string()).optional(),
-	user_alerts: z.array(z.string()).optional(),
-	slack_alerts: z.array(z.string()).optional(),
-	discord_alerts: z.array(z.string()).optional(),
-	incident_io_alerts: z.array(z.string()).optional(),
-	microsoft_teams_alerts: z.array(z.string()).optional(),
-	telegram_alerts: z.array(z.string()).optional(),
-	pushover_alerts: z.array(z.string()).optional(),
-	webhook_alerts: z.array(z.string()).optional(),
-	oncall_alerts: z.array(z.string()).optional(),
-	alert_priority: z.enum(["LOW", "HIGH"]).optional().default("HIGH"),
-	confirmation_period_seconds: z.int().gte(0).optional().default(60),
-	recovery_period_seconds: z.int().gte(0).optional().default(180),
-	reminder_alert_interval_minutes: z.int().gte(-1).optional().default(1440),
-	timeout: z.int().gte(1000).optional().default(10000),
-	type: z.enum(["TCP_CHECK"]).optional(),
-	tcp_hostname: z.string().min(1).max(253),
-	tcp_port: z.int().gte(1).lte(65535),
-	tcp_ip_family: z.enum(["IPv4", "IPv6"]).optional().default("IPv4"),
-	tcp_data: z.string().max(16384).nullish(),
-	tcp_should_fail: z.boolean().optional().default(false),
-	assertions: z.array(zTcpAssertion).optional(),
-});
-
 export const zTcpCheckPatch = z.object({
 	name: z.string().optional(),
 	test_interval: z.int().gte(30).optional(),
@@ -621,67 +568,6 @@ export const zUptimeCheckResponse = z.object({
 			type: z.string().nullish(),
 		}),
 	),
-});
-
-export const zUptimeCheckInput = z.object({
-	name: z.string(),
-	test_interval: z.int().gte(30).optional(),
-	test_regions: z.array(z.string()).optional(),
-	user_alerts: z.array(z.string()).optional(),
-	slack_alerts: z.array(z.string()).optional(),
-	discord_alerts: z.array(z.string()).optional(),
-	incident_io_alerts: z.array(z.string()).optional(),
-	microsoft_teams_alerts: z.array(z.string()).optional(),
-	telegram_alerts: z.array(z.string()).optional(),
-	pushover_alerts: z.array(z.string()).optional(),
-	webhook_alerts: z.array(z.string()).optional(),
-	oncall_alerts: z.array(z.string()).optional(),
-	alert_priority: z.enum(["LOW", "HIGH"]).optional().default("HIGH"),
-	confirmation_period_seconds: z.int().gte(0).optional().default(60),
-	recovery_period_seconds: z.int().gte(0).optional().default(180),
-	reminder_alert_interval_minutes: z.int().gte(-1).optional().default(1440),
-	timeout: z.int().gte(1000).optional().default(10000),
-	url: z.url(),
-	text_to_search_for: z.string().max(4000).optional(),
-	type: z.enum(["UPTIME_CHECK"]).optional().default("UPTIME_CHECK"),
-	headers: z.record(z.string(), z.string()).optional(),
-	method: z
-		.enum(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"])
-		.optional()
-		.default("GET"),
-	body: z.string().optional(),
-	follow_redirects: z.boolean().optional().default(true),
-	assertions: z
-		.array(
-			z.object({
-				type: z.enum([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: z.string(),
-				comparison: z.enum([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: z.string(),
-			}),
-		)
-		.optional(),
-	verify_ssl: z.boolean().optional().default(true),
-	auth_username: z.string().optional(),
-	auth_password: z.string().optional(),
 });
 
 export const zUptimeCheckPatch = z.object({
@@ -760,72 +646,6 @@ export const zBrowserCheckResponse = z.object({
 			type: z.string().nullish(),
 		}),
 	),
-});
-
-/**
- * Browser check create payload. Provide either url for a URL-based browser check or script for a scripted Playwright check.
- */
-export const zBrowserCheckInput = z.object({
-	name: z.string(),
-	test_interval: z.int().gte(30).optional(),
-	test_regions: z.array(z.string()).optional(),
-	user_alerts: z.array(z.string()).optional(),
-	slack_alerts: z.array(z.string()).optional(),
-	discord_alerts: z.array(z.string()).optional(),
-	incident_io_alerts: z.array(z.string()).optional(),
-	microsoft_teams_alerts: z.array(z.string()).optional(),
-	telegram_alerts: z.array(z.string()).optional(),
-	pushover_alerts: z.array(z.string()).optional(),
-	webhook_alerts: z.array(z.string()).optional(),
-	oncall_alerts: z.array(z.string()).optional(),
-	alert_priority: z.enum(["LOW", "HIGH"]).optional().default("HIGH"),
-	confirmation_period_seconds: z.int().gte(0).optional().default(60),
-	recovery_period_seconds: z.int().gte(0).optional().default(180),
-	reminder_alert_interval_minutes: z.int().gte(-1).optional().default(1440),
-	timeout: z.int().gte(1000).optional().default(10000),
-	url: z.url().nullish(),
-	text_to_search_for: z.string().max(4000).optional(),
-	type: z.enum(["BROWSER_CHECK"]).optional().default("BROWSER_CHECK"),
-	headers: z.record(z.string(), z.string()).optional(),
-	method: z
-		.enum(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"])
-		.optional()
-		.default("GET"),
-	body: z.string().optional(),
-	follow_redirects: z.boolean().optional().default(true),
-	assertions: z
-		.array(
-			z.object({
-				type: z.enum([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: z.string(),
-				comparison: z.enum([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: z.string(),
-			}),
-		)
-		.optional(),
-	verify_ssl: z.boolean().optional().default(true),
-	auth_username: z.string().optional(),
-	auth_password: z.string().optional(),
-	version: z.enum(["NODE24_PLAYWRIGHT"]).optional(),
-	script: z.string().optional(),
 });
 
 export const zBrowserCheckPatch = z.object({
@@ -1621,33 +1441,6 @@ export const zProjectOperationProject = z.object({
 	updated_at: z.iso.datetime(),
 });
 
-export const zProjectRolloutCreateDnsCheckInput = z.object({
-	name: z.string(),
-	test_interval: z.int().gte(30).optional(),
-	test_regions: z.array(z.string()).optional(),
-	user_alerts: z.array(z.string()).optional(),
-	slack_alerts: z.array(z.string()).optional(),
-	discord_alerts: z.array(z.string()).optional(),
-	incident_io_alerts: z.array(z.string()).optional(),
-	microsoft_teams_alerts: z.array(z.string()).optional(),
-	telegram_alerts: z.array(z.string()).optional(),
-	pushover_alerts: z.array(z.string()).optional(),
-	webhook_alerts: z.array(z.string()).optional(),
-	oncall_alerts: z.array(z.string()).optional(),
-	alert_priority: z.enum(["LOW", "HIGH"]).optional().default("HIGH"),
-	confirmation_period_seconds: z.int().gte(0).optional().default(60),
-	recovery_period_seconds: z.int().gte(0).optional().default(180),
-	reminder_alert_interval_minutes: z.int().gte(-1).optional().default(1440),
-	timeout: z.int().gte(1000).optional().default(10000),
-	type: z.enum(["DNS_CHECK"]).optional(),
-	dns_domain: z.string().min(1).max(253),
-	dns_record_type: z.enum(["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"]),
-	dns_resolver: z.string().nullish(),
-	dns_protocol: z.enum(["UDP", "TCP"]).optional().default("UDP"),
-	assertions: z.array(zDnsAssertion).optional(),
-	project_id: zProjectOperationProjectSelectionId.optional(),
-});
-
 export const zProjectRolloutResourceExpandedDnsCheck = z.object({
 	id: z.string(),
 	name: z.string(),
@@ -1738,34 +1531,6 @@ export const zProjectRolloutPatchDnsCheckPatch = z.object({
 	project_id: z.never().optional(),
 });
 
-export const zProjectRolloutCreateTcpCheckInput = z.object({
-	name: z.string(),
-	test_interval: z.int().gte(30).optional(),
-	test_regions: z.array(z.string()).optional(),
-	user_alerts: z.array(z.string()).optional(),
-	slack_alerts: z.array(z.string()).optional(),
-	discord_alerts: z.array(z.string()).optional(),
-	incident_io_alerts: z.array(z.string()).optional(),
-	microsoft_teams_alerts: z.array(z.string()).optional(),
-	telegram_alerts: z.array(z.string()).optional(),
-	pushover_alerts: z.array(z.string()).optional(),
-	webhook_alerts: z.array(z.string()).optional(),
-	oncall_alerts: z.array(z.string()).optional(),
-	alert_priority: z.enum(["LOW", "HIGH"]).optional().default("HIGH"),
-	confirmation_period_seconds: z.int().gte(0).optional().default(60),
-	recovery_period_seconds: z.int().gte(0).optional().default(180),
-	reminder_alert_interval_minutes: z.int().gte(-1).optional().default(1440),
-	timeout: z.int().gte(1000).optional().default(10000),
-	type: z.enum(["TCP_CHECK"]).optional(),
-	tcp_hostname: z.string().min(1).max(253),
-	tcp_port: z.int().gte(1).lte(65535),
-	tcp_ip_family: z.enum(["IPv4", "IPv6"]).optional().default("IPv4"),
-	tcp_data: z.string().max(16384).nullish(),
-	tcp_should_fail: z.boolean().optional().default(false),
-	assertions: z.array(zTcpAssertion).optional(),
-	project_id: zProjectOperationProjectSelectionId.optional(),
-});
-
 export const zProjectRolloutResourceExpandedTcpCheck = z.object({
 	id: z.string(),
 	name: z.string(),
@@ -1854,68 +1619,6 @@ export const zProjectRolloutPatchTcpCheckPatch = z.object({
 	tcp_should_fail: z.boolean().optional(),
 	assertions: z.array(zTcpAssertion).optional(),
 	project_id: z.never().optional(),
-});
-
-export const zProjectRolloutCreateUptimeCheckInput = z.object({
-	name: z.string(),
-	test_interval: z.int().gte(30).optional(),
-	test_regions: z.array(z.string()).optional(),
-	user_alerts: z.array(z.string()).optional(),
-	slack_alerts: z.array(z.string()).optional(),
-	discord_alerts: z.array(z.string()).optional(),
-	incident_io_alerts: z.array(z.string()).optional(),
-	microsoft_teams_alerts: z.array(z.string()).optional(),
-	telegram_alerts: z.array(z.string()).optional(),
-	pushover_alerts: z.array(z.string()).optional(),
-	webhook_alerts: z.array(z.string()).optional(),
-	oncall_alerts: z.array(z.string()).optional(),
-	alert_priority: z.enum(["LOW", "HIGH"]).optional().default("HIGH"),
-	confirmation_period_seconds: z.int().gte(0).optional().default(60),
-	recovery_period_seconds: z.int().gte(0).optional().default(180),
-	reminder_alert_interval_minutes: z.int().gte(-1).optional().default(1440),
-	timeout: z.int().gte(1000).optional().default(10000),
-	url: z.url(),
-	text_to_search_for: z.string().max(4000).optional(),
-	type: z.enum(["UPTIME_CHECK"]).optional().default("UPTIME_CHECK"),
-	headers: z.record(z.string(), z.string()).optional(),
-	method: z
-		.enum(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"])
-		.optional()
-		.default("GET"),
-	body: z.string().optional(),
-	follow_redirects: z.boolean().optional().default(true),
-	assertions: z
-		.array(
-			z.object({
-				type: z.enum([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: z.string(),
-				comparison: z.enum([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: z.string(),
-			}),
-		)
-		.optional(),
-	verify_ssl: z.boolean().optional().default(true),
-	auth_username: z.string().optional(),
-	auth_password: z.string().optional(),
-	project_id: zProjectOperationProjectSelectionId.optional(),
 });
 
 export const zProjectRolloutResourceExpandedUptimeCheck = z.object({
@@ -2068,73 +1771,6 @@ export const zProjectRolloutPatchUptimeCheckPatch = z.object({
 	auth_username: z.string().optional(),
 	auth_password: z.string().optional(),
 	project_id: z.never().optional(),
-});
-
-/**
- * Browser check create payload. Provide either url for a URL-based browser check or script for a scripted Playwright check.
- */
-export const zProjectRolloutCreateBrowserCheckInput = z.object({
-	name: z.string(),
-	test_interval: z.int().gte(30).optional(),
-	test_regions: z.array(z.string()).optional(),
-	user_alerts: z.array(z.string()).optional(),
-	slack_alerts: z.array(z.string()).optional(),
-	discord_alerts: z.array(z.string()).optional(),
-	incident_io_alerts: z.array(z.string()).optional(),
-	microsoft_teams_alerts: z.array(z.string()).optional(),
-	telegram_alerts: z.array(z.string()).optional(),
-	pushover_alerts: z.array(z.string()).optional(),
-	webhook_alerts: z.array(z.string()).optional(),
-	oncall_alerts: z.array(z.string()).optional(),
-	alert_priority: z.enum(["LOW", "HIGH"]).optional().default("HIGH"),
-	confirmation_period_seconds: z.int().gte(0).optional().default(60),
-	recovery_period_seconds: z.int().gte(0).optional().default(180),
-	reminder_alert_interval_minutes: z.int().gte(-1).optional().default(1440),
-	timeout: z.int().gte(1000).optional().default(10000),
-	url: z.url().nullish(),
-	text_to_search_for: z.string().max(4000).optional(),
-	type: z.enum(["BROWSER_CHECK"]).optional().default("BROWSER_CHECK"),
-	headers: z.record(z.string(), z.string()).optional(),
-	method: z
-		.enum(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"])
-		.optional()
-		.default("GET"),
-	body: z.string().optional(),
-	follow_redirects: z.boolean().optional().default(true),
-	assertions: z
-		.array(
-			z.object({
-				type: z.enum([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: z.string(),
-				comparison: z.enum([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: z.string(),
-			}),
-		)
-		.optional(),
-	verify_ssl: z.boolean().optional().default(true),
-	auth_username: z.string().optional(),
-	auth_password: z.string().optional(),
-	version: z.enum(["NODE24_PLAYWRIGHT"]).optional(),
-	script: z.string().optional(),
-	project_id: zProjectOperationProjectSelectionId.optional(),
 });
 
 export const zProjectRolloutResourceExpandedBrowserCheck = z.object({
@@ -2956,7 +2592,32 @@ export const zGetTokenResponse = z.object({
 	),
 });
 
-export const zCreateDnsCheckBody = zProjectRolloutCreateDnsCheckInput;
+export const zCreateDnsCheckBody = z.object({
+	name: z.string(),
+	test_interval: z.int().gte(30).optional(),
+	test_regions: z.array(z.string()).optional(),
+	user_alerts: z.array(z.string()).optional(),
+	slack_alerts: z.array(z.string()).optional(),
+	discord_alerts: z.array(z.string()).optional(),
+	incident_io_alerts: z.array(z.string()).optional(),
+	microsoft_teams_alerts: z.array(z.string()).optional(),
+	telegram_alerts: z.array(z.string()).optional(),
+	pushover_alerts: z.array(z.string()).optional(),
+	webhook_alerts: z.array(z.string()).optional(),
+	oncall_alerts: z.array(z.string()).optional(),
+	alert_priority: z.enum(["LOW", "HIGH"]).optional().default("HIGH"),
+	confirmation_period_seconds: z.int().gte(0).optional().default(60),
+	recovery_period_seconds: z.int().gte(0).optional().default(180),
+	reminder_alert_interval_minutes: z.int().gte(-1).optional().default(1440),
+	timeout: z.int().gte(1000).optional().default(10000),
+	type: z.enum(["DNS_CHECK"]).optional(),
+	dns_domain: z.string().min(1).max(253),
+	dns_record_type: z.enum(["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"]),
+	dns_resolver: z.string().nullish(),
+	dns_protocol: z.enum(["UDP", "TCP"]).optional().default("UDP"),
+	assertions: z.array(zDnsAssertion).optional(),
+	project_id: zProjectOperationProjectSelectionId.optional(),
+});
 
 export const zCreateDnsCheckHeaders = z.object({
 	"X-OnlineOrNot-Organisation": z.string().optional(),
@@ -3041,7 +2702,33 @@ export const zUpdateDnsCheckPath = z.object({
  */
 export const zUpdateDnsCheckResponse = zProjectRolloutEnvelopeDnsCheckResponse;
 
-export const zCreateTcpCheckBody = zProjectRolloutCreateTcpCheckInput;
+export const zCreateTcpCheckBody = z.object({
+	name: z.string(),
+	test_interval: z.int().gte(30).optional(),
+	test_regions: z.array(z.string()).optional(),
+	user_alerts: z.array(z.string()).optional(),
+	slack_alerts: z.array(z.string()).optional(),
+	discord_alerts: z.array(z.string()).optional(),
+	incident_io_alerts: z.array(z.string()).optional(),
+	microsoft_teams_alerts: z.array(z.string()).optional(),
+	telegram_alerts: z.array(z.string()).optional(),
+	pushover_alerts: z.array(z.string()).optional(),
+	webhook_alerts: z.array(z.string()).optional(),
+	oncall_alerts: z.array(z.string()).optional(),
+	alert_priority: z.enum(["LOW", "HIGH"]).optional().default("HIGH"),
+	confirmation_period_seconds: z.int().gte(0).optional().default(60),
+	recovery_period_seconds: z.int().gte(0).optional().default(180),
+	reminder_alert_interval_minutes: z.int().gte(-1).optional().default(1440),
+	timeout: z.int().gte(1000).optional().default(10000),
+	type: z.enum(["TCP_CHECK"]).optional(),
+	tcp_hostname: z.string().min(1).max(253),
+	tcp_port: z.int().gte(1).lte(65535),
+	tcp_ip_family: z.enum(["IPv4", "IPv6"]).optional().default("IPv4"),
+	tcp_data: z.string().max(16384).nullish(),
+	tcp_should_fail: z.boolean().optional().default(false),
+	assertions: z.array(zTcpAssertion).optional(),
+	project_id: zProjectOperationProjectSelectionId.optional(),
+});
 
 export const zCreateTcpCheckHeaders = z.object({
 	"X-OnlineOrNot-Organisation": z.string().optional(),
@@ -3126,7 +2813,67 @@ export const zUpdateTcpCheckPath = z.object({
  */
 export const zUpdateTcpCheckResponse = zProjectRolloutEnvelopeTcpCheckResponse;
 
-export const zCreateUptimeCheckBody = zProjectRolloutCreateUptimeCheckInput;
+export const zCreateUptimeCheckBody = z.object({
+	name: z.string(),
+	test_interval: z.int().gte(30).optional(),
+	test_regions: z.array(z.string()).optional(),
+	user_alerts: z.array(z.string()).optional(),
+	slack_alerts: z.array(z.string()).optional(),
+	discord_alerts: z.array(z.string()).optional(),
+	incident_io_alerts: z.array(z.string()).optional(),
+	microsoft_teams_alerts: z.array(z.string()).optional(),
+	telegram_alerts: z.array(z.string()).optional(),
+	pushover_alerts: z.array(z.string()).optional(),
+	webhook_alerts: z.array(z.string()).optional(),
+	oncall_alerts: z.array(z.string()).optional(),
+	alert_priority: z.enum(["LOW", "HIGH"]).optional().default("HIGH"),
+	confirmation_period_seconds: z.int().gte(0).optional().default(60),
+	recovery_period_seconds: z.int().gte(0).optional().default(180),
+	reminder_alert_interval_minutes: z.int().gte(-1).optional().default(1440),
+	timeout: z.int().gte(1000).optional().default(10000),
+	url: z.url(),
+	text_to_search_for: z.string().max(4000).optional(),
+	type: z.enum(["UPTIME_CHECK"]).optional().default("UPTIME_CHECK"),
+	headers: z.record(z.string(), z.string()).optional(),
+	method: z
+		.enum(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"])
+		.optional()
+		.default("GET"),
+	body: z.string().optional(),
+	follow_redirects: z.boolean().optional().default(true),
+	assertions: z
+		.array(
+			z.object({
+				type: z.enum([
+					"JSON_BODY",
+					"TEXT_BODY",
+					"RESPONSE_HEADERS",
+					"HTML_BODY",
+				]),
+				property: z.string(),
+				comparison: z.enum([
+					"EQUALS",
+					"NOT_EQUALS",
+					"GREATER_THAN",
+					"LESS_THAN",
+					"NULL",
+					"NOT_NULL",
+					"EMPTY",
+					"NOT_EMPTY",
+					"CONTAINS",
+					"NOT_CONTAINS",
+					"FALSE",
+					"TRUE",
+				]),
+				expected: z.string(),
+			}),
+		)
+		.optional(),
+	verify_ssl: z.boolean().optional().default(true),
+	auth_username: z.string().optional(),
+	auth_password: z.string().optional(),
+	project_id: zProjectOperationProjectSelectionId.optional(),
+});
 
 export const zCreateUptimeCheckHeaders = z.object({
 	"X-OnlineOrNot-Organisation": z.string().optional(),
@@ -3181,7 +2928,69 @@ export const zUpdateUptimeCheckPath = z.object({
 export const zUpdateUptimeCheckResponse =
 	zProjectRolloutEnvelopeUptimeCheckResponse;
 
-export const zCreateBrowserCheckBody = zProjectRolloutCreateBrowserCheckInput;
+export const zCreateBrowserCheckBody = z.object({
+	name: z.string(),
+	test_interval: z.int().gte(30).optional(),
+	test_regions: z.array(z.string()).optional(),
+	user_alerts: z.array(z.string()).optional(),
+	slack_alerts: z.array(z.string()).optional(),
+	discord_alerts: z.array(z.string()).optional(),
+	incident_io_alerts: z.array(z.string()).optional(),
+	microsoft_teams_alerts: z.array(z.string()).optional(),
+	telegram_alerts: z.array(z.string()).optional(),
+	pushover_alerts: z.array(z.string()).optional(),
+	webhook_alerts: z.array(z.string()).optional(),
+	oncall_alerts: z.array(z.string()).optional(),
+	alert_priority: z.enum(["LOW", "HIGH"]).optional().default("HIGH"),
+	confirmation_period_seconds: z.int().gte(0).optional().default(60),
+	recovery_period_seconds: z.int().gte(0).optional().default(180),
+	reminder_alert_interval_minutes: z.int().gte(-1).optional().default(1440),
+	timeout: z.int().gte(1000).optional().default(10000),
+	url: z.url().nullish(),
+	text_to_search_for: z.string().max(4000).optional(),
+	type: z.enum(["BROWSER_CHECK"]).optional().default("BROWSER_CHECK"),
+	headers: z.record(z.string(), z.string()).optional(),
+	method: z
+		.enum(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"])
+		.optional()
+		.default("GET"),
+	body: z.string().optional(),
+	follow_redirects: z.boolean().optional().default(true),
+	assertions: z
+		.array(
+			z.object({
+				type: z.enum([
+					"JSON_BODY",
+					"TEXT_BODY",
+					"RESPONSE_HEADERS",
+					"HTML_BODY",
+				]),
+				property: z.string(),
+				comparison: z.enum([
+					"EQUALS",
+					"NOT_EQUALS",
+					"GREATER_THAN",
+					"LESS_THAN",
+					"NULL",
+					"NOT_NULL",
+					"EMPTY",
+					"NOT_EMPTY",
+					"CONTAINS",
+					"NOT_CONTAINS",
+					"FALSE",
+					"TRUE",
+				]),
+				expected: z.string(),
+			}),
+		)
+		.optional(),
+	verify_ssl: z.boolean().optional().default(true),
+	auth_username: z.string().optional(),
+	auth_password: z.string().optional(),
+	version: z.enum(["NODE24_PLAYWRIGHT"]).optional(),
+	script: z.string().optional(),
+	project_id: zProjectOperationProjectSelectionId.optional(),
+});
 
 export const zCreateBrowserCheckHeaders = z.object({
 	"X-OnlineOrNot-Organisation": z.string().optional(),

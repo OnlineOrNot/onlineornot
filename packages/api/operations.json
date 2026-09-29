@@ -1,5 +1,5 @@
 {
-	"schema": "unreleased-candidate:candidates/projects/openapi.json#sha256=a7834105cea2cf503a420c1f99a45371d69b551ae7abe41a97b977c74fa7fd58",
+	"schema": "unreleased-candidate:candidates/projects/openapi.json#sha256=7ed577dcfca71b32e024e2f2fd7fb411e47e8d6a9463bcce721b72e3dff31397",
 	"count": 105,
 	"operations": [
 		"createBrowserCheck",

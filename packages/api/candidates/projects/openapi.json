@@ -2060,185 +2060,6 @@
           "messages"
         ]
       },
-      "DnsCheckInput": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "My monitor"
-          },
-          "test_interval": {
-            "type": "integer",
-            "minimum": 30,
-            "example": 60,
-            "description": "Interval in seconds between checks"
-          },
-          "test_regions": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "Region identifier in format aws:{region}"
-            },
-            "example": [
-              "aws:us-east-1",
-              "aws:eu-central-1"
-            ],
-            "description": "Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1"
-          },
-          "user_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "slack_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "discord_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "incident_io_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "microsoft_teams_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "telegram_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "pushover_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "webhook_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "IDs of webhooks to associate with this check"
-          },
-          "oncall_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)"
-          },
-          "alert_priority": {
-            "type": "string",
-            "enum": [
-              "LOW",
-              "HIGH"
-            ],
-            "default": "HIGH",
-            "example": "LOW",
-            "description": "[Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority)."
-          },
-          "confirmation_period_seconds": {
-            "type": "integer",
-            "minimum": 0,
-            "default": 60,
-            "example": 60,
-            "description": "Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period)."
-          },
-          "recovery_period_seconds": {
-            "type": "integer",
-            "minimum": 0,
-            "default": 180,
-            "example": 180,
-            "description": "Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period)."
-          },
-          "reminder_alert_interval_minutes": {
-            "type": "integer",
-            "minimum": -1,
-            "default": 1440,
-            "example": 1440,
-            "description": "Interval in minutes between reminders (-1 for never)"
-          },
-          "timeout": {
-            "type": "integer",
-            "minimum": 1000,
-            "default": 10000,
-            "example": 10000,
-            "description": "Timeout in milliseconds"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "DNS_CHECK"
-            ]
-          },
-          "dns_domain": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 253,
-            "example": "example.com",
-            "description": "DNS name to query"
-          },
-          "dns_record_type": {
-            "type": "string",
-            "enum": [
-              "A",
-              "AAAA",
-              "CNAME",
-              "MX",
-              "NS",
-              "SOA",
-              "TXT"
-            ],
-            "example": "A",
-            "description": "DNS record type to query"
-          },
-          "dns_resolver": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "example": "8.8.8.8:53",
-            "description": "Custom DNS resolver in host:port format. IPv6 must use bracket notation."
-          },
-          "dns_protocol": {
-            "type": "string",
-            "enum": [
-              "UDP",
-              "TCP"
-            ],
-            "default": "UDP",
-            "example": "UDP",
-            "description": "DNS transport protocol"
-          },
-          "assertions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DnsAssertion"
-            },
-            "description": "DNS assertions to run on the response"
-          }
-        },
-        "required": [
-          "name",
-          "dns_domain",
-          "dns_record_type"
-        ],
-        "additionalProperties": false
-      },
       "DnsCheckPatch": {
         "type": "object",
         "properties": {
@@ -2555,185 +2376,6 @@
           "messages"
         ]
       },
-      "TcpCheckInput": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "My monitor"
-          },
-          "test_interval": {
-            "type": "integer",
-            "minimum": 30,
-            "example": 60,
-            "description": "Interval in seconds between checks"
-          },
-          "test_regions": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "Region identifier in format aws:{region}"
-            },
-            "example": [
-              "aws:us-east-1",
-              "aws:eu-central-1"
-            ],
-            "description": "Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1"
-          },
-          "user_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "slack_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "discord_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "incident_io_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "microsoft_teams_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "telegram_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "pushover_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "webhook_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "IDs of webhooks to associate with this check"
-          },
-          "oncall_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)"
-          },
-          "alert_priority": {
-            "type": "string",
-            "enum": [
-              "LOW",
-              "HIGH"
-            ],
-            "default": "HIGH",
-            "example": "LOW",
-            "description": "[Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority)."
-          },
-          "confirmation_period_seconds": {
-            "type": "integer",
-            "minimum": 0,
-            "default": 60,
-            "example": 60,
-            "description": "Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period)."
-          },
-          "recovery_period_seconds": {
-            "type": "integer",
-            "minimum": 0,
-            "default": 180,
-            "example": 180,
-            "description": "Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period)."
-          },
-          "reminder_alert_interval_minutes": {
-            "type": "integer",
-            "minimum": -1,
-            "default": 1440,
-            "example": 1440,
-            "description": "Interval in minutes between reminders (-1 for never)"
-          },
-          "timeout": {
-            "type": "integer",
-            "minimum": 1000,
-            "default": 10000,
-            "example": 10000,
-            "description": "Timeout in milliseconds"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "TCP_CHECK"
-            ]
-          },
-          "tcp_hostname": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 253,
-            "example": "tcpbin.com",
-            "description": "Publicly reachable hostname or IP address to connect to"
-          },
-          "tcp_port": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 65535,
-            "example": 4242,
-            "description": "TCP port to connect to"
-          },
-          "tcp_ip_family": {
-            "type": "string",
-            "enum": [
-              "IPv4",
-              "IPv6"
-            ],
-            "default": "IPv4",
-            "example": "IPv4",
-            "description": "IP family to use for DNS resolution and socket connection"
-          },
-          "tcp_data": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "maxLength": 16384,
-            "example": "PING\r\n",
-            "description": "Optional TCP payload to send immediately after connecting"
-          },
-          "tcp_should_fail": {
-            "type": "boolean",
-            "default": false,
-            "example": false,
-            "description": "Whether a failed TCP connection should be treated as passing"
-          },
-          "assertions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TcpAssertion"
-            },
-            "description": "TCP assertions to run on response time or response data"
-          }
-        },
-        "required": [
-          "name",
-          "tcp_hostname",
-          "tcp_port"
-        ],
-        "additionalProperties": false
-      },
       "TcpCheckPatch": {
         "type": "object",
         "properties": {
@@ -2970,271 +2612,6 @@
           "errors",
           "messages"
         ]
-      },
-      "UptimeCheckInput": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "My monitor"
-          },
-          "test_interval": {
-            "type": "integer",
-            "minimum": 30,
-            "example": 60,
-            "description": "Interval in seconds between checks"
-          },
-          "test_regions": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "Region identifier in format aws:{region}"
-            },
-            "example": [
-              "aws:us-east-1",
-              "aws:eu-central-1"
-            ],
-            "description": "Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1"
-          },
-          "user_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "slack_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "discord_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "incident_io_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "microsoft_teams_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "telegram_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "pushover_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "webhook_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "IDs of webhooks to associate with this check"
-          },
-          "oncall_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)"
-          },
-          "alert_priority": {
-            "type": "string",
-            "enum": [
-              "LOW",
-              "HIGH"
-            ],
-            "default": "HIGH",
-            "example": "LOW",
-            "description": "[Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority)."
-          },
-          "confirmation_period_seconds": {
-            "type": "integer",
-            "minimum": 0,
-            "default": 60,
-            "example": 60,
-            "description": "Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period)."
-          },
-          "recovery_period_seconds": {
-            "type": "integer",
-            "minimum": 0,
-            "default": 180,
-            "example": 180,
-            "description": "Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period)."
-          },
-          "reminder_alert_interval_minutes": {
-            "type": "integer",
-            "minimum": -1,
-            "default": 1440,
-            "example": 1440,
-            "description": "Interval in minutes between reminders (-1 for never)"
-          },
-          "timeout": {
-            "type": "integer",
-            "minimum": 1000,
-            "default": 10000,
-            "example": 10000,
-            "description": "Timeout in milliseconds"
-          },
-          "url": {
-            "type": "string",
-            "format": "uri",
-            "example": "https://example.com",
-            "description": "URL to check."
-          },
-          "text_to_search_for": {
-            "type": "string",
-            "maxLength": 4000,
-            "example": "Example Domain",
-            "description": "Text to search for in the response"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "UPTIME_CHECK"
-            ],
-            "default": "UPTIME_CHECK",
-            "example": "UPTIME_CHECK"
-          },
-          "headers": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string",
-              "example": "Bearer {{API_TOKEN}}"
-            },
-            "example": {
-              "Authorization": "Bearer {{API_TOKEN}}"
-            },
-            "description": "Headers to send. Uptime checks support environment variable references such as {{API_TOKEN}}. Terraform example: Authorization = \"Bearer {{API_TOKEN}}\". Terraform stores the template; create the referenced variable separately."
-          },
-          "method": {
-            "type": "string",
-            "enum": [
-              "GET",
-              "HEAD",
-              "POST",
-              "PUT",
-              "PATCH",
-              "DELETE"
-            ],
-            "default": "GET",
-            "example": "GET",
-            "description": "HTTP Method"
-          },
-          "body": {
-            "type": "string",
-            "example": "Hello World"
-          },
-          "follow_redirects": {
-            "type": "boolean",
-            "default": true,
-            "example": true
-          },
-          "assertions": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "JSON_BODY",
-                    "TEXT_BODY",
-                    "RESPONSE_HEADERS",
-                    "HTML_BODY"
-                  ],
-                  "example": "JSON_BODY",
-                  "description": "Type of assertion"
-                },
-                "property": {
-                  "type": "string",
-                  "example": "$.data.name",
-                  "description": "Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)"
-                },
-                "comparison": {
-                  "type": "string",
-                  "enum": [
-                    "EQUALS",
-                    "NOT_EQUALS",
-                    "GREATER_THAN",
-                    "LESS_THAN",
-                    "NULL",
-                    "NOT_NULL",
-                    "EMPTY",
-                    "NOT_EMPTY",
-                    "CONTAINS",
-                    "NOT_CONTAINS",
-                    "FALSE",
-                    "TRUE"
-                  ],
-                  "example": "EQUALS",
-                  "description": "Comparison operator"
-                },
-                "expected": {
-                  "type": "string",
-                  "example": "John Doe",
-                  "description": "Expected value"
-                }
-              },
-              "required": [
-                "type",
-                "property",
-                "comparison",
-                "expected"
-              ]
-            },
-            "example": [
-              {
-                "type": "JSON_BODY",
-                "property": "$.data.name",
-                "comparison": "EQUALS",
-                "expected": "John Doe"
-              },
-              {
-                "type": "HTML_BODY",
-                "property": "meta[name=\"description\"]",
-                "comparison": "NOT_EMPTY",
-                "expected": ""
-              }
-            ],
-            "description": "Assertions to run on the response"
-          },
-          "verify_ssl": {
-            "type": "boolean",
-            "default": true,
-            "example": true,
-            "description": "Whether to fail a check if SSL verification fails"
-          },
-          "auth_username": {
-            "type": "string",
-            "example": "username",
-            "description": "Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id."
-          },
-          "auth_password": {
-            "type": "string",
-            "example": "password",
-            "description": "Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved."
-          }
-        },
-        "required": [
-          "name",
-          "url"
-        ],
-        "additionalProperties": false
       },
       "UptimeCheckPatch": {
         "type": "object",
@@ -3546,287 +2923,6 @@
           "errors",
           "messages"
         ]
-      },
-      "BrowserCheckInput": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "My monitor"
-          },
-          "test_interval": {
-            "type": "integer",
-            "minimum": 30,
-            "example": 60,
-            "description": "Interval in seconds between checks"
-          },
-          "test_regions": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "Region identifier in format aws:{region}"
-            },
-            "example": [
-              "aws:us-east-1",
-              "aws:eu-central-1"
-            ],
-            "description": "Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1"
-          },
-          "user_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "slack_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "discord_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "incident_io_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "microsoft_teams_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "telegram_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "pushover_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "webhook_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "IDs of webhooks to associate with this check"
-          },
-          "oncall_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)"
-          },
-          "alert_priority": {
-            "type": "string",
-            "enum": [
-              "LOW",
-              "HIGH"
-            ],
-            "default": "HIGH",
-            "example": "LOW",
-            "description": "[Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority)."
-          },
-          "confirmation_period_seconds": {
-            "type": "integer",
-            "minimum": 0,
-            "default": 60,
-            "example": 60,
-            "description": "Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period)."
-          },
-          "recovery_period_seconds": {
-            "type": "integer",
-            "minimum": 0,
-            "default": 180,
-            "example": 180,
-            "description": "Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period)."
-          },
-          "reminder_alert_interval_minutes": {
-            "type": "integer",
-            "minimum": -1,
-            "default": 1440,
-            "example": 1440,
-            "description": "Interval in minutes between reminders (-1 for never)"
-          },
-          "timeout": {
-            "type": "integer",
-            "minimum": 1000,
-            "default": 10000,
-            "example": 10000,
-            "description": "Timeout in milliseconds"
-          },
-          "url": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uri",
-            "example": "https://example.com",
-            "description": "URL to load for URL-based browser checks. Optional when script is provided."
-          },
-          "text_to_search_for": {
-            "type": "string",
-            "maxLength": 4000,
-            "example": "Example Domain",
-            "description": "Text to search for in the response"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "BROWSER_CHECK"
-            ],
-            "default": "BROWSER_CHECK",
-            "example": "BROWSER_CHECK"
-          },
-          "headers": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string",
-              "example": "My Value"
-            },
-            "example": {
-              "X-My-Header": "My Value"
-            },
-            "description": "Headers to send with the browser request. Environment variable references are not supported."
-          },
-          "method": {
-            "type": "string",
-            "enum": [
-              "GET",
-              "HEAD",
-              "POST",
-              "PUT",
-              "PATCH",
-              "DELETE"
-            ],
-            "default": "GET",
-            "example": "GET",
-            "description": "HTTP Method"
-          },
-          "body": {
-            "type": "string",
-            "example": "Hello World"
-          },
-          "follow_redirects": {
-            "type": "boolean",
-            "default": true,
-            "example": true
-          },
-          "assertions": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "JSON_BODY",
-                    "TEXT_BODY",
-                    "RESPONSE_HEADERS",
-                    "HTML_BODY"
-                  ],
-                  "example": "JSON_BODY",
-                  "description": "Type of assertion"
-                },
-                "property": {
-                  "type": "string",
-                  "example": "$.data.name",
-                  "description": "Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)"
-                },
-                "comparison": {
-                  "type": "string",
-                  "enum": [
-                    "EQUALS",
-                    "NOT_EQUALS",
-                    "GREATER_THAN",
-                    "LESS_THAN",
-                    "NULL",
-                    "NOT_NULL",
-                    "EMPTY",
-                    "NOT_EMPTY",
-                    "CONTAINS",
-                    "NOT_CONTAINS",
-                    "FALSE",
-                    "TRUE"
-                  ],
-                  "example": "EQUALS",
-                  "description": "Comparison operator"
-                },
-                "expected": {
-                  "type": "string",
-                  "example": "John Doe",
-                  "description": "Expected value"
-                }
-              },
-              "required": [
-                "type",
-                "property",
-                "comparison",
-                "expected"
-              ]
-            },
-            "example": [
-              {
-                "type": "JSON_BODY",
-                "property": "$.data.name",
-                "comparison": "EQUALS",
-                "expected": "John Doe"
-              },
-              {
-                "type": "HTML_BODY",
-                "property": "meta[name=\"description\"]",
-                "comparison": "NOT_EMPTY",
-                "expected": ""
-              }
-            ],
-            "description": "Assertions to run on the response"
-          },
-          "verify_ssl": {
-            "type": "boolean",
-            "default": true,
-            "example": true,
-            "description": "Whether to fail a check if SSL verification fails"
-          },
-          "auth_username": {
-            "type": "string",
-            "example": "username",
-            "description": "Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id."
-          },
-          "auth_password": {
-            "type": "string",
-            "example": "password",
-            "description": "Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved."
-          },
-          "version": {
-            "type": "string",
-            "enum": [
-              "NODE24_PLAYWRIGHT"
-            ],
-            "example": "NODE24_PLAYWRIGHT",
-            "description": "Runtime version for browser checks."
-          },
-          "script": {
-            "type": "string",
-            "example": "import { test, expect } from '@playwright/test';\ntest('check homepage', async ({ page }) => {\n  await page.goto('https://example.com');\n  await expect(page.locator('h1')).toContainText('Example');\n});",
-            "description": "Playwright Test script for scripted browser checks. Optional when url is provided."
-          }
-        },
-        "required": [
-          "name"
-        ],
-        "additionalProperties": false,
-        "description": "Browser check create payload. Provide either url for a URL-based browser check or script for a scripted Playwright check."
       },
       "BrowserCheckPatch": {
         "type": "object",
@@ -7133,189 +6229,6 @@
         ],
         "additionalProperties": false
       },
-      "ProjectRollout_create_DnsCheckInput": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "My monitor"
-          },
-          "test_interval": {
-            "type": "integer",
-            "minimum": 30,
-            "example": 60,
-            "description": "Interval in seconds between checks"
-          },
-          "test_regions": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "Region identifier in format aws:{region}"
-            },
-            "example": [
-              "aws:us-east-1",
-              "aws:eu-central-1"
-            ],
-            "description": "Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1"
-          },
-          "user_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "slack_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "discord_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "incident_io_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "microsoft_teams_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "telegram_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "pushover_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "webhook_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "IDs of webhooks to associate with this check"
-          },
-          "oncall_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)"
-          },
-          "alert_priority": {
-            "type": "string",
-            "enum": [
-              "LOW",
-              "HIGH"
-            ],
-            "default": "HIGH",
-            "example": "LOW",
-            "description": "[Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority)."
-          },
-          "confirmation_period_seconds": {
-            "type": "integer",
-            "minimum": 0,
-            "default": 60,
-            "example": 60,
-            "description": "Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period)."
-          },
-          "recovery_period_seconds": {
-            "type": "integer",
-            "minimum": 0,
-            "default": 180,
-            "example": 180,
-            "description": "Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period)."
-          },
-          "reminder_alert_interval_minutes": {
-            "type": "integer",
-            "minimum": -1,
-            "default": 1440,
-            "example": 1440,
-            "description": "Interval in minutes between reminders (-1 for never)"
-          },
-          "timeout": {
-            "type": "integer",
-            "minimum": 1000,
-            "default": 10000,
-            "example": 10000,
-            "description": "Timeout in milliseconds"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "DNS_CHECK"
-            ]
-          },
-          "dns_domain": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 253,
-            "example": "example.com",
-            "description": "DNS name to query"
-          },
-          "dns_record_type": {
-            "type": "string",
-            "enum": [
-              "A",
-              "AAAA",
-              "CNAME",
-              "MX",
-              "NS",
-              "SOA",
-              "TXT"
-            ],
-            "example": "A",
-            "description": "DNS record type to query"
-          },
-          "dns_resolver": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "example": "8.8.8.8:53",
-            "description": "Custom DNS resolver in host:port format. IPv6 must use bracket notation."
-          },
-          "dns_protocol": {
-            "type": "string",
-            "enum": [
-              "UDP",
-              "TCP"
-            ],
-            "default": "UDP",
-            "example": "UDP",
-            "description": "DNS transport protocol"
-          },
-          "assertions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DnsAssertion"
-            },
-            "description": "DNS assertions to run on the response"
-          },
-          "project_id": {
-            "$ref": "#/components/schemas/ProjectOperation_ProjectSelectionId",
-            "description": "Omit to select the organisation's stable Default project."
-          }
-        },
-        "required": [
-          "name",
-          "dns_domain",
-          "dns_record_type"
-        ],
-        "additionalProperties": false
-      },
       "ProjectRollout_envelope_DnsCheckResponse": {
         "type": "object",
         "properties": {
@@ -7801,189 +6714,6 @@
         },
         "additionalProperties": false
       },
-      "ProjectRollout_create_TcpCheckInput": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "My monitor"
-          },
-          "test_interval": {
-            "type": "integer",
-            "minimum": 30,
-            "example": 60,
-            "description": "Interval in seconds between checks"
-          },
-          "test_regions": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "Region identifier in format aws:{region}"
-            },
-            "example": [
-              "aws:us-east-1",
-              "aws:eu-central-1"
-            ],
-            "description": "Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1"
-          },
-          "user_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "slack_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "discord_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "incident_io_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "microsoft_teams_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "telegram_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "pushover_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "webhook_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "IDs of webhooks to associate with this check"
-          },
-          "oncall_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)"
-          },
-          "alert_priority": {
-            "type": "string",
-            "enum": [
-              "LOW",
-              "HIGH"
-            ],
-            "default": "HIGH",
-            "example": "LOW",
-            "description": "[Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority)."
-          },
-          "confirmation_period_seconds": {
-            "type": "integer",
-            "minimum": 0,
-            "default": 60,
-            "example": 60,
-            "description": "Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period)."
-          },
-          "recovery_period_seconds": {
-            "type": "integer",
-            "minimum": 0,
-            "default": 180,
-            "example": 180,
-            "description": "Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period)."
-          },
-          "reminder_alert_interval_minutes": {
-            "type": "integer",
-            "minimum": -1,
-            "default": 1440,
-            "example": 1440,
-            "description": "Interval in minutes between reminders (-1 for never)"
-          },
-          "timeout": {
-            "type": "integer",
-            "minimum": 1000,
-            "default": 10000,
-            "example": 10000,
-            "description": "Timeout in milliseconds"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "TCP_CHECK"
-            ]
-          },
-          "tcp_hostname": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 253,
-            "example": "tcpbin.com",
-            "description": "Publicly reachable hostname or IP address to connect to"
-          },
-          "tcp_port": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 65535,
-            "example": 4242,
-            "description": "TCP port to connect to"
-          },
-          "tcp_ip_family": {
-            "type": "string",
-            "enum": [
-              "IPv4",
-              "IPv6"
-            ],
-            "default": "IPv4",
-            "example": "IPv4",
-            "description": "IP family to use for DNS resolution and socket connection"
-          },
-          "tcp_data": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "maxLength": 16384,
-            "example": "PING\r\n",
-            "description": "Optional TCP payload to send immediately after connecting"
-          },
-          "tcp_should_fail": {
-            "type": "boolean",
-            "default": false,
-            "example": false,
-            "description": "Whether a failed TCP connection should be treated as passing"
-          },
-          "assertions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TcpAssertion"
-            },
-            "description": "TCP assertions to run on response time or response data"
-          },
-          "project_id": {
-            "$ref": "#/components/schemas/ProjectOperation_ProjectSelectionId",
-            "description": "Omit to select the organisation's stable Default project."
-          }
-        },
-        "required": [
-          "name",
-          "tcp_hostname",
-          "tcp_port"
-        ],
-        "additionalProperties": false
-      },
       "ProjectRollout_envelope_TcpCheckResponse": {
         "type": "object",
         "properties": {
@@ -8466,275 +7196,6 @@
             "not": {}
           }
         },
-        "additionalProperties": false
-      },
-      "ProjectRollout_create_UptimeCheckInput": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "My monitor"
-          },
-          "test_interval": {
-            "type": "integer",
-            "minimum": 30,
-            "example": 60,
-            "description": "Interval in seconds between checks"
-          },
-          "test_regions": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "Region identifier in format aws:{region}"
-            },
-            "example": [
-              "aws:us-east-1",
-              "aws:eu-central-1"
-            ],
-            "description": "Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1"
-          },
-          "user_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "slack_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "discord_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "incident_io_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "microsoft_teams_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "telegram_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "pushover_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "webhook_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "IDs of webhooks to associate with this check"
-          },
-          "oncall_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)"
-          },
-          "alert_priority": {
-            "type": "string",
-            "enum": [
-              "LOW",
-              "HIGH"
-            ],
-            "default": "HIGH",
-            "example": "LOW",
-            "description": "[Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority)."
-          },
-          "confirmation_period_seconds": {
-            "type": "integer",
-            "minimum": 0,
-            "default": 60,
-            "example": 60,
-            "description": "Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period)."
-          },
-          "recovery_period_seconds": {
-            "type": "integer",
-            "minimum": 0,
-            "default": 180,
-            "example": 180,
-            "description": "Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period)."
-          },
-          "reminder_alert_interval_minutes": {
-            "type": "integer",
-            "minimum": -1,
-            "default": 1440,
-            "example": 1440,
-            "description": "Interval in minutes between reminders (-1 for never)"
-          },
-          "timeout": {
-            "type": "integer",
-            "minimum": 1000,
-            "default": 10000,
-            "example": 10000,
-            "description": "Timeout in milliseconds"
-          },
-          "url": {
-            "type": "string",
-            "format": "uri",
-            "example": "https://example.com",
-            "description": "URL to check."
-          },
-          "text_to_search_for": {
-            "type": "string",
-            "maxLength": 4000,
-            "example": "Example Domain",
-            "description": "Text to search for in the response"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "UPTIME_CHECK"
-            ],
-            "default": "UPTIME_CHECK",
-            "example": "UPTIME_CHECK"
-          },
-          "headers": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string",
-              "example": "Bearer {{API_TOKEN}}"
-            },
-            "example": {
-              "Authorization": "Bearer {{API_TOKEN}}"
-            },
-            "description": "Headers to send. Uptime checks support environment variable references such as {{API_TOKEN}}. Terraform example: Authorization = \"Bearer {{API_TOKEN}}\". Terraform stores the template; create the referenced variable separately."
-          },
-          "method": {
-            "type": "string",
-            "enum": [
-              "GET",
-              "HEAD",
-              "POST",
-              "PUT",
-              "PATCH",
-              "DELETE"
-            ],
-            "default": "GET",
-            "example": "GET",
-            "description": "HTTP Method"
-          },
-          "body": {
-            "type": "string",
-            "example": "Hello World"
-          },
-          "follow_redirects": {
-            "type": "boolean",
-            "default": true,
-            "example": true
-          },
-          "assertions": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "JSON_BODY",
-                    "TEXT_BODY",
-                    "RESPONSE_HEADERS",
-                    "HTML_BODY"
-                  ],
-                  "example": "JSON_BODY",
-                  "description": "Type of assertion"
-                },
-                "property": {
-                  "type": "string",
-                  "example": "$.data.name",
-                  "description": "Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)"
-                },
-                "comparison": {
-                  "type": "string",
-                  "enum": [
-                    "EQUALS",
-                    "NOT_EQUALS",
-                    "GREATER_THAN",
-                    "LESS_THAN",
-                    "NULL",
-                    "NOT_NULL",
-                    "EMPTY",
-                    "NOT_EMPTY",
-                    "CONTAINS",
-                    "NOT_CONTAINS",
-                    "FALSE",
-                    "TRUE"
-                  ],
-                  "example": "EQUALS",
-                  "description": "Comparison operator"
-                },
-                "expected": {
-                  "type": "string",
-                  "example": "John Doe",
-                  "description": "Expected value"
-                }
-              },
-              "required": [
-                "type",
-                "property",
-                "comparison",
-                "expected"
-              ]
-            },
-            "example": [
-              {
-                "type": "JSON_BODY",
-                "property": "$.data.name",
-                "comparison": "EQUALS",
-                "expected": "John Doe"
-              },
-              {
-                "type": "HTML_BODY",
-                "property": "meta[name=\"description\"]",
-                "comparison": "NOT_EMPTY",
-                "expected": ""
-              }
-            ],
-            "description": "Assertions to run on the response"
-          },
-          "verify_ssl": {
-            "type": "boolean",
-            "default": true,
-            "example": true,
-            "description": "Whether to fail a check if SSL verification fails"
-          },
-          "auth_username": {
-            "type": "string",
-            "example": "username",
-            "description": "Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id."
-          },
-          "auth_password": {
-            "type": "string",
-            "example": "password",
-            "description": "Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved."
-          },
-          "project_id": {
-            "$ref": "#/components/schemas/ProjectOperation_ProjectSelectionId",
-            "description": "Omit to select the organisation's stable Default project."
-          }
-        },
-        "required": [
-          "name",
-          "url"
-        ],
         "additionalProperties": false
       },
       "ProjectRollout_envelope_UptimeCheckResponse": {
@@ -9393,291 +7854,6 @@
           }
         },
         "additionalProperties": false
-      },
-      "ProjectRollout_create_BrowserCheckInput": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "My monitor"
-          },
-          "test_interval": {
-            "type": "integer",
-            "minimum": 30,
-            "example": 60,
-            "description": "Interval in seconds between checks"
-          },
-          "test_regions": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "Region identifier in format aws:{region}"
-            },
-            "example": [
-              "aws:us-east-1",
-              "aws:eu-central-1"
-            ],
-            "description": "Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1"
-          },
-          "user_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "slack_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "discord_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "incident_io_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "microsoft_teams_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "telegram_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "pushover_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "webhook_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "IDs of webhooks to associate with this check"
-          },
-          "oncall_alerts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)"
-          },
-          "alert_priority": {
-            "type": "string",
-            "enum": [
-              "LOW",
-              "HIGH"
-            ],
-            "default": "HIGH",
-            "example": "LOW",
-            "description": "[Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority)."
-          },
-          "confirmation_period_seconds": {
-            "type": "integer",
-            "minimum": 0,
-            "default": 60,
-            "example": 60,
-            "description": "Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period)."
-          },
-          "recovery_period_seconds": {
-            "type": "integer",
-            "minimum": 0,
-            "default": 180,
-            "example": 180,
-            "description": "Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period)."
-          },
-          "reminder_alert_interval_minutes": {
-            "type": "integer",
-            "minimum": -1,
-            "default": 1440,
-            "example": 1440,
-            "description": "Interval in minutes between reminders (-1 for never)"
-          },
-          "timeout": {
-            "type": "integer",
-            "minimum": 1000,
-            "default": 10000,
-            "example": 10000,
-            "description": "Timeout in milliseconds"
-          },
-          "url": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uri",
-            "example": "https://example.com",
-            "description": "URL to load for URL-based browser checks. Optional when script is provided."
-          },
-          "text_to_search_for": {
-            "type": "string",
-            "maxLength": 4000,
-            "example": "Example Domain",
-            "description": "Text to search for in the response"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "BROWSER_CHECK"
-            ],
-            "default": "BROWSER_CHECK",
-            "example": "BROWSER_CHECK"
-          },
-          "headers": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string",
-              "example": "My Value"
-            },
-            "example": {
-              "X-My-Header": "My Value"
-            },
-            "description": "Headers to send with the browser request. Environment variable references are not supported."
-          },
-          "method": {
-            "type": "string",
-            "enum": [
-              "GET",
-              "HEAD",
-              "POST",
-              "PUT",
-              "PATCH",
-              "DELETE"
-            ],
-            "default": "GET",
-            "example": "GET",
-            "description": "HTTP Method"
-          },
-          "body": {
-            "type": "string",
-            "example": "Hello World"
-          },
-          "follow_redirects": {
-            "type": "boolean",
-            "default": true,
-            "example": true
-          },
-          "assertions": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "JSON_BODY",
-                    "TEXT_BODY",
-                    "RESPONSE_HEADERS",
-                    "HTML_BODY"
-                  ],
-                  "example": "JSON_BODY",
-                  "description": "Type of assertion"
-                },
-                "property": {
-                  "type": "string",
-                  "example": "$.data.name",
-                  "description": "Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)"
-                },
-                "comparison": {
-                  "type": "string",
-                  "enum": [
-                    "EQUALS",
-                    "NOT_EQUALS",
-                    "GREATER_THAN",
-                    "LESS_THAN",
-                    "NULL",
-                    "NOT_NULL",
-                    "EMPTY",
-                    "NOT_EMPTY",
-                    "CONTAINS",
-                    "NOT_CONTAINS",
-                    "FALSE",
-                    "TRUE"
-                  ],
-                  "example": "EQUALS",
-                  "description": "Comparison operator"
-                },
-                "expected": {
-                  "type": "string",
-                  "example": "John Doe",
-                  "description": "Expected value"
-                }
-              },
-              "required": [
-                "type",
-                "property",
-                "comparison",
-                "expected"
-              ]
-            },
-            "example": [
-              {
-                "type": "JSON_BODY",
-                "property": "$.data.name",
-                "comparison": "EQUALS",
-                "expected": "John Doe"
-              },
-              {
-                "type": "HTML_BODY",
-                "property": "meta[name=\"description\"]",
-                "comparison": "NOT_EMPTY",
-                "expected": ""
-              }
-            ],
-            "description": "Assertions to run on the response"
-          },
-          "verify_ssl": {
-            "type": "boolean",
-            "default": true,
-            "example": true,
-            "description": "Whether to fail a check if SSL verification fails"
-          },
-          "auth_username": {
-            "type": "string",
-            "example": "username",
-            "description": "Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id."
-          },
-          "auth_password": {
-            "type": "string",
-            "example": "password",
-            "description": "Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved."
-          },
-          "version": {
-            "type": "string",
-            "enum": [
-              "NODE24_PLAYWRIGHT"
-            ],
-            "example": "NODE24_PLAYWRIGHT",
-            "description": "Runtime version for browser checks."
-          },
-          "script": {
-            "type": "string",
-            "example": "import { test, expect } from '@playwright/test';\ntest('check homepage', async ({ page }) => {\n  await page.goto('https://example.com');\n  await expect(page.locator('h1')).toContainText('Example');\n});",
-            "description": "Playwright Test script for scripted browser checks. Optional when url is provided."
-          },
-          "project_id": {
-            "$ref": "#/components/schemas/ProjectOperation_ProjectSelectionId",
-            "description": "Omit to select the organisation's stable Default project."
-          }
-        },
-        "required": [
-          "name"
-        ],
-        "additionalProperties": false,
-        "description": "Browser check create payload. Provide either url for a URL-based browser check or script for a scripted Playwright check."
       },
       "ProjectRollout_envelope_BrowserCheckResponse": {
         "type": "object",
@@ -13638,7 +11814,187 @@
                 }
               },
               "schema": {
-                "$ref": "#/components/schemas/ProjectRollout_create_DnsCheckInput"
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "My monitor"
+                  },
+                  "test_interval": {
+                    "type": "integer",
+                    "minimum": 30,
+                    "example": 60,
+                    "description": "Interval in seconds between checks"
+                  },
+                  "test_regions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "Region identifier in format aws:{region}"
+                    },
+                    "example": [
+                      "aws:us-east-1",
+                      "aws:eu-central-1"
+                    ],
+                    "description": "Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1"
+                  },
+                  "user_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "slack_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "discord_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "incident_io_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "microsoft_teams_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "telegram_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "pushover_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "webhook_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "IDs of webhooks to associate with this check"
+                  },
+                  "oncall_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)"
+                  },
+                  "alert_priority": {
+                    "type": "string",
+                    "enum": [
+                      "LOW",
+                      "HIGH"
+                    ],
+                    "default": "HIGH",
+                    "example": "LOW",
+                    "description": "[Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority)."
+                  },
+                  "confirmation_period_seconds": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 60,
+                    "example": 60,
+                    "description": "Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period)."
+                  },
+                  "recovery_period_seconds": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 180,
+                    "example": 180,
+                    "description": "Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period)."
+                  },
+                  "reminder_alert_interval_minutes": {
+                    "type": "integer",
+                    "minimum": -1,
+                    "default": 1440,
+                    "example": 1440,
+                    "description": "Interval in minutes between reminders (-1 for never)"
+                  },
+                  "timeout": {
+                    "type": "integer",
+                    "minimum": 1000,
+                    "default": 10000,
+                    "example": 10000,
+                    "description": "Timeout in milliseconds"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "DNS_CHECK"
+                    ]
+                  },
+                  "dns_domain": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 253,
+                    "example": "example.com",
+                    "description": "DNS name to query"
+                  },
+                  "dns_record_type": {
+                    "type": "string",
+                    "enum": [
+                      "A",
+                      "AAAA",
+                      "CNAME",
+                      "MX",
+                      "NS",
+                      "SOA",
+                      "TXT"
+                    ],
+                    "example": "A",
+                    "description": "DNS record type to query"
+                  },
+                  "dns_resolver": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "example": "8.8.8.8:53",
+                    "description": "Custom DNS resolver in host:port format. IPv6 must use bracket notation."
+                  },
+                  "dns_protocol": {
+                    "type": "string",
+                    "enum": [
+                      "UDP",
+                      "TCP"
+                    ],
+                    "default": "UDP",
+                    "example": "UDP",
+                    "description": "DNS transport protocol"
+                  },
+                  "assertions": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/DnsAssertion"
+                    },
+                    "description": "DNS assertions to run on the response"
+                  },
+                  "project_id": {
+                    "$ref": "#/components/schemas/ProjectOperation_ProjectSelectionId",
+                    "description": "Omit to select the organisation's stable Default project."
+                  }
+                },
+                "required": [
+                  "name",
+                  "dns_domain",
+                  "dns_record_type"
+                ],
+                "additionalProperties": false
               }
             }
           }
@@ -14251,7 +12607,187 @@
                 }
               },
               "schema": {
-                "$ref": "#/components/schemas/ProjectRollout_create_TcpCheckInput"
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "My monitor"
+                  },
+                  "test_interval": {
+                    "type": "integer",
+                    "minimum": 30,
+                    "example": 60,
+                    "description": "Interval in seconds between checks"
+                  },
+                  "test_regions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "Region identifier in format aws:{region}"
+                    },
+                    "example": [
+                      "aws:us-east-1",
+                      "aws:eu-central-1"
+                    ],
+                    "description": "Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1"
+                  },
+                  "user_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "slack_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "discord_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "incident_io_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "microsoft_teams_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "telegram_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "pushover_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "webhook_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "IDs of webhooks to associate with this check"
+                  },
+                  "oncall_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)"
+                  },
+                  "alert_priority": {
+                    "type": "string",
+                    "enum": [
+                      "LOW",
+                      "HIGH"
+                    ],
+                    "default": "HIGH",
+                    "example": "LOW",
+                    "description": "[Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority)."
+                  },
+                  "confirmation_period_seconds": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 60,
+                    "example": 60,
+                    "description": "Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period)."
+                  },
+                  "recovery_period_seconds": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 180,
+                    "example": 180,
+                    "description": "Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period)."
+                  },
+                  "reminder_alert_interval_minutes": {
+                    "type": "integer",
+                    "minimum": -1,
+                    "default": 1440,
+                    "example": 1440,
+                    "description": "Interval in minutes between reminders (-1 for never)"
+                  },
+                  "timeout": {
+                    "type": "integer",
+                    "minimum": 1000,
+                    "default": 10000,
+                    "example": 10000,
+                    "description": "Timeout in milliseconds"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "TCP_CHECK"
+                    ]
+                  },
+                  "tcp_hostname": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 253,
+                    "example": "tcpbin.com",
+                    "description": "Publicly reachable hostname or IP address to connect to"
+                  },
+                  "tcp_port": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65535,
+                    "example": 4242,
+                    "description": "TCP port to connect to"
+                  },
+                  "tcp_ip_family": {
+                    "type": "string",
+                    "enum": [
+                      "IPv4",
+                      "IPv6"
+                    ],
+                    "default": "IPv4",
+                    "example": "IPv4",
+                    "description": "IP family to use for DNS resolution and socket connection"
+                  },
+                  "tcp_data": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 16384,
+                    "example": "PING\r\n",
+                    "description": "Optional TCP payload to send immediately after connecting"
+                  },
+                  "tcp_should_fail": {
+                    "type": "boolean",
+                    "default": false,
+                    "example": false,
+                    "description": "Whether a failed TCP connection should be treated as passing"
+                  },
+                  "assertions": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/TcpAssertion"
+                    },
+                    "description": "TCP assertions to run on response time or response data"
+                  },
+                  "project_id": {
+                    "$ref": "#/components/schemas/ProjectOperation_ProjectSelectionId",
+                    "description": "Omit to select the organisation's stable Default project."
+                  }
+                },
+                "required": [
+                  "name",
+                  "tcp_hostname",
+                  "tcp_port"
+                ],
+                "additionalProperties": false
               }
             }
           }
@@ -14856,7 +13392,273 @@
                 }
               },
               "schema": {
-                "$ref": "#/components/schemas/ProjectRollout_create_UptimeCheckInput"
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "My monitor"
+                  },
+                  "test_interval": {
+                    "type": "integer",
+                    "minimum": 30,
+                    "example": 60,
+                    "description": "Interval in seconds between checks"
+                  },
+                  "test_regions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "Region identifier in format aws:{region}"
+                    },
+                    "example": [
+                      "aws:us-east-1",
+                      "aws:eu-central-1"
+                    ],
+                    "description": "Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1"
+                  },
+                  "user_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "slack_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "discord_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "incident_io_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "microsoft_teams_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "telegram_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "pushover_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "webhook_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "IDs of webhooks to associate with this check"
+                  },
+                  "oncall_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)"
+                  },
+                  "alert_priority": {
+                    "type": "string",
+                    "enum": [
+                      "LOW",
+                      "HIGH"
+                    ],
+                    "default": "HIGH",
+                    "example": "LOW",
+                    "description": "[Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority)."
+                  },
+                  "confirmation_period_seconds": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 60,
+                    "example": 60,
+                    "description": "Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period)."
+                  },
+                  "recovery_period_seconds": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 180,
+                    "example": 180,
+                    "description": "Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period)."
+                  },
+                  "reminder_alert_interval_minutes": {
+                    "type": "integer",
+                    "minimum": -1,
+                    "default": 1440,
+                    "example": 1440,
+                    "description": "Interval in minutes between reminders (-1 for never)"
+                  },
+                  "timeout": {
+                    "type": "integer",
+                    "minimum": 1000,
+                    "default": 10000,
+                    "example": 10000,
+                    "description": "Timeout in milliseconds"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://example.com",
+                    "description": "URL to check."
+                  },
+                  "text_to_search_for": {
+                    "type": "string",
+                    "maxLength": 4000,
+                    "example": "Example Domain",
+                    "description": "Text to search for in the response"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "UPTIME_CHECK"
+                    ],
+                    "default": "UPTIME_CHECK",
+                    "example": "UPTIME_CHECK"
+                  },
+                  "headers": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string",
+                      "example": "Bearer {{API_TOKEN}}"
+                    },
+                    "example": {
+                      "Authorization": "Bearer {{API_TOKEN}}"
+                    },
+                    "description": "Headers to send. Uptime checks support environment variable references such as {{API_TOKEN}}. Terraform example: Authorization = \"Bearer {{API_TOKEN}}\". Terraform stores the template; create the referenced variable separately."
+                  },
+                  "method": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "HEAD",
+                      "POST",
+                      "PUT",
+                      "PATCH",
+                      "DELETE"
+                    ],
+                    "default": "GET",
+                    "example": "GET",
+                    "description": "HTTP Method"
+                  },
+                  "body": {
+                    "type": "string",
+                    "example": "Hello World"
+                  },
+                  "follow_redirects": {
+                    "type": "boolean",
+                    "default": true,
+                    "example": true
+                  },
+                  "assertions": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "JSON_BODY",
+                            "TEXT_BODY",
+                            "RESPONSE_HEADERS",
+                            "HTML_BODY"
+                          ],
+                          "example": "JSON_BODY",
+                          "description": "Type of assertion"
+                        },
+                        "property": {
+                          "type": "string",
+                          "example": "$.data.name",
+                          "description": "Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)"
+                        },
+                        "comparison": {
+                          "type": "string",
+                          "enum": [
+                            "EQUALS",
+                            "NOT_EQUALS",
+                            "GREATER_THAN",
+                            "LESS_THAN",
+                            "NULL",
+                            "NOT_NULL",
+                            "EMPTY",
+                            "NOT_EMPTY",
+                            "CONTAINS",
+                            "NOT_CONTAINS",
+                            "FALSE",
+                            "TRUE"
+                          ],
+                          "example": "EQUALS",
+                          "description": "Comparison operator"
+                        },
+                        "expected": {
+                          "type": "string",
+                          "example": "John Doe",
+                          "description": "Expected value"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "property",
+                        "comparison",
+                        "expected"
+                      ]
+                    },
+                    "example": [
+                      {
+                        "type": "JSON_BODY",
+                        "property": "$.data.name",
+                        "comparison": "EQUALS",
+                        "expected": "John Doe"
+                      },
+                      {
+                        "type": "HTML_BODY",
+                        "property": "meta[name=\"description\"]",
+                        "comparison": "NOT_EMPTY",
+                        "expected": ""
+                      }
+                    ],
+                    "description": "Assertions to run on the response"
+                  },
+                  "verify_ssl": {
+                    "type": "boolean",
+                    "default": true,
+                    "example": true,
+                    "description": "Whether to fail a check if SSL verification fails"
+                  },
+                  "auth_username": {
+                    "type": "string",
+                    "example": "username",
+                    "description": "Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id."
+                  },
+                  "auth_password": {
+                    "type": "string",
+                    "example": "password",
+                    "description": "Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved."
+                  },
+                  "project_id": {
+                    "$ref": "#/components/schemas/ProjectOperation_ProjectSelectionId",
+                    "description": "Omit to select the organisation's stable Default project."
+                  }
+                },
+                "required": [
+                  "name",
+                  "url"
+                ],
+                "additionalProperties": false
               }
             }
           }
@@ -15328,7 +14130,288 @@
                 }
               },
               "schema": {
-                "$ref": "#/components/schemas/ProjectRollout_create_BrowserCheckInput"
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "My monitor"
+                  },
+                  "test_interval": {
+                    "type": "integer",
+                    "minimum": 30,
+                    "example": 60,
+                    "description": "Interval in seconds between checks"
+                  },
+                  "test_regions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "Region identifier in format aws:{region}"
+                    },
+                    "example": [
+                      "aws:us-east-1",
+                      "aws:eu-central-1"
+                    ],
+                    "description": "Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1"
+                  },
+                  "user_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "slack_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "discord_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "incident_io_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "microsoft_teams_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "telegram_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "pushover_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "webhook_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "IDs of webhooks to associate with this check"
+                  },
+                  "oncall_alerts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)"
+                  },
+                  "alert_priority": {
+                    "type": "string",
+                    "enum": [
+                      "LOW",
+                      "HIGH"
+                    ],
+                    "default": "HIGH",
+                    "example": "LOW",
+                    "description": "[Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority)."
+                  },
+                  "confirmation_period_seconds": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 60,
+                    "example": 60,
+                    "description": "Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period)."
+                  },
+                  "recovery_period_seconds": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 180,
+                    "example": 180,
+                    "description": "Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period)."
+                  },
+                  "reminder_alert_interval_minutes": {
+                    "type": "integer",
+                    "minimum": -1,
+                    "default": 1440,
+                    "example": 1440,
+                    "description": "Interval in minutes between reminders (-1 for never)"
+                  },
+                  "timeout": {
+                    "type": "integer",
+                    "minimum": 1000,
+                    "default": 10000,
+                    "example": 10000,
+                    "description": "Timeout in milliseconds"
+                  },
+                  "url": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "format": "uri",
+                    "example": "https://example.com",
+                    "description": "URL to load for URL-based browser checks. Optional when script is provided."
+                  },
+                  "text_to_search_for": {
+                    "type": "string",
+                    "maxLength": 4000,
+                    "example": "Example Domain",
+                    "description": "Text to search for in the response"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "BROWSER_CHECK"
+                    ],
+                    "default": "BROWSER_CHECK",
+                    "example": "BROWSER_CHECK"
+                  },
+                  "headers": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string",
+                      "example": "My Value"
+                    },
+                    "example": {
+                      "X-My-Header": "My Value"
+                    },
+                    "description": "Headers to send with the browser request. Environment variable references are not supported."
+                  },
+                  "method": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "HEAD",
+                      "POST",
+                      "PUT",
+                      "PATCH",
+                      "DELETE"
+                    ],
+                    "default": "GET",
+                    "example": "GET",
+                    "description": "HTTP Method"
+                  },
+                  "body": {
+                    "type": "string",
+                    "example": "Hello World"
+                  },
+                  "follow_redirects": {
+                    "type": "boolean",
+                    "default": true,
+                    "example": true
+                  },
+                  "assertions": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "JSON_BODY",
+                            "TEXT_BODY",
+                            "RESPONSE_HEADERS",
+                            "HTML_BODY"
+                          ],
+                          "example": "JSON_BODY",
+                          "description": "Type of assertion"
+                        },
+                        "property": {
+                          "type": "string",
+                          "example": "$.data.name",
+                          "description": "Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)"
+                        },
+                        "comparison": {
+                          "type": "string",
+                          "enum": [
+                            "EQUALS",
+                            "NOT_EQUALS",
+                            "GREATER_THAN",
+                            "LESS_THAN",
+                            "NULL",
+                            "NOT_NULL",
+                            "EMPTY",
+                            "NOT_EMPTY",
+                            "CONTAINS",
+                            "NOT_CONTAINS",
+                            "FALSE",
+                            "TRUE"
+                          ],
+                          "example": "EQUALS",
+                          "description": "Comparison operator"
+                        },
+                        "expected": {
+                          "type": "string",
+                          "example": "John Doe",
+                          "description": "Expected value"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "property",
+                        "comparison",
+                        "expected"
+                      ]
+                    },
+                    "example": [
+                      {
+                        "type": "JSON_BODY",
+                        "property": "$.data.name",
+                        "comparison": "EQUALS",
+                        "expected": "John Doe"
+                      },
+                      {
+                        "type": "HTML_BODY",
+                        "property": "meta[name=\"description\"]",
+                        "comparison": "NOT_EMPTY",
+                        "expected": ""
+                      }
+                    ],
+                    "description": "Assertions to run on the response"
+                  },
+                  "verify_ssl": {
+                    "type": "boolean",
+                    "default": true,
+                    "example": true,
+                    "description": "Whether to fail a check if SSL verification fails"
+                  },
+                  "auth_username": {
+                    "type": "string",
+                    "example": "username",
+                    "description": "Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id."
+                  },
+                  "auth_password": {
+                    "type": "string",
+                    "example": "password",
+                    "description": "Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved."
+                  },
+                  "version": {
+                    "type": "string",
+                    "enum": [
+                      "NODE24_PLAYWRIGHT"
+                    ],
+                    "example": "NODE24_PLAYWRIGHT",
+                    "description": "Runtime version for browser checks."
+                  },
+                  "script": {
+                    "type": "string",
+                    "example": "import { test, expect } from '@playwright/test';\ntest('check homepage', async ({ page }) => {\n  await page.goto('https://example.com');\n  await expect(page.locator('h1')).toContainText('Example');\n});",
+                    "description": "Playwright Test script for scripted browser checks. Optional when url is provided."
+                  },
+                  "project_id": {
+                    "$ref": "#/components/schemas/ProjectOperation_ProjectSelectionId",
+                    "description": "Omit to select the organisation's stable Default project."
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "additionalProperties": false
               }
             }
           }
@@ -35238,5 +34321,5 @@
   },
   "webhooks": {},
   "x-release-status": "candidate",
-  "x-baseline-sha256": "58aa23f2c2c9309843ed5a82acfd6d0fced623b78c6d6c07f1980f20dc2e56cf"
+  "x-baseline-sha256": "63a7e4618378185ea985afc59cd05ced39124357eb8a9baa1222fecbd56f9175"
 }

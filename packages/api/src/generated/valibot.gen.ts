@@ -482,41 +482,6 @@ export const vDnsCheckResponse = v.object({
 	),
 });
 
-export const vDnsCheckInput = v.strictObject({
-	name: v.string(),
-	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
-	test_regions: v.optional(v.array(v.string())),
-	user_alerts: v.optional(v.array(v.string())),
-	slack_alerts: v.optional(v.array(v.string())),
-	discord_alerts: v.optional(v.array(v.string())),
-	incident_io_alerts: v.optional(v.array(v.string())),
-	microsoft_teams_alerts: v.optional(v.array(v.string())),
-	telegram_alerts: v.optional(v.array(v.string())),
-	pushover_alerts: v.optional(v.array(v.string())),
-	webhook_alerts: v.optional(v.array(v.string())),
-	oncall_alerts: v.optional(v.array(v.string())),
-	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
-	confirmation_period_seconds: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(0)),
-		60,
-	),
-	recovery_period_seconds: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(0)),
-		180,
-	),
-	reminder_alert_interval_minutes: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(-1)),
-		1440,
-	),
-	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
-	type: v.optional(v.picklist(["DNS_CHECK"])),
-	dns_domain: v.pipe(v.string(), v.minLength(1), v.maxLength(253)),
-	dns_record_type: v.picklist(["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"]),
-	dns_resolver: v.nullish(v.string()),
-	dns_protocol: v.optional(v.picklist(["UDP", "TCP"]), "UDP"),
-	assertions: v.optional(v.array(vDnsAssertion)),
-});
-
 export const vDnsCheckPatch = v.strictObject({
 	name: v.optional(v.string()),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
@@ -592,42 +557,6 @@ export const vTcpCheckResponse = v.object({
 	),
 });
 
-export const vTcpCheckInput = v.strictObject({
-	name: v.string(),
-	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
-	test_regions: v.optional(v.array(v.string())),
-	user_alerts: v.optional(v.array(v.string())),
-	slack_alerts: v.optional(v.array(v.string())),
-	discord_alerts: v.optional(v.array(v.string())),
-	incident_io_alerts: v.optional(v.array(v.string())),
-	microsoft_teams_alerts: v.optional(v.array(v.string())),
-	telegram_alerts: v.optional(v.array(v.string())),
-	pushover_alerts: v.optional(v.array(v.string())),
-	webhook_alerts: v.optional(v.array(v.string())),
-	oncall_alerts: v.optional(v.array(v.string())),
-	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
-	confirmation_period_seconds: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(0)),
-		60,
-	),
-	recovery_period_seconds: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(0)),
-		180,
-	),
-	reminder_alert_interval_minutes: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(-1)),
-		1440,
-	),
-	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
-	type: v.optional(v.picklist(["TCP_CHECK"])),
-	tcp_hostname: v.pipe(v.string(), v.minLength(1), v.maxLength(253)),
-	tcp_port: v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(65535)),
-	tcp_ip_family: v.optional(v.picklist(["IPv4", "IPv6"]), "IPv4"),
-	tcp_data: v.nullish(v.pipe(v.string(), v.maxLength(16384))),
-	tcp_should_fail: v.optional(v.boolean(), false),
-	assertions: v.optional(v.array(vTcpAssertion)),
-});
-
 export const vTcpCheckPatch = v.strictObject({
 	name: v.optional(v.string()),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
@@ -683,76 +612,6 @@ export const vUptimeCheckResponse = v.object({
 			type: v.nullish(v.string()),
 		}),
 	),
-});
-
-export const vUptimeCheckInput = v.strictObject({
-	name: v.string(),
-	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
-	test_regions: v.optional(v.array(v.string())),
-	user_alerts: v.optional(v.array(v.string())),
-	slack_alerts: v.optional(v.array(v.string())),
-	discord_alerts: v.optional(v.array(v.string())),
-	incident_io_alerts: v.optional(v.array(v.string())),
-	microsoft_teams_alerts: v.optional(v.array(v.string())),
-	telegram_alerts: v.optional(v.array(v.string())),
-	pushover_alerts: v.optional(v.array(v.string())),
-	webhook_alerts: v.optional(v.array(v.string())),
-	oncall_alerts: v.optional(v.array(v.string())),
-	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
-	confirmation_period_seconds: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(0)),
-		60,
-	),
-	recovery_period_seconds: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(0)),
-		180,
-	),
-	reminder_alert_interval_minutes: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(-1)),
-		1440,
-	),
-	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
-	url: v.pipe(v.string(), v.url()),
-	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
-	type: v.optional(v.picklist(["UPTIME_CHECK"]), "UPTIME_CHECK"),
-	headers: v.optional(v.record(v.string(), v.string())),
-	method: v.optional(
-		v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
-		"GET",
-	),
-	body: v.optional(v.string()),
-	follow_redirects: v.optional(v.boolean(), true),
-	assertions: v.optional(
-		v.array(
-			v.object({
-				type: v.picklist([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: v.string(),
-				comparison: v.picklist([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: v.string(),
-			}),
-		),
-	),
-	verify_ssl: v.optional(v.boolean(), true),
-	auth_username: v.optional(v.string()),
-	auth_password: v.optional(v.string()),
 });
 
 export const vUptimeCheckPatch = v.strictObject({
@@ -839,81 +698,6 @@ export const vBrowserCheckResponse = v.object({
 			type: v.nullish(v.string()),
 		}),
 	),
-});
-
-/**
- * Browser check create payload. Provide either url for a URL-based browser check or script for a scripted Playwright check.
- */
-export const vBrowserCheckInput = v.strictObject({
-	name: v.string(),
-	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
-	test_regions: v.optional(v.array(v.string())),
-	user_alerts: v.optional(v.array(v.string())),
-	slack_alerts: v.optional(v.array(v.string())),
-	discord_alerts: v.optional(v.array(v.string())),
-	incident_io_alerts: v.optional(v.array(v.string())),
-	microsoft_teams_alerts: v.optional(v.array(v.string())),
-	telegram_alerts: v.optional(v.array(v.string())),
-	pushover_alerts: v.optional(v.array(v.string())),
-	webhook_alerts: v.optional(v.array(v.string())),
-	oncall_alerts: v.optional(v.array(v.string())),
-	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
-	confirmation_period_seconds: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(0)),
-		60,
-	),
-	recovery_period_seconds: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(0)),
-		180,
-	),
-	reminder_alert_interval_minutes: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(-1)),
-		1440,
-	),
-	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
-	url: v.nullish(v.pipe(v.string(), v.url())),
-	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
-	type: v.optional(v.picklist(["BROWSER_CHECK"]), "BROWSER_CHECK"),
-	headers: v.optional(v.record(v.string(), v.string())),
-	method: v.optional(
-		v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
-		"GET",
-	),
-	body: v.optional(v.string()),
-	follow_redirects: v.optional(v.boolean(), true),
-	assertions: v.optional(
-		v.array(
-			v.object({
-				type: v.picklist([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: v.string(),
-				comparison: v.picklist([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: v.string(),
-			}),
-		),
-	),
-	verify_ssl: v.optional(v.boolean(), true),
-	auth_username: v.optional(v.string()),
-	auth_password: v.optional(v.string()),
-	version: v.optional(v.picklist(["NODE24_PLAYWRIGHT"])),
-	script: v.optional(v.string()),
 });
 
 export const vBrowserCheckPatch = v.strictObject({
@@ -1751,42 +1535,6 @@ export const vProjectOperationProject = v.strictObject({
 	updated_at: v.pipe(v.string(), v.isoTimestamp()),
 });
 
-export const vProjectRolloutCreateDnsCheckInput = v.strictObject({
-	name: v.string(),
-	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
-	test_regions: v.optional(v.array(v.string())),
-	user_alerts: v.optional(v.array(v.string())),
-	slack_alerts: v.optional(v.array(v.string())),
-	discord_alerts: v.optional(v.array(v.string())),
-	incident_io_alerts: v.optional(v.array(v.string())),
-	microsoft_teams_alerts: v.optional(v.array(v.string())),
-	telegram_alerts: v.optional(v.array(v.string())),
-	pushover_alerts: v.optional(v.array(v.string())),
-	webhook_alerts: v.optional(v.array(v.string())),
-	oncall_alerts: v.optional(v.array(v.string())),
-	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
-	confirmation_period_seconds: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(0)),
-		60,
-	),
-	recovery_period_seconds: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(0)),
-		180,
-	),
-	reminder_alert_interval_minutes: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(-1)),
-		1440,
-	),
-	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
-	type: v.optional(v.picklist(["DNS_CHECK"])),
-	dns_domain: v.pipe(v.string(), v.minLength(1), v.maxLength(253)),
-	dns_record_type: v.picklist(["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"]),
-	dns_resolver: v.nullish(v.string()),
-	dns_protocol: v.optional(v.picklist(["UDP", "TCP"]), "UDP"),
-	assertions: v.optional(v.array(vDnsAssertion)),
-	project_id: v.optional(vProjectOperationProjectSelectionId),
-});
-
 export const vProjectRolloutResourceExpandedDnsCheck = v.object({
 	id: v.string(),
 	name: v.string(),
@@ -1881,43 +1629,6 @@ export const vProjectRolloutPatchDnsCheckPatch = v.strictObject({
 	dns_protocol: v.optional(v.picklist(["UDP", "TCP"])),
 	assertions: v.optional(v.array(vDnsAssertion)),
 	project_id: v.optional(v.never()),
-});
-
-export const vProjectRolloutCreateTcpCheckInput = v.strictObject({
-	name: v.string(),
-	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
-	test_regions: v.optional(v.array(v.string())),
-	user_alerts: v.optional(v.array(v.string())),
-	slack_alerts: v.optional(v.array(v.string())),
-	discord_alerts: v.optional(v.array(v.string())),
-	incident_io_alerts: v.optional(v.array(v.string())),
-	microsoft_teams_alerts: v.optional(v.array(v.string())),
-	telegram_alerts: v.optional(v.array(v.string())),
-	pushover_alerts: v.optional(v.array(v.string())),
-	webhook_alerts: v.optional(v.array(v.string())),
-	oncall_alerts: v.optional(v.array(v.string())),
-	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
-	confirmation_period_seconds: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(0)),
-		60,
-	),
-	recovery_period_seconds: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(0)),
-		180,
-	),
-	reminder_alert_interval_minutes: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(-1)),
-		1440,
-	),
-	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
-	type: v.optional(v.picklist(["TCP_CHECK"])),
-	tcp_hostname: v.pipe(v.string(), v.minLength(1), v.maxLength(253)),
-	tcp_port: v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(65535)),
-	tcp_ip_family: v.optional(v.picklist(["IPv4", "IPv6"]), "IPv4"),
-	tcp_data: v.nullish(v.pipe(v.string(), v.maxLength(16384))),
-	tcp_should_fail: v.optional(v.boolean(), false),
-	assertions: v.optional(v.array(vTcpAssertion)),
-	project_id: v.optional(vProjectOperationProjectSelectionId),
 });
 
 export const vProjectRolloutResourceExpandedTcpCheck = v.object({
@@ -2018,77 +1729,6 @@ export const vProjectRolloutPatchTcpCheckPatch = v.strictObject({
 	tcp_should_fail: v.optional(v.boolean()),
 	assertions: v.optional(v.array(vTcpAssertion)),
 	project_id: v.optional(v.never()),
-});
-
-export const vProjectRolloutCreateUptimeCheckInput = v.strictObject({
-	name: v.string(),
-	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
-	test_regions: v.optional(v.array(v.string())),
-	user_alerts: v.optional(v.array(v.string())),
-	slack_alerts: v.optional(v.array(v.string())),
-	discord_alerts: v.optional(v.array(v.string())),
-	incident_io_alerts: v.optional(v.array(v.string())),
-	microsoft_teams_alerts: v.optional(v.array(v.string())),
-	telegram_alerts: v.optional(v.array(v.string())),
-	pushover_alerts: v.optional(v.array(v.string())),
-	webhook_alerts: v.optional(v.array(v.string())),
-	oncall_alerts: v.optional(v.array(v.string())),
-	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
-	confirmation_period_seconds: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(0)),
-		60,
-	),
-	recovery_period_seconds: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(0)),
-		180,
-	),
-	reminder_alert_interval_minutes: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(-1)),
-		1440,
-	),
-	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
-	url: v.pipe(v.string(), v.url()),
-	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
-	type: v.optional(v.picklist(["UPTIME_CHECK"]), "UPTIME_CHECK"),
-	headers: v.optional(v.record(v.string(), v.string())),
-	method: v.optional(
-		v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
-		"GET",
-	),
-	body: v.optional(v.string()),
-	follow_redirects: v.optional(v.boolean(), true),
-	assertions: v.optional(
-		v.array(
-			v.object({
-				type: v.picklist([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: v.string(),
-				comparison: v.picklist([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: v.string(),
-			}),
-		),
-	),
-	verify_ssl: v.optional(v.boolean(), true),
-	auth_username: v.optional(v.string()),
-	auth_password: v.optional(v.string()),
-	project_id: v.optional(vProjectOperationProjectSelectionId),
 });
 
 export const vProjectRolloutResourceExpandedUptimeCheck = v.object({
@@ -2249,82 +1889,6 @@ export const vProjectRolloutPatchUptimeCheckPatch = v.strictObject({
 	auth_username: v.optional(v.string()),
 	auth_password: v.optional(v.string()),
 	project_id: v.optional(v.never()),
-});
-
-/**
- * Browser check create payload. Provide either url for a URL-based browser check or script for a scripted Playwright check.
- */
-export const vProjectRolloutCreateBrowserCheckInput = v.strictObject({
-	name: v.string(),
-	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
-	test_regions: v.optional(v.array(v.string())),
-	user_alerts: v.optional(v.array(v.string())),
-	slack_alerts: v.optional(v.array(v.string())),
-	discord_alerts: v.optional(v.array(v.string())),
-	incident_io_alerts: v.optional(v.array(v.string())),
-	microsoft_teams_alerts: v.optional(v.array(v.string())),
-	telegram_alerts: v.optional(v.array(v.string())),
-	pushover_alerts: v.optional(v.array(v.string())),
-	webhook_alerts: v.optional(v.array(v.string())),
-	oncall_alerts: v.optional(v.array(v.string())),
-	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
-	confirmation_period_seconds: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(0)),
-		60,
-	),
-	recovery_period_seconds: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(0)),
-		180,
-	),
-	reminder_alert_interval_minutes: v.optional(
-		v.pipe(v.number(), v.integer(), v.minValue(-1)),
-		1440,
-	),
-	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
-	url: v.nullish(v.pipe(v.string(), v.url())),
-	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
-	type: v.optional(v.picklist(["BROWSER_CHECK"]), "BROWSER_CHECK"),
-	headers: v.optional(v.record(v.string(), v.string())),
-	method: v.optional(
-		v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
-		"GET",
-	),
-	body: v.optional(v.string()),
-	follow_redirects: v.optional(v.boolean(), true),
-	assertions: v.optional(
-		v.array(
-			v.object({
-				type: v.picklist([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: v.string(),
-				comparison: v.picklist([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: v.string(),
-			}),
-		),
-	),
-	verify_ssl: v.optional(v.boolean(), true),
-	auth_username: v.optional(v.string()),
-	auth_password: v.optional(v.string()),
-	version: v.optional(v.picklist(["NODE24_PLAYWRIGHT"])),
-	script: v.optional(v.string()),
-	project_id: v.optional(vProjectOperationProjectSelectionId),
 });
 
 export const vProjectRolloutResourceExpandedBrowserCheck = v.object({
@@ -3191,7 +2755,41 @@ export const vGetTokenResponse = v.object({
 	),
 });
 
-export const vCreateDnsCheckBody = vProjectRolloutCreateDnsCheckInput;
+export const vCreateDnsCheckBody = v.strictObject({
+	name: v.string(),
+	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
+	test_regions: v.optional(v.array(v.string())),
+	user_alerts: v.optional(v.array(v.string())),
+	slack_alerts: v.optional(v.array(v.string())),
+	discord_alerts: v.optional(v.array(v.string())),
+	incident_io_alerts: v.optional(v.array(v.string())),
+	microsoft_teams_alerts: v.optional(v.array(v.string())),
+	telegram_alerts: v.optional(v.array(v.string())),
+	pushover_alerts: v.optional(v.array(v.string())),
+	webhook_alerts: v.optional(v.array(v.string())),
+	oncall_alerts: v.optional(v.array(v.string())),
+	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
+	confirmation_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+		60,
+	),
+	recovery_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+		180,
+	),
+	reminder_alert_interval_minutes: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(-1)),
+		1440,
+	),
+	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
+	type: v.optional(v.picklist(["DNS_CHECK"])),
+	dns_domain: v.pipe(v.string(), v.minLength(1), v.maxLength(253)),
+	dns_record_type: v.picklist(["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"]),
+	dns_resolver: v.nullish(v.string()),
+	dns_protocol: v.optional(v.picklist(["UDP", "TCP"]), "UDP"),
+	assertions: v.optional(v.array(vDnsAssertion)),
+	project_id: v.optional(vProjectOperationProjectSelectionId),
+});
 
 export const vCreateDnsCheckHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -3277,7 +2875,42 @@ export const vUpdateDnsCheckPath = v.object({
  */
 export const vUpdateDnsCheckResponse = vProjectRolloutEnvelopeDnsCheckResponse;
 
-export const vCreateTcpCheckBody = vProjectRolloutCreateTcpCheckInput;
+export const vCreateTcpCheckBody = v.strictObject({
+	name: v.string(),
+	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
+	test_regions: v.optional(v.array(v.string())),
+	user_alerts: v.optional(v.array(v.string())),
+	slack_alerts: v.optional(v.array(v.string())),
+	discord_alerts: v.optional(v.array(v.string())),
+	incident_io_alerts: v.optional(v.array(v.string())),
+	microsoft_teams_alerts: v.optional(v.array(v.string())),
+	telegram_alerts: v.optional(v.array(v.string())),
+	pushover_alerts: v.optional(v.array(v.string())),
+	webhook_alerts: v.optional(v.array(v.string())),
+	oncall_alerts: v.optional(v.array(v.string())),
+	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
+	confirmation_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+		60,
+	),
+	recovery_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+		180,
+	),
+	reminder_alert_interval_minutes: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(-1)),
+		1440,
+	),
+	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
+	type: v.optional(v.picklist(["TCP_CHECK"])),
+	tcp_hostname: v.pipe(v.string(), v.minLength(1), v.maxLength(253)),
+	tcp_port: v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(65535)),
+	tcp_ip_family: v.optional(v.picklist(["IPv4", "IPv6"]), "IPv4"),
+	tcp_data: v.nullish(v.pipe(v.string(), v.maxLength(16384))),
+	tcp_should_fail: v.optional(v.boolean(), false),
+	assertions: v.optional(v.array(vTcpAssertion)),
+	project_id: v.optional(vProjectOperationProjectSelectionId),
+});
 
 export const vCreateTcpCheckHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -3363,7 +2996,76 @@ export const vUpdateTcpCheckPath = v.object({
  */
 export const vUpdateTcpCheckResponse = vProjectRolloutEnvelopeTcpCheckResponse;
 
-export const vCreateUptimeCheckBody = vProjectRolloutCreateUptimeCheckInput;
+export const vCreateUptimeCheckBody = v.strictObject({
+	name: v.string(),
+	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
+	test_regions: v.optional(v.array(v.string())),
+	user_alerts: v.optional(v.array(v.string())),
+	slack_alerts: v.optional(v.array(v.string())),
+	discord_alerts: v.optional(v.array(v.string())),
+	incident_io_alerts: v.optional(v.array(v.string())),
+	microsoft_teams_alerts: v.optional(v.array(v.string())),
+	telegram_alerts: v.optional(v.array(v.string())),
+	pushover_alerts: v.optional(v.array(v.string())),
+	webhook_alerts: v.optional(v.array(v.string())),
+	oncall_alerts: v.optional(v.array(v.string())),
+	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
+	confirmation_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+		60,
+	),
+	recovery_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+		180,
+	),
+	reminder_alert_interval_minutes: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(-1)),
+		1440,
+	),
+	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
+	url: v.pipe(v.string(), v.url()),
+	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
+	type: v.optional(v.picklist(["UPTIME_CHECK"]), "UPTIME_CHECK"),
+	headers: v.optional(v.record(v.string(), v.string())),
+	method: v.optional(
+		v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
+		"GET",
+	),
+	body: v.optional(v.string()),
+	follow_redirects: v.optional(v.boolean(), true),
+	assertions: v.optional(
+		v.array(
+			v.object({
+				type: v.picklist([
+					"JSON_BODY",
+					"TEXT_BODY",
+					"RESPONSE_HEADERS",
+					"HTML_BODY",
+				]),
+				property: v.string(),
+				comparison: v.picklist([
+					"EQUALS",
+					"NOT_EQUALS",
+					"GREATER_THAN",
+					"LESS_THAN",
+					"NULL",
+					"NOT_NULL",
+					"EMPTY",
+					"NOT_EMPTY",
+					"CONTAINS",
+					"NOT_CONTAINS",
+					"FALSE",
+					"TRUE",
+				]),
+				expected: v.string(),
+			}),
+		),
+	),
+	verify_ssl: v.optional(v.boolean(), true),
+	auth_username: v.optional(v.string()),
+	auth_password: v.optional(v.string()),
+	project_id: v.optional(vProjectOperationProjectSelectionId),
+});
 
 export const vCreateUptimeCheckHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
@@ -3418,7 +3120,78 @@ export const vUpdateUptimeCheckPath = v.object({
 export const vUpdateUptimeCheckResponse =
 	vProjectRolloutEnvelopeUptimeCheckResponse;
 
-export const vCreateBrowserCheckBody = vProjectRolloutCreateBrowserCheckInput;
+export const vCreateBrowserCheckBody = v.strictObject({
+	name: v.string(),
+	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
+	test_regions: v.optional(v.array(v.string())),
+	user_alerts: v.optional(v.array(v.string())),
+	slack_alerts: v.optional(v.array(v.string())),
+	discord_alerts: v.optional(v.array(v.string())),
+	incident_io_alerts: v.optional(v.array(v.string())),
+	microsoft_teams_alerts: v.optional(v.array(v.string())),
+	telegram_alerts: v.optional(v.array(v.string())),
+	pushover_alerts: v.optional(v.array(v.string())),
+	webhook_alerts: v.optional(v.array(v.string())),
+	oncall_alerts: v.optional(v.array(v.string())),
+	alert_priority: v.optional(v.picklist(["LOW", "HIGH"]), "HIGH"),
+	confirmation_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+		60,
+	),
+	recovery_period_seconds: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(0)),
+		180,
+	),
+	reminder_alert_interval_minutes: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(-1)),
+		1440,
+	),
+	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
+	url: v.nullish(v.pipe(v.string(), v.url())),
+	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
+	type: v.optional(v.picklist(["BROWSER_CHECK"]), "BROWSER_CHECK"),
+	headers: v.optional(v.record(v.string(), v.string())),
+	method: v.optional(
+		v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
+		"GET",
+	),
+	body: v.optional(v.string()),
+	follow_redirects: v.optional(v.boolean(), true),
+	assertions: v.optional(
+		v.array(
+			v.object({
+				type: v.picklist([
+					"JSON_BODY",
+					"TEXT_BODY",
+					"RESPONSE_HEADERS",
+					"HTML_BODY",
+				]),
+				property: v.string(),
+				comparison: v.picklist([
+					"EQUALS",
+					"NOT_EQUALS",
+					"GREATER_THAN",
+					"LESS_THAN",
+					"NULL",
+					"NOT_NULL",
+					"EMPTY",
+					"NOT_EMPTY",
+					"CONTAINS",
+					"NOT_CONTAINS",
+					"FALSE",
+					"TRUE",
+				]),
+				expected: v.string(),
+			}),
+		),
+	),
+	verify_ssl: v.optional(v.boolean(), true),
+	auth_username: v.optional(v.string()),
+	auth_password: v.optional(v.string()),
+	version: v.optional(v.picklist(["NODE24_PLAYWRIGHT"])),
+	script: v.optional(v.string()),
+	project_id: v.optional(vProjectOperationProjectSelectionId),
+});
 
 export const vCreateBrowserCheckHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),

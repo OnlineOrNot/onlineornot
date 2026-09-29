@@ -838,74 +838,6 @@ export type DnsCheckResponse = {
 	}>;
 };
 
-export type DnsCheckInput = {
-	name: string;
-	/**
-	 * Interval in seconds between checks
-	 */
-	test_interval?: number;
-	/**
-	 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
-	 */
-	test_regions?: Array<string>;
-	user_alerts?: Array<string>;
-	slack_alerts?: Array<string>;
-	discord_alerts?: Array<string>;
-	incident_io_alerts?: Array<string>;
-	microsoft_teams_alerts?: Array<string>;
-	telegram_alerts?: Array<string>;
-	pushover_alerts?: Array<string>;
-	/**
-	 * IDs of webhooks to associate with this check
-	 */
-	webhook_alerts?: Array<string>;
-	/**
-	 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
-	 */
-	oncall_alerts?: Array<string>;
-	/**
-	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
-	 */
-	alert_priority?: "LOW" | "HIGH";
-	/**
-	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
-	 */
-	confirmation_period_seconds?: number;
-	/**
-	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
-	 */
-	recovery_period_seconds?: number;
-	/**
-	 * Interval in minutes between reminders (-1 for never)
-	 */
-	reminder_alert_interval_minutes?: number;
-	/**
-	 * Timeout in milliseconds
-	 */
-	timeout?: number;
-	type?: "DNS_CHECK";
-	/**
-	 * DNS name to query
-	 */
-	dns_domain: string;
-	/**
-	 * DNS record type to query
-	 */
-	dns_record_type: "A" | "AAAA" | "CNAME" | "MX" | "NS" | "SOA" | "TXT";
-	/**
-	 * Custom DNS resolver in host:port format. IPv6 must use bracket notation.
-	 */
-	dns_resolver?: string | null;
-	/**
-	 * DNS transport protocol
-	 */
-	dns_protocol?: "UDP" | "TCP";
-	/**
-	 * DNS assertions to run on the response
-	 */
-	assertions?: Array<DnsAssertion>;
-};
-
 export type DnsCheckPatch = {
 	name?: string;
 	/**
@@ -1010,78 +942,6 @@ export type TcpCheckResponse = {
 	}>;
 };
 
-export type TcpCheckInput = {
-	name: string;
-	/**
-	 * Interval in seconds between checks
-	 */
-	test_interval?: number;
-	/**
-	 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
-	 */
-	test_regions?: Array<string>;
-	user_alerts?: Array<string>;
-	slack_alerts?: Array<string>;
-	discord_alerts?: Array<string>;
-	incident_io_alerts?: Array<string>;
-	microsoft_teams_alerts?: Array<string>;
-	telegram_alerts?: Array<string>;
-	pushover_alerts?: Array<string>;
-	/**
-	 * IDs of webhooks to associate with this check
-	 */
-	webhook_alerts?: Array<string>;
-	/**
-	 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
-	 */
-	oncall_alerts?: Array<string>;
-	/**
-	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
-	 */
-	alert_priority?: "LOW" | "HIGH";
-	/**
-	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
-	 */
-	confirmation_period_seconds?: number;
-	/**
-	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
-	 */
-	recovery_period_seconds?: number;
-	/**
-	 * Interval in minutes between reminders (-1 for never)
-	 */
-	reminder_alert_interval_minutes?: number;
-	/**
-	 * Timeout in milliseconds
-	 */
-	timeout?: number;
-	type?: "TCP_CHECK";
-	/**
-	 * Publicly reachable hostname or IP address to connect to
-	 */
-	tcp_hostname: string;
-	/**
-	 * TCP port to connect to
-	 */
-	tcp_port: number;
-	/**
-	 * IP family to use for DNS resolution and socket connection
-	 */
-	tcp_ip_family?: "IPv4" | "IPv6";
-	/**
-	 * Optional TCP payload to send immediately after connecting
-	 */
-	tcp_data?: string | null;
-	/**
-	 * Whether a failed TCP connection should be treated as passing
-	 */
-	tcp_should_fail?: boolean;
-	/**
-	 * TCP assertions to run on response time or response data
-	 */
-	assertions?: Array<TcpAssertion>;
-};
-
 export type TcpCheckPatch = {
 	name?: string;
 	/**
@@ -1168,119 +1028,6 @@ export type UptimeCheckResponse = {
 		message: string;
 		type?: string | null;
 	}>;
-};
-
-export type UptimeCheckInput = {
-	name: string;
-	/**
-	 * Interval in seconds between checks
-	 */
-	test_interval?: number;
-	/**
-	 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
-	 */
-	test_regions?: Array<string>;
-	user_alerts?: Array<string>;
-	slack_alerts?: Array<string>;
-	discord_alerts?: Array<string>;
-	incident_io_alerts?: Array<string>;
-	microsoft_teams_alerts?: Array<string>;
-	telegram_alerts?: Array<string>;
-	pushover_alerts?: Array<string>;
-	/**
-	 * IDs of webhooks to associate with this check
-	 */
-	webhook_alerts?: Array<string>;
-	/**
-	 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
-	 */
-	oncall_alerts?: Array<string>;
-	/**
-	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
-	 */
-	alert_priority?: "LOW" | "HIGH";
-	/**
-	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
-	 */
-	confirmation_period_seconds?: number;
-	/**
-	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
-	 */
-	recovery_period_seconds?: number;
-	/**
-	 * Interval in minutes between reminders (-1 for never)
-	 */
-	reminder_alert_interval_minutes?: number;
-	/**
-	 * Timeout in milliseconds
-	 */
-	timeout?: number;
-	/**
-	 * URL to check.
-	 */
-	url: string;
-	/**
-	 * Text to search for in the response
-	 */
-	text_to_search_for?: string;
-	type?: "UPTIME_CHECK";
-	/**
-	 * Headers to send. Uptime checks support environment variable references such as {{API_TOKEN}}. Terraform example: Authorization = "Bearer {{API_TOKEN}}". Terraform stores the template; create the referenced variable separately.
-	 */
-	headers?: {
-		[key: string]: string;
-	};
-	/**
-	 * HTTP Method
-	 */
-	method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
-	body?: string;
-	follow_redirects?: boolean;
-	/**
-	 * Assertions to run on the response
-	 */
-	assertions?: Array<{
-		/**
-		 * Type of assertion
-		 */
-		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
-		/**
-		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
-		 */
-		property: string;
-		/**
-		 * Comparison operator
-		 */
-		comparison:
-			| "EQUALS"
-			| "NOT_EQUALS"
-			| "GREATER_THAN"
-			| "LESS_THAN"
-			| "NULL"
-			| "NOT_NULL"
-			| "EMPTY"
-			| "NOT_EMPTY"
-			| "CONTAINS"
-			| "NOT_CONTAINS"
-			| "FALSE"
-			| "TRUE";
-		/**
-		 * Expected value
-		 */
-		expected: string;
-	}>;
-	/**
-	 * Whether to fail a check if SSL verification fails
-	 */
-	verify_ssl?: boolean;
-	/**
-	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
-	 */
-	auth_username?: string;
-	/**
-	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
-	 */
-	auth_password?: string;
 };
 
 export type UptimeCheckPatch = {
@@ -1416,130 +1163,6 @@ export type BrowserCheckResponse = {
 		message: string;
 		type?: string | null;
 	}>;
-};
-
-/**
- * Browser check create payload. Provide either url for a URL-based browser check or script for a scripted Playwright check.
- */
-export type BrowserCheckInput = {
-	name: string;
-	/**
-	 * Interval in seconds between checks
-	 */
-	test_interval?: number;
-	/**
-	 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
-	 */
-	test_regions?: Array<string>;
-	user_alerts?: Array<string>;
-	slack_alerts?: Array<string>;
-	discord_alerts?: Array<string>;
-	incident_io_alerts?: Array<string>;
-	microsoft_teams_alerts?: Array<string>;
-	telegram_alerts?: Array<string>;
-	pushover_alerts?: Array<string>;
-	/**
-	 * IDs of webhooks to associate with this check
-	 */
-	webhook_alerts?: Array<string>;
-	/**
-	 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
-	 */
-	oncall_alerts?: Array<string>;
-	/**
-	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
-	 */
-	alert_priority?: "LOW" | "HIGH";
-	/**
-	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
-	 */
-	confirmation_period_seconds?: number;
-	/**
-	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
-	 */
-	recovery_period_seconds?: number;
-	/**
-	 * Interval in minutes between reminders (-1 for never)
-	 */
-	reminder_alert_interval_minutes?: number;
-	/**
-	 * Timeout in milliseconds
-	 */
-	timeout?: number;
-	/**
-	 * URL to load for URL-based browser checks. Optional when script is provided.
-	 */
-	url?: string | null;
-	/**
-	 * Text to search for in the response
-	 */
-	text_to_search_for?: string;
-	type?: "BROWSER_CHECK";
-	/**
-	 * Headers to send with the browser request. Environment variable references are not supported.
-	 */
-	headers?: {
-		[key: string]: string;
-	};
-	/**
-	 * HTTP Method
-	 */
-	method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
-	body?: string;
-	follow_redirects?: boolean;
-	/**
-	 * Assertions to run on the response
-	 */
-	assertions?: Array<{
-		/**
-		 * Type of assertion
-		 */
-		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
-		/**
-		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
-		 */
-		property: string;
-		/**
-		 * Comparison operator
-		 */
-		comparison:
-			| "EQUALS"
-			| "NOT_EQUALS"
-			| "GREATER_THAN"
-			| "LESS_THAN"
-			| "NULL"
-			| "NOT_NULL"
-			| "EMPTY"
-			| "NOT_EMPTY"
-			| "CONTAINS"
-			| "NOT_CONTAINS"
-			| "FALSE"
-			| "TRUE";
-		/**
-		 * Expected value
-		 */
-		expected: string;
-	}>;
-	/**
-	 * Whether to fail a check if SSL verification fails
-	 */
-	verify_ssl?: boolean;
-	/**
-	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
-	 */
-	auth_username?: string;
-	/**
-	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
-	 */
-	auth_password?: string;
-	/**
-	 * Runtime version for browser checks.
-	 */
-	version?: "NODE24_PLAYWRIGHT";
-	/**
-	 * Playwright Test script for scripted browser checks. Optional when url is provided.
-	 */
-	script?: string;
 };
 
 export type BrowserCheckPatch = {
@@ -2973,78 +2596,6 @@ export type ProjectOperationProject = {
 	updated_at: string;
 };
 
-export type ProjectRolloutCreateDnsCheckInput = {
-	name: string;
-	/**
-	 * Interval in seconds between checks
-	 */
-	test_interval?: number;
-	/**
-	 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
-	 */
-	test_regions?: Array<string>;
-	user_alerts?: Array<string>;
-	slack_alerts?: Array<string>;
-	discord_alerts?: Array<string>;
-	incident_io_alerts?: Array<string>;
-	microsoft_teams_alerts?: Array<string>;
-	telegram_alerts?: Array<string>;
-	pushover_alerts?: Array<string>;
-	/**
-	 * IDs of webhooks to associate with this check
-	 */
-	webhook_alerts?: Array<string>;
-	/**
-	 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
-	 */
-	oncall_alerts?: Array<string>;
-	/**
-	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
-	 */
-	alert_priority?: "LOW" | "HIGH";
-	/**
-	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
-	 */
-	confirmation_period_seconds?: number;
-	/**
-	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
-	 */
-	recovery_period_seconds?: number;
-	/**
-	 * Interval in minutes between reminders (-1 for never)
-	 */
-	reminder_alert_interval_minutes?: number;
-	/**
-	 * Timeout in milliseconds
-	 */
-	timeout?: number;
-	type?: "DNS_CHECK";
-	/**
-	 * DNS name to query
-	 */
-	dns_domain: string;
-	/**
-	 * DNS record type to query
-	 */
-	dns_record_type: "A" | "AAAA" | "CNAME" | "MX" | "NS" | "SOA" | "TXT";
-	/**
-	 * Custom DNS resolver in host:port format. IPv6 must use bracket notation.
-	 */
-	dns_resolver?: string | null;
-	/**
-	 * DNS transport protocol
-	 */
-	dns_protocol?: "UDP" | "TCP";
-	/**
-	 * DNS assertions to run on the response
-	 */
-	assertions?: Array<DnsAssertion>;
-	/**
-	 * Omit to select the organisation's stable Default project.
-	 */
-	project_id?: ProjectOperationProjectSelectionId;
-};
-
 export type ProjectRolloutEnvelopeDnsCheckResponse = {
 	result: ProjectRolloutResourceExpandedDnsCheck;
 	/**
@@ -3240,82 +2791,6 @@ export type ProjectRolloutPatchDnsCheckPatch = {
 	dns_protocol?: "UDP" | "TCP";
 	assertions?: Array<DnsAssertion>;
 	project_id?: never;
-};
-
-export type ProjectRolloutCreateTcpCheckInput = {
-	name: string;
-	/**
-	 * Interval in seconds between checks
-	 */
-	test_interval?: number;
-	/**
-	 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
-	 */
-	test_regions?: Array<string>;
-	user_alerts?: Array<string>;
-	slack_alerts?: Array<string>;
-	discord_alerts?: Array<string>;
-	incident_io_alerts?: Array<string>;
-	microsoft_teams_alerts?: Array<string>;
-	telegram_alerts?: Array<string>;
-	pushover_alerts?: Array<string>;
-	/**
-	 * IDs of webhooks to associate with this check
-	 */
-	webhook_alerts?: Array<string>;
-	/**
-	 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
-	 */
-	oncall_alerts?: Array<string>;
-	/**
-	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
-	 */
-	alert_priority?: "LOW" | "HIGH";
-	/**
-	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
-	 */
-	confirmation_period_seconds?: number;
-	/**
-	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
-	 */
-	recovery_period_seconds?: number;
-	/**
-	 * Interval in minutes between reminders (-1 for never)
-	 */
-	reminder_alert_interval_minutes?: number;
-	/**
-	 * Timeout in milliseconds
-	 */
-	timeout?: number;
-	type?: "TCP_CHECK";
-	/**
-	 * Publicly reachable hostname or IP address to connect to
-	 */
-	tcp_hostname: string;
-	/**
-	 * TCP port to connect to
-	 */
-	tcp_port: number;
-	/**
-	 * IP family to use for DNS resolution and socket connection
-	 */
-	tcp_ip_family?: "IPv4" | "IPv6";
-	/**
-	 * Optional TCP payload to send immediately after connecting
-	 */
-	tcp_data?: string | null;
-	/**
-	 * Whether a failed TCP connection should be treated as passing
-	 */
-	tcp_should_fail?: boolean;
-	/**
-	 * TCP assertions to run on response time or response data
-	 */
-	assertions?: Array<TcpAssertion>;
-	/**
-	 * Omit to select the organisation's stable Default project.
-	 */
-	project_id?: ProjectOperationProjectSelectionId;
 };
 
 export type ProjectRolloutEnvelopeTcpCheckResponse = {
@@ -3524,123 +2999,6 @@ export type ProjectRolloutPatchTcpCheckPatch = {
 	tcp_should_fail?: boolean;
 	assertions?: Array<TcpAssertion>;
 	project_id?: never;
-};
-
-export type ProjectRolloutCreateUptimeCheckInput = {
-	name: string;
-	/**
-	 * Interval in seconds between checks
-	 */
-	test_interval?: number;
-	/**
-	 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
-	 */
-	test_regions?: Array<string>;
-	user_alerts?: Array<string>;
-	slack_alerts?: Array<string>;
-	discord_alerts?: Array<string>;
-	incident_io_alerts?: Array<string>;
-	microsoft_teams_alerts?: Array<string>;
-	telegram_alerts?: Array<string>;
-	pushover_alerts?: Array<string>;
-	/**
-	 * IDs of webhooks to associate with this check
-	 */
-	webhook_alerts?: Array<string>;
-	/**
-	 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
-	 */
-	oncall_alerts?: Array<string>;
-	/**
-	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
-	 */
-	alert_priority?: "LOW" | "HIGH";
-	/**
-	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
-	 */
-	confirmation_period_seconds?: number;
-	/**
-	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
-	 */
-	recovery_period_seconds?: number;
-	/**
-	 * Interval in minutes between reminders (-1 for never)
-	 */
-	reminder_alert_interval_minutes?: number;
-	/**
-	 * Timeout in milliseconds
-	 */
-	timeout?: number;
-	/**
-	 * URL to check.
-	 */
-	url: string;
-	/**
-	 * Text to search for in the response
-	 */
-	text_to_search_for?: string;
-	type?: "UPTIME_CHECK";
-	/**
-	 * Headers to send. Uptime checks support environment variable references such as {{API_TOKEN}}. Terraform example: Authorization = "Bearer {{API_TOKEN}}". Terraform stores the template; create the referenced variable separately.
-	 */
-	headers?: {
-		[key: string]: string;
-	};
-	/**
-	 * HTTP Method
-	 */
-	method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
-	body?: string;
-	follow_redirects?: boolean;
-	/**
-	 * Assertions to run on the response
-	 */
-	assertions?: Array<{
-		/**
-		 * Type of assertion
-		 */
-		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
-		/**
-		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
-		 */
-		property: string;
-		/**
-		 * Comparison operator
-		 */
-		comparison:
-			| "EQUALS"
-			| "NOT_EQUALS"
-			| "GREATER_THAN"
-			| "LESS_THAN"
-			| "NULL"
-			| "NOT_NULL"
-			| "EMPTY"
-			| "NOT_EMPTY"
-			| "CONTAINS"
-			| "NOT_CONTAINS"
-			| "FALSE"
-			| "TRUE";
-		/**
-		 * Expected value
-		 */
-		expected: string;
-	}>;
-	/**
-	 * Whether to fail a check if SSL verification fails
-	 */
-	verify_ssl?: boolean;
-	/**
-	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
-	 */
-	auth_username?: string;
-	/**
-	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
-	 */
-	auth_password?: string;
-	/**
-	 * Omit to select the organisation's stable Default project.
-	 */
-	project_id?: ProjectOperationProjectSelectionId;
 };
 
 export type ProjectRolloutEnvelopeUptimeCheckResponse = {
@@ -3940,134 +3298,6 @@ export type ProjectRolloutPatchUptimeCheckPatch = {
 	 */
 	auth_password?: string;
 	project_id?: never;
-};
-
-/**
- * Browser check create payload. Provide either url for a URL-based browser check or script for a scripted Playwright check.
- */
-export type ProjectRolloutCreateBrowserCheckInput = {
-	name: string;
-	/**
-	 * Interval in seconds between checks
-	 */
-	test_interval?: number;
-	/**
-	 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
-	 */
-	test_regions?: Array<string>;
-	user_alerts?: Array<string>;
-	slack_alerts?: Array<string>;
-	discord_alerts?: Array<string>;
-	incident_io_alerts?: Array<string>;
-	microsoft_teams_alerts?: Array<string>;
-	telegram_alerts?: Array<string>;
-	pushover_alerts?: Array<string>;
-	/**
-	 * IDs of webhooks to associate with this check
-	 */
-	webhook_alerts?: Array<string>;
-	/**
-	 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
-	 */
-	oncall_alerts?: Array<string>;
-	/**
-	 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
-	 */
-	alert_priority?: "LOW" | "HIGH";
-	/**
-	 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
-	 */
-	confirmation_period_seconds?: number;
-	/**
-	 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
-	 */
-	recovery_period_seconds?: number;
-	/**
-	 * Interval in minutes between reminders (-1 for never)
-	 */
-	reminder_alert_interval_minutes?: number;
-	/**
-	 * Timeout in milliseconds
-	 */
-	timeout?: number;
-	/**
-	 * URL to load for URL-based browser checks. Optional when script is provided.
-	 */
-	url?: string | null;
-	/**
-	 * Text to search for in the response
-	 */
-	text_to_search_for?: string;
-	type?: "BROWSER_CHECK";
-	/**
-	 * Headers to send with the browser request. Environment variable references are not supported.
-	 */
-	headers?: {
-		[key: string]: string;
-	};
-	/**
-	 * HTTP Method
-	 */
-	method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
-	body?: string;
-	follow_redirects?: boolean;
-	/**
-	 * Assertions to run on the response
-	 */
-	assertions?: Array<{
-		/**
-		 * Type of assertion
-		 */
-		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
-		/**
-		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
-		 */
-		property: string;
-		/**
-		 * Comparison operator
-		 */
-		comparison:
-			| "EQUALS"
-			| "NOT_EQUALS"
-			| "GREATER_THAN"
-			| "LESS_THAN"
-			| "NULL"
-			| "NOT_NULL"
-			| "EMPTY"
-			| "NOT_EMPTY"
-			| "CONTAINS"
-			| "NOT_CONTAINS"
-			| "FALSE"
-			| "TRUE";
-		/**
-		 * Expected value
-		 */
-		expected: string;
-	}>;
-	/**
-	 * Whether to fail a check if SSL verification fails
-	 */
-	verify_ssl?: boolean;
-	/**
-	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
-	 */
-	auth_username?: string;
-	/**
-	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
-	 */
-	auth_password?: string;
-	/**
-	 * Runtime version for browser checks.
-	 */
-	version?: "NODE24_PLAYWRIGHT";
-	/**
-	 * Playwright Test script for scripted browser checks. Optional when url is provided.
-	 */
-	script?: string;
-	/**
-	 * Omit to select the organisation's stable Default project.
-	 */
-	project_id?: ProjectOperationProjectSelectionId;
 };
 
 export type ProjectRolloutEnvelopeBrowserCheckResponse = {
@@ -5716,7 +4946,77 @@ export type GetTokenResponses = {
 export type GetTokenResponse = GetTokenResponses[keyof GetTokenResponses];
 
 export type CreateDnsCheckData = {
-	body: ProjectRolloutCreateDnsCheckInput;
+	body: {
+		name: string;
+		/**
+		 * Interval in seconds between checks
+		 */
+		test_interval?: number;
+		/**
+		 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
+		 */
+		test_regions?: Array<string>;
+		user_alerts?: Array<string>;
+		slack_alerts?: Array<string>;
+		discord_alerts?: Array<string>;
+		incident_io_alerts?: Array<string>;
+		microsoft_teams_alerts?: Array<string>;
+		telegram_alerts?: Array<string>;
+		pushover_alerts?: Array<string>;
+		/**
+		 * IDs of webhooks to associate with this check
+		 */
+		webhook_alerts?: Array<string>;
+		/**
+		 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
+		 */
+		oncall_alerts?: Array<string>;
+		/**
+		 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+		 */
+		alert_priority?: "LOW" | "HIGH";
+		/**
+		 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
+		 */
+		confirmation_period_seconds?: number;
+		/**
+		 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
+		 */
+		recovery_period_seconds?: number;
+		/**
+		 * Interval in minutes between reminders (-1 for never)
+		 */
+		reminder_alert_interval_minutes?: number;
+		/**
+		 * Timeout in milliseconds
+		 */
+		timeout?: number;
+		type?: "DNS_CHECK";
+		/**
+		 * DNS name to query
+		 */
+		dns_domain: string;
+		/**
+		 * DNS record type to query
+		 */
+		dns_record_type: "A" | "AAAA" | "CNAME" | "MX" | "NS" | "SOA" | "TXT";
+		/**
+		 * Custom DNS resolver in host:port format. IPv6 must use bracket notation.
+		 */
+		dns_resolver?: string | null;
+		/**
+		 * DNS transport protocol
+		 */
+		dns_protocol?: "UDP" | "TCP";
+		/**
+		 * DNS assertions to run on the response
+		 */
+		assertions?: Array<DnsAssertion>;
+		/**
+		 * Omit to select the organisation's stable Default project.
+		 */
+		project_id?: ProjectOperationProjectSelectionId;
+	};
 	headers?: {
 		/**
 		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
@@ -5959,7 +5259,81 @@ export type UpdateDnsCheckResponse =
 	UpdateDnsCheckResponses[keyof UpdateDnsCheckResponses];
 
 export type CreateTcpCheckData = {
-	body: ProjectRolloutCreateTcpCheckInput;
+	body: {
+		name: string;
+		/**
+		 * Interval in seconds between checks
+		 */
+		test_interval?: number;
+		/**
+		 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
+		 */
+		test_regions?: Array<string>;
+		user_alerts?: Array<string>;
+		slack_alerts?: Array<string>;
+		discord_alerts?: Array<string>;
+		incident_io_alerts?: Array<string>;
+		microsoft_teams_alerts?: Array<string>;
+		telegram_alerts?: Array<string>;
+		pushover_alerts?: Array<string>;
+		/**
+		 * IDs of webhooks to associate with this check
+		 */
+		webhook_alerts?: Array<string>;
+		/**
+		 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
+		 */
+		oncall_alerts?: Array<string>;
+		/**
+		 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+		 */
+		alert_priority?: "LOW" | "HIGH";
+		/**
+		 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
+		 */
+		confirmation_period_seconds?: number;
+		/**
+		 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
+		 */
+		recovery_period_seconds?: number;
+		/**
+		 * Interval in minutes between reminders (-1 for never)
+		 */
+		reminder_alert_interval_minutes?: number;
+		/**
+		 * Timeout in milliseconds
+		 */
+		timeout?: number;
+		type?: "TCP_CHECK";
+		/**
+		 * Publicly reachable hostname or IP address to connect to
+		 */
+		tcp_hostname: string;
+		/**
+		 * TCP port to connect to
+		 */
+		tcp_port: number;
+		/**
+		 * IP family to use for DNS resolution and socket connection
+		 */
+		tcp_ip_family?: "IPv4" | "IPv6";
+		/**
+		 * Optional TCP payload to send immediately after connecting
+		 */
+		tcp_data?: string | null;
+		/**
+		 * Whether a failed TCP connection should be treated as passing
+		 */
+		tcp_should_fail?: boolean;
+		/**
+		 * TCP assertions to run on response time or response data
+		 */
+		assertions?: Array<TcpAssertion>;
+		/**
+		 * Omit to select the organisation's stable Default project.
+		 */
+		project_id?: ProjectOperationProjectSelectionId;
+	};
 	headers?: {
 		/**
 		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
@@ -6202,7 +5576,122 @@ export type UpdateTcpCheckResponse =
 	UpdateTcpCheckResponses[keyof UpdateTcpCheckResponses];
 
 export type CreateUptimeCheckData = {
-	body: ProjectRolloutCreateUptimeCheckInput;
+	body: {
+		name: string;
+		/**
+		 * Interval in seconds between checks
+		 */
+		test_interval?: number;
+		/**
+		 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
+		 */
+		test_regions?: Array<string>;
+		user_alerts?: Array<string>;
+		slack_alerts?: Array<string>;
+		discord_alerts?: Array<string>;
+		incident_io_alerts?: Array<string>;
+		microsoft_teams_alerts?: Array<string>;
+		telegram_alerts?: Array<string>;
+		pushover_alerts?: Array<string>;
+		/**
+		 * IDs of webhooks to associate with this check
+		 */
+		webhook_alerts?: Array<string>;
+		/**
+		 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
+		 */
+		oncall_alerts?: Array<string>;
+		/**
+		 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+		 */
+		alert_priority?: "LOW" | "HIGH";
+		/**
+		 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
+		 */
+		confirmation_period_seconds?: number;
+		/**
+		 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
+		 */
+		recovery_period_seconds?: number;
+		/**
+		 * Interval in minutes between reminders (-1 for never)
+		 */
+		reminder_alert_interval_minutes?: number;
+		/**
+		 * Timeout in milliseconds
+		 */
+		timeout?: number;
+		/**
+		 * URL to check.
+		 */
+		url: string;
+		/**
+		 * Text to search for in the response
+		 */
+		text_to_search_for?: string;
+		type?: "UPTIME_CHECK";
+		/**
+		 * Headers to send. Uptime checks support environment variable references such as {{API_TOKEN}}. Terraform example: Authorization = "Bearer {{API_TOKEN}}". Terraform stores the template; create the referenced variable separately.
+		 */
+		headers?: {
+			[key: string]: string;
+		};
+		/**
+		 * HTTP Method
+		 */
+		method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
+		body?: string;
+		follow_redirects?: boolean;
+		/**
+		 * Assertions to run on the response
+		 */
+		assertions?: Array<{
+			/**
+			 * Type of assertion
+			 */
+			type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+			/**
+			 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+			 */
+			property: string;
+			/**
+			 * Comparison operator
+			 */
+			comparison:
+				| "EQUALS"
+				| "NOT_EQUALS"
+				| "GREATER_THAN"
+				| "LESS_THAN"
+				| "NULL"
+				| "NOT_NULL"
+				| "EMPTY"
+				| "NOT_EMPTY"
+				| "CONTAINS"
+				| "NOT_CONTAINS"
+				| "FALSE"
+				| "TRUE";
+			/**
+			 * Expected value
+			 */
+			expected: string;
+		}>;
+		/**
+		 * Whether to fail a check if SSL verification fails
+		 */
+		verify_ssl?: boolean;
+		/**
+		 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
+		 */
+		auth_username?: string;
+		/**
+		 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
+		 */
+		auth_password?: string;
+		/**
+		 * Omit to select the organisation's stable Default project.
+		 */
+		project_id?: ProjectOperationProjectSelectionId;
+	};
 	headers?: {
 		/**
 		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
@@ -6422,7 +5911,130 @@ export type UpdateUptimeCheckResponse =
 	UpdateUptimeCheckResponses[keyof UpdateUptimeCheckResponses];
 
 export type CreateBrowserCheckData = {
-	body: ProjectRolloutCreateBrowserCheckInput;
+	body: {
+		name: string;
+		/**
+		 * Interval in seconds between checks
+		 */
+		test_interval?: number;
+		/**
+		 * Regions to run checks from. Valid regions: aws:us-east-1, aws:us-east-2, aws:us-west-1, aws:eu-central-1, aws:eu-west-2, aws:ap-south-1, aws:ap-southeast-2, aws:ap-northeast-1
+		 */
+		test_regions?: Array<string>;
+		user_alerts?: Array<string>;
+		slack_alerts?: Array<string>;
+		discord_alerts?: Array<string>;
+		incident_io_alerts?: Array<string>;
+		microsoft_teams_alerts?: Array<string>;
+		telegram_alerts?: Array<string>;
+		pushover_alerts?: Array<string>;
+		/**
+		 * IDs of webhooks to associate with this check
+		 */
+		webhook_alerts?: Array<string>;
+		/**
+		 * IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)
+		 */
+		oncall_alerts?: Array<string>;
+		/**
+		 * [Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).
+		 */
+		alert_priority?: "LOW" | "HIGH";
+		/**
+		 * Seconds before confirming [downtime](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#confirmation-period).
+		 */
+		confirmation_period_seconds?: number;
+		/**
+		 * Seconds before confirming [recovery](https://onlineornot.com/docs/explanation/confirmation-recovery-periods#recovery-period).
+		 */
+		recovery_period_seconds?: number;
+		/**
+		 * Interval in minutes between reminders (-1 for never)
+		 */
+		reminder_alert_interval_minutes?: number;
+		/**
+		 * Timeout in milliseconds
+		 */
+		timeout?: number;
+		/**
+		 * URL to load for URL-based browser checks. Optional when script is provided.
+		 */
+		url?: string | null;
+		/**
+		 * Text to search for in the response
+		 */
+		text_to_search_for?: string;
+		type?: "BROWSER_CHECK";
+		/**
+		 * Headers to send with the browser request. Environment variable references are not supported.
+		 */
+		headers?: {
+			[key: string]: string;
+		};
+		/**
+		 * HTTP Method
+		 */
+		method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
+		body?: string;
+		follow_redirects?: boolean;
+		/**
+		 * Assertions to run on the response
+		 */
+		assertions?: Array<{
+			/**
+			 * Type of assertion
+			 */
+			type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+			/**
+			 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+			 */
+			property: string;
+			/**
+			 * Comparison operator
+			 */
+			comparison:
+				| "EQUALS"
+				| "NOT_EQUALS"
+				| "GREATER_THAN"
+				| "LESS_THAN"
+				| "NULL"
+				| "NOT_NULL"
+				| "EMPTY"
+				| "NOT_EMPTY"
+				| "CONTAINS"
+				| "NOT_CONTAINS"
+				| "FALSE"
+				| "TRUE";
+			/**
+			 * Expected value
+			 */
+			expected: string;
+		}>;
+		/**
+		 * Whether to fail a check if SSL verification fails
+		 */
+		verify_ssl?: boolean;
+		/**
+		 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
+		 */
+		auth_username?: string;
+		/**
+		 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
+		 */
+		auth_password?: string;
+		/**
+		 * Runtime version for browser checks.
+		 */
+		version?: "NODE24_PLAYWRIGHT";
+		/**
+		 * Playwright Test script for scripted browser checks. Optional when url is provided.
+		 */
+		script?: string;
+		/**
+		 * Omit to select the organisation's stable Default project.
+		 */
+		project_id?: ProjectOperationProjectSelectionId;
+	};
 	headers?: {
 		/**
 		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
