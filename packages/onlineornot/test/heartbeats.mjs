@@ -44,6 +44,11 @@ test("generated heartbeat command contract", async () => {
 			platform: "node",
 			format: "cjs",
 			define: { "process.env.ONLINEORNOT_SEA": '"false"' },
+			// Acknowledge consumption without decoding or replacing stdin. Pausing
+			// prevents the observer from consuming input before the CLI does.
+			banner: {
+				js: 'process.stdin.on("data", () => process.send?.("stdin-chunk")); process.stdin.pause();',
+			},
 			plugins: [
 				{
 					name: "fixture-origin",
@@ -73,7 +78,7 @@ test("generated heartbeat command contract", async () => {
 						NO_COLOR: "1",
 						ONLINEORNOT_LOG: "debug",
 					},
-					stdio: ["pipe", "pipe", "pipe"],
+					stdio: ["pipe", "pipe", "pipe", "ipc"],
 					timeout: 15000,
 				},
 			);
@@ -81,7 +86,13 @@ test("generated heartbeat command contract", async () => {
 				stderr = "";
 			child.stdout.on("data", (x) => (stdout += x));
 			child.stderr.on("data", (x) => (stderr += x));
-			child.stdin.end(input);
+			if (Array.isArray(input)) {
+				// Wait for consumption to prevent pipe coalescing from hiding the split.
+				child.once("message", () => child.stdin.end(input[1]));
+				child.stdin.write(input[0]);
+			} else {
+				child.stdin.end(input);
+			}
 			const code = await new Promise((resolve, reject) => {
 				child.on("error", reject);
 				child.on("close", resolve);
@@ -136,6 +147,14 @@ test("generated heartbeat command contract", async () => {
 			url: "/v1/heartbeats",
 			body,
 		});
+		const unicodeBody = { name: "café", grace_period: 30 };
+		const unicodeBytes = Buffer.from(JSON.stringify(unicodeBody));
+		const split = unicodeBytes.indexOf(Buffer.from("é")) + 1;
+		await ok(
+			["create", "--input", "-"],
+			[unicodeBytes.subarray(0, split), unicodeBytes.subarray(split)],
+		);
+		assert.deepEqual(requests.at(-1).body, unicodeBody);
 		const patch = {
 			paused: false,
 			muted: false,

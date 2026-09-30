@@ -31,6 +31,8 @@ export async function readInput(input: string): Promise<string> {
 	if (input !== "-") return readFile(input, "utf8");
 	if (process.stdin.isTTY)
 		throw new Error("--input - requires piped JSON on stdin.");
+	// Retain partial UTF-8 sequences when a code point spans stdin chunks.
+	process.stdin.setEncoding("utf8");
 	let text = "";
 	for await (const chunk of process.stdin) text += chunk;
 	return text;
