@@ -39,9 +39,155 @@ const metadata = [
 			json: { type: "boolean", describe: "Return the API envelope as JSON" },
 			input: {
 				type: "string",
-				demandOption: true,
-				describe: "JSON file, or - for stdin (no body flags; never merged)",
+				describe:
+					"Read a JSON file, or - for stdin, instead of body flags (cannot be mixed)",
 				nargs: 1,
+			},
+			name: {
+				type: "string",
+				describe: "name (required unless supplied in --input)",
+				nargs: 1,
+			},
+			"report-period": {
+				type: "number",
+				describe:
+					"Expected interval in seconds between heartbeat pings (for simple schedule)",
+				nargs: 1,
+			},
+			"report-period-cron": {
+				type: "string",
+				describe: "Cron expression for expected heartbeat schedule",
+				nargs: 1,
+			},
+			timezone: {
+				type: "string",
+				describe: "Timezone for cron schedule",
+				nargs: 1,
+			},
+			"grace-period": {
+				type: "number",
+				describe:
+					"Grace period in seconds to wait after missed heartbeat before alerting (required unless supplied in --input)",
+				nargs: 1,
+			},
+			"reminder-alert-interval-minutes": {
+				type: "number",
+				describe: "Interval in minutes between reminder alerts (-1 for never)",
+				nargs: 1,
+			},
+			"user-alerts": {
+				type: "string",
+				describe: "User IDs to notify; repeat --user-alerts for each item",
+				array: true,
+				nargs: 1,
+			},
+			"clear-user-alerts": {
+				type: "boolean",
+				describe:
+					"Clear user_alerts by sending []; conflicts with --user-alerts",
+			},
+			"slack-alerts": {
+				type: "string",
+				describe:
+					"Slack integration IDs to notify; repeat --slack-alerts for each item",
+				array: true,
+				nargs: 1,
+			},
+			"clear-slack-alerts": {
+				type: "boolean",
+				describe:
+					"Clear slack_alerts by sending []; conflicts with --slack-alerts",
+			},
+			"discord-alerts": {
+				type: "string",
+				describe:
+					"Discord integration IDs to notify; repeat --discord-alerts for each item",
+				array: true,
+				nargs: 1,
+			},
+			"clear-discord-alerts": {
+				type: "boolean",
+				describe:
+					"Clear discord_alerts by sending []; conflicts with --discord-alerts",
+			},
+			"webhook-alerts": {
+				type: "string",
+				describe:
+					"IDs of webhooks to associate with this heartbeat; repeat --webhook-alerts for each item",
+				array: true,
+				nargs: 1,
+			},
+			"clear-webhook-alerts": {
+				type: "boolean",
+				describe:
+					"Clear webhook_alerts by sending []; conflicts with --webhook-alerts",
+			},
+			"oncall-alerts": {
+				type: "string",
+				describe:
+					"IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike); repeat --oncall-alerts for each item",
+				array: true,
+				nargs: 1,
+			},
+			"clear-oncall-alerts": {
+				type: "boolean",
+				describe:
+					"Clear oncall_alerts by sending []; conflicts with --oncall-alerts",
+			},
+			"incident-io-alerts": {
+				type: "string",
+				describe:
+					"incident.io integration IDs to notify; repeat --incident-io-alerts for each item",
+				array: true,
+				nargs: 1,
+			},
+			"clear-incident-io-alerts": {
+				type: "boolean",
+				describe:
+					"Clear incident_io_alerts by sending []; conflicts with --incident-io-alerts",
+			},
+			"microsoft-teams-alerts": {
+				type: "string",
+				describe:
+					"Microsoft Teams integration IDs to notify; repeat --microsoft-teams-alerts for each item",
+				array: true,
+				nargs: 1,
+			},
+			"clear-microsoft-teams-alerts": {
+				type: "boolean",
+				describe:
+					"Clear microsoft_teams_alerts by sending []; conflicts with --microsoft-teams-alerts",
+			},
+			"telegram-alerts": {
+				type: "string",
+				describe:
+					"Telegram integration IDs to notify; repeat --telegram-alerts for each item",
+				array: true,
+				nargs: 1,
+			},
+			"clear-telegram-alerts": {
+				type: "boolean",
+				describe:
+					"Clear telegram_alerts by sending []; conflicts with --telegram-alerts",
+			},
+			"pushover-alerts": {
+				type: "string",
+				describe:
+					"Pushover integration IDs to notify; repeat --pushover-alerts for each item",
+				array: true,
+				nargs: 1,
+			},
+			"clear-pushover-alerts": {
+				type: "boolean",
+				describe:
+					"Clear pushover_alerts by sending []; conflicts with --pushover-alerts",
+			},
+			"alert-priority": {
+				type: "string",
+				describe:
+					"[Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).",
+				nargs: 1,
+				choices: ["LOW", "HIGH"],
 			},
 		},
 	},
@@ -50,9 +196,174 @@ const metadata = [
 			json: { type: "boolean", describe: "Return the API envelope as JSON" },
 			input: {
 				type: "string",
-				demandOption: true,
-				describe: "JSON file, or - for stdin (no body flags; never merged)",
+				describe:
+					"Read a JSON file, or - for stdin, instead of body flags (cannot be mixed)",
 				nargs: 1,
+			},
+			name: { type: "string", describe: "name", nargs: 1 },
+			"report-period": {
+				type: "number",
+				describe:
+					"Expected interval in seconds between heartbeat pings (for simple schedule)",
+				nargs: 1,
+			},
+			"clear-report-period": {
+				type: "boolean",
+				describe:
+					"Clear report_period by sending null; conflicts with --report-period",
+			},
+			"report-period-cron": {
+				type: "string",
+				describe: "Cron expression for expected heartbeat schedule",
+				nargs: 1,
+			},
+			"clear-report-period-cron": {
+				type: "boolean",
+				describe:
+					"Clear report_period_cron by sending null; conflicts with --report-period-cron",
+			},
+			timezone: {
+				type: "string",
+				describe: "Timezone for cron schedule",
+				nargs: 1,
+			},
+			"clear-timezone": {
+				type: "boolean",
+				describe: "Clear timezone by sending null; conflicts with --timezone",
+			},
+			"grace-period": {
+				type: "number",
+				describe:
+					"Grace period in seconds to wait after missed heartbeat before alerting",
+				nargs: 1,
+			},
+			"reminder-alert-interval-minutes": {
+				type: "number",
+				describe: "Interval in minutes between reminder alerts (-1 for never)",
+				nargs: 1,
+			},
+			"user-alerts": {
+				type: "string",
+				describe: "User IDs to notify; repeat --user-alerts for each item",
+				array: true,
+				nargs: 1,
+			},
+			"clear-user-alerts": {
+				type: "boolean",
+				describe:
+					"Clear user_alerts by sending []; conflicts with --user-alerts",
+			},
+			"slack-alerts": {
+				type: "string",
+				describe:
+					"Slack integration IDs to notify; repeat --slack-alerts for each item",
+				array: true,
+				nargs: 1,
+			},
+			"clear-slack-alerts": {
+				type: "boolean",
+				describe:
+					"Clear slack_alerts by sending []; conflicts with --slack-alerts",
+			},
+			"discord-alerts": {
+				type: "string",
+				describe:
+					"Discord integration IDs to notify; repeat --discord-alerts for each item",
+				array: true,
+				nargs: 1,
+			},
+			"clear-discord-alerts": {
+				type: "boolean",
+				describe:
+					"Clear discord_alerts by sending []; conflicts with --discord-alerts",
+			},
+			"webhook-alerts": {
+				type: "string",
+				describe:
+					"IDs of webhooks to associate with this heartbeat; repeat --webhook-alerts for each item",
+				array: true,
+				nargs: 1,
+			},
+			"clear-webhook-alerts": {
+				type: "boolean",
+				describe:
+					"Clear webhook_alerts by sending []; conflicts with --webhook-alerts",
+			},
+			"oncall-alerts": {
+				type: "string",
+				describe:
+					"IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike); repeat --oncall-alerts for each item",
+				array: true,
+				nargs: 1,
+			},
+			"clear-oncall-alerts": {
+				type: "boolean",
+				describe:
+					"Clear oncall_alerts by sending []; conflicts with --oncall-alerts",
+			},
+			"incident-io-alerts": {
+				type: "string",
+				describe:
+					"incident.io integration IDs to notify; repeat --incident-io-alerts for each item",
+				array: true,
+				nargs: 1,
+			},
+			"clear-incident-io-alerts": {
+				type: "boolean",
+				describe:
+					"Clear incident_io_alerts by sending []; conflicts with --incident-io-alerts",
+			},
+			"microsoft-teams-alerts": {
+				type: "string",
+				describe:
+					"Microsoft Teams integration IDs to notify; repeat --microsoft-teams-alerts for each item",
+				array: true,
+				nargs: 1,
+			},
+			"clear-microsoft-teams-alerts": {
+				type: "boolean",
+				describe:
+					"Clear microsoft_teams_alerts by sending []; conflicts with --microsoft-teams-alerts",
+			},
+			"telegram-alerts": {
+				type: "string",
+				describe:
+					"Telegram integration IDs to notify; repeat --telegram-alerts for each item",
+				array: true,
+				nargs: 1,
+			},
+			"clear-telegram-alerts": {
+				type: "boolean",
+				describe:
+					"Clear telegram_alerts by sending []; conflicts with --telegram-alerts",
+			},
+			"pushover-alerts": {
+				type: "string",
+				describe:
+					"Pushover integration IDs to notify; repeat --pushover-alerts for each item",
+				array: true,
+				nargs: 1,
+			},
+			"clear-pushover-alerts": {
+				type: "boolean",
+				describe:
+					"Clear pushover_alerts by sending []; conflicts with --pushover-alerts",
+			},
+			"alert-priority": {
+				type: "string",
+				describe:
+					"[Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).",
+				nargs: 1,
+				choices: ["LOW", "HIGH"],
+			},
+			paused: {
+				type: "boolean",
+				describe: "Whether the heartbeat is paused; --no-paused sets false",
+			},
+			muted: {
+				type: "boolean",
+				describe:
+					"Suppresses alerts without stopping heartbeat monitoring.; --no-muted sets false",
 			},
 		},
 	},
@@ -67,13 +378,14 @@ const metadata = [
 		},
 	},
 ] as const;
-function isCreateHeartbeatDataBody(
+function assertCreateHeartbeatDataBody(
 	value: unknown,
-): value is CreateHeartbeatData["body"] {
-	return (
-		isBodyObject(value) &&
-		Object.keys(value).every((key) =>
-			[
+): asserts value is CreateHeartbeatData["body"] {
+	if (!isBodyObject(value))
+		throw new Error("--input must contain a JSON object.");
+	const extra = Object.keys(value).find(
+		(key) =>
+			![
 				"name",
 				"report_period",
 				"report_period_cron",
@@ -91,81 +403,187 @@ function isCreateHeartbeatDataBody(
 				"pushover_alerts",
 				"alert_priority",
 			].includes(key),
-		) &&
-		typeof value["name"] === "string" &&
-		(value["report_period"] === undefined ||
-			(typeof value["report_period"] === "number" &&
-				Number.isInteger(value["report_period"]) &&
-				value["report_period"] >= 1)) &&
-		(value["report_period_cron"] === undefined ||
-			typeof value["report_period_cron"] === "string") &&
-		(value["timezone"] === undefined ||
-			typeof value["timezone"] === "string") &&
-		typeof value["grace_period"] === "number" &&
-		Number.isInteger(value["grace_period"]) &&
-		value["grace_period"] >= 1 &&
-		(value["reminder_alert_interval_minutes"] === undefined ||
-			(typeof value["reminder_alert_interval_minutes"] === "number" &&
-				Number.isInteger(value["reminder_alert_interval_minutes"]) &&
-				value["reminder_alert_interval_minutes"] >= -1)) &&
-		(value["user_alerts"] === undefined ||
-			(Array.isArray(value["user_alerts"]) &&
-				value["user_alerts"].every(
-					(item: unknown) => typeof item === "string",
-				))) &&
-		(value["slack_alerts"] === undefined ||
-			(Array.isArray(value["slack_alerts"]) &&
-				value["slack_alerts"].every(
-					(item: unknown) => typeof item === "string",
-				))) &&
-		(value["discord_alerts"] === undefined ||
-			(Array.isArray(value["discord_alerts"]) &&
-				value["discord_alerts"].every(
-					(item: unknown) => typeof item === "string",
-				))) &&
-		(value["webhook_alerts"] === undefined ||
-			(Array.isArray(value["webhook_alerts"]) &&
-				value["webhook_alerts"].every(
-					(item: unknown) => typeof item === "string",
-				))) &&
-		(value["oncall_alerts"] === undefined ||
-			(Array.isArray(value["oncall_alerts"]) &&
-				value["oncall_alerts"].every(
-					(item: unknown) => typeof item === "string",
-				))) &&
-		(value["incident_io_alerts"] === undefined ||
-			(Array.isArray(value["incident_io_alerts"]) &&
-				value["incident_io_alerts"].every(
-					(item: unknown) => typeof item === "string",
-				))) &&
-		(value["microsoft_teams_alerts"] === undefined ||
-			(Array.isArray(value["microsoft_teams_alerts"]) &&
-				value["microsoft_teams_alerts"].every(
-					(item: unknown) => typeof item === "string",
-				))) &&
-		(value["telegram_alerts"] === undefined ||
-			(Array.isArray(value["telegram_alerts"]) &&
-				value["telegram_alerts"].every(
-					(item: unknown) => typeof item === "string",
-				))) &&
-		(value["pushover_alerts"] === undefined ||
-			(Array.isArray(value["pushover_alerts"]) &&
-				value["pushover_alerts"].every(
-					(item: unknown) => typeof item === "string",
-				))) &&
-		(value["alert_priority"] === undefined ||
-			(typeof value["alert_priority"] === "string" &&
-				(value["alert_priority"] === "LOW" ||
-					value["alert_priority"] === "HIGH")))
 	);
+	if (extra !== undefined)
+		throw new Error(
+			"Unknown JSON field: " +
+				JSON.stringify(extra) +
+				". See --help for supported fields.",
+		);
+	if (value["name"] === undefined)
+		throw new Error(
+			'--name is required; supply it as a flag or set "name" in --input JSON.',
+		);
+	if (value["name"] !== undefined && !(typeof value["name"] === "string"))
+		throw new Error('Invalid --name / JSON field "name": expected a string.');
+	if (
+		value["report_period"] !== undefined &&
+		!(
+			typeof value["report_period"] === "number" &&
+			Number.isInteger(value["report_period"]) &&
+			value["report_period"] >= 1
+		)
+	)
+		throw new Error(
+			'Invalid --report-period / JSON field "report_period": expected an integer >= 1.',
+		);
+	if (
+		value["report_period_cron"] !== undefined &&
+		!(typeof value["report_period_cron"] === "string")
+	)
+		throw new Error(
+			'Invalid --report-period-cron / JSON field "report_period_cron": expected a string.',
+		);
+	if (
+		value["timezone"] !== undefined &&
+		!(typeof value["timezone"] === "string")
+	)
+		throw new Error(
+			'Invalid --timezone / JSON field "timezone": expected a string.',
+		);
+	if (value["grace_period"] === undefined)
+		throw new Error(
+			'--grace-period is required; supply it as a flag or set "grace_period" in --input JSON.',
+		);
+	if (
+		value["grace_period"] !== undefined &&
+		!(
+			typeof value["grace_period"] === "number" &&
+			Number.isInteger(value["grace_period"]) &&
+			value["grace_period"] >= 1
+		)
+	)
+		throw new Error(
+			'Invalid --grace-period / JSON field "grace_period": expected an integer >= 1.',
+		);
+	if (
+		value["reminder_alert_interval_minutes"] !== undefined &&
+		!(
+			typeof value["reminder_alert_interval_minutes"] === "number" &&
+			Number.isInteger(value["reminder_alert_interval_minutes"]) &&
+			value["reminder_alert_interval_minutes"] >= -1
+		)
+	)
+		throw new Error(
+			'Invalid --reminder-alert-interval-minutes / JSON field "reminder_alert_interval_minutes": expected an integer >= -1.',
+		);
+	if (
+		value["user_alerts"] !== undefined &&
+		!(
+			Array.isArray(value["user_alerts"]) &&
+			value["user_alerts"].every((item: unknown) => typeof item === "string")
+		)
+	)
+		throw new Error(
+			'Invalid --user-alerts / JSON field "user_alerts": expected an array of string values (repeat --user-alerts).',
+		);
+	if (
+		value["slack_alerts"] !== undefined &&
+		!(
+			Array.isArray(value["slack_alerts"]) &&
+			value["slack_alerts"].every((item: unknown) => typeof item === "string")
+		)
+	)
+		throw new Error(
+			'Invalid --slack-alerts / JSON field "slack_alerts": expected an array of string values (repeat --slack-alerts).',
+		);
+	if (
+		value["discord_alerts"] !== undefined &&
+		!(
+			Array.isArray(value["discord_alerts"]) &&
+			value["discord_alerts"].every((item: unknown) => typeof item === "string")
+		)
+	)
+		throw new Error(
+			'Invalid --discord-alerts / JSON field "discord_alerts": expected an array of string values (repeat --discord-alerts).',
+		);
+	if (
+		value["webhook_alerts"] !== undefined &&
+		!(
+			Array.isArray(value["webhook_alerts"]) &&
+			value["webhook_alerts"].every((item: unknown) => typeof item === "string")
+		)
+	)
+		throw new Error(
+			'Invalid --webhook-alerts / JSON field "webhook_alerts": expected an array of string values (repeat --webhook-alerts).',
+		);
+	if (
+		value["oncall_alerts"] !== undefined &&
+		!(
+			Array.isArray(value["oncall_alerts"]) &&
+			value["oncall_alerts"].every((item: unknown) => typeof item === "string")
+		)
+	)
+		throw new Error(
+			'Invalid --oncall-alerts / JSON field "oncall_alerts": expected an array of string values (repeat --oncall-alerts).',
+		);
+	if (
+		value["incident_io_alerts"] !== undefined &&
+		!(
+			Array.isArray(value["incident_io_alerts"]) &&
+			value["incident_io_alerts"].every(
+				(item: unknown) => typeof item === "string",
+			)
+		)
+	)
+		throw new Error(
+			'Invalid --incident-io-alerts / JSON field "incident_io_alerts": expected an array of string values (repeat --incident-io-alerts).',
+		);
+	if (
+		value["microsoft_teams_alerts"] !== undefined &&
+		!(
+			Array.isArray(value["microsoft_teams_alerts"]) &&
+			value["microsoft_teams_alerts"].every(
+				(item: unknown) => typeof item === "string",
+			)
+		)
+	)
+		throw new Error(
+			'Invalid --microsoft-teams-alerts / JSON field "microsoft_teams_alerts": expected an array of string values (repeat --microsoft-teams-alerts).',
+		);
+	if (
+		value["telegram_alerts"] !== undefined &&
+		!(
+			Array.isArray(value["telegram_alerts"]) &&
+			value["telegram_alerts"].every(
+				(item: unknown) => typeof item === "string",
+			)
+		)
+	)
+		throw new Error(
+			'Invalid --telegram-alerts / JSON field "telegram_alerts": expected an array of string values (repeat --telegram-alerts).',
+		);
+	if (
+		value["pushover_alerts"] !== undefined &&
+		!(
+			Array.isArray(value["pushover_alerts"]) &&
+			value["pushover_alerts"].every(
+				(item: unknown) => typeof item === "string",
+			)
+		)
+	)
+		throw new Error(
+			'Invalid --pushover-alerts / JSON field "pushover_alerts": expected an array of string values (repeat --pushover-alerts).',
+		);
+	if (
+		value["alert_priority"] !== undefined &&
+		!(
+			typeof value["alert_priority"] === "string" &&
+			(value["alert_priority"] === "LOW" || value["alert_priority"] === "HIGH")
+		)
+	)
+		throw new Error(
+			'Invalid --alert-priority / JSON field "alert_priority": expected one of LOW, HIGH.',
+		);
 }
-function isUpdateHeartbeatDataBody(
+function assertUpdateHeartbeatDataBody(
 	value: unknown,
-): value is UpdateHeartbeatData["body"] {
-	return (
-		isBodyObject(value) &&
-		Object.keys(value).every((key) =>
-			[
+): asserts value is UpdateHeartbeatData["body"] {
+	if (!isBodyObject(value))
+		throw new Error("--input must contain a JSON object.");
+	const extra = Object.keys(value).find(
+		(key) =>
+			![
 				"name",
 				"report_period",
 				"report_period_cron",
@@ -185,79 +603,182 @@ function isUpdateHeartbeatDataBody(
 				"paused",
 				"muted",
 			].includes(key),
-		) &&
-		(value["name"] === undefined || typeof value["name"] === "string") &&
-		(value["report_period"] === undefined ||
+	);
+	if (extra !== undefined)
+		throw new Error(
+			"Unknown JSON field: " +
+				JSON.stringify(extra) +
+				". See --help for supported fields.",
+		);
+	if (value["name"] !== undefined && !(typeof value["name"] === "string"))
+		throw new Error('Invalid --name / JSON field "name": expected a string.');
+	if (
+		value["report_period"] !== undefined &&
+		!(
 			(typeof value["report_period"] === "number" &&
 				Number.isInteger(value["report_period"]) &&
 				value["report_period"] >= 1) ||
-			value["report_period"] === null) &&
-		(value["report_period_cron"] === undefined ||
+			value["report_period"] === null
+		)
+	)
+		throw new Error(
+			'Invalid --report-period / JSON field "report_period": expected an integer >= 1 or null (use --clear-report-period).',
+		);
+	if (
+		value["report_period_cron"] !== undefined &&
+		!(
 			typeof value["report_period_cron"] === "string" ||
-			value["report_period_cron"] === null) &&
-		(value["timezone"] === undefined ||
-			typeof value["timezone"] === "string" ||
-			value["timezone"] === null) &&
-		(value["grace_period"] === undefined ||
-			(typeof value["grace_period"] === "number" &&
-				Number.isInteger(value["grace_period"]) &&
-				value["grace_period"] >= 1)) &&
-		(value["reminder_alert_interval_minutes"] === undefined ||
-			(typeof value["reminder_alert_interval_minutes"] === "number" &&
-				Number.isInteger(value["reminder_alert_interval_minutes"]) &&
-				value["reminder_alert_interval_minutes"] >= -1)) &&
-		(value["user_alerts"] === undefined ||
-			(Array.isArray(value["user_alerts"]) &&
-				value["user_alerts"].every(
-					(item: unknown) => typeof item === "string",
-				))) &&
-		(value["slack_alerts"] === undefined ||
-			(Array.isArray(value["slack_alerts"]) &&
-				value["slack_alerts"].every(
-					(item: unknown) => typeof item === "string",
-				))) &&
-		(value["discord_alerts"] === undefined ||
-			(Array.isArray(value["discord_alerts"]) &&
-				value["discord_alerts"].every(
-					(item: unknown) => typeof item === "string",
-				))) &&
-		(value["webhook_alerts"] === undefined ||
-			(Array.isArray(value["webhook_alerts"]) &&
-				value["webhook_alerts"].every(
-					(item: unknown) => typeof item === "string",
-				))) &&
-		(value["oncall_alerts"] === undefined ||
-			(Array.isArray(value["oncall_alerts"]) &&
-				value["oncall_alerts"].every(
-					(item: unknown) => typeof item === "string",
-				))) &&
-		(value["incident_io_alerts"] === undefined ||
-			(Array.isArray(value["incident_io_alerts"]) &&
-				value["incident_io_alerts"].every(
-					(item: unknown) => typeof item === "string",
-				))) &&
-		(value["microsoft_teams_alerts"] === undefined ||
-			(Array.isArray(value["microsoft_teams_alerts"]) &&
-				value["microsoft_teams_alerts"].every(
-					(item: unknown) => typeof item === "string",
-				))) &&
-		(value["telegram_alerts"] === undefined ||
-			(Array.isArray(value["telegram_alerts"]) &&
-				value["telegram_alerts"].every(
-					(item: unknown) => typeof item === "string",
-				))) &&
-		(value["pushover_alerts"] === undefined ||
-			(Array.isArray(value["pushover_alerts"]) &&
-				value["pushover_alerts"].every(
-					(item: unknown) => typeof item === "string",
-				))) &&
-		(value["alert_priority"] === undefined ||
-			(typeof value["alert_priority"] === "string" &&
-				(value["alert_priority"] === "LOW" ||
-					value["alert_priority"] === "HIGH"))) &&
-		(value["paused"] === undefined || typeof value["paused"] === "boolean") &&
-		(value["muted"] === undefined || typeof value["muted"] === "boolean")
-	);
+			value["report_period_cron"] === null
+		)
+	)
+		throw new Error(
+			'Invalid --report-period-cron / JSON field "report_period_cron": expected a string or null (use --clear-report-period-cron).',
+		);
+	if (
+		value["timezone"] !== undefined &&
+		!(typeof value["timezone"] === "string" || value["timezone"] === null)
+	)
+		throw new Error(
+			'Invalid --timezone / JSON field "timezone": expected a string or null (use --clear-timezone).',
+		);
+	if (
+		value["grace_period"] !== undefined &&
+		!(
+			typeof value["grace_period"] === "number" &&
+			Number.isInteger(value["grace_period"]) &&
+			value["grace_period"] >= 1
+		)
+	)
+		throw new Error(
+			'Invalid --grace-period / JSON field "grace_period": expected an integer >= 1.',
+		);
+	if (
+		value["reminder_alert_interval_minutes"] !== undefined &&
+		!(
+			typeof value["reminder_alert_interval_minutes"] === "number" &&
+			Number.isInteger(value["reminder_alert_interval_minutes"]) &&
+			value["reminder_alert_interval_minutes"] >= -1
+		)
+	)
+		throw new Error(
+			'Invalid --reminder-alert-interval-minutes / JSON field "reminder_alert_interval_minutes": expected an integer >= -1.',
+		);
+	if (
+		value["user_alerts"] !== undefined &&
+		!(
+			Array.isArray(value["user_alerts"]) &&
+			value["user_alerts"].every((item: unknown) => typeof item === "string")
+		)
+	)
+		throw new Error(
+			'Invalid --user-alerts / JSON field "user_alerts": expected an array of string values (repeat --user-alerts).',
+		);
+	if (
+		value["slack_alerts"] !== undefined &&
+		!(
+			Array.isArray(value["slack_alerts"]) &&
+			value["slack_alerts"].every((item: unknown) => typeof item === "string")
+		)
+	)
+		throw new Error(
+			'Invalid --slack-alerts / JSON field "slack_alerts": expected an array of string values (repeat --slack-alerts).',
+		);
+	if (
+		value["discord_alerts"] !== undefined &&
+		!(
+			Array.isArray(value["discord_alerts"]) &&
+			value["discord_alerts"].every((item: unknown) => typeof item === "string")
+		)
+	)
+		throw new Error(
+			'Invalid --discord-alerts / JSON field "discord_alerts": expected an array of string values (repeat --discord-alerts).',
+		);
+	if (
+		value["webhook_alerts"] !== undefined &&
+		!(
+			Array.isArray(value["webhook_alerts"]) &&
+			value["webhook_alerts"].every((item: unknown) => typeof item === "string")
+		)
+	)
+		throw new Error(
+			'Invalid --webhook-alerts / JSON field "webhook_alerts": expected an array of string values (repeat --webhook-alerts).',
+		);
+	if (
+		value["oncall_alerts"] !== undefined &&
+		!(
+			Array.isArray(value["oncall_alerts"]) &&
+			value["oncall_alerts"].every((item: unknown) => typeof item === "string")
+		)
+	)
+		throw new Error(
+			'Invalid --oncall-alerts / JSON field "oncall_alerts": expected an array of string values (repeat --oncall-alerts).',
+		);
+	if (
+		value["incident_io_alerts"] !== undefined &&
+		!(
+			Array.isArray(value["incident_io_alerts"]) &&
+			value["incident_io_alerts"].every(
+				(item: unknown) => typeof item === "string",
+			)
+		)
+	)
+		throw new Error(
+			'Invalid --incident-io-alerts / JSON field "incident_io_alerts": expected an array of string values (repeat --incident-io-alerts).',
+		);
+	if (
+		value["microsoft_teams_alerts"] !== undefined &&
+		!(
+			Array.isArray(value["microsoft_teams_alerts"]) &&
+			value["microsoft_teams_alerts"].every(
+				(item: unknown) => typeof item === "string",
+			)
+		)
+	)
+		throw new Error(
+			'Invalid --microsoft-teams-alerts / JSON field "microsoft_teams_alerts": expected an array of string values (repeat --microsoft-teams-alerts).',
+		);
+	if (
+		value["telegram_alerts"] !== undefined &&
+		!(
+			Array.isArray(value["telegram_alerts"]) &&
+			value["telegram_alerts"].every(
+				(item: unknown) => typeof item === "string",
+			)
+		)
+	)
+		throw new Error(
+			'Invalid --telegram-alerts / JSON field "telegram_alerts": expected an array of string values (repeat --telegram-alerts).',
+		);
+	if (
+		value["pushover_alerts"] !== undefined &&
+		!(
+			Array.isArray(value["pushover_alerts"]) &&
+			value["pushover_alerts"].every(
+				(item: unknown) => typeof item === "string",
+			)
+		)
+	)
+		throw new Error(
+			'Invalid --pushover-alerts / JSON field "pushover_alerts": expected an array of string values (repeat --pushover-alerts).',
+		);
+	if (
+		value["alert_priority"] !== undefined &&
+		!(
+			typeof value["alert_priority"] === "string" &&
+			(value["alert_priority"] === "LOW" || value["alert_priority"] === "HIGH")
+		)
+	)
+		throw new Error(
+			'Invalid --alert-priority / JSON field "alert_priority": expected one of LOW, HIGH.',
+		);
+	if (value["paused"] !== undefined && !(typeof value["paused"] === "boolean"))
+		throw new Error(
+			'Invalid --paused / JSON field "paused": expected a boolean.',
+		);
+	if (value["muted"] !== undefined && !(typeof value["muted"] === "boolean"))
+		throw new Error(
+			'Invalid --muted / JSON field "muted": expected a boolean.',
+		);
 }
 export function registerCommands(yargs: CommonYargsArgv) {
 	logger.loggerLevel = "log";
@@ -334,20 +855,192 @@ export function registerCommands(yargs: CommonYargsArgv) {
 		"Create a heartbeat.",
 		(y) => {
 			const options = y.options(metadata[2].options);
-			return options;
+			return options
+				.example(
+					'$0 heartbeats create --name "Daily backup job" --grace-period 300',
+					"Set fields directly (optional fields are not defaulted)",
+				)
+				.epilog(
+					"Use body flags OR --input file/-; never both. Omitted fields stay unchanged on updates. --clear-* sends null for nullable fields or [] for arrays.",
+				);
 		},
 		async (args) => {
-			const text = await readInput(args.input);
-			let body: unknown;
-			try {
-				body = JSON.parse(text);
-			} catch {
-				throw new Error("Invalid JSON input; expected an object.");
+			if (args["clear-user-alerts"] !== undefined) {
+				if (args["clear-user-alerts"] !== true)
+					throw new Error(
+						"Use --clear-user-alerts to clear user_alerts, or omit it to leave the field unchanged.",
+					);
+				if (args["user-alerts"] !== undefined)
+					throw new Error(
+						"--clear-user-alerts conflicts with --user-alerts; choose one.",
+					);
 			}
-			if (!isCreateHeartbeatDataBody(body))
-				throw new Error(
-					"Invalid JSON body; see heartbeats commands for the pinned input contract.",
-				);
+			if (args["clear-slack-alerts"] !== undefined) {
+				if (args["clear-slack-alerts"] !== true)
+					throw new Error(
+						"Use --clear-slack-alerts to clear slack_alerts, or omit it to leave the field unchanged.",
+					);
+				if (args["slack-alerts"] !== undefined)
+					throw new Error(
+						"--clear-slack-alerts conflicts with --slack-alerts; choose one.",
+					);
+			}
+			if (args["clear-discord-alerts"] !== undefined) {
+				if (args["clear-discord-alerts"] !== true)
+					throw new Error(
+						"Use --clear-discord-alerts to clear discord_alerts, or omit it to leave the field unchanged.",
+					);
+				if (args["discord-alerts"] !== undefined)
+					throw new Error(
+						"--clear-discord-alerts conflicts with --discord-alerts; choose one.",
+					);
+			}
+			if (args["clear-webhook-alerts"] !== undefined) {
+				if (args["clear-webhook-alerts"] !== true)
+					throw new Error(
+						"Use --clear-webhook-alerts to clear webhook_alerts, or omit it to leave the field unchanged.",
+					);
+				if (args["webhook-alerts"] !== undefined)
+					throw new Error(
+						"--clear-webhook-alerts conflicts with --webhook-alerts; choose one.",
+					);
+			}
+			if (args["clear-oncall-alerts"] !== undefined) {
+				if (args["clear-oncall-alerts"] !== true)
+					throw new Error(
+						"Use --clear-oncall-alerts to clear oncall_alerts, or omit it to leave the field unchanged.",
+					);
+				if (args["oncall-alerts"] !== undefined)
+					throw new Error(
+						"--clear-oncall-alerts conflicts with --oncall-alerts; choose one.",
+					);
+			}
+			if (args["clear-incident-io-alerts"] !== undefined) {
+				if (args["clear-incident-io-alerts"] !== true)
+					throw new Error(
+						"Use --clear-incident-io-alerts to clear incident_io_alerts, or omit it to leave the field unchanged.",
+					);
+				if (args["incident-io-alerts"] !== undefined)
+					throw new Error(
+						"--clear-incident-io-alerts conflicts with --incident-io-alerts; choose one.",
+					);
+			}
+			if (args["clear-microsoft-teams-alerts"] !== undefined) {
+				if (args["clear-microsoft-teams-alerts"] !== true)
+					throw new Error(
+						"Use --clear-microsoft-teams-alerts to clear microsoft_teams_alerts, or omit it to leave the field unchanged.",
+					);
+				if (args["microsoft-teams-alerts"] !== undefined)
+					throw new Error(
+						"--clear-microsoft-teams-alerts conflicts with --microsoft-teams-alerts; choose one.",
+					);
+			}
+			if (args["clear-telegram-alerts"] !== undefined) {
+				if (args["clear-telegram-alerts"] !== true)
+					throw new Error(
+						"Use --clear-telegram-alerts to clear telegram_alerts, or omit it to leave the field unchanged.",
+					);
+				if (args["telegram-alerts"] !== undefined)
+					throw new Error(
+						"--clear-telegram-alerts conflicts with --telegram-alerts; choose one.",
+					);
+			}
+			if (args["clear-pushover-alerts"] !== undefined) {
+				if (args["clear-pushover-alerts"] !== true)
+					throw new Error(
+						"Use --clear-pushover-alerts to clear pushover_alerts, or omit it to leave the field unchanged.",
+					);
+				if (args["pushover-alerts"] !== undefined)
+					throw new Error(
+						"--clear-pushover-alerts conflicts with --pushover-alerts; choose one.",
+					);
+			}
+			let body: CreateHeartbeatData["body"];
+			if (args.input !== undefined) {
+				if (
+					[
+						"name",
+						"report-period",
+						"report-period-cron",
+						"timezone",
+						"grace-period",
+						"reminder-alert-interval-minutes",
+						"user-alerts",
+						"clear-user-alerts",
+						"slack-alerts",
+						"clear-slack-alerts",
+						"discord-alerts",
+						"clear-discord-alerts",
+						"webhook-alerts",
+						"clear-webhook-alerts",
+						"oncall-alerts",
+						"clear-oncall-alerts",
+						"incident-io-alerts",
+						"clear-incident-io-alerts",
+						"microsoft-teams-alerts",
+						"clear-microsoft-teams-alerts",
+						"telegram-alerts",
+						"clear-telegram-alerts",
+						"pushover-alerts",
+						"clear-pushover-alerts",
+						"alert-priority",
+					].some((flag) => args[flag] !== undefined)
+				)
+					throw new Error(
+						"--input cannot be mixed with body flags (including --clear-* and --no-*); choose one input mode.",
+					);
+				const text = await readInput(args.input);
+				let parsed: unknown;
+				try {
+					parsed = JSON.parse(text);
+				} catch {
+					throw new Error("Invalid JSON in --input; expected an object.");
+				}
+				assertCreateHeartbeatDataBody(parsed);
+				body = parsed;
+			} else {
+				const fields = {
+					name: args["name"],
+					report_period: args["report-period"],
+					report_period_cron: args["report-period-cron"],
+					timezone: args["timezone"],
+					grace_period: args["grace-period"],
+					reminder_alert_interval_minutes:
+						args["reminder-alert-interval-minutes"],
+					user_alerts:
+						args["clear-user-alerts"] === true ? [] : args["user-alerts"],
+					slack_alerts:
+						args["clear-slack-alerts"] === true ? [] : args["slack-alerts"],
+					discord_alerts:
+						args["clear-discord-alerts"] === true ? [] : args["discord-alerts"],
+					webhook_alerts:
+						args["clear-webhook-alerts"] === true ? [] : args["webhook-alerts"],
+					oncall_alerts:
+						args["clear-oncall-alerts"] === true ? [] : args["oncall-alerts"],
+					incident_io_alerts:
+						args["clear-incident-io-alerts"] === true
+							? []
+							: args["incident-io-alerts"],
+					microsoft_teams_alerts:
+						args["clear-microsoft-teams-alerts"] === true
+							? []
+							: args["microsoft-teams-alerts"],
+					telegram_alerts:
+						args["clear-telegram-alerts"] === true
+							? []
+							: args["telegram-alerts"],
+					pushover_alerts:
+						args["clear-pushover-alerts"] === true
+							? []
+							: args["pushover-alerts"],
+					alert_priority: args["alert-priority"],
+				};
+				// Yargs can return repeated values outside its inferred option types.
+				// Validate flags at the same boundary as JSON before the typed SDK call.
+				// oxlint-disable-next-line anti-slop/no-known-value-widening
+				assertCreateHeartbeatDataBody(fields);
+				body = fields;
+			}
 			if (!args.json)
 				logger.warn(
 					"heartbeats management commands are experimental; use --json for automation.",
@@ -365,26 +1058,240 @@ export function registerCommands(yargs: CommonYargsArgv) {
 		"Update a heartbeat.",
 		(y) => {
 			const options = y.options(metadata[3].options);
-			return options.positional("id", {
-				type: "string",
-				demandOption: true,
-				describe: "Heartbeat ID",
-			});
+			return options
+				.positional("id", {
+					type: "string",
+					demandOption: true,
+					describe: "Heartbeat ID",
+				})
+				.example(
+					'$0 heartbeats update a1b2c3d4 --name "Daily backup job"',
+					"Set fields directly (optional fields are not defaulted)",
+				)
+				.epilog(
+					"Use body flags OR --input file/-; never both. Omitted fields stay unchanged on updates. --clear-* sends null for nullable fields or [] for arrays. Set booleans false with --no-paused, --no-muted.",
+				);
 		},
 		async (args) => {
 			if (!(typeof args["id"] === "string" && args["id"].length >= 8))
 				throw new Error("Invalid id");
-			const text = await readInput(args.input);
-			let body: unknown;
-			try {
-				body = JSON.parse(text);
-			} catch {
-				throw new Error("Invalid JSON input; expected an object.");
+			if (args["clear-report-period"] !== undefined) {
+				if (args["clear-report-period"] !== true)
+					throw new Error(
+						"Use --clear-report-period to clear report_period, or omit it to leave the field unchanged.",
+					);
+				if (args["report-period"] !== undefined)
+					throw new Error(
+						"--clear-report-period conflicts with --report-period; choose one.",
+					);
 			}
-			if (!isUpdateHeartbeatDataBody(body))
-				throw new Error(
-					"Invalid JSON body; see heartbeats commands for the pinned input contract.",
-				);
+			if (args["clear-report-period-cron"] !== undefined) {
+				if (args["clear-report-period-cron"] !== true)
+					throw new Error(
+						"Use --clear-report-period-cron to clear report_period_cron, or omit it to leave the field unchanged.",
+					);
+				if (args["report-period-cron"] !== undefined)
+					throw new Error(
+						"--clear-report-period-cron conflicts with --report-period-cron; choose one.",
+					);
+			}
+			if (args["clear-timezone"] !== undefined) {
+				if (args["clear-timezone"] !== true)
+					throw new Error(
+						"Use --clear-timezone to clear timezone, or omit it to leave the field unchanged.",
+					);
+				if (args["timezone"] !== undefined)
+					throw new Error(
+						"--clear-timezone conflicts with --timezone; choose one.",
+					);
+			}
+			if (args["clear-user-alerts"] !== undefined) {
+				if (args["clear-user-alerts"] !== true)
+					throw new Error(
+						"Use --clear-user-alerts to clear user_alerts, or omit it to leave the field unchanged.",
+					);
+				if (args["user-alerts"] !== undefined)
+					throw new Error(
+						"--clear-user-alerts conflicts with --user-alerts; choose one.",
+					);
+			}
+			if (args["clear-slack-alerts"] !== undefined) {
+				if (args["clear-slack-alerts"] !== true)
+					throw new Error(
+						"Use --clear-slack-alerts to clear slack_alerts, or omit it to leave the field unchanged.",
+					);
+				if (args["slack-alerts"] !== undefined)
+					throw new Error(
+						"--clear-slack-alerts conflicts with --slack-alerts; choose one.",
+					);
+			}
+			if (args["clear-discord-alerts"] !== undefined) {
+				if (args["clear-discord-alerts"] !== true)
+					throw new Error(
+						"Use --clear-discord-alerts to clear discord_alerts, or omit it to leave the field unchanged.",
+					);
+				if (args["discord-alerts"] !== undefined)
+					throw new Error(
+						"--clear-discord-alerts conflicts with --discord-alerts; choose one.",
+					);
+			}
+			if (args["clear-webhook-alerts"] !== undefined) {
+				if (args["clear-webhook-alerts"] !== true)
+					throw new Error(
+						"Use --clear-webhook-alerts to clear webhook_alerts, or omit it to leave the field unchanged.",
+					);
+				if (args["webhook-alerts"] !== undefined)
+					throw new Error(
+						"--clear-webhook-alerts conflicts with --webhook-alerts; choose one.",
+					);
+			}
+			if (args["clear-oncall-alerts"] !== undefined) {
+				if (args["clear-oncall-alerts"] !== true)
+					throw new Error(
+						"Use --clear-oncall-alerts to clear oncall_alerts, or omit it to leave the field unchanged.",
+					);
+				if (args["oncall-alerts"] !== undefined)
+					throw new Error(
+						"--clear-oncall-alerts conflicts with --oncall-alerts; choose one.",
+					);
+			}
+			if (args["clear-incident-io-alerts"] !== undefined) {
+				if (args["clear-incident-io-alerts"] !== true)
+					throw new Error(
+						"Use --clear-incident-io-alerts to clear incident_io_alerts, or omit it to leave the field unchanged.",
+					);
+				if (args["incident-io-alerts"] !== undefined)
+					throw new Error(
+						"--clear-incident-io-alerts conflicts with --incident-io-alerts; choose one.",
+					);
+			}
+			if (args["clear-microsoft-teams-alerts"] !== undefined) {
+				if (args["clear-microsoft-teams-alerts"] !== true)
+					throw new Error(
+						"Use --clear-microsoft-teams-alerts to clear microsoft_teams_alerts, or omit it to leave the field unchanged.",
+					);
+				if (args["microsoft-teams-alerts"] !== undefined)
+					throw new Error(
+						"--clear-microsoft-teams-alerts conflicts with --microsoft-teams-alerts; choose one.",
+					);
+			}
+			if (args["clear-telegram-alerts"] !== undefined) {
+				if (args["clear-telegram-alerts"] !== true)
+					throw new Error(
+						"Use --clear-telegram-alerts to clear telegram_alerts, or omit it to leave the field unchanged.",
+					);
+				if (args["telegram-alerts"] !== undefined)
+					throw new Error(
+						"--clear-telegram-alerts conflicts with --telegram-alerts; choose one.",
+					);
+			}
+			if (args["clear-pushover-alerts"] !== undefined) {
+				if (args["clear-pushover-alerts"] !== true)
+					throw new Error(
+						"Use --clear-pushover-alerts to clear pushover_alerts, or omit it to leave the field unchanged.",
+					);
+				if (args["pushover-alerts"] !== undefined)
+					throw new Error(
+						"--clear-pushover-alerts conflicts with --pushover-alerts; choose one.",
+					);
+			}
+			let body: UpdateHeartbeatData["body"];
+			if (args.input !== undefined) {
+				if (
+					[
+						"name",
+						"report-period",
+						"clear-report-period",
+						"report-period-cron",
+						"clear-report-period-cron",
+						"timezone",
+						"clear-timezone",
+						"grace-period",
+						"reminder-alert-interval-minutes",
+						"user-alerts",
+						"clear-user-alerts",
+						"slack-alerts",
+						"clear-slack-alerts",
+						"discord-alerts",
+						"clear-discord-alerts",
+						"webhook-alerts",
+						"clear-webhook-alerts",
+						"oncall-alerts",
+						"clear-oncall-alerts",
+						"incident-io-alerts",
+						"clear-incident-io-alerts",
+						"microsoft-teams-alerts",
+						"clear-microsoft-teams-alerts",
+						"telegram-alerts",
+						"clear-telegram-alerts",
+						"pushover-alerts",
+						"clear-pushover-alerts",
+						"alert-priority",
+						"paused",
+						"muted",
+					].some((flag) => args[flag] !== undefined)
+				)
+					throw new Error(
+						"--input cannot be mixed with body flags (including --clear-* and --no-*); choose one input mode.",
+					);
+				const text = await readInput(args.input);
+				let parsed: unknown;
+				try {
+					parsed = JSON.parse(text);
+				} catch {
+					throw new Error("Invalid JSON in --input; expected an object.");
+				}
+				assertUpdateHeartbeatDataBody(parsed);
+				body = parsed;
+			} else {
+				const fields = {
+					name: args["name"],
+					report_period:
+						args["clear-report-period"] === true ? null : args["report-period"],
+					report_period_cron:
+						args["clear-report-period-cron"] === true
+							? null
+							: args["report-period-cron"],
+					timezone: args["clear-timezone"] === true ? null : args["timezone"],
+					grace_period: args["grace-period"],
+					reminder_alert_interval_minutes:
+						args["reminder-alert-interval-minutes"],
+					user_alerts:
+						args["clear-user-alerts"] === true ? [] : args["user-alerts"],
+					slack_alerts:
+						args["clear-slack-alerts"] === true ? [] : args["slack-alerts"],
+					discord_alerts:
+						args["clear-discord-alerts"] === true ? [] : args["discord-alerts"],
+					webhook_alerts:
+						args["clear-webhook-alerts"] === true ? [] : args["webhook-alerts"],
+					oncall_alerts:
+						args["clear-oncall-alerts"] === true ? [] : args["oncall-alerts"],
+					incident_io_alerts:
+						args["clear-incident-io-alerts"] === true
+							? []
+							: args["incident-io-alerts"],
+					microsoft_teams_alerts:
+						args["clear-microsoft-teams-alerts"] === true
+							? []
+							: args["microsoft-teams-alerts"],
+					telegram_alerts:
+						args["clear-telegram-alerts"] === true
+							? []
+							: args["telegram-alerts"],
+					pushover_alerts:
+						args["clear-pushover-alerts"] === true
+							? []
+							: args["pushover-alerts"],
+					alert_priority: args["alert-priority"],
+					paused: args["paused"],
+					muted: args["muted"],
+				};
+				// Yargs can return repeated values outside its inferred option types.
+				// Validate flags at the same boundary as JSON before the typed SDK call.
+				// oxlint-disable-next-line anti-slop/no-known-value-widening
+				assertUpdateHeartbeatDataBody(fields);
+				body = fields;
+			}
 			if (!args.json)
 				logger.warn(
 					"heartbeats management commands are experimental; use --json for automation.",

@@ -63,13 +63,12 @@
 				},
 				"input": {
 					"type": "string",
-					"demandOption": true,
-					"describe": "JSON file, or - for stdin (no body flags; never merged)",
+					"describe": "Read a JSON file, or - for stdin, instead of body flags (cannot be mixed)",
 					"nargs": 1
 				}
 			},
 			"arguments": {},
-			"input": "json-file-or-stdin-only",
+			"input": "flags-or-json-exclusive",
 			"output": "envelope",
 			"safety": "write",
 			"pagination": "none",
@@ -86,15 +85,14 @@
 				},
 				"input": {
 					"type": "string",
-					"demandOption": true,
-					"describe": "JSON file, or - for stdin (no body flags; never merged)",
+					"describe": "Read a JSON file, or - for stdin, instead of body flags (cannot be mixed)",
 					"nargs": 1
 				}
 			},
 			"arguments": {
 				"id": "path.heartbeat_id"
 			},
-			"input": "json-file-or-stdin-only",
+			"input": "flags-or-json-exclusive",
 			"output": "envelope",
 			"safety": "write",
 			"pagination": "none",

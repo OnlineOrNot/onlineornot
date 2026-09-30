@@ -170,7 +170,12 @@ test("a second resource is generated from the overlay without changing the emitt
 			);
 		const inputFile = path.join(dir, "body.json");
 		writeFileSync(inputFile, '{"name":"Fixture group"}');
-		const created = await cli(["create", "page1234", "--input", inputFile]);
+		const created = await cli([
+			"create",
+			"page1234",
+			"--name",
+			"Fixture group",
+		]);
 		assert.equal(created.stderr, "");
 		assert.deepEqual(JSON.parse(created.stdout).result, { id: "group123" });
 		assert.deepEqual(requests.at(-1), {

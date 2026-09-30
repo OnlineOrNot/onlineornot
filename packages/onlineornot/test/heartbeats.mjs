@@ -114,6 +114,7 @@ test("generated heartbeat command contract", async () => {
 			assert.equal(r.stdout, "");
 			assert.notEqual(r.stderr, "");
 			assert.equal(requests.length, before);
+			return r;
 		}
 		response = {
 			success: true,
@@ -138,6 +139,108 @@ test("generated heartbeat command contract", async () => {
 		};
 		await ok(["view", "a1b2c3d4"]);
 		assert.equal(requests.at(-1).url, "/v1/heartbeats/a1b2c3d4");
+		await ok(["create", "--name", "Daily backup", "--grace-period", "300"]);
+		assert.deepEqual(requests.at(-1).body, {
+			name: "Daily backup",
+			grace_period: 300,
+		});
+		await ok([
+			"create",
+			"--name",
+			"Daily backup",
+			"--grace-period",
+			"300",
+			"--alert-priority",
+			"HIGH",
+			"--user-alerts",
+			"alice",
+			"--user-alerts",
+			"bob",
+		]);
+		assert.deepEqual(requests.at(-1).body, {
+			name: "Daily backup",
+			grace_period: 300,
+			alert_priority: "HIGH",
+			user_alerts: ["alice", "bob"],
+		});
+		await ok([
+			"update",
+			"a1b2c3d4",
+			"--no-paused",
+			"--muted=false",
+			"--reminder-alert-interval-minutes",
+			"0",
+			"--name",
+			"",
+			"--clear-report-period",
+			"--clear-report-period-cron",
+			"--clear-timezone",
+			"--clear-user-alerts",
+		]);
+		assert.deepEqual(requests.at(-1).body, {
+			paused: false,
+			muted: false,
+			reminder_alert_interval_minutes: 0,
+			name: "",
+			report_period: null,
+			report_period_cron: null,
+			timezone: null,
+			user_alerts: [],
+		});
+		await ok(["update", "a1b2c3d4", "--paused"]);
+		assert.deepEqual(requests.at(-1).body, { paused: true });
+		await ok(["update", "a1b2c3d4", "--timezone", "null"]);
+		assert.deepEqual(requests.at(-1).body, { timezone: "null" });
+		await ok(["update", "a1b2c3d4"]);
+		assert.deepEqual(requests.at(-1).body, {});
+		assert.match((await bad(["create"])).stderr, /--name.*required/i);
+		assert.match(
+			(await bad(["create", "--name", "Backup"])).stderr,
+			/--grace-period.*required/i,
+		);
+		assert.match(
+			(await bad(["create", "--name", "Backup", "--grace-period", "0"])).stderr,
+			/grace-period.*integer.*1/i,
+		);
+		assert.match(
+			(
+				await bad([
+					"create",
+					"--name",
+					"Backup",
+					"--grace-period",
+					"30",
+					"--alert-priority",
+					"URGENT",
+				])
+			).stderr,
+			/alert-priority/,
+		);
+		await bad([
+			"update",
+			"a1b2c3d4",
+			"--report-period",
+			"3",
+			"--clear-report-period",
+		]);
+		await bad([
+			"update",
+			"a1b2c3d4",
+			"--user-alerts",
+			"alice",
+			"--clear-user-alerts",
+		]);
+		await bad(["update", "a1b2c3d4", "--clear-timezone=false"]);
+		await bad([
+			"create",
+			"--name",
+			"first",
+			"--name",
+			"second",
+			"--grace-period",
+			"30",
+		]);
+		await bad(["update", "a1b2c3d4", "--user-alerts"]);
 		const body = { name: "fixture", grace_period: 30, user_alerts: [] };
 		const file = path.join(dir, "input.json");
 		await writeFile(file, JSON.stringify(body));
@@ -194,7 +297,16 @@ test("generated heartbeat command contract", async () => {
 		])
 			await bad(["update", "a1b2c3d4", "--input", "-"], value);
 		await bad(["create"]);
-		await bad(["create", "--input", file, "--name", "conflict"]);
+		assert.match(
+			(await bad(["create", "--input", file, "--name", "conflict"])).stderr,
+			/--input.*body flags/i,
+		);
+		await bad(["update", "a1b2c3d4", "--input", file, "--no-paused"]);
+		await bad(["update", "a1b2c3d4", "--input", file, "--clear-timezone"]);
+		assert.match(
+			(await bad(["create", "--input", "-"], '{"name":"x"}')).stderr,
+			/grace-period.*required/i,
+		);
 		await bad(["create", "--input", file, "--input", file]);
 		await bad(["list", "--page", "0"]);
 		await bad(["list", "--page", "1.5"]);
@@ -232,6 +344,27 @@ test("generated heartbeat command contract", async () => {
 			const help = await run([...command.split(" "), "--help"]);
 			assert.equal(help.code, 0);
 			assert.match(help.stdout, /onlineornot/);
+			if (command === "heartbeats create") {
+				for (const term of [
+					"--name",
+					"--grace-period",
+					"--alert-priority",
+					"LOW",
+					"HIGH",
+					"Examples:",
+					"--input",
+				])
+					assert.ok(help.stdout.includes(term), term);
+				assert.match(help.stdout, /--name.*required/i);
+			}
+			if (command === "heartbeats update") {
+				for (const term of [
+					"--clear-report-period",
+					"--clear-user-alerts",
+					"--no-paused",
+				])
+					assert.ok(help.stdout.includes(term), term);
+			}
 		}
 		const manifest = JSON.parse(
 			await readFile("src/generated-cli/heartbeats.manifest.json", "utf8"),

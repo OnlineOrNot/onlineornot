@@ -68,13 +68,164 @@
 				},
 				"input": {
 					"type": "string",
-					"demandOption": true,
-					"describe": "JSON file, or - for stdin (no body flags; never merged)",
+					"describe": "Read a JSON file, or - for stdin, instead of body flags (cannot be mixed)",
 					"nargs": 1
+				},
+				"name": {
+					"type": "string",
+					"describe": "name (required unless supplied in --input)",
+					"nargs": 1
+				},
+				"report-period": {
+					"type": "number",
+					"describe": "Expected interval in seconds between heartbeat pings (for simple schedule)",
+					"nargs": 1
+				},
+				"report-period-cron": {
+					"type": "string",
+					"describe": "Cron expression for expected heartbeat schedule",
+					"nargs": 1
+				},
+				"timezone": {
+					"type": "string",
+					"describe": "Timezone for cron schedule",
+					"nargs": 1
+				},
+				"grace-period": {
+					"type": "number",
+					"describe": "Grace period in seconds to wait after missed heartbeat before alerting (required unless supplied in --input)",
+					"nargs": 1
+				},
+				"reminder-alert-interval-minutes": {
+					"type": "number",
+					"describe": "Interval in minutes between reminder alerts (-1 for never)",
+					"nargs": 1
+				},
+				"user-alerts": {
+					"type": "string",
+					"describe": "User IDs to notify; repeat --user-alerts for each item",
+					"array": true,
+					"nargs": 1
+				},
+				"clear-user-alerts": {
+					"type": "boolean",
+					"describe": "Clear user_alerts by sending []; conflicts with --user-alerts"
+				},
+				"slack-alerts": {
+					"type": "string",
+					"describe": "Slack integration IDs to notify; repeat --slack-alerts for each item",
+					"array": true,
+					"nargs": 1
+				},
+				"clear-slack-alerts": {
+					"type": "boolean",
+					"describe": "Clear slack_alerts by sending []; conflicts with --slack-alerts"
+				},
+				"discord-alerts": {
+					"type": "string",
+					"describe": "Discord integration IDs to notify; repeat --discord-alerts for each item",
+					"array": true,
+					"nargs": 1
+				},
+				"clear-discord-alerts": {
+					"type": "boolean",
+					"describe": "Clear discord_alerts by sending []; conflicts with --discord-alerts"
+				},
+				"webhook-alerts": {
+					"type": "string",
+					"describe": "IDs of webhooks to associate with this heartbeat; repeat --webhook-alerts for each item",
+					"array": true,
+					"nargs": 1
+				},
+				"clear-webhook-alerts": {
+					"type": "boolean",
+					"describe": "Clear webhook_alerts by sending []; conflicts with --webhook-alerts"
+				},
+				"oncall-alerts": {
+					"type": "string",
+					"describe": "IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike); repeat --oncall-alerts for each item",
+					"array": true,
+					"nargs": 1
+				},
+				"clear-oncall-alerts": {
+					"type": "boolean",
+					"describe": "Clear oncall_alerts by sending []; conflicts with --oncall-alerts"
+				},
+				"incident-io-alerts": {
+					"type": "string",
+					"describe": "incident.io integration IDs to notify; repeat --incident-io-alerts for each item",
+					"array": true,
+					"nargs": 1
+				},
+				"clear-incident-io-alerts": {
+					"type": "boolean",
+					"describe": "Clear incident_io_alerts by sending []; conflicts with --incident-io-alerts"
+				},
+				"microsoft-teams-alerts": {
+					"type": "string",
+					"describe": "Microsoft Teams integration IDs to notify; repeat --microsoft-teams-alerts for each item",
+					"array": true,
+					"nargs": 1
+				},
+				"clear-microsoft-teams-alerts": {
+					"type": "boolean",
+					"describe": "Clear microsoft_teams_alerts by sending []; conflicts with --microsoft-teams-alerts"
+				},
+				"telegram-alerts": {
+					"type": "string",
+					"describe": "Telegram integration IDs to notify; repeat --telegram-alerts for each item",
+					"array": true,
+					"nargs": 1
+				},
+				"clear-telegram-alerts": {
+					"type": "boolean",
+					"describe": "Clear telegram_alerts by sending []; conflicts with --telegram-alerts"
+				},
+				"pushover-alerts": {
+					"type": "string",
+					"describe": "Pushover integration IDs to notify; repeat --pushover-alerts for each item",
+					"array": true,
+					"nargs": 1
+				},
+				"clear-pushover-alerts": {
+					"type": "boolean",
+					"describe": "Clear pushover_alerts by sending []; conflicts with --pushover-alerts"
+				},
+				"alert-priority": {
+					"type": "string",
+					"describe": "[Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).",
+					"nargs": 1,
+					"choices": ["LOW", "HIGH"]
 				}
 			},
-			"arguments": {},
-			"input": "json-file-or-stdin-only",
+			"arguments": {
+				"name": "body.name",
+				"report-period": "body.report_period",
+				"report-period-cron": "body.report_period_cron",
+				"timezone": "body.timezone",
+				"grace-period": "body.grace_period",
+				"reminder-alert-interval-minutes": "body.reminder_alert_interval_minutes",
+				"user-alerts": "body.user_alerts",
+				"clear-user-alerts": "body.user_alerts",
+				"slack-alerts": "body.slack_alerts",
+				"clear-slack-alerts": "body.slack_alerts",
+				"discord-alerts": "body.discord_alerts",
+				"clear-discord-alerts": "body.discord_alerts",
+				"webhook-alerts": "body.webhook_alerts",
+				"clear-webhook-alerts": "body.webhook_alerts",
+				"oncall-alerts": "body.oncall_alerts",
+				"clear-oncall-alerts": "body.oncall_alerts",
+				"incident-io-alerts": "body.incident_io_alerts",
+				"clear-incident-io-alerts": "body.incident_io_alerts",
+				"microsoft-teams-alerts": "body.microsoft_teams_alerts",
+				"clear-microsoft-teams-alerts": "body.microsoft_teams_alerts",
+				"telegram-alerts": "body.telegram_alerts",
+				"clear-telegram-alerts": "body.telegram_alerts",
+				"pushover-alerts": "body.pushover_alerts",
+				"clear-pushover-alerts": "body.pushover_alerts",
+				"alert-priority": "body.alert_priority"
+			},
+			"input": "flags-or-json-exclusive",
 			"output": "envelope",
 			"safety": "write",
 			"pagination": "none",
@@ -188,7 +339,13 @@
 					}
 				},
 				"required": ["name", "grace_period"]
-			}
+			},
+			"examples": [
+				{
+					"command": "$0 heartbeats create --name \"Daily backup job\" --grace-period 300",
+					"description": "Set fields directly (optional fields are not defaulted)"
+				}
+			]
 		},
 		{
 			"operationId": "updateHeartbeat",
@@ -201,15 +358,190 @@
 				},
 				"input": {
 					"type": "string",
-					"demandOption": true,
-					"describe": "JSON file, or - for stdin (no body flags; never merged)",
+					"describe": "Read a JSON file, or - for stdin, instead of body flags (cannot be mixed)",
 					"nargs": 1
+				},
+				"name": {
+					"type": "string",
+					"describe": "name",
+					"nargs": 1
+				},
+				"report-period": {
+					"type": "number",
+					"describe": "Expected interval in seconds between heartbeat pings (for simple schedule)",
+					"nargs": 1
+				},
+				"clear-report-period": {
+					"type": "boolean",
+					"describe": "Clear report_period by sending null; conflicts with --report-period"
+				},
+				"report-period-cron": {
+					"type": "string",
+					"describe": "Cron expression for expected heartbeat schedule",
+					"nargs": 1
+				},
+				"clear-report-period-cron": {
+					"type": "boolean",
+					"describe": "Clear report_period_cron by sending null; conflicts with --report-period-cron"
+				},
+				"timezone": {
+					"type": "string",
+					"describe": "Timezone for cron schedule",
+					"nargs": 1
+				},
+				"clear-timezone": {
+					"type": "boolean",
+					"describe": "Clear timezone by sending null; conflicts with --timezone"
+				},
+				"grace-period": {
+					"type": "number",
+					"describe": "Grace period in seconds to wait after missed heartbeat before alerting",
+					"nargs": 1
+				},
+				"reminder-alert-interval-minutes": {
+					"type": "number",
+					"describe": "Interval in minutes between reminder alerts (-1 for never)",
+					"nargs": 1
+				},
+				"user-alerts": {
+					"type": "string",
+					"describe": "User IDs to notify; repeat --user-alerts for each item",
+					"array": true,
+					"nargs": 1
+				},
+				"clear-user-alerts": {
+					"type": "boolean",
+					"describe": "Clear user_alerts by sending []; conflicts with --user-alerts"
+				},
+				"slack-alerts": {
+					"type": "string",
+					"describe": "Slack integration IDs to notify; repeat --slack-alerts for each item",
+					"array": true,
+					"nargs": 1
+				},
+				"clear-slack-alerts": {
+					"type": "boolean",
+					"describe": "Clear slack_alerts by sending []; conflicts with --slack-alerts"
+				},
+				"discord-alerts": {
+					"type": "string",
+					"describe": "Discord integration IDs to notify; repeat --discord-alerts for each item",
+					"array": true,
+					"nargs": 1
+				},
+				"clear-discord-alerts": {
+					"type": "boolean",
+					"describe": "Clear discord_alerts by sending []; conflicts with --discord-alerts"
+				},
+				"webhook-alerts": {
+					"type": "string",
+					"describe": "IDs of webhooks to associate with this heartbeat; repeat --webhook-alerts for each item",
+					"array": true,
+					"nargs": 1
+				},
+				"clear-webhook-alerts": {
+					"type": "boolean",
+					"describe": "Clear webhook_alerts by sending []; conflicts with --webhook-alerts"
+				},
+				"oncall-alerts": {
+					"type": "string",
+					"describe": "IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike); repeat --oncall-alerts for each item",
+					"array": true,
+					"nargs": 1
+				},
+				"clear-oncall-alerts": {
+					"type": "boolean",
+					"describe": "Clear oncall_alerts by sending []; conflicts with --oncall-alerts"
+				},
+				"incident-io-alerts": {
+					"type": "string",
+					"describe": "incident.io integration IDs to notify; repeat --incident-io-alerts for each item",
+					"array": true,
+					"nargs": 1
+				},
+				"clear-incident-io-alerts": {
+					"type": "boolean",
+					"describe": "Clear incident_io_alerts by sending []; conflicts with --incident-io-alerts"
+				},
+				"microsoft-teams-alerts": {
+					"type": "string",
+					"describe": "Microsoft Teams integration IDs to notify; repeat --microsoft-teams-alerts for each item",
+					"array": true,
+					"nargs": 1
+				},
+				"clear-microsoft-teams-alerts": {
+					"type": "boolean",
+					"describe": "Clear microsoft_teams_alerts by sending []; conflicts with --microsoft-teams-alerts"
+				},
+				"telegram-alerts": {
+					"type": "string",
+					"describe": "Telegram integration IDs to notify; repeat --telegram-alerts for each item",
+					"array": true,
+					"nargs": 1
+				},
+				"clear-telegram-alerts": {
+					"type": "boolean",
+					"describe": "Clear telegram_alerts by sending []; conflicts with --telegram-alerts"
+				},
+				"pushover-alerts": {
+					"type": "string",
+					"describe": "Pushover integration IDs to notify; repeat --pushover-alerts for each item",
+					"array": true,
+					"nargs": 1
+				},
+				"clear-pushover-alerts": {
+					"type": "boolean",
+					"describe": "Clear pushover_alerts by sending []; conflicts with --pushover-alerts"
+				},
+				"alert-priority": {
+					"type": "string",
+					"describe": "[Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).",
+					"nargs": 1,
+					"choices": ["LOW", "HIGH"]
+				},
+				"paused": {
+					"type": "boolean",
+					"describe": "Whether the heartbeat is paused; --no-paused sets false"
+				},
+				"muted": {
+					"type": "boolean",
+					"describe": "Suppresses alerts without stopping heartbeat monitoring.; --no-muted sets false"
 				}
 			},
 			"arguments": {
-				"id": "path.heartbeat_id"
+				"id": "path.heartbeat_id",
+				"name": "body.name",
+				"report-period": "body.report_period",
+				"clear-report-period": "body.report_period",
+				"report-period-cron": "body.report_period_cron",
+				"clear-report-period-cron": "body.report_period_cron",
+				"timezone": "body.timezone",
+				"clear-timezone": "body.timezone",
+				"grace-period": "body.grace_period",
+				"reminder-alert-interval-minutes": "body.reminder_alert_interval_minutes",
+				"user-alerts": "body.user_alerts",
+				"clear-user-alerts": "body.user_alerts",
+				"slack-alerts": "body.slack_alerts",
+				"clear-slack-alerts": "body.slack_alerts",
+				"discord-alerts": "body.discord_alerts",
+				"clear-discord-alerts": "body.discord_alerts",
+				"webhook-alerts": "body.webhook_alerts",
+				"clear-webhook-alerts": "body.webhook_alerts",
+				"oncall-alerts": "body.oncall_alerts",
+				"clear-oncall-alerts": "body.oncall_alerts",
+				"incident-io-alerts": "body.incident_io_alerts",
+				"clear-incident-io-alerts": "body.incident_io_alerts",
+				"microsoft-teams-alerts": "body.microsoft_teams_alerts",
+				"clear-microsoft-teams-alerts": "body.microsoft_teams_alerts",
+				"telegram-alerts": "body.telegram_alerts",
+				"clear-telegram-alerts": "body.telegram_alerts",
+				"pushover-alerts": "body.pushover_alerts",
+				"clear-pushover-alerts": "body.pushover_alerts",
+				"alert-priority": "body.alert_priority",
+				"paused": "body.paused",
+				"muted": "body.muted"
 			},
-			"input": "json-file-or-stdin-only",
+			"input": "flags-or-json-exclusive",
 			"output": "envelope",
 			"safety": "write",
 			"pagination": "none",
@@ -330,7 +662,13 @@
 						"description": "Suppresses alerts without stopping heartbeat monitoring."
 					}
 				}
-			}
+			},
+			"examples": [
+				{
+					"command": "$0 heartbeats update a1b2c3d4 --name \"Daily backup job\"",
+					"description": "Set fields directly (optional fields are not defaulted)"
+				}
+			]
 		},
 		{
 			"operationId": "deleteHeartbeat",
@@ -417,13 +755,12 @@
 				},
 				"input": {
 					"type": "string",
-					"demandOption": true,
-					"describe": "JSON file, or - for stdin (no body flags; never merged)",
+					"describe": "Read a JSON file, or - for stdin, instead of body flags (cannot be mixed)",
 					"nargs": 1
 				}
 			},
 			"arguments": {},
-			"input": "json-file-or-stdin-only",
+			"input": "flags-or-json-exclusive",
 			"output": "envelope",
 			"safety": "write",
 			"pagination": "none",
@@ -440,15 +777,14 @@
 				},
 				"input": {
 					"type": "string",
-					"demandOption": true,
-					"describe": "JSON file, or - for stdin (no body flags; never merged)",
+					"describe": "Read a JSON file, or - for stdin, instead of body flags (cannot be mixed)",
 					"nargs": 1
 				}
 			},
 			"arguments": {
 				"id": "path.heartbeat_id"
 			},
-			"input": "json-file-or-stdin-only",
+			"input": "flags-or-json-exclusive",
 			"output": "envelope",
 			"safety": "write",
 			"pagination": "none",

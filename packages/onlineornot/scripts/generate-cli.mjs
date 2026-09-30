@@ -152,13 +152,13 @@ for (const [resource, ids] of groups) {
 		const body = operation.requestBody?.content?.["application/json"]?.schema;
 		if (operation.requestBody && !body)
 			throw new Error(`Unsupported body media type: ${id}`);
-		if (entry.input !== (body ? "json-file-or-stdin-only" : "none"))
+		if (entry.input !== (body ? "flags-or-json-exclusive" : "none"))
 			throw new Error(`Unsupported input policy: ${id}`);
 		if (
 			entry.options.json?.type !== "boolean" ||
 			(body &&
 				(entry.options.input?.type !== "string" ||
-					entry.options.input?.demandOption !== true ||
+					entry.options.input?.demandOption === true ||
 					entry.options.input?.nargs !== 1)) ||
 			(entry.safety === "require-yes" && entry.options.yes?.type !== "boolean")
 		)
@@ -169,8 +169,8 @@ for (const [resource, ids] of groups) {
 			operationId: id,
 			command: entry.command,
 			description: operation.summary,
-			options: entry.options,
-			arguments: entry.arguments,
+			options: structuredClone(entry.options),
+			arguments: { ...entry.arguments },
 			input: entry.input,
 			output: entry.output,
 			safety: entry.safety,
@@ -249,23 +249,154 @@ for (const [resource, ids] of groups) {
 				if (!Object.hasOwn(body.properties, name))
 					throw new Error(`Unknown required body property: ${id} ${name}`);
 			types.push(type);
-			const allowed = JSON.stringify(Object.keys(body.properties));
-			validators.push(`function is${type}Body(value: unknown): value is ${type}["body"] {
-    return isBodyObject(value) && Object.keys(value).every(key => ${allowed}.includes(key)) &&
-    ${fields
-			.map(([name, field]) => {
+			const flagValues = [];
+			const bodyFlags = [];
+			const fieldChecks = [];
+			const sampleFlags = [];
+			const booleanFlags = [];
+			const reserve = (flag) => {
+				if (
+					!/^[a-z][a-z0-9-]*$/.test(flag) ||
+					[
+						"help",
+						"h",
+						"version",
+						"v",
+						...Object.keys(metadata.options),
+						...Object.keys(entry.arguments),
+					].includes(flag)
+				)
+					throw new Error(`Conflicting body flag: ${id} --${flag}`);
+				bodyFlags.push(flag);
+			};
+			for (const [name, field] of fields) {
+				const flag = name
+					.replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+					.replace(/[_.]/g, "-")
+					.toLowerCase();
+				reserve(flag);
+				const fieldTypes = Array.isArray(field.type)
+					? field.type
+					: [field.type];
+				const nonNull = fieldTypes.filter((value) => value !== "null");
+				if (nonNull.length !== 1)
+					throw new Error(`Unsupported body flag types: ${id} ${name}`);
+				const fieldType = nonNull[0];
+				const scalarType = fieldType === "array" ? field.items.type : fieldType;
+				if (!["string", "integer", "boolean"].includes(scalarType))
+					throw new Error(`Unsupported body flag: ${id} ${name}`);
+				const required = body.required?.includes(name);
+				const option = {
+					type: scalarType === "integer" ? "number" : scalarType,
+					describe:
+						(field.description ?? name.replaceAll("_", " ")) +
+						(required ? " (required unless supplied in --input)" : ""),
+				};
+				if (fieldType === "array") {
+					option.array = true;
+					option.nargs = 1;
+					option.describe += `; repeat --${flag} for each item`;
+				} else if (fieldType !== "boolean") option.nargs = 1;
+				else {
+					booleanFlags.push(flag);
+					option.describe += `; --no-${flag} sets false`;
+				}
+				if (field.enum) option.choices = field.enum;
+				metadata.options[flag] = option;
+				metadata.arguments[flag] = `body.${name}`;
+				const argument = `args[${JSON.stringify(flag)}]`;
+				let expression = argument;
+				if (fieldTypes.includes("null") || fieldType === "array") {
+					const clearFlag = `clear-${flag}`;
+					reserve(clearFlag);
+					const cleared = fieldTypes.includes("null") ? "null" : "[]";
+					metadata.options[clearFlag] = {
+						type: "boolean",
+						describe: `Clear ${name} by sending ${cleared}; conflicts with --${flag}`,
+					};
+					metadata.arguments[clearFlag] = `body.${name}`;
+					checks.push(`if (args[${JSON.stringify(clearFlag)}] !== undefined) {
+					 if (args[${JSON.stringify(clearFlag)}] !== true) throw new Error(${JSON.stringify(`Use --${clearFlag} to clear ${name}, or omit it to leave the field unchanged.`)});
+					 if (${argument} !== undefined) throw new Error(${JSON.stringify(`--${clearFlag} conflicts with --${flag}; choose one.`)});
+					}`);
+					expression = `args[${JSON.stringify(clearFlag)}] === true ? ${cleared} : ${argument}`;
+				}
+				flagValues.push(`${JSON.stringify(name)}: ${expression}`);
 				const value = `value[${JSON.stringify(name)}]`;
-				const check = predicate(field, value);
-				return body.required?.includes(name)
-					? check
-					: `(${value} === undefined || ${check})`;
-			})
-			.join(" &&\n")};
-   }`);
-			checks.push(`const text = await readInput(args.input);
-    let body: unknown;
-    try { body = JSON.parse(text); } catch { throw new Error("Invalid JSON input; expected an object."); }
-    if (!is${type}Body(body)) throw new Error(${JSON.stringify(`Invalid JSON body; see ${resource} commands for the pinned input contract.`)});`);
+				const condition = predicate(field, value);
+				if (required)
+					fieldChecks.push(
+						`if (${value} === undefined) throw new Error(${JSON.stringify(`--${flag} is required; supply it as a flag or set "${name}" in --input JSON.`)});`,
+					);
+				let expected =
+					fieldType === "array"
+						? `an array of ${scalarType} values (repeat --${flag})`
+						: fieldType === "integer"
+							? "an integer"
+							: `a ${fieldType}`;
+				if (field.minimum !== undefined) expected += ` >= ${field.minimum}`;
+				if (field.minLength !== undefined)
+					expected += ` with at least ${field.minLength} characters`;
+				if (field.enum) expected = `one of ${field.enum.join(", ")}`;
+				if (fieldTypes.includes("null"))
+					expected += ` or null (use --clear-${flag})`;
+				fieldChecks.push(
+					`if (${value} !== undefined && !${condition}) throw new Error(${JSON.stringify(`Invalid --${flag} / JSON field "${name}": expected ${expected}.`)});`,
+				);
+				if (
+					required ||
+					((body.required?.length ?? 0) === 0 && sampleFlags.length === 0)
+				) {
+					const example =
+						field.example ??
+						field.enum?.[0] ??
+						(fieldType === "integer"
+							? (field.minimum ?? 1)
+							: fieldType === "boolean"
+								? true
+								: "example");
+					if (fieldType !== "array")
+						sampleFlags.push(`--${flag} ${JSON.stringify(example)}`);
+				}
+			}
+			const allowed = JSON.stringify(Object.keys(body.properties));
+			validators.push(`function assert${type}Body(value: unknown): asserts value is ${type}["body"] {
+			 if (!isBodyObject(value)) throw new Error("--input must contain a JSON object.");
+			 const extra = Object.keys(value).find(key => !${allowed}.includes(key));
+			 if (extra !== undefined) throw new Error("Unknown JSON field: " + JSON.stringify(extra) + ". See --help for supported fields.");
+			 ${fieldChecks.join("\n")}
+			}`);
+			checks.push(`let body: ${type}["body"];
+			 if (args.input !== undefined) {
+			  if (${JSON.stringify(bodyFlags)}.some(flag => args[flag] !== undefined)) throw new Error("--input cannot be mixed with body flags (including --clear-* and --no-*); choose one input mode.");
+			  const text = await readInput(args.input);
+			  let parsed: unknown;
+             try { parsed = JSON.parse(text); } catch { throw new Error("Invalid JSON in --input; expected an object."); }
+             assert${type}Body(parsed);
+             body = parsed;
+             } else {
+              const fields = {${flagValues.join(",")}};
+              // Yargs can return repeated values outside its inferred option types.
+              // Validate flags at the same boundary as JSON before the typed SDK call.
+              // oxlint-disable-next-line anti-slop/no-known-value-widening
+              assert${type}Body(fields);
+              body = fields;
+             }`);
+			const example = `$0 ${resource} ${entry.command.replace(/<[^>]+>/g, "a1b2c3d4")} ${sampleFlags.join(" ")}`;
+			metadata.examples = [
+				{
+					command: example,
+					description:
+						"Set fields directly (optional fields are not defaulted)",
+				},
+			];
+			builder.push(
+				`.example(${JSON.stringify(example)}, "Set fields directly (optional fields are not defaulted)")`,
+			);
+			builder.push(
+				`.epilog(${JSON.stringify("Use body flags OR --input file/-; never both. Omitted fields stay unchanged on updates. --clear-* sends null for nullable fields or [] for arrays." + (booleanFlags.length ? ` Set booleans false with ${booleanFlags.map((flag) => `--no-${flag}`).join(", ")}.` : ""))})`,
+			);
+
 			request.push("body");
 		}
 		registrations.push(`yargs.command(${JSON.stringify(entry.command)}, ${JSON.stringify(operation.summary)}, y => { const options = y.options(metadata[${commands.length - 1}].options); return options${builder.join("")}; }, async args => {
