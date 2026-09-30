@@ -6,7 +6,7 @@ import { printBanner } from "./banner";
 import { billingHandler, billingOptions } from "./billing";
 import { checks } from "./checks";
 import { docsHandler, docsOptions } from "./docs";
-import { heartbeats } from "./heartbeats/generated";
+import { isGeneratedCommand, registerGeneratedCommands } from "./generated-cli";
 import { logger } from "./logger";
 import { loginHandler, loginOptions } from "./login";
 import { logoutHandler, logoutOptions } from "./logout";
@@ -103,7 +103,7 @@ export function createCLIParser(argv: string[]) {
 		return checks(d1Yargs.command(subHelp));
 	});
 
-	onlineornot.command("heartbeats", "Manage heartbeat monitors", heartbeats);
+	registerGeneratedCommands(onlineornot);
 
 	// billing
 	onlineornot.command(
@@ -191,8 +191,8 @@ export async function main(argv: string[]): Promise<void> {
 	try {
 		await onlineornot.parse();
 	} catch (e) {
-		// Generated heartbeat commands have a strict stdout contract, including errors.
-		if (argv.find((arg) => !arg.startsWith("-")) === "heartbeats") {
+		// Generated commands have a strict stdout contract, including errors.
+		if (isGeneratedCommand(argv)) {
 			logger.loggerLevel = "log";
 			logger.error(
 				e instanceof ParseError

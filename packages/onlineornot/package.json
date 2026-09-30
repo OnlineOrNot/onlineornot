@@ -28,7 +28,7 @@
 		"registry": "https://registry.npmjs.org"
 	},
 	"scripts": {
-		"build": "pnpm run generate:heartbeats && pnpm run clean && pnpm run bundle",
+		"build": "pnpm run generate:cli && pnpm run clean && pnpm run bundle",
 		"build:sea": "bash scripts/build-sea.sh",
 		"bundle": "node -r esbuild-register scripts/bundle.ts",
 		"clean": "rimraf dist sea",
@@ -36,10 +36,10 @@
 		"start": "pnpm run bundle && cross-env NODE_OPTIONS=--enable-source-maps ./bin/onlineornot.js",
 		"check:type": "tsc --noEmit",
 		"test": "vitest",
-		"test:ci": "vitest run && pnpm run test:heartbeats",
-		"generate:heartbeats": "node scripts/generate-heartbeats.mjs",
-		"check:generated": "node scripts/generate-heartbeats.mjs --check",
-		"test:heartbeats": "node --test test/heartbeats.mjs test/heartbeat-generation.mjs",
+		"test:ci": "vitest run && pnpm run test:cli",
+		"generate:cli": "node scripts/generate-cli.mjs",
+		"check:generated": "node scripts/generate-cli.mjs --check",
+		"test:cli": "node --test test/heartbeats.mjs test/cli-generation.mjs",
 		"verify:release-patches": "tsx scripts/verify-release-patches.mts"
 	},
 	"dependencies": {

@@ -234,7 +234,7 @@ test("generated heartbeat command contract", async () => {
 			assert.match(help.stdout, /onlineornot/);
 		}
 		const manifest = JSON.parse(
-			await readFile("src/heartbeats/manifest.json", "utf8"),
+			await readFile("src/generated-cli/heartbeats.manifest.json", "utf8"),
 		);
 		assert.deepEqual(await ok(["commands"]), manifest);
 		assert.deepEqual(

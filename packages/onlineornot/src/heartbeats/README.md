@@ -38,24 +38,36 @@ coverage decisions. `--help` describes each command's arguments.
 
 ## Generation and verification
 
-`pnpm --filter onlineornot generate:heartbeats` runs at CLI build time. It uses
+`pnpm --filter onlineornot generate:cli` runs at CLI build time. It uses
 `packages/api/schema.lock.json` and the SDK's verified cache/downloader, checks
 the full commit and exact-byte SHA-256, and checks the SDK operation snapshot.
 There is no runtime schema download and no generated SDK editing.
 
-The reviewed operationId-keyed `scripts/heartbeats-overlay.json` controls command
-paths, argument mappings, JSON-only input, envelope output, pagination and safety.
-Every operation must have a classification and reason. New unclassified
-operations fail generation; ping operations are explicitly excluded. The
-emitter deliberately supports only the heartbeat contract's input primitives
-and rejects unsupported schema constraints rather than becoming a general
-OpenAPI framework. Unknown body properties are rejected as a CLI safety policy.
+The generic `scripts/generate-cli.mjs` reads the reviewed `scripts/cli-overlay.json`.
+Its `resources` section supplies resource names/help; its operationId-keyed
+`operations` section controls classification, command paths, argument mappings,
+JSON-only input, envelope output, pagination and safety. Generated operations
+are grouped by their configured resource. SDK calls and body type imports come
+from operation IDs, not a hardcoded heartbeat list.
+
+Output is `src/generated-cli/<resource>.ts`, a matching `.manifest.json`, and
+an `index.ts` registry consumed by the existing CLI parser. Shared input/auth
+helpers live in `src/cli-runtime.ts`. Only heartbeat CRUD is configured for
+publication today; handwritten check/auth/setup commands remain unchanged.
+
+Every operation must have a classification and reason. Unclassified operations
+fail generation; ping remains explicitly excluded. A new resource using the
+supported string/integer/boolean/nullable/array body primitives can be configured
+without changing the emitter. Unsupported schema constraints, body references,
+and complex object shapes fail closed; this is not a universal OpenAPI resolver.
+Unknown body properties are rejected as a CLI safety policy. Every deletion
+requires `--yes`, and no generated command injects API defaults.
 
 ```sh
 pnpm run build
 pnpm --filter onlineornot check:generated
-pnpm --filter onlineornot test:heartbeats
-HEARTBEAT_EVIDENCE=/absolute/private/path/heartbeat-verification.json pnpm --filter onlineornot test:heartbeats
+pnpm --filter onlineornot test:cli
+HEARTBEAT_EVIDENCE=/absolute/private/path/heartbeat-verification.json pnpm --filter onlineornot test:cli
 ```
 
 The subprocess suite bundles the real CLI entrypoint with only its API origin
@@ -64,5 +76,10 @@ fake token, not production. The optional evidence JSON records sanitized fixture
 requests (no authorization header), stdout/stderr/exit assertions, help output,
 and the command manifest/schema identity. Share it only through trusted channels.
 `test/heartbeats-compatibility.json` separately snapshots the reviewed CLI syntax.
-The generation test checks repeatability and rejects missing coverage decisions.
+`test/cli-generation.mjs` checks repeatability and missing coverage decisions.
+It also temporarily configures status-page component-group create/delete commands,
+generates them into an isolated directory (`--overlay` and `--output-dir`),
+typechecks the SDK calls, and exercises body validation, two path parameters,
+and delete safety against a loopback fixture. Those commands are not shipped.
+The fixture also confirms unsupported constraints still fail generation.
 Existing check defaults and handwritten auth/setup/check commands are unchanged.

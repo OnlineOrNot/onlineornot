@@ -1,11 +1,11 @@
 import { readFile } from "node:fs/promises";
 
-import { getApiConfig } from "../api/infrastructure";
-import { logger } from "../logger";
-import { getTokenAsync } from "../user";
+import { getApiConfig } from "./api/infrastructure";
+import { logger } from "./logger";
+import { getTokenAsync } from "./user";
 
 export async function authenticatedConfig() {
-	// Heartbeat responses contain ping URLs. Do not debug-log their bodies or
+	// API responses can contain sensitive URLs or credentials. Do not debug-log their bodies or
 	// contaminate machine-readable stdout, even when ONLINEORNOT_LOG=debug.
 	logger.loggerLevel = "log";
 	const { apiToken } = await getTokenAsync();
