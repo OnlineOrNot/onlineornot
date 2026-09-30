@@ -6,9 +6,11 @@ import { printBanner } from "./banner";
 import { billingHandler, billingOptions } from "./billing";
 import { checks } from "./checks";
 import { docsHandler, docsOptions } from "./docs";
+import { heartbeats } from "./heartbeats/generated";
 import { logger } from "./logger";
 import { loginHandler, loginOptions } from "./login";
 import { logoutHandler, logoutOptions } from "./logout";
+import { ParseError } from "./parse";
 import { setupHandler, setupOptions } from "./setup";
 import { uninstallHandler, uninstallOptions } from "./uninstall";
 import { updateHandler, updateOptions } from "./update";
@@ -101,6 +103,8 @@ export function createCLIParser(argv: string[]) {
 		return checks(d1Yargs.command(subHelp));
 	});
 
+	onlineornot.command("heartbeats", "Manage heartbeat monitors", heartbeats);
+
 	// billing
 	onlineornot.command(
 		"billing",
@@ -187,6 +191,18 @@ export async function main(argv: string[]): Promise<void> {
 	try {
 		await onlineornot.parse();
 	} catch (e) {
+		// Generated heartbeat commands have a strict stdout contract, including errors.
+		if (argv.find((arg) => !arg.startsWith("-")) === "heartbeats") {
+			logger.loggerLevel = "log";
+			logger.error(
+				e instanceof ParseError
+					? [e.message, ...e.notes.map((note) => note.text)].join("\n")
+					: e instanceof Error
+						? e.message
+						: String(e),
+			);
+			throw e;
+		}
 		logger.log(""); // Just adds a bit of space
 		if (e instanceof CommandLineArgsError) {
 			logger.error(e.message);

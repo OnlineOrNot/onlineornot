@@ -1,0 +1,71 @@
+[
+	{
+		"command": "list",
+		"options": {
+			"json": {
+				"type": "boolean",
+				"describe": "Return the API envelope as JSON"
+			},
+			"page": {
+				"type": "number",
+				"describe": "Page number (one page per invocation)"
+			},
+			"per-page": {
+				"type": "number",
+				"describe": "Number of items per page"
+			}
+		}
+	},
+	{
+		"command": "view <id>",
+		"options": {
+			"json": {
+				"type": "boolean",
+				"describe": "Return the API envelope as JSON"
+			}
+		}
+	},
+	{
+		"command": "create",
+		"options": {
+			"json": {
+				"type": "boolean",
+				"describe": "Return the API envelope as JSON"
+			},
+			"input": {
+				"type": "string",
+				"demandOption": true,
+				"describe": "JSON file, or - for stdin (no body flags; never merged)",
+				"nargs": 1
+			}
+		}
+	},
+	{
+		"command": "update <id>",
+		"options": {
+			"json": {
+				"type": "boolean",
+				"describe": "Return the API envelope as JSON"
+			},
+			"input": {
+				"type": "string",
+				"demandOption": true,
+				"describe": "JSON file, or - for stdin (no body flags; never merged)",
+				"nargs": 1
+			}
+		}
+	},
+	{
+		"command": "delete <id>",
+		"options": {
+			"json": {
+				"type": "boolean",
+				"describe": "Return the API envelope as JSON"
+			},
+			"yes": {
+				"type": "boolean",
+				"describe": "Confirm permanent deletion (required, including noninteractive use)"
+			}
+		}
+	}
+]
