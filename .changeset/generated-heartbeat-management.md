@@ -1,5 +1,5 @@
 ---
-"onlineornot": patch
+"onlineornot": minor
 ---
 
 feature: Add generated heartbeat management commands.
