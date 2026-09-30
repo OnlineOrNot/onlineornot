@@ -6,7 +6,12 @@ export function isGeneratedCommand(argv: string[]): boolean {
 	const command = argv.find((arg) => !arg.startsWith("-"));
 	return resources.some((resource) => resource === command);
 }
-export function registerGeneratedCommands(yargs: CommonYargsArgv) {
-	yargs.command("heartbeats", "Manage heartbeat monitors", resource0);
+export function registerGeneratedCommands(
+	yargs: CommonYargsArgv,
+	argv: readonly string[],
+) {
+	yargs.command("heartbeats", "Manage heartbeat monitors", (y) =>
+		resource0(y, argv),
+	);
 	return yargs;
 }

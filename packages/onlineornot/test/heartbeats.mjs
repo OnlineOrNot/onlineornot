@@ -187,6 +187,40 @@ test("generated heartbeat command contract", async () => {
 			timezone: null,
 			user_alerts: [],
 		});
+		for (const flag of [
+			"paused",
+			"muted",
+			"clear-timezone",
+			"clear-user-alerts",
+			"clearTimezone",
+		]) {
+			const failure = await bad(["update", "a1b2c3d4", `--${flag}=maybe`]);
+			assert.match(failure.stderr, /--[a-z-]+.*true or false/i);
+		}
+		for (const value of ["maybe", "", "1", "FALSE"]) {
+			const failure = await bad(["update", "a1b2c3d4", `--paused=${value}`]);
+			assert.match(failure.stderr, /--paused.*true or false/i);
+		}
+		assert.match(
+			(await bad(["delete", "a1b2c3d4", "--yes=maybe"])).stderr,
+			/--yes.*true or false/i,
+		);
+		assert.match(
+			(await bad(["list", "--json=maybe"])).stderr,
+			/--json.*true or false/i,
+		);
+		await ok(["update", "a1b2c3d4", "--paused=true", "--muted=false"]);
+		assert.deepEqual(requests.at(-1).body, { paused: true, muted: false });
+		await ok(["update", "a1b2c3d4", "--paused=false", "--muted=true"]);
+		assert.deepEqual(requests.at(-1).body, { paused: false, muted: true });
+		await ok(["update", "a1b2c3d4", "--clear-timezone=true"]);
+		assert.deepEqual(requests.at(-1).body, { timezone: null });
+		await bad(["delete", "a1b2c3d4", "--no-yes"]);
+		await ok(["delete", "a1b2c3d4", "--yes=true"]);
+		assert.equal(requests.at(-1).method, "DELETE");
+		await ok(["update", "a1b2c3d4", "--name=--paused=maybe"]);
+		assert.deepEqual(requests.at(-1).body, { name: "--paused=maybe" });
+		await bad(["update", "a1b2c3d4", "--name", "--paused=maybe"]);
 		await ok(["update", "a1b2c3d4", "--paused"]);
 		assert.deepEqual(requests.at(-1).body, { paused: true });
 		await ok(["update", "a1b2c3d4", "--timezone", "null"]);

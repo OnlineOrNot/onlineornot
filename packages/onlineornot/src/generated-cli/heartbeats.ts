@@ -14,7 +14,12 @@ import type {
 } from "@onlineornot/api";
 
 import { unwrapApiEnvelope } from "../api/infrastructure";
-import { authenticatedConfig, isBodyObject, readInput } from "../cli-runtime";
+import {
+	authenticatedConfig,
+	validateBooleanArguments,
+	isBodyObject,
+	readInput,
+} from "../cli-runtime";
 import { logger } from "../logger";
 import type { CommonYargsArgv } from "../yargs-types";
 import manifest from "./heartbeats.manifest.json";
@@ -780,7 +785,10 @@ function assertUpdateHeartbeatDataBody(
 			'Invalid --muted / JSON field "muted": expected a boolean.',
 		);
 }
-export function registerCommands(yargs: CommonYargsArgv) {
+export function registerCommands(
+	yargs: CommonYargsArgv,
+	argv: readonly string[],
+) {
 	logger.loggerLevel = "log";
 	yargs.parserConfiguration({ "duplicate-arguments-array": true });
 	yargs.command(
@@ -791,6 +799,7 @@ export function registerCommands(yargs: CommonYargsArgv) {
 			return options;
 		},
 		async (args) => {
+			validateBooleanArguments(argv, metadata[0].options);
 			if (
 				args["page"] !== undefined &&
 				!(
@@ -836,6 +845,7 @@ export function registerCommands(yargs: CommonYargsArgv) {
 			});
 		},
 		async (args) => {
+			validateBooleanArguments(argv, metadata[1].options);
 			if (!(typeof args["id"] === "string" && args["id"].length >= 8))
 				throw new Error("Invalid id");
 			if (!args.json)
@@ -865,6 +875,7 @@ export function registerCommands(yargs: CommonYargsArgv) {
 				);
 		},
 		async (args) => {
+			validateBooleanArguments(argv, metadata[2].options);
 			if (args["clear-user-alerts"] !== undefined) {
 				if (args["clear-user-alerts"] !== true)
 					throw new Error(
@@ -1073,6 +1084,7 @@ export function registerCommands(yargs: CommonYargsArgv) {
 				);
 		},
 		async (args) => {
+			validateBooleanArguments(argv, metadata[3].options);
 			if (!(typeof args["id"] === "string" && args["id"].length >= 8))
 				throw new Error("Invalid id");
 			if (args["clear-report-period"] !== undefined) {
@@ -1320,6 +1332,7 @@ export function registerCommands(yargs: CommonYargsArgv) {
 			});
 		},
 		async (args) => {
+			validateBooleanArguments(argv, metadata[4].options);
 			if (!(typeof args["id"] === "string" && args["id"].length >= 8))
 				throw new Error("Invalid id");
 			if (args.yes !== true)
@@ -1346,7 +1359,10 @@ export function registerCommands(yargs: CommonYargsArgv) {
 			"commands",
 			"Show the pinned heartbeats command and input contract",
 			(y) => y.option("json", { type: "boolean" }),
-			() => logger.log(JSON.stringify(manifest, null, 2)),
+			() => {
+				validateBooleanArguments(argv, { json: { type: "boolean" } });
+				logger.log(JSON.stringify(manifest, null, 2));
+			},
 		)
 		.demandCommand(1)
 		.strict();

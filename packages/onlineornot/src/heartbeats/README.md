@@ -28,7 +28,9 @@ coverage decisions. `--help` describes each command's arguments.
   Missing/invalid fields fail before authentication or network requests with a
   field-specific message (e.g. `--grace-period ... expected an integer >= 1`).
 - Booleans use `--paused` / `--no-paused` (or `--paused=false`). Leaving the flag
-  out leaves the field unchanged; no implicit `false` is sent.
+  out leaves the field unchanged; no implicit `false` is sent. Explicit boolean
+  values must be exactly `true` or `false`; e.g. `--paused=maybe` is rejected
+  without sending a request. The same guard covers clearing and confirmation flags.
 - Arrays use repeated flags: `--user-alerts alice --user-alerts bob`. Empty arrays
   use `--clear-user-alerts`. One value is required per occurrence; use JSON input
   for array values that are awkward to quote in a shell.

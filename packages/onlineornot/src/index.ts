@@ -103,7 +103,7 @@ export function createCLIParser(argv: string[]) {
 		return checks(d1Yargs.command(subHelp));
 	});
 
-	registerGeneratedCommands(onlineornot);
+	registerGeneratedCommands(onlineornot, argv);
 
 	// billing
 	onlineornot.command(

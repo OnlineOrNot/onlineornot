@@ -37,3 +37,47 @@ export async function readInput(input: string): Promise<string> {
 	for await (const chunk of process.stdin) text += chunk;
 	return text;
 }
+
+interface GeneratedOption {
+	readonly type: "string" | "number" | "boolean";
+	readonly nargs?: number;
+}
+
+/**
+ * Yargs coerces any --boolean=value other than "true" to false. Check the
+ * original spelling before accepting that coerced value. This is not an argument
+ * parser: yargs still owns command selection, positionals and option parsing.
+ * Metadata lets us skip non-boolean values, even when they look like flags.
+ */
+export function validateBooleanArguments(
+	argv: readonly string[],
+	options: Readonly<Record<string, GeneratedOption>>,
+): void {
+	for (let index = 0; index < argv.length; index++) {
+		const token = argv[index];
+		if (token === "--") break;
+		if (!token.startsWith("--")) continue;
+		const equals = token.indexOf("=");
+		const rawName = token.slice(2, equals === -1 ? undefined : equals);
+		// Match yargs' automatic camelCase aliases as well as kebab-case flags.
+		let name = rawName.replace(
+			/[A-Z]/g,
+			(letter) => `-${letter.toLowerCase()}`,
+		);
+		const negated = name.startsWith("no-") && !options[name];
+		if (negated) name = name.slice(3);
+		const option = options[name];
+		if (!option) continue;
+		if (option.type !== "boolean") {
+			if (equals === -1 && !negated) index += option.nargs ?? 1;
+			continue;
+		}
+		if (equals === -1) continue;
+		const value = token.slice(equals + 1);
+		if (value !== "true" && value !== "false") {
+			throw new Error(
+				`--${name} expects true or false; use --${name}, --no-${name}, --${name}=true or --${name}=false.`,
+			);
+		}
+	}
+}

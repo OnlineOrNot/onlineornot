@@ -185,6 +185,11 @@ test("a second resource is generated from the overlay without changing the emitt
 		});
 		await assert.rejects(cli(["delete", "page1234", "group123"]));
 		assert.equal(requests.length, 1);
+		await assert.rejects(
+			cli(["delete", "page1234", "group123", "--yes=maybe"]),
+			/--yes.*true or false/i,
+		);
+		assert.equal(requests.length, 1);
 		await cli(["delete", "page1234", "group123", "--yes"]);
 		assert.deepEqual(requests.at(-1), {
 			method: "DELETE",

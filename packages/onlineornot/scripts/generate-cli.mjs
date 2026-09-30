@@ -400,6 +400,7 @@ for (const [resource, ids] of groups) {
 			request.push("body");
 		}
 		registrations.push(`yargs.command(${JSON.stringify(entry.command)}, ${JSON.stringify(operation.summary)}, y => { const options = y.options(metadata[${commands.length - 1}].options); return options${builder.join("")}; }, async args => {
+   validateBooleanArguments(argv, metadata[${commands.length - 1}].options);
    ${checks.join("\n")}
    if (!args.json) logger.warn(${JSON.stringify(`${resource} management commands are experimental; use --json for automation.`)});
    const config = await authenticatedConfig();
@@ -417,15 +418,15 @@ ${hasBody ? `import type {${types.join(",")}} from "@onlineornot/api";` : ""}
 import {unwrapApiEnvelope} from "../api/infrastructure";
 import {logger} from "../logger";
 import type {CommonYargsArgv} from "../yargs-types";
-import {authenticatedConfig${hasBody ? ",isBodyObject,readInput" : ""}} from "../cli-runtime";
+import {authenticatedConfig,validateBooleanArguments${hasBody ? ",isBodyObject,readInput" : ""}} from "../cli-runtime";
 import manifest from "./${resource}.manifest.json";
 const metadata = ${JSON.stringify(commands.map((command) => ({ options: command.options })))} as const;
 ${validators.join("\n")}
-export function registerCommands(yargs: CommonYargsArgv) {
+export function registerCommands(yargs: CommonYargsArgv, argv: readonly string[]) {
  logger.loggerLevel = "log";
  yargs.parserConfiguration({"duplicate-arguments-array":true});
  ${registrations.join("\n")}
- return yargs.command("commands", ${JSON.stringify(`Show the pinned ${resource} command and input contract`)}, y=>y.option("json",{type:"boolean"}), ()=>logger.log(JSON.stringify(manifest,null,2))).demandCommand(1).strict();
+ return yargs.command("commands", ${JSON.stringify(`Show the pinned ${resource} command and input contract`)}, y=>y.option("json",{type:"boolean"}), ()=>{validateBooleanArguments(argv,{json:{type:"boolean"}}); logger.log(JSON.stringify(manifest,null,2));}).demandCommand(1).strict();
 }
 `;
 	outputs.set(`${resource}.ts`, source);
@@ -445,8 +446,8 @@ export function isGeneratedCommand(argv: string[]): boolean {
  const command = argv.find(arg => !arg.startsWith("-"));
  return resources.some(resource => resource === command);
 }
-export function registerGeneratedCommands(yargs: CommonYargsArgv) {
- ${names.map((resource, index) => `yargs.command(${JSON.stringify(resource)}, ${JSON.stringify(resources[resource].description)}, resource${index});`).join("\n")}
+export function registerGeneratedCommands(yargs: CommonYargsArgv, argv: readonly string[]) {
+ ${names.map((resource, index) => `yargs.command(${JSON.stringify(resource)}, ${JSON.stringify(resources[resource].description)}, y => resource${index}(y, argv));`).join("\n")}
  return yargs;
 }
 `,
