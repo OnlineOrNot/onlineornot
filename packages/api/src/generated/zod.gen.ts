@@ -69,9 +69,7 @@ export const zExpandedUptimeCheck = z.object({
 	recovery_period_seconds: z.number(),
 	test_interval: z.number(),
 	timeout: z.number(),
-	version: z
-		.enum(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"])
-		.nullable(),
+	version: z.enum(["NODE24_PLAYWRIGHT", "CLOUDFLARE"]).nullable(),
 	script: z.string().nullable(),
 	alert_priority: z.enum(["LOW", "HIGH"]),
 	verify_ssl: z.boolean(),
@@ -189,7 +187,7 @@ export const zExpandedBrowserCheck = z.object({
 	pushover_alerts: z.array(z.string()),
 	oncall_alerts: z.array(z.string()),
 	webhook_alerts: z.array(z.string()),
-	version: z.enum(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
+	version: z.enum(["NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
 	check_type: z.enum(["BROWSER"]),
 });
 
@@ -887,7 +885,7 @@ export const zBrowserCheckPatch = z.object({
 	verify_ssl: z.boolean().optional(),
 	auth_username: z.string().optional(),
 	auth_password: z.string().optional(),
-	version: z.enum(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT"]).optional(),
+	version: z.enum(["NODE24_PLAYWRIGHT"]).optional(),
 	script: z.string().optional(),
 });
 
@@ -1097,9 +1095,7 @@ export const zExpandedCheck = zCheck.and(
 		recovery_period_seconds: z.number(),
 		test_interval: z.number(),
 		timeout: z.number().nullable(),
-		version: z
-			.enum(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"])
-			.nullable(),
+		version: z.enum(["NODE24_PLAYWRIGHT", "CLOUDFLARE"]).nullable(),
 		script: z.string().nullable(),
 		alert_priority: z.enum(["LOW", "HIGH"]),
 		verify_ssl: z.boolean(),
@@ -1292,7 +1288,7 @@ export const zCheckPatch = z.object({
 	verify_ssl: z.boolean().optional(),
 	auth_username: z.string().optional(),
 	auth_password: z.string().optional(),
-	version: z.enum(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT"]).optional(),
+	version: z.enum(["NODE24_PLAYWRIGHT"]).optional(),
 	script: z.string().optional(),
 });
 
@@ -1562,7 +1558,7 @@ export const zStatusPageIncidentDetail =
 
 export const zWebhook = z.object({
 	id: z.string(),
-	url: z.url(),
+	url: z.string(),
 	description: z.string().nullable(),
 	events: z.array(
 		z.enum([
@@ -2539,6 +2535,7 @@ export const zListEnvironmentVariablesHeaders = z.object({
 export const zListEnvironmentVariablesQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
+	search: z.string().max(64).optional(),
 });
 
 /**
@@ -3422,7 +3419,7 @@ export const zUpdateStatusPageBody = z.object({
 	name: z.string().min(1).max(100),
 	subdomain: z.string().regex(/^\w(?:[\w-]{0,61}\w)?$/),
 	custom_domain: z.url().optional(),
-	password: z.string().nullish(),
+	password: z.string().max(4096).nullish(),
 	description: z.string().optional(),
 	hide_from_search_engines: z.boolean().optional(),
 	allowed_ips: z.array(z.string()).optional(),
@@ -3584,7 +3581,7 @@ export const zCreateStatusPageBody = z.object({
 	name: z.string().min(1).max(100),
 	subdomain: z.string().regex(/^\w(?:[\w-]{0,61}\w)?$/),
 	custom_domain: z.url().optional(),
-	password: z.string().nullish(),
+	password: z.string().max(4096).nullish(),
 	description: z.string().optional(),
 	hide_from_search_engines: z.boolean().optional(),
 	allowed_ips: z.array(z.string()).optional(),
@@ -4916,7 +4913,7 @@ export const zListWebhooksResponse = z.union([
  * At least one nonempty status_page_ids, check_ids, or heartbeat_ids association is required.
  */
 export const zCreateWebhookBody = z.object({
-	url: z.url(),
+	url: z.string(),
 	description: z.string().optional(),
 	events: z
 		.array(
@@ -5025,7 +5022,7 @@ export const zGetWebhookResponse = z.object({
 });
 
 export const zUpdateWebhookBody = z.object({
-	url: z.url().optional(),
+	url: z.string().optional(),
 	description: z.string().optional(),
 	events: z
 		.array(

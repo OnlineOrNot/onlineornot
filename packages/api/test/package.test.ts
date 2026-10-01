@@ -35,6 +35,44 @@ it("keeps validators isolated to their subpaths", async () => {
 	expect(zodSchemas.zCreateCheckBody).toBeTypeOf("object");
 });
 
+it("ships Zod webhook schemas that accept environment variable URL templates", async () => {
+	const { zCreateWebhookBody, zUpdateWebhookBody, zWebhook } = await import(
+		pathToFileURL(path.join(packageDirectory, "dist/zod.js")).href
+	);
+	for (const url of [
+		"https://api.example.com/webhooks/onlineornot",
+		"{{WEBHOOK_URL}}",
+		"https://api.example.com/hooks/{{WEBHOOK_TOKEN}}",
+	]) {
+		const body = {
+			url,
+			events: ["uptime.down"],
+			check_ids: ["c1d2e3f4"],
+		};
+		expect(zCreateWebhookBody.parse(body)).toEqual(body);
+		expect(zUpdateWebhookBody.parse({ url })).toEqual({ url });
+		const webhook = {
+			id: "a1b2c3d4",
+			url,
+			description: null,
+			events: ["uptime.down"],
+			created_at: "2024-01-15T10:30:00.000Z",
+			updated_at: "2024-01-15T10:30:00.000Z",
+			status_pages: [],
+			checks: [{ id: "c1d2e3f4", name: "API Health Check" }],
+			heartbeats: [],
+		};
+		expect(zWebhook.parse(webhook)).toEqual(webhook);
+	}
+	for (const schema of [
+		zWebhook.shape.url,
+		zCreateWebhookBody.shape.url,
+		zUpdateWebhookBody.shape.url,
+	]) {
+		expect(schema.safeParse(123).success).toBe(false);
+	}
+});
+
 it("packs only intended public files", () => {
 	const command = process.platform === "win32" ? "cmd.exe" : "npm";
 	const arguments_ =
