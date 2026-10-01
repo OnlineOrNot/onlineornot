@@ -72,9 +72,7 @@ export const vExpandedUptimeCheck = v.object({
 	recovery_period_seconds: v.number(),
 	test_interval: v.number(),
 	timeout: v.number(),
-	version: v.nullable(
-		v.picklist(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
-	),
+	version: v.nullable(v.picklist(["NODE24_PLAYWRIGHT", "CLOUDFLARE"])),
 	script: v.nullable(v.string()),
 	alert_priority: v.picklist(["LOW", "HIGH"]),
 	verify_ssl: v.boolean(),
@@ -192,7 +190,7 @@ export const vExpandedBrowserCheck = v.object({
 	pushover_alerts: v.array(v.string()),
 	oncall_alerts: v.array(v.string()),
 	webhook_alerts: v.array(v.string()),
-	version: v.picklist(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
+	version: v.picklist(["NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
 	check_type: v.picklist(["BROWSER"]),
 });
 
@@ -983,7 +981,7 @@ export const vBrowserCheckPatch = v.strictObject({
 	verify_ssl: v.optional(v.boolean()),
 	auth_username: v.optional(v.string()),
 	auth_password: v.optional(v.string()),
-	version: v.optional(v.picklist(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT"])),
+	version: v.optional(v.picklist(["NODE24_PLAYWRIGHT"])),
 	script: v.optional(v.string()),
 });
 
@@ -1196,9 +1194,7 @@ export const vExpandedCheck = v.intersect([
 		recovery_period_seconds: v.number(),
 		test_interval: v.number(),
 		timeout: v.nullable(v.number()),
-		version: v.nullable(
-			v.picklist(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
-		),
+		version: v.nullable(v.picklist(["NODE24_PLAYWRIGHT", "CLOUDFLARE"])),
 		script: v.nullable(v.string()),
 		alert_priority: v.picklist(["LOW", "HIGH"]),
 		verify_ssl: v.boolean(),
@@ -1408,7 +1404,7 @@ export const vCheckPatch = v.object({
 	verify_ssl: v.optional(v.boolean()),
 	auth_username: v.optional(v.string()),
 	auth_password: v.optional(v.string()),
-	version: v.optional(v.picklist(["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT"])),
+	version: v.optional(v.picklist(["NODE24_PLAYWRIGHT"])),
 	script: v.optional(v.string()),
 });
 
@@ -1689,7 +1685,7 @@ export const vStatusPageIncidentDetail = v.intersect([
 
 export const vWebhook = v.object({
 	id: v.string(),
-	url: v.pipe(v.string(), v.url()),
+	url: v.string(),
 	description: v.nullable(v.string()),
 	events: v.array(
 		v.picklist([
@@ -2696,6 +2692,7 @@ export const vListEnvironmentVariablesHeaders = v.object({
 export const vListEnvironmentVariablesQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+	search: v.optional(v.pipe(v.string(), v.maxLength(64))),
 });
 
 /**
@@ -3588,7 +3585,7 @@ export const vUpdateStatusPageBody = v.object({
 	name: v.pipe(v.string(), v.minLength(1), v.maxLength(100)),
 	subdomain: v.pipe(v.string(), v.regex(/^\w(?:[\w-]{0,61}\w)?$/)),
 	custom_domain: v.optional(v.pipe(v.string(), v.url())),
-	password: v.nullish(v.string()),
+	password: v.nullish(v.pipe(v.string(), v.maxLength(4096))),
 	description: v.optional(v.string()),
 	hide_from_search_engines: v.optional(v.boolean()),
 	allowed_ips: v.optional(v.array(v.string())),
@@ -3752,7 +3749,7 @@ export const vCreateStatusPageBody = v.object({
 	name: v.pipe(v.string(), v.minLength(1), v.maxLength(100)),
 	subdomain: v.pipe(v.string(), v.regex(/^\w(?:[\w-]{0,61}\w)?$/)),
 	custom_domain: v.optional(v.pipe(v.string(), v.url())),
-	password: v.nullish(v.string()),
+	password: v.nullish(v.pipe(v.string(), v.maxLength(4096))),
 	description: v.optional(v.string()),
 	hide_from_search_engines: v.optional(v.boolean()),
 	allowed_ips: v.optional(v.array(v.string())),
@@ -5089,7 +5086,7 @@ export const vListWebhooksResponse = v.union([
  * At least one nonempty status_page_ids, check_ids, or heartbeat_ids association is required.
  */
 export const vCreateWebhookBody = v.object({
-	url: v.pipe(v.string(), v.url()),
+	url: v.string(),
 	description: v.optional(v.string()),
 	events: v.pipe(
 		v.array(
@@ -5199,7 +5196,7 @@ export const vGetWebhookResponse = v.object({
 });
 
 export const vUpdateWebhookBody = v.object({
-	url: v.optional(v.pipe(v.string(), v.url())),
+	url: v.optional(v.string()),
 	description: v.optional(v.string()),
 	events: v.optional(
 		v.pipe(

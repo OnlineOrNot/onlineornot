@@ -129,7 +129,7 @@ export type ExpandedUptimeCheck = {
 	/**
 	 * Runtime version for browser checks (null for standard uptime checks)
 	 */
-	version: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT" | "CLOUDFLARE" | null;
+	version: "NODE24_PLAYWRIGHT" | "CLOUDFLARE" | null;
 	/**
 	 * Playwright Test script loaded by GET for scripted browser checks; null for URL-based checks or when script content was not loaded. Mutation responses do not load script content.
 	 */
@@ -396,7 +396,7 @@ export type ExpandedBrowserCheck = {
 	/**
 	 * Runtime version for browser checks.
 	 */
-	version: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT" | "CLOUDFLARE";
+	version: "NODE24_PLAYWRIGHT" | "CLOUDFLARE";
 	check_type: "BROWSER";
 };
 
@@ -1274,11 +1274,11 @@ export type UptimeCheckInput = {
 	 */
 	verify_ssl?: boolean;
 	/**
-	 * Username to use for URLs behind HTTP Basic Auth. An empty string represents an empty user-id.
+	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
 	 */
 	auth_username?: string;
 	/**
-	 * Password to use for URLs behind HTTP Basic Auth. Empty strings are preserved.
+	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
 	 */
 	auth_password?: string;
 };
@@ -1391,11 +1391,11 @@ export type UptimeCheckPatch = {
 	 */
 	verify_ssl?: boolean;
 	/**
-	 * Username to use for URLs behind HTTP Basic Auth. An empty string represents an empty user-id.
+	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
 	 */
 	auth_username?: string;
 	/**
-	 * Password to use for URLs behind HTTP Basic Auth. Empty strings are preserved.
+	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
 	 */
 	auth_password?: string;
 };
@@ -1525,11 +1525,11 @@ export type BrowserCheckInput = {
 	 */
 	verify_ssl?: boolean;
 	/**
-	 * Username to use for URLs behind HTTP Basic Auth. An empty string represents an empty user-id.
+	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
 	 */
 	auth_username?: string;
 	/**
-	 * Password to use for URLs behind HTTP Basic Auth. Empty strings are preserved.
+	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
 	 */
 	auth_password?: string;
 	/**
@@ -1650,17 +1650,17 @@ export type BrowserCheckPatch = {
 	 */
 	verify_ssl?: boolean;
 	/**
-	 * Username to use for URLs behind HTTP Basic Auth. An empty string represents an empty user-id.
+	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
 	 */
 	auth_username?: string;
 	/**
-	 * Password to use for URLs behind HTTP Basic Auth. Empty strings are preserved.
+	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
 	 */
 	auth_password?: string;
 	/**
-	 * Runtime version for browser checks. NODE20_PLAYWRIGHT is deprecated; existing checks can keep this version but new checks should use NODE24_PLAYWRIGHT.
+	 * Runtime version for browser checks.
 	 */
-	version?: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT";
+	version?: "NODE24_PLAYWRIGHT";
 	/**
 	 * Playwright Test script to run. Must import from @playwright/test and contain at least one test() block.
 	 */
@@ -1906,7 +1906,7 @@ export type ExpandedCheck = Check & {
 	/**
 	 * Runtime version for browser checks (null for standard uptime checks)
 	 */
-	version: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT" | "CLOUDFLARE" | null;
+	version: "NODE24_PLAYWRIGHT" | "CLOUDFLARE" | null;
 	/**
 	 * Playwright Test script loaded by GET for scripted browser checks; null for URL-based checks or when script content was not loaded. Mutation responses do not load script content.
 	 */
@@ -2147,11 +2147,11 @@ export type CheckInput = {
 	 */
 	verify_ssl?: boolean;
 	/**
-	 * Username to use for URLs behind HTTP Basic Auth. An empty string represents an empty user-id.
+	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
 	 */
 	auth_username?: string;
 	/**
-	 * Password to use for URLs behind HTTP Basic Auth. Empty strings are preserved.
+	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
 	 */
 	auth_password?: string;
 	/**
@@ -2273,17 +2273,17 @@ export type CheckPatch = {
 	 */
 	verify_ssl?: boolean;
 	/**
-	 * Username to use for URLs behind HTTP Basic Auth. An empty string represents an empty user-id.
+	 * Username to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; an empty string represents an empty user-id.
 	 */
 	auth_username?: string;
 	/**
-	 * Password to use for URLs behind HTTP Basic Auth. Empty strings are preserved.
+	 * Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.
 	 */
 	auth_password?: string;
 	/**
-	 * Runtime version for browser checks. NODE20_PLAYWRIGHT is deprecated; existing checks can keep this version but new checks should use NODE24_PLAYWRIGHT.
+	 * Runtime version for browser checks.
 	 */
-	version?: "NODE20_PLAYWRIGHT" | "NODE24_PLAYWRIGHT";
+	version?: "NODE24_PLAYWRIGHT";
 	/**
 	 * Playwright Test script to run. Must import from @playwright/test and contain at least one test() block.
 	 */
@@ -2878,7 +2878,7 @@ export type Webhook = {
 	 */
 	id: string;
 	/**
-	 * Webhook endpoint URL
+	 * Webhook URL. Use {{NAME}} to reference an environment variable.
 	 */
 	url: string;
 	/**
@@ -5461,6 +5461,10 @@ export type ListEnvironmentVariablesData = {
 		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
 		per_page?: number;
+		/**
+		 * Case-insensitive substring search on environment variable names.
+		 */
+		search?: string;
 	};
 	url: "/v1/env";
 };
@@ -10626,7 +10630,7 @@ export type CreateWebhookData = {
 	 */
 	body: {
 		/**
-		 * Webhook endpoint URL
+		 * Webhook URL. Use {{NAME}} to reference an environment variable.
 		 */
 		url: string;
 		/**
@@ -10861,7 +10865,7 @@ export type GetWebhookResponse = GetWebhookResponses[keyof GetWebhookResponses];
 export type UpdateWebhookData = {
 	body: {
 		/**
-		 * Webhook endpoint URL
+		 * Webhook URL. Use {{NAME}} to reference an environment variable.
 		 */
 		url?: string;
 		/**

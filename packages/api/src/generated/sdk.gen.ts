@@ -396,7 +396,7 @@ export const verifyToken = <ThrowOnError extends boolean = false>(
 /**
  * Get token permissions
  *
- * List the permissions granted to an API token. Send the token in the `Authorization` header as `Bearer <token>`. This endpoint does not support OAuth scopes or session cookies, check token expiration, or require organization selection. If no grants match, it returns HTTP 200 with success: false.
+ * List the permissions granted to an API token. Send the token in the `Authorization` header as `Bearer <token>`. This endpoint does not support OAuth scopes or session cookies, or require organization selection. Expired and invalid tokens return HTTP 200 with success: false.
  */
 export const getTokenPermissions = <ThrowOnError extends boolean = false>(
 	options?: Options<GetTokenPermissionsData, ThrowOnError>,

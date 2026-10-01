@@ -103,7 +103,7 @@ export function options(yargs: CommonYargsArgv) {
 		.option("version", {
 			describe: "Version of the Browser Check",
 			type: "string",
-			choices: ["NODE20_PLAYWRIGHT", "NODE24_PLAYWRIGHT"] as const,
+			choices: ["NODE24_PLAYWRIGHT"] as const,
 		})
 		.option("webhook-alerts", {
 			describe: "IDs of webhooks to associate with this check",
