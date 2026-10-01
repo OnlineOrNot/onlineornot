@@ -1,5 +1,5 @@
 ---
-"@onlineornot/api": major
+"@onlineornot/api": minor
 "onlineornot": patch
 ---
 
