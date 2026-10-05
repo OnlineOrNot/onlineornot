@@ -2561,6 +2561,18 @@ export type StatusPageIdentity = {
 	 * Stored custom-domain hostname, without a URL scheme.
 	 */
 	custom_domain?: string | null;
+	/**
+	 * URL to the favicon for the status page
+	 */
+	favicon_url?: string | null;
+	/**
+	 * URL to the logo for the status page
+	 */
+	logo_url?: string | null;
+	/**
+	 * URL to the dark mode logo for the status page
+	 */
+	dark_logo_url?: string | null;
 };
 
 export type StatusPageComponent = {
@@ -7451,6 +7463,18 @@ export type GetStatusPageResponse =
 
 export type UpdateStatusPageData = {
 	body: {
+		/**
+		 * Image file contents as a base64 data URL, not a hosted URL. Supports PNG, JPEG, GIF, WebP, SVG and ICO; maximum decoded file size 10 MB. Omit to preserve the image; send null to remove it.
+		 */
+		favicon?: string | null;
+		/**
+		 * Image file contents as a base64 data URL, not a hosted URL. Supports PNG, JPEG, GIF, WebP, SVG and ICO; maximum decoded file size 10 MB. Omit to preserve the image; send null to remove it.
+		 */
+		logo?: string | null;
+		/**
+		 * Image file contents as a base64 data URL, not a hosted URL. Supports PNG, JPEG, GIF, WebP, SVG and ICO; maximum decoded file size 10 MB. Omit to preserve the image; send null to remove it.
+		 */
+		dark_logo?: string | null;
 		name: string;
 		/**
 		 * The subdomain your status page will be hosted at. For example "status" would become "status.onlineornot.com"
@@ -7774,6 +7798,18 @@ export type ListStatusPagesResponse =
 
 export type CreateStatusPageData = {
 	body: {
+		/**
+		 * Image file contents as a base64 data URL, not a hosted URL. Supports PNG, JPEG, GIF, WebP, SVG and ICO; maximum decoded file size 10 MB. Omit to preserve the image; send null to remove it.
+		 */
+		favicon?: string | null;
+		/**
+		 * Image file contents as a base64 data URL, not a hosted URL. Supports PNG, JPEG, GIF, WebP, SVG and ICO; maximum decoded file size 10 MB. Omit to preserve the image; send null to remove it.
+		 */
+		logo?: string | null;
+		/**
+		 * Image file contents as a base64 data URL, not a hosted URL. Supports PNG, JPEG, GIF, WebP, SVG and ICO; maximum decoded file size 10 MB. Omit to preserve the image; send null to remove it.
+		 */
+		dark_logo?: string | null;
 		name: string;
 		/**
 		 * The subdomain your status page will be hosted at. For example "status" would become "status.onlineornot.com"
@@ -10626,7 +10662,7 @@ export type ListWebhooksResponse =
 
 export type CreateWebhookData = {
 	/**
-	 * At least one nonempty status_page_ids, check_ids, or heartbeat_ids association is required.
+	 * At least one nonempty status_page_ids, check_ids, or heartbeat_ids association is required. Each selected resource type requires a matching event type, and each subscribed event type requires a resource of its type. Events and association IDs must not contain duplicates.
 	 */
 	body: {
 		/**
@@ -10863,6 +10899,9 @@ export type GetWebhookResponses = {
 export type GetWebhookResponse = GetWebhookResponses[keyof GetWebhookResponses];
 
 export type UpdateWebhookData = {
+	/**
+	 * Partial webhook update. The merged saved state must have matching resource and event types, at least one resource and event, and no duplicate events or association IDs.
+	 */
 	body: {
 		/**
 		 * Webhook URL. Use {{NAME}} to reference an environment variable.
