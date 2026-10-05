@@ -1,5 +1,13 @@
 # @onlineornot/api
 
+## 0.5.1
+
+### Patch Changes
+
+- [#109](https://github.com/OnlineOrNot/onlineornot/pull/109) [`6c21da6`](https://github.com/OnlineOrNot/onlineornot/commit/6c21da627403d41160a1937cc537c51df575f92b) Thanks [@rozenmd](https://github.com/rozenmd)! - feature: Update the API schema with status page image fields.
+
+  Regenerate the SDK types and optional validators to support favicon, logo, and dark mode logo inputs and their response URLs. Refresh webhook association and event documentation while preserving all 98 operation names.
+
 ## 0.5.0
 
 ### Minor Changes
