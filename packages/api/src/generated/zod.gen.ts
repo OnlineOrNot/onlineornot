@@ -1399,6 +1399,9 @@ export const zStatusPageIdentity = z.object({
 	name: z.string().min(1).max(100),
 	subdomain: z.string().regex(/^\w(?:[\w-]{0,61}\w)?$/),
 	custom_domain: z.string().nullish(),
+	favicon_url: z.string().nullish(),
+	logo_url: z.string().nullish(),
+	dark_logo_url: z.string().nullish(),
 });
 
 export const zStatusPageComponent = z.object({
@@ -3416,6 +3419,9 @@ export const zGetStatusPageResponse = z.object({
 });
 
 export const zUpdateStatusPageBody = z.object({
+	favicon: z.string().max(13333436).nullish(),
+	logo: z.string().max(13333436).nullish(),
+	dark_logo: z.string().max(13333436).nullish(),
 	name: z.string().min(1).max(100),
 	subdomain: z.string().regex(/^\w(?:[\w-]{0,61}\w)?$/),
 	custom_domain: z.url().optional(),
@@ -3578,6 +3584,9 @@ export const zListStatusPagesResponse = z.union([
 ]);
 
 export const zCreateStatusPageBody = z.object({
+	favicon: z.string().max(13333436).nullish(),
+	logo: z.string().max(13333436).nullish(),
+	dark_logo: z.string().max(13333436).nullish(),
 	name: z.string().min(1).max(100),
 	subdomain: z.string().regex(/^\w(?:[\w-]{0,61}\w)?$/),
 	custom_domain: z.url().optional(),
@@ -4910,7 +4919,7 @@ export const zListWebhooksResponse = z.union([
 ]);
 
 /**
- * At least one nonempty status_page_ids, check_ids, or heartbeat_ids association is required.
+ * At least one nonempty status_page_ids, check_ids, or heartbeat_ids association is required. Each selected resource type requires a matching event type, and each subscribed event type requires a resource of its type. Events and association IDs must not contain duplicates.
  */
 export const zCreateWebhookBody = z.object({
 	url: z.string(),
@@ -5021,6 +5030,9 @@ export const zGetWebhookResponse = z.object({
 	),
 });
 
+/**
+ * Partial webhook update. The merged saved state must have matching resource and event types, at least one resource and event, and no duplicate events or association IDs.
+ */
 export const zUpdateWebhookBody = z.object({
 	url: z.string().optional(),
 	description: z.string().optional(),

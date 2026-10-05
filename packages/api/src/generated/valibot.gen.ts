@@ -1524,6 +1524,9 @@ export const vStatusPageIdentity = v.object({
 	name: v.pipe(v.string(), v.minLength(1), v.maxLength(100)),
 	subdomain: v.pipe(v.string(), v.regex(/^\w(?:[\w-]{0,61}\w)?$/)),
 	custom_domain: v.nullish(v.string()),
+	favicon_url: v.nullish(v.string()),
+	logo_url: v.nullish(v.string()),
+	dark_logo_url: v.nullish(v.string()),
 });
 
 export const vStatusPageComponent = v.object({
@@ -3582,6 +3585,9 @@ export const vGetStatusPageResponse = v.object({
 });
 
 export const vUpdateStatusPageBody = v.object({
+	favicon: v.nullish(v.pipe(v.string(), v.maxLength(13333436))),
+	logo: v.nullish(v.pipe(v.string(), v.maxLength(13333436))),
+	dark_logo: v.nullish(v.pipe(v.string(), v.maxLength(13333436))),
 	name: v.pipe(v.string(), v.minLength(1), v.maxLength(100)),
 	subdomain: v.pipe(v.string(), v.regex(/^\w(?:[\w-]{0,61}\w)?$/)),
 	custom_domain: v.optional(v.pipe(v.string(), v.url())),
@@ -3746,6 +3752,9 @@ export const vListStatusPagesResponse = v.union([
 ]);
 
 export const vCreateStatusPageBody = v.object({
+	favicon: v.nullish(v.pipe(v.string(), v.maxLength(13333436))),
+	logo: v.nullish(v.pipe(v.string(), v.maxLength(13333436))),
+	dark_logo: v.nullish(v.pipe(v.string(), v.maxLength(13333436))),
 	name: v.pipe(v.string(), v.minLength(1), v.maxLength(100)),
 	subdomain: v.pipe(v.string(), v.regex(/^\w(?:[\w-]{0,61}\w)?$/)),
 	custom_domain: v.optional(v.pipe(v.string(), v.url())),
@@ -5083,7 +5092,7 @@ export const vListWebhooksResponse = v.union([
 ]);
 
 /**
- * At least one nonempty status_page_ids, check_ids, or heartbeat_ids association is required.
+ * At least one nonempty status_page_ids, check_ids, or heartbeat_ids association is required. Each selected resource type requires a matching event type, and each subscribed event type requires a resource of its type. Events and association IDs must not contain duplicates.
  */
 export const vCreateWebhookBody = v.object({
 	url: v.string(),
@@ -5195,6 +5204,9 @@ export const vGetWebhookResponse = v.object({
 	),
 });
 
+/**
+ * Partial webhook update. The merged saved state must have matching resource and event types, at least one resource and event, and no duplicate events or association IDs.
+ */
 export const vUpdateWebhookBody = v.object({
 	url: v.optional(v.string()),
 	description: v.optional(v.string()),
