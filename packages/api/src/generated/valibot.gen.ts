@@ -1568,6 +1568,7 @@ export const vStatusPageIncident = v.object({
 export const vStatusPageScheduledMaintenance = v.intersect([
 	vStatusPageIncident,
 	v.object({
+		id: v.optional(v.string()),
 		start_date: v.string(),
 		duration_minutes: v.pipe(v.number(), v.integer(), v.minValue(1)),
 		notifications: v.optional(
@@ -1738,7 +1739,6 @@ export const vListAuditLogsHeaders = v.object({
 export const vListAuditLogsQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
-	search: v.optional(v.string()),
 });
 
 /**
@@ -3356,7 +3356,6 @@ export const vListUsersHeaders = v.object({
 export const vListUsersQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
-	search: v.optional(v.string()),
 });
 
 /**
@@ -3443,7 +3442,6 @@ export const vListInvitationsHeaders = v.object({
 export const vListInvitationsQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
-	search: v.optional(v.string()),
 });
 
 /**
@@ -3590,7 +3588,7 @@ export const vUpdateStatusPageBody = v.object({
 	dark_logo: v.nullish(v.pipe(v.string(), v.maxLength(13333436))),
 	name: v.pipe(v.string(), v.minLength(1), v.maxLength(100)),
 	subdomain: v.pipe(v.string(), v.regex(/^\w(?:[\w-]{0,61}\w)?$/)),
-	custom_domain: v.optional(v.pipe(v.string(), v.url())),
+	custom_domain: v.nullish(v.pipe(v.string(), v.url())),
 	password: v.nullish(v.pipe(v.string(), v.maxLength(4096))),
 	description: v.optional(v.string()),
 	hide_from_search_engines: v.optional(v.boolean()),
@@ -3757,7 +3755,7 @@ export const vCreateStatusPageBody = v.object({
 	dark_logo: v.nullish(v.pipe(v.string(), v.maxLength(13333436))),
 	name: v.pipe(v.string(), v.minLength(1), v.maxLength(100)),
 	subdomain: v.pipe(v.string(), v.regex(/^\w(?:[\w-]{0,61}\w)?$/)),
-	custom_domain: v.optional(v.pipe(v.string(), v.url())),
+	custom_domain: v.nullish(v.pipe(v.string(), v.url())),
 	password: v.nullish(v.pipe(v.string(), v.maxLength(4096))),
 	description: v.optional(v.string()),
 	hide_from_search_engines: v.optional(v.boolean()),
@@ -3801,7 +3799,6 @@ export const vListStatusPageComponentsPath = v.object({
 export const vListStatusPageComponentsQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
-	search: v.optional(v.string()),
 });
 
 /**
@@ -4058,7 +4055,6 @@ export const vListStatusPageComponentGroupsPath = v.object({
 export const vListStatusPageComponentGroupsQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
-	search: v.optional(v.string()),
 });
 
 /**
@@ -4325,7 +4321,6 @@ export const vListStatusPageSubscribersPath = v.object({
 export const vListStatusPageSubscribersQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
-	search: v.optional(v.string()),
 });
 
 /**
@@ -4439,7 +4434,6 @@ export const vListStatusPageIncidentsPath = v.object({
 export const vListStatusPageIncidentsQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
-	search: v.optional(v.string()),
 });
 
 /**
@@ -4663,7 +4657,6 @@ export const vListStatusPageIncidentUpdatesPath = v.object({
 export const vListStatusPageIncidentUpdatesQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
-	search: v.optional(v.string()),
 });
 
 /**

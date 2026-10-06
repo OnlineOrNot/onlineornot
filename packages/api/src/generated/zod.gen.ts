@@ -1442,6 +1442,7 @@ export const zStatusPageIncident = z.object({
 
 export const zStatusPageScheduledMaintenance = zStatusPageIncident.and(
 	z.object({
+		id: z.string().optional(),
 		start_date: z.string(),
 		duration_minutes: z.int().gte(1),
 		notifications: z
@@ -1611,7 +1612,6 @@ export const zListAuditLogsHeaders = z.object({
 export const zListAuditLogsQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
-	search: z.string().optional(),
 });
 
 /**
@@ -3192,7 +3192,6 @@ export const zListUsersHeaders = z.object({
 export const zListUsersQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
-	search: z.string().optional(),
 });
 
 /**
@@ -3278,7 +3277,6 @@ export const zListInvitationsHeaders = z.object({
 export const zListInvitationsQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
-	search: z.string().optional(),
 });
 
 /**
@@ -3424,7 +3422,7 @@ export const zUpdateStatusPageBody = z.object({
 	dark_logo: z.string().max(13333436).nullish(),
 	name: z.string().min(1).max(100),
 	subdomain: z.string().regex(/^\w(?:[\w-]{0,61}\w)?$/),
-	custom_domain: z.url().optional(),
+	custom_domain: z.url().nullish(),
 	password: z.string().max(4096).nullish(),
 	description: z.string().optional(),
 	hide_from_search_engines: z.boolean().optional(),
@@ -3589,7 +3587,7 @@ export const zCreateStatusPageBody = z.object({
 	dark_logo: z.string().max(13333436).nullish(),
 	name: z.string().min(1).max(100),
 	subdomain: z.string().regex(/^\w(?:[\w-]{0,61}\w)?$/),
-	custom_domain: z.url().optional(),
+	custom_domain: z.url().nullish(),
 	password: z.string().max(4096).nullish(),
 	description: z.string().optional(),
 	hide_from_search_engines: z.boolean().optional(),
@@ -3633,7 +3631,6 @@ export const zListStatusPageComponentsPath = z.object({
 export const zListStatusPageComponentsQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
-	search: z.string().optional(),
 });
 
 /**
@@ -3889,7 +3886,6 @@ export const zListStatusPageComponentGroupsPath = z.object({
 export const zListStatusPageComponentGroupsQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
-	search: z.string().optional(),
 });
 
 /**
@@ -4155,7 +4151,6 @@ export const zListStatusPageSubscribersPath = z.object({
 export const zListStatusPageSubscribersQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
-	search: z.string().optional(),
 });
 
 /**
@@ -4269,7 +4264,6 @@ export const zListStatusPageIncidentsPath = z.object({
 export const zListStatusPageIncidentsQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
-	search: z.string().optional(),
 });
 
 /**
@@ -4492,7 +4486,6 @@ export const zListStatusPageIncidentUpdatesPath = z.object({
 export const zListStatusPageIncidentUpdatesQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
-	search: z.string().optional(),
 });
 
 /**
