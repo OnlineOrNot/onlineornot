@@ -52,6 +52,12 @@ For check creation, omitting `alert_priority` lets the API default to `HIGH`. On
 
 `getHeartbeat` includes the documented HTTP 404 error for a heartbeat that is missing or unavailable. Read it through the generated `error` result.
 
+To remove a status page's custom domain, send `custom_domain: null` to `updateStatusPage`. Omitting the field leaves it unchanged.
+
+List operations expose only the query parameters supported by each endpoint. Audit logs, users, invitations, and status page component, group, subscriber, incident, and incident-update lists accept pagination but not `search`.
+
+Environment variable list and creation operations no longer document a feature-disabled HTTP 404. Single-variable operations still expose HTTP 404 for a missing variable. Deletion can return HTTP 409 when saved uptime-check headers, HTTP Basic Auth credentials, or webhook URL templates reference the variable.
+
 Operations preserve the generated `{ data, error, request, response }` result and the API's wire envelopes. The package does not unwrap `result`, throw by default, or automatically paginate.
 
 ## Runtime validation

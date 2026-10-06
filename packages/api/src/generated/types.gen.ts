@@ -2662,6 +2662,10 @@ export type StatusPageIncident = {
 
 export type StatusPageScheduledMaintenance = StatusPageIncident & {
 	/**
+	 * Scheduled maintenance ID
+	 */
+	id?: string;
+	/**
 	 * When the scheduled maintenance is expected to start
 	 */
 	start_date: string;
@@ -3049,10 +3053,6 @@ export type ListAuditLogsData = {
 		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
 		per_page?: number;
-		/**
-		 * Search term to filter results.
-		 */
-		search?: string;
 	};
 	url: "/v1/audit_logs";
 };
@@ -3431,7 +3431,7 @@ export type CreateTokenErrors = {
 	 */
 	401: PublicApiErrorResponse;
 	/**
-	 * Insufficient permissions
+	 * Your token does not have API_TOKENS:EDIT or a requested permission
 	 */
 	403: PublicApiErrorResponse;
 	/**
@@ -5495,10 +5495,6 @@ export type ListEnvironmentVariablesErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Feature disabled
-	 */
-	404: PublicApiErrorResponse;
-	/**
 	 * Rate limit exceeded
 	 */
 	429: PublicApiErrorResponse;
@@ -5594,10 +5590,6 @@ export type CreateEnvironmentVariableErrors = {
 	 * Forbidden
 	 */
 	403: PublicApiErrorResponse;
-	/**
-	 * Feature disabled
-	 */
-	404: PublicApiErrorResponse;
 	/**
 	 * The organization has 1,000 variables (environment_variable_limit_reached) or the name already exists (environment_variable_name_conflict)
 	 */
@@ -5723,11 +5715,11 @@ export type DeleteEnvironmentVariableErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Environment variable not found or feature disabled
+	 * Environment variable not found in this organization (environment_variable_not_found)
 	 */
 	404: PublicApiErrorResponse;
 	/**
-	 * The variable is referenced by a saved check (environment_variable_in_use)
+	 * The variable is referenced by saved uptime check headers, HTTP Basic Auth usernames or passwords, or a webhook URL template (environment_variable_in_use)
 	 */
 	409: PublicApiErrorResponse;
 	/**
@@ -5803,7 +5795,7 @@ export type GetEnvironmentVariableErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Environment variable not found or feature disabled
+	 * Environment variable not found in this organization (environment_variable_not_found)
 	 */
 	404: PublicApiErrorResponse;
 	/**
@@ -5936,7 +5928,7 @@ export type UpdateEnvironmentVariableErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Environment variable not found or feature disabled
+	 * Environment variable not found in this organization (environment_variable_not_found)
 	 */
 	404: PublicApiErrorResponse;
 	/**
@@ -6994,10 +6986,6 @@ export type ListUsersData = {
 		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
 		per_page?: number;
-		/**
-		 * Search term to filter results.
-		 */
-		search?: string;
 	};
 	url: "/v1/users";
 };
@@ -7165,10 +7153,6 @@ export type ListInvitationsData = {
 		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
 		per_page?: number;
-		/**
-		 * Search term to filter results.
-		 */
-		search?: string;
 	};
 	url: "/v1/invitations";
 };
@@ -7349,7 +7333,7 @@ export type DeleteStatusPageErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Resource not found, unavailable, or rejected by the domain operation
+	 * Resource not available or request rejected
 	 */
 	404: PublicApiErrorResponse;
 	/**
@@ -7424,7 +7408,7 @@ export type GetStatusPageErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Resource not found, unavailable, or rejected by the domain operation
+	 * Resource not available or request rejected
 	 */
 	404: PublicApiErrorResponse;
 	/**
@@ -7481,9 +7465,9 @@ export type UpdateStatusPageData = {
 		 */
 		subdomain: string;
 		/**
-		 * The custom domain your status page is hosted at.
+		 * The custom domain URL. On update, send null to remove the existing custom domain.
 		 */
-		custom_domain?: string;
+		custom_domain?: string | null;
 		/**
 		 * Password protection. Send null or an empty string to remove it; omit to leave it unchanged.
 		 */
@@ -7816,9 +7800,9 @@ export type CreateStatusPageData = {
 		 */
 		subdomain: string;
 		/**
-		 * The custom domain your status page is hosted at.
+		 * The custom domain URL. On update, send null to remove the existing custom domain.
 		 */
-		custom_domain?: string;
+		custom_domain?: string | null;
 		/**
 		 * Password protection. Send null or an empty string to remove it; omit to leave it unchanged.
 		 */
@@ -7915,10 +7899,6 @@ export type ListStatusPageComponentsData = {
 		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
 		per_page?: number;
-		/**
-		 * Search term to filter results.
-		 */
-		search?: string;
 	};
 	url: "/v1/status_pages/{status_page_id}/components";
 };
@@ -8122,7 +8102,7 @@ export type DeleteStatusPageComponentErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Resource not found, unavailable, or rejected by the domain operation
+	 * Resource not available or request rejected
 	 */
 	404: PublicApiErrorResponse;
 	/**
@@ -8201,7 +8181,7 @@ export type GetStatusPageComponentErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Resource not found, unavailable, or rejected by the domain operation
+	 * Resource not available or request rejected
 	 */
 	404: PublicApiErrorResponse;
 	/**
@@ -8314,7 +8294,7 @@ export type UpdateStatusPageComponentErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Resource not found, unavailable, or rejected by the domain operation
+	 * Resource not available or request rejected
 	 */
 	404: PublicApiErrorResponse;
 	/**
@@ -8389,7 +8369,7 @@ export type UpdateStatusPageComponentSortOrderErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Resource not found, unavailable, or rejected by the domain operation
+	 * Resource not available or request rejected
 	 */
 	404: PublicApiErrorResponse;
 	/**
@@ -8455,10 +8435,6 @@ export type ListStatusPageComponentGroupsData = {
 		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
 		per_page?: number;
-		/**
-		 * Search term to filter results.
-		 */
-		search?: string;
 	};
 	url: "/v1/status_pages/{status_page_id}/groups";
 };
@@ -8648,7 +8624,7 @@ export type DeleteStatusPageComponentGroupErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Resource not found, unavailable, or rejected by the domain operation
+	 * Resource not available or request rejected
 	 */
 	404: PublicApiErrorResponse;
 	/**
@@ -8727,7 +8703,7 @@ export type GetStatusPageComponentGroupErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Resource not found, unavailable, or rejected by the domain operation
+	 * Resource not available or request rejected
 	 */
 	404: PublicApiErrorResponse;
 	/**
@@ -8810,7 +8786,7 @@ export type UpdateStatusPageComponentGroupErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Resource not found, unavailable, or rejected by the domain operation
+	 * Resource not available or request rejected
 	 */
 	404: PublicApiErrorResponse;
 	/**
@@ -8885,7 +8861,7 @@ export type UpdateStatusPageComponentGroupSortOrderErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Resource not found, unavailable, or rejected by the domain operation
+	 * Resource not available or request rejected
 	 */
 	404: PublicApiErrorResponse;
 	/**
@@ -8969,7 +8945,7 @@ export type UpdateStatusPageGroupComponentSortOrderErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Resource not found, unavailable, or rejected by the domain operation
+	 * Resource not available or request rejected
 	 */
 	404: PublicApiErrorResponse;
 	/**
@@ -9035,10 +9011,6 @@ export type ListStatusPageSubscribersData = {
 		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
 		per_page?: number;
-		/**
-		 * Search term to filter results.
-		 */
-		search?: string;
 	};
 	url: "/v1/status_pages/{status_page_id}/subscribers";
 };
@@ -9057,7 +9029,7 @@ export type ListStatusPageSubscribersErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Resource not found, unavailable, or rejected by the domain operation
+	 * Resource not available or request rejected
 	 */
 	404: PublicApiErrorResponse;
 	/**
@@ -9298,10 +9270,6 @@ export type ListStatusPageIncidentsData = {
 		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
 		per_page?: number;
-		/**
-		 * Search term to filter results.
-		 */
-		search?: string;
 	};
 	url: "/v1/status_pages/{status_page_id}/incidents";
 };
@@ -9523,7 +9491,7 @@ export type DeleteStatusPageIncidentErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Resource not found, unavailable, or rejected by the domain operation
+	 * Resource not available or request rejected
 	 */
 	404: PublicApiErrorResponse;
 	/**
@@ -9602,7 +9570,7 @@ export type GetStatusPageIncidentErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Resource not found, unavailable, or rejected by the domain operation
+	 * Resource not available or request rejected
 	 */
 	404: PublicApiErrorResponse;
 	/**
@@ -9690,7 +9658,7 @@ export type UpdateStatusPageIncidentErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Resource not found, unavailable, or rejected by the domain operation
+	 * Resource not available or request rejected
 	 */
 	404: PublicApiErrorResponse;
 	/**
@@ -9755,10 +9723,6 @@ export type ListStatusPageIncidentUpdatesData = {
 		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
 		 */
 		per_page?: number;
-		/**
-		 * Search term to filter results.
-		 */
-		search?: string;
 	};
 	url: "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates";
 };
@@ -10283,7 +10247,7 @@ export type CreateStatusPageScheduledMaintenanceErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
-	 * Resource not found, unavailable, or rejected by the domain operation
+	 * Resource not available or request rejected
 	 */
 	404: PublicApiErrorResponse;
 	/**
