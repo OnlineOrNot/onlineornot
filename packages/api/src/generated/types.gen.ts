@@ -75,6 +75,10 @@ export type AnyCheck =
 
 export type ExpandedUptimeCheck = {
 	/**
+	 * Encoded project ID, not a project name or raw database ID.
+	 */
+	project_id?: string;
+	/**
 	 * Uptime Check ID
 	 */
 	id: string;
@@ -236,6 +240,10 @@ export type ExpandedUptimeCheck = {
 };
 
 export type ExpandedBrowserCheck = {
+	/**
+	 * Encoded project ID, not a project name or raw database ID.
+	 */
+	project_id?: string;
 	/**
 	 * Uptime Check ID
 	 */
@@ -402,6 +410,10 @@ export type ExpandedBrowserCheck = {
 
 export type ExpandedDnsCheck = {
 	/**
+	 * Encoded project ID, not a project name or raw database ID.
+	 */
+	project_id?: string;
+	/**
 	 * Uptime Check ID
 	 */
 	id: string;
@@ -546,6 +558,10 @@ export type DnsAssertion = {
 };
 
 export type ExpandedTcpCheck = {
+	/**
+	 * Encoded project ID, not a project name or raw database ID.
+	 */
+	project_id?: string;
 	/**
 	 * Uptime Check ID
 	 */
@@ -732,6 +748,10 @@ export type CheckListResponse = {
 
 export type CheckListItem = {
 	/**
+	 * Encoded project ID, not a project name or raw database ID.
+	 */
+	project_id?: string;
+	/**
 	 * Uptime Check ID
 	 */
 	id: string;
@@ -839,6 +859,10 @@ export type DnsCheckResponse = {
 };
 
 export type DnsCheckInput = {
+	/**
+	 * Omit to select the organisation's stable Default project.
+	 */
+	project_id?: string;
 	name: string;
 	/**
 	 * Interval in seconds between checks
@@ -907,6 +931,7 @@ export type DnsCheckInput = {
 };
 
 export type DnsCheckPatch = {
+	project_id?: string;
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -1011,6 +1036,10 @@ export type TcpCheckResponse = {
 };
 
 export type TcpCheckInput = {
+	/**
+	 * Omit to select the organisation's stable Default project.
+	 */
+	project_id?: string;
 	name: string;
 	/**
 	 * Interval in seconds between checks
@@ -1083,6 +1112,7 @@ export type TcpCheckInput = {
 };
 
 export type TcpCheckPatch = {
+	project_id?: string;
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -1171,6 +1201,10 @@ export type UptimeCheckResponse = {
 };
 
 export type UptimeCheckInput = {
+	/**
+	 * Omit to select the organisation's stable Default project.
+	 */
+	project_id?: string;
 	name: string;
 	/**
 	 * Interval in seconds between checks
@@ -1284,6 +1318,7 @@ export type UptimeCheckInput = {
 };
 
 export type UptimeCheckPatch = {
+	project_id?: string;
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -1422,6 +1457,10 @@ export type BrowserCheckResponse = {
  * Browser check create payload. Provide either url for a URL-based browser check or script for a scripted Playwright check.
  */
 export type BrowserCheckInput = {
+	/**
+	 * Omit to select the organisation's stable Default project.
+	 */
+	project_id?: string;
 	name: string;
 	/**
 	 * Interval in seconds between checks
@@ -1543,6 +1582,7 @@ export type BrowserCheckInput = {
 };
 
 export type BrowserCheckPatch = {
+	project_id?: string;
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -2013,6 +2053,10 @@ export type ExpandedCheck = Check & {
 
 export type Check = {
 	/**
+	 * Encoded project ID, not a project name or raw database ID.
+	 */
+	project_id?: string;
+	/**
 	 * Uptime Check ID
 	 */
 	id: string;
@@ -2044,6 +2088,10 @@ export type Check = {
 };
 
 export type CheckInput = {
+	/**
+	 * Omit to select the organisation's stable Default project.
+	 */
+	project_id?: string;
 	name: string;
 	/**
 	 * Interval in seconds between checks
@@ -2165,6 +2213,7 @@ export type CheckInput = {
 };
 
 export type CheckPatch = {
+	project_id?: string;
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -2292,11 +2341,15 @@ export type CheckPatch = {
 
 export type EnvironmentVariableMetadata = {
 	/**
+	 * Encoded project ID, not a project name or raw database ID.
+	 */
+	project_id?: string;
+	/**
 	 * Stable public environment variable ID.
 	 */
 	id: string;
 	/**
-	 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
+	 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the project.
 	 */
 	name: string;
 	/**
@@ -2318,6 +2371,10 @@ export type EnvironmentVariableMetadata = {
 };
 
 export type Heartbeat = {
+	/**
+	 * Encoded project ID, not a project name or raw database ID.
+	 */
+	project_id?: string;
 	/**
 	 * Heartbeat ID
 	 */
@@ -2492,6 +2549,23 @@ export type Invitation = {
 	 * When the invitation was created
 	 */
 	created_at: string;
+};
+
+export type Project = {
+	/**
+	 * Encoded project ID, not a project name or raw database ID.
+	 */
+	id: string;
+	/**
+	 * Editable display label. Project names need not be unique.
+	 */
+	name: string;
+	/**
+	 * Stable Default identity, independent of the editable name.
+	 */
+	is_default: boolean;
+	created_at: string;
+	updated_at: string;
 };
 
 export type StatusPage = {
@@ -2890,9 +2964,17 @@ export type IncidentUpdate = {
 
 export type Webhook = {
 	/**
+	 * Encoded project ID, not a project name or raw database ID.
+	 */
+	project_id?: string;
+	/**
 	 * Webhook ID
 	 */
 	id: string;
+	/**
+	 * Whether webhook delivery is enabled
+	 */
+	enabled: boolean;
 	/**
 	 * Webhook URL. Use {{NAME}} to reference an environment variable.
 	 */
@@ -3345,6 +3427,7 @@ export type ListTokensResponses = {
 				 */
 				grants: Array<{
 					scope:
+						| "PROJECTS"
 						| "UPTIME_CHECKS"
 						| "STATUS_PAGES"
 						| "HEARTBEAT_CHECKS"
@@ -3394,6 +3477,7 @@ export type CreateTokenData = {
 		 */
 		grants: Array<{
 			scope:
+				| "PROJECTS"
 				| "UPTIME_CHECKS"
 				| "STATUS_PAGES"
 				| "HEARTBEAT_CHECKS"
@@ -3630,6 +3714,7 @@ export type GetTokenResponses = {
 			 */
 			grants: Array<{
 				scope:
+					| "PROJECTS"
 					| "UPTIME_CHECKS"
 					| "STATUS_PAGES"
 					| "HEARTBEAT_CHECKS"
@@ -3687,6 +3772,10 @@ export type CreateDnsCheckErrors = {
 	 * Forbidden
 	 */
 	403: PublicApiErrorResponse;
+	/**
+	 * Project not found
+	 */
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
@@ -3918,6 +4007,10 @@ export type CreateTcpCheckErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
+	 * Project not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
 	500: PublicApiServerError;
@@ -4148,6 +4241,10 @@ export type CreateUptimeCheckErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
+	 * Project not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
 	500: PublicApiServerError;
@@ -4355,6 +4452,10 @@ export type CreateBrowserCheckErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
+	 * Project not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
 	500: PublicApiServerError;
@@ -4534,6 +4635,96 @@ export type UpdateBrowserCheckResponses = {
 
 export type UpdateBrowserCheckResponse =
 	UpdateBrowserCheckResponses[keyof UpdateBrowserCheckResponses];
+
+export type MoveCheckData = {
+	body: {
+		/**
+		 * Encoded project ID, not a project name or raw database ID.
+		 */
+		project_id: string;
+	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Uptime Check ID
+		 */
+		check_id: string;
+	};
+	query?: never;
+	url: "/v1/checks/{check_id}/move";
+};
+
+export type MoveCheckErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource or project not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * project_move_variable_conflict
+	 */
+	409: PublicApiErrorResponse;
+	/**
+	 * Rate limit exceeded
+	 */
+	429: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type MoveCheckError = MoveCheckErrors[keyof MoveCheckErrors];
+
+export type MoveCheckResponses = {
+	/**
+	 * Moved check identity and destination
+	 */
+	200: {
+		result: {
+			/**
+			 * Uptime Check ID
+			 */
+			id: string;
+			/**
+			 * Encoded project ID, not a project name or raw database ID.
+			 */
+			project_id: string;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type MoveCheckResponse = MoveCheckResponses[keyof MoveCheckResponses];
 
 export type ListUptimeCheckIncidentsData = {
 	body?: never;
@@ -5142,6 +5333,10 @@ export type ListChecksData = {
 		 */
 		search?: string;
 		/**
+		 * Omit to list resources across all authorized projects.
+		 */
+		project_id?: string;
+		/**
 		 * Filter by current check status. NA, omitted and unrecognized values leave status unfiltered.
 		 */
 		filter?:
@@ -5170,6 +5365,10 @@ export type ListChecksErrors = {
 	 * Forbidden
 	 */
 	403: PublicApiErrorResponse;
+	/**
+	 * Project not found
+	 */
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
@@ -5255,6 +5454,10 @@ export type CreateCheckErrors = {
 	 * Forbidden
 	 */
 	403: PublicApiErrorResponse;
+	/**
+	 * Project not found
+	 */
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
@@ -5474,6 +5677,10 @@ export type ListEnvironmentVariablesData = {
 		 */
 		per_page?: number;
 		/**
+		 * Omit to list resources across all authorized projects.
+		 */
+		project_id?: string;
+		/**
 		 * Case-insensitive substring search on environment variable names.
 		 */
 		search?: string;
@@ -5494,6 +5701,10 @@ export type ListEnvironmentVariablesErrors = {
 	 * Forbidden
 	 */
 	403: PublicApiErrorResponse;
+	/**
+	 * Project not found
+	 */
+	404: PublicApiErrorResponse;
 	/**
 	 * Rate limit exceeded
 	 */
@@ -5554,7 +5765,11 @@ export type ListEnvironmentVariablesResponse =
 export type CreateEnvironmentVariableData = {
 	body: {
 		/**
-		 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
+		 * Omit to select the organisation's stable Default project.
+		 */
+		project_id?: string;
+		/**
+		 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the project.
 		 */
 		name: string;
 		/**
@@ -5591,6 +5806,10 @@ export type CreateEnvironmentVariableErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
+	 * Project not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
 	 * The organization has 1,000 variables (environment_variable_limit_reached) or the name already exists (environment_variable_name_conflict)
 	 */
 	409: PublicApiErrorResponse;
@@ -5615,11 +5834,15 @@ export type CreateEnvironmentVariableResponses = {
 		result:
 			| {
 					/**
+					 * Encoded project ID, not a project name or raw database ID.
+					 */
+					project_id?: string;
+					/**
 					 * Stable public environment variable ID.
 					 */
 					id: string;
 					/**
-					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
+					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the project.
 					 */
 					name: string;
 					type: "secret";
@@ -5638,11 +5861,15 @@ export type CreateEnvironmentVariableResponses = {
 			  }
 			| {
 					/**
+					 * Encoded project ID, not a project name or raw database ID.
+					 */
+					project_id?: string;
+					/**
 					 * Stable public environment variable ID.
 					 */
 					id: string;
 					/**
-					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
+					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the project.
 					 */
 					name: string;
 					type: "config";
@@ -5819,11 +6046,15 @@ export type GetEnvironmentVariableResponses = {
 		result:
 			| {
 					/**
+					 * Encoded project ID, not a project name or raw database ID.
+					 */
+					project_id?: string;
+					/**
 					 * Stable public environment variable ID.
 					 */
 					id: string;
 					/**
-					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
+					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the project.
 					 */
 					name: string;
 					type: "secret";
@@ -5842,11 +6073,15 @@ export type GetEnvironmentVariableResponses = {
 			  }
 			| {
 					/**
+					 * Encoded project ID, not a project name or raw database ID.
+					 */
+					project_id?: string;
+					/**
 					 * Stable public environment variable ID.
 					 */
 					id: string;
 					/**
-					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
+					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the project.
 					 */
 					name: string;
 					type: "config";
@@ -5889,8 +6124,9 @@ export type GetEnvironmentVariableResponse =
 
 export type UpdateEnvironmentVariableData = {
 	body: {
+		project_id?: string;
 		/**
-		 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
+		 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the project.
 		 */
 		name?: string;
 		/**
@@ -5956,11 +6192,15 @@ export type UpdateEnvironmentVariableResponses = {
 		result:
 			| {
 					/**
+					 * Encoded project ID, not a project name or raw database ID.
+					 */
+					project_id?: string;
+					/**
 					 * Stable public environment variable ID.
 					 */
 					id: string;
 					/**
-					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
+					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the project.
 					 */
 					name: string;
 					type: "secret";
@@ -5979,11 +6219,15 @@ export type UpdateEnvironmentVariableResponses = {
 			  }
 			| {
 					/**
+					 * Encoded project ID, not a project name or raw database ID.
+					 */
+					project_id?: string;
+					/**
 					 * Stable public environment variable ID.
 					 */
 					id: string;
 					/**
-					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the organization.
+					 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the project.
 					 */
 					name: string;
 					type: "config";
@@ -6024,6 +6268,93 @@ export type UpdateEnvironmentVariableResponses = {
 export type UpdateEnvironmentVariableResponse =
 	UpdateEnvironmentVariableResponses[keyof UpdateEnvironmentVariableResponses];
 
+export type MoveHeartbeatData = {
+	body: {
+		/**
+		 * Encoded project ID, not a project name or raw database ID.
+		 */
+		project_id: string;
+	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Heartbeat ID
+		 */
+		heartbeat_id: string;
+	};
+	query?: never;
+	url: "/v1/heartbeats/{heartbeat_id}/move";
+};
+
+export type MoveHeartbeatErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource or project not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Rate limit exceeded
+	 */
+	429: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type MoveHeartbeatError = MoveHeartbeatErrors[keyof MoveHeartbeatErrors];
+
+export type MoveHeartbeatResponses = {
+	/**
+	 * Moved heartbeat identity and destination
+	 */
+	200: {
+		result: {
+			/**
+			 * Heartbeat ID
+			 */
+			id: string;
+			/**
+			 * Encoded project ID, not a project name or raw database ID.
+			 */
+			project_id: string;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type MoveHeartbeatResponse =
+	MoveHeartbeatResponses[keyof MoveHeartbeatResponses];
+
 export type ListHeartbeatsData = {
 	body?: never;
 	headers?: {
@@ -6046,6 +6377,10 @@ export type ListHeartbeatsData = {
 		 * Search term to filter results.
 		 */
 		search?: string;
+		/**
+		 * Omit to list resources across all authorized projects.
+		 */
+		project_id?: string;
 	};
 	url: "/v1/heartbeats";
 };
@@ -6063,6 +6398,10 @@ export type ListHeartbeatsErrors = {
 	 * Insufficient permissions
 	 */
 	403: PublicApiErrorResponse;
+	/**
+	 * Project not found
+	 */
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
@@ -6126,6 +6465,10 @@ export type ListHeartbeatsResponse =
 
 export type CreateHeartbeatData = {
 	body: {
+		/**
+		 * Omit to select the organisation's stable Default project.
+		 */
+		project_id?: string;
 		name: string;
 		/**
 		 * Expected interval in seconds between heartbeat pings (for simple schedule)
@@ -6212,6 +6555,10 @@ export type CreateHeartbeatErrors = {
 	 * Insufficient permissions
 	 */
 	403: PublicApiErrorResponse;
+	/**
+	 * Project not found
+	 */
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
@@ -6389,6 +6736,7 @@ export type GetHeartbeatResponse =
 
 export type UpdateHeartbeatData = {
 	body: {
+		project_id?: string;
 		name?: string;
 		/**
 		 * Expected interval in seconds between heartbeat pings (for simple schedule)
@@ -7300,6 +7648,398 @@ export type CreateInvitationResponses = {
 
 export type CreateInvitationResponse =
 	CreateInvitationResponses[keyof CreateInvitationResponses];
+
+export type ListProjectsData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path?: never;
+	query?: {
+		/**
+		 * Page number of paginated results, starting at 1.
+		 */
+		page?: number;
+		/**
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
+		 */
+		per_page?: number;
+	};
+	url: "/v1/projects";
+};
+
+export type ListProjectsErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Rate limit exceeded
+	 */
+	429: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type ListProjectsError = ListProjectsErrors[keyof ListProjectsErrors];
+
+export type ListProjectsResponses = {
+	/**
+	 * Paginated owned projects
+	 */
+	200: {
+		result: Array<Project>;
+		result_info: {
+			/**
+			 * Page number of paginated results.
+			 */
+			page?: number;
+			/**
+			 * Number of items per page.
+			 */
+			per_page?: number;
+			/**
+			 * Number of items on the current page.
+			 */
+			count: number;
+			/**
+			 * Total number of items.
+			 */
+			total_count: number;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type ListProjectsResponse =
+	ListProjectsResponses[keyof ListProjectsResponses];
+
+export type CreateProjectData = {
+	body: {
+		/**
+		 * Editable display label. Project names need not be unique.
+		 */
+		name: string;
+	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path?: never;
+	query?: never;
+	url: "/v1/projects";
+};
+
+export type CreateProjectErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Rate limit exceeded
+	 */
+	429: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type CreateProjectError = CreateProjectErrors[keyof CreateProjectErrors];
+
+export type CreateProjectResponses = {
+	/**
+	 * Project created
+	 */
+	201: {
+		result: Project;
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type CreateProjectResponse =
+	CreateProjectResponses[keyof CreateProjectResponses];
+
+export type DeleteProjectData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Encoded project ID, not a project name or raw database ID.
+		 */
+		project_id: string;
+	};
+	query?: never;
+	url: "/v1/projects/{project_id}";
+};
+
+export type DeleteProjectErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Project not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * project_is_default or project_not_empty
+	 */
+	409: PublicApiErrorResponse;
+	/**
+	 * Rate limit exceeded
+	 */
+	429: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type DeleteProjectError = DeleteProjectErrors[keyof DeleteProjectErrors];
+
+export type DeleteProjectResponses = {
+	/**
+	 * Deleted project identity
+	 */
+	200: {
+		result: {
+			/**
+			 * Encoded project ID, not a project name or raw database ID.
+			 */
+			id: string;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type DeleteProjectResponse =
+	DeleteProjectResponses[keyof DeleteProjectResponses];
+
+export type GetProjectData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Encoded project ID, not a project name or raw database ID.
+		 */
+		project_id: string;
+	};
+	query?: never;
+	url: "/v1/projects/{project_id}";
+};
+
+export type GetProjectErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Project not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Rate limit exceeded
+	 */
+	429: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type GetProjectError = GetProjectErrors[keyof GetProjectErrors];
+
+export type GetProjectResponses = {
+	/**
+	 * Owned project
+	 */
+	200: {
+		result: Project;
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type GetProjectResponse = GetProjectResponses[keyof GetProjectResponses];
+
+export type UpdateProjectData = {
+	body: {
+		/**
+		 * Editable display label. Project names need not be unique.
+		 */
+		name: string;
+	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Encoded project ID, not a project name or raw database ID.
+		 */
+		project_id: string;
+	};
+	query?: never;
+	url: "/v1/projects/{project_id}";
+};
+
+export type UpdateProjectErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Project not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Rate limit exceeded
+	 */
+	429: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type UpdateProjectError = UpdateProjectErrors[keyof UpdateProjectErrors];
+
+export type UpdateProjectResponses = {
+	/**
+	 * Renamed project
+	 */
+	200: {
+		result: Project;
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type UpdateProjectResponse =
+	UpdateProjectResponses[keyof UpdateProjectResponses];
 
 export type DeleteStatusPageData = {
 	body?: never;
@@ -10525,6 +11265,432 @@ export type UpdateStatusPageScheduledMaintenanceResponses = {
 export type UpdateStatusPageScheduledMaintenanceResponse =
 	UpdateStatusPageScheduledMaintenanceResponses[keyof UpdateStatusPageScheduledMaintenanceResponses];
 
+export type GetWebhookDeliverySummaryData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path?: never;
+	query: {
+		webhook_ids: string;
+	};
+	url: "/v1/webhooks/delivery-summary";
+};
+
+export type GetWebhookDeliverySummaryErrors = {
+	/**
+	 * Invalid history query
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Unauthorized
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient webhook permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Webhook or attempt not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+	/**
+	 * Delivery history unavailable
+	 */
+	503: PublicApiErrorResponse;
+};
+
+export type GetWebhookDeliverySummaryError =
+	GetWebhookDeliverySummaryErrors[keyof GetWebhookDeliverySummaryErrors];
+
+export type GetWebhookDeliverySummaryResponses = {
+	/**
+	 * Owned webhook delivery history
+	 */
+	200: {
+		result: Array<{
+			delivery_count: number;
+			error_count: number;
+			average_response_time_ms: number | null;
+			error_rate: number | null;
+			webhook_id: string;
+			buckets: Array<{
+				delivery_count: number;
+				error_count: number;
+				average_response_time_ms: number | null;
+				error_rate: number | null;
+				timestamp: string;
+			}>;
+		}>;
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type GetWebhookDeliverySummaryResponse =
+	GetWebhookDeliverySummaryResponses[keyof GetWebhookDeliverySummaryResponses];
+
+export type GetWebhookDeliveryActivityData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Webhook ID
+		 */
+		webhook_id: string;
+	};
+	query?: {
+		period?: "24h" | "7d" | "14d";
+	};
+	url: "/v1/webhooks/{webhook_id}/delivery-activity";
+};
+
+export type GetWebhookDeliveryActivityErrors = {
+	/**
+	 * Invalid history query
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Unauthorized
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient webhook permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Webhook or attempt not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+	/**
+	 * Delivery history unavailable
+	 */
+	503: PublicApiErrorResponse;
+};
+
+export type GetWebhookDeliveryActivityError =
+	GetWebhookDeliveryActivityErrors[keyof GetWebhookDeliveryActivityErrors];
+
+export type GetWebhookDeliveryActivityResponses = {
+	/**
+	 * Owned webhook delivery history
+	 */
+	200: {
+		result: {
+			summary: {
+				delivery_count: number;
+				error_count: number;
+				average_response_time_ms: number | null;
+				error_rate: number | null;
+				webhook_id: string;
+				buckets: Array<{
+					delivery_count: number;
+					error_count: number;
+					average_response_time_ms: number | null;
+					error_rate: number | null;
+					timestamp: string;
+				}>;
+			};
+			buckets: Array<{
+				delivery_count: number;
+				error_count: number;
+				average_response_time_ms: number | null;
+				error_rate: number | null;
+				timestamp: string;
+			}>;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type GetWebhookDeliveryActivityResponse =
+	GetWebhookDeliveryActivityResponses[keyof GetWebhookDeliveryActivityResponses];
+
+export type ListWebhookDeliveriesData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Webhook ID
+		 */
+		webhook_id: string;
+	};
+	query?: {
+		period?: "24h" | "7d" | "14d";
+		/**
+		 * Webhook event type
+		 */
+		event_type?:
+			| "status_page.incident.started"
+			| "status_page.incident.updated"
+			| "status_page.incident.resolved"
+			| "uptime.down"
+			| "uptime.up"
+			| "heartbeat.down"
+			| "heartbeat.up";
+		outcome?:
+			| "success"
+			| "http_error"
+			| "timeout"
+			| "network_error"
+			| "resolution_error"
+			| "skipped";
+		limit?: number;
+		cursor?: string;
+	};
+	url: "/v1/webhooks/{webhook_id}/deliveries";
+};
+
+export type ListWebhookDeliveriesErrors = {
+	/**
+	 * Invalid history query
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Unauthorized
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient webhook permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Webhook or attempt not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+	/**
+	 * Delivery history unavailable
+	 */
+	503: PublicApiErrorResponse;
+};
+
+export type ListWebhookDeliveriesError =
+	ListWebhookDeliveriesErrors[keyof ListWebhookDeliveriesErrors];
+
+export type ListWebhookDeliveriesResponses = {
+	/**
+	 * Owned webhook delivery history
+	 */
+	200: {
+		result: {
+			deliveries: Array<{
+				schema_version: 1;
+				webhook_id: string;
+				event_id: string;
+				attempt_id: string;
+				/**
+				 * Webhook event type
+				 */
+				event_type:
+					| "status_page.incident.started"
+					| "status_page.incident.updated"
+					| "status_page.incident.resolved"
+					| "uptime.down"
+					| "uptime.up"
+					| "heartbeat.down"
+					| "heartbeat.up";
+				queued_at: string;
+				attempted_at: string;
+				completed_at: string;
+				outcome:
+					| "success"
+					| "http_error"
+					| "timeout"
+					| "network_error"
+					| "resolution_error"
+					| "skipped";
+				failure_reason: string | null;
+				http_status: number | null;
+				response_time_ms: number | null;
+				request_method: "POST";
+			}>;
+			next_cursor: string | null;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type ListWebhookDeliveriesResponse =
+	ListWebhookDeliveriesResponses[keyof ListWebhookDeliveriesResponses];
+
+export type GetWebhookDeliveryData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Webhook ID
+		 */
+		webhook_id: string;
+		attempt_id: string;
+	};
+	query?: never;
+	url: "/v1/webhooks/{webhook_id}/deliveries/{attempt_id}";
+};
+
+export type GetWebhookDeliveryErrors = {
+	/**
+	 * Invalid history query
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Unauthorized
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient webhook permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Webhook or attempt not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+	/**
+	 * Delivery history unavailable
+	 */
+	503: PublicApiErrorResponse;
+};
+
+export type GetWebhookDeliveryError =
+	GetWebhookDeliveryErrors[keyof GetWebhookDeliveryErrors];
+
+export type GetWebhookDeliveryResponses = {
+	/**
+	 * Owned webhook delivery history
+	 */
+	200: {
+		result: {
+			schema_version: 1;
+			webhook_id: string;
+			event_id: string;
+			attempt_id: string;
+			/**
+			 * Webhook event type
+			 */
+			event_type:
+				| "status_page.incident.started"
+				| "status_page.incident.updated"
+				| "status_page.incident.resolved"
+				| "uptime.down"
+				| "uptime.up"
+				| "heartbeat.down"
+				| "heartbeat.up";
+			queued_at: string;
+			attempted_at: string;
+			completed_at: string;
+			outcome:
+				| "success"
+				| "http_error"
+				| "timeout"
+				| "network_error"
+				| "resolution_error"
+				| "skipped";
+			failure_reason: string | null;
+			http_status: number | null;
+			response_time_ms: number | null;
+			request_method: "POST";
+			request_headers: string;
+			request_body: string | null;
+			request_body_state: "captured" | "truncated" | "unavailable";
+			response_headers: string;
+			response_body: string | null;
+			response_body_state:
+				| "captured"
+				| "truncated"
+				| "unavailable"
+				| "not_received";
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type GetWebhookDeliveryResponse =
+	GetWebhookDeliveryResponses[keyof GetWebhookDeliveryResponses];
+
 export type ListWebhooksData = {
 	body?: never;
 	headers?: {
@@ -10547,6 +11713,10 @@ export type ListWebhooksData = {
 		 * Search term to filter results.
 		 */
 		search?: string;
+		/**
+		 * Omit to list resources across all authorized projects.
+		 */
+		project_id?: string;
 	};
 	url: "/v1/webhooks";
 };
@@ -10564,6 +11734,10 @@ export type ListWebhooksErrors = {
 	 * Insufficient permissions
 	 */
 	403: PublicApiErrorResponse;
+	/**
+	 * Project not found
+	 */
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
@@ -10630,6 +11804,14 @@ export type CreateWebhookData = {
 	 */
 	body: {
 		/**
+		 * Omit to select the organisation's stable Default project.
+		 */
+		project_id?: string;
+		/**
+		 * Whether webhook delivery is enabled. Defaults to true on creation; omitted PATCH values preserve the current state.
+		 */
+		enabled?: boolean;
+		/**
 		 * Webhook URL. Use {{NAME}} to reference an environment variable.
 		 */
 		url: string;
@@ -10686,6 +11868,10 @@ export type CreateWebhookErrors = {
 	 * Forbidden - Webhooks require a paid plan
 	 */
 	403: PublicApiErrorResponse;
+	/**
+	 * Project not found
+	 */
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
@@ -10867,6 +12053,11 @@ export type UpdateWebhookData = {
 	 * Partial webhook update. The merged saved state must have matching resource and event types, at least one resource and event, and no duplicate events or association IDs.
 	 */
 	body: {
+		project_id?: string;
+		/**
+		 * Whether webhook delivery is enabled. Defaults to true on creation; omitted PATCH values preserve the current state.
+		 */
+		enabled?: boolean;
 		/**
 		 * Webhook URL. Use {{NAME}} to reference an environment variable.
 		 */
@@ -10926,7 +12117,7 @@ export type UpdateWebhookErrors = {
 	 */
 	401: PublicApiErrorResponse;
 	/**
-	 * Insufficient permissions
+	 * Webhook enable/disable requires paid feature access
 	 */
 	403: PublicApiErrorResponse;
 	/**

@@ -53,6 +53,8 @@ it("ships Zod webhook schemas that accept environment variable URL templates", a
 		expect(zUpdateWebhookBody.parse({ url })).toEqual({ url });
 		const webhook = {
 			id: "a1b2c3d4",
+			project_id: "project-public-0001",
+			enabled: true,
 			url,
 			description: null,
 			events: ["uptime.down"],
@@ -110,5 +112,5 @@ it("keeps public operation names unique and pinned", () => {
 	);
 	expect(manifest.operations).toHaveLength(manifest.count);
 	expect(new Set(manifest.operations).size).toBe(manifest.count);
-	expect(manifest.count).toBe(98);
+	expect(manifest.count).toBe(109);
 });

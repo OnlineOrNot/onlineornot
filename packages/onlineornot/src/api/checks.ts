@@ -3,6 +3,7 @@ import {
 	deleteCheck as sdkDeleteCheck,
 	getCheck as sdkGetCheck,
 	listChecks as sdkListChecks,
+	moveCheck as sdkMoveCheck,
 	updateCheck as sdkUpdateCheck,
 } from "@onlineornot/api";
 
@@ -13,18 +14,14 @@ import type {
 	UpdateCheckParams,
 } from "../checks/types";
 import { ParseError } from "../parse";
-import { getTokenAsync } from "../user";
-import {
-	getApiConfig,
-	unwrapApiEnvelope,
-	unwrapApiResult,
-} from "./infrastructure";
+import { getAuthenticatedApiConfig } from "./authenticated";
+import { unwrapApiEnvelope, unwrapApiResult } from "./infrastructure";
 import { paginateAllPages } from "./pagination";
 
 const CHECKS_RESOURCE = "/checks";
 
-export async function listChecks(): Promise<CheckListItem[]> {
-	const config = await authenticatedConfig();
+export async function listChecks(projectId?: string): Promise<CheckListItem[]> {
+	const config = await getAuthenticatedApiConfig();
 	return paginateAllPages(async (page, pageSize) => {
 		const response = unwrapApiEnvelope(
 			await sdkListChecks({
@@ -32,6 +29,7 @@ export async function listChecks(): Promise<CheckListItem[]> {
 				query: {
 					page,
 					per_page: pageSize,
+					project_id: projectId,
 				},
 			}),
 			CHECKS_RESOURCE,
@@ -45,7 +43,7 @@ export async function listChecks(): Promise<CheckListItem[]> {
 
 export async function createCheck(params: CreateCheckParams): Promise<Check> {
 	const result = await sdkCreateCheck({
-		...(await authenticatedConfig()),
+		...(await getAuthenticatedApiConfig()),
 		body: params,
 	});
 	return unwrapApiResult(result, CHECKS_RESOURCE);
@@ -53,7 +51,7 @@ export async function createCheck(params: CreateCheckParams): Promise<Check> {
 
 export async function getCheck(checkId: string): Promise<Check> {
 	const result = await sdkGetCheck({
-		...(await authenticatedConfig()),
+		...(await getAuthenticatedApiConfig()),
 		path: { check_id: checkId },
 	});
 
@@ -74,7 +72,7 @@ export async function updateCheck(
 	params: UpdateCheckParams,
 ): Promise<Check> {
 	const result = await sdkUpdateCheck({
-		...(await authenticatedConfig()),
+		...(await getAuthenticatedApiConfig()),
 		body: params,
 		path: { check_id: checkId },
 	});
@@ -83,13 +81,19 @@ export async function updateCheck(
 
 export async function deleteCheck(checkId: string): Promise<void> {
 	const result = await sdkDeleteCheck({
-		...(await authenticatedConfig()),
+		...(await getAuthenticatedApiConfig()),
 		path: { check_id: checkId },
 	});
 	unwrapApiResult(result, `${CHECKS_RESOURCE}/${checkId}`);
 }
 
-async function authenticatedConfig() {
-	const { apiToken } = await getTokenAsync();
-	return getApiConfig(apiToken);
+export async function moveCheck(checkId: string, projectId: string) {
+	return unwrapApiResult(
+		await sdkMoveCheck({
+			...(await getAuthenticatedApiConfig()),
+			path: { check_id: checkId },
+			body: { project_id: projectId },
+		}),
+		`${CHECKS_RESOURCE}/${checkId}/move`,
+	);
 }

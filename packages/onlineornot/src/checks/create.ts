@@ -22,6 +22,10 @@ export function options(yargs: CommonYargsArgv) {
 			type: "string",
 			demandOption: true,
 		})
+		.option("project-id", {
+			type: "string",
+			describe: "Encoded project ID; omit for Default",
+		})
 		.option("json", {
 			describe: "Return output as JSON",
 			type: "boolean",
@@ -164,6 +168,7 @@ export async function handler(
 		url: args.url,
 	};
 
+	if (args.projectId !== undefined) params.project_id = args.projectId;
 	if (args.textToSearchFor) params.text_to_search_for = args.textToSearchFor;
 	if (args.testInterval) params.test_interval = args.testInterval;
 	if (args.reminderAlertIntervalMinutes !== undefined)

@@ -48,6 +48,12 @@ export const zPublicApiServerError = z.object({
 });
 
 export const zExpandedUptimeCheck = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 	id: z.string(),
 	name: z.string(),
 	url: z.url().nullable(),
@@ -120,6 +126,12 @@ export const zExpandedUptimeCheck = z.object({
 });
 
 export const zExpandedBrowserCheck = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 	id: z.string(),
 	name: z.string(),
 	url: z.url().nullable(),
@@ -212,6 +224,12 @@ export const zDnsAssertion = z.object({
 });
 
 export const zExpandedDnsCheck = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 	id: z.string(),
 	name: z.string(),
 	last_queued: z.string().nullable(),
@@ -272,6 +290,12 @@ export const zTcpAssertion = z.object({
 });
 
 export const zExpandedTcpCheck = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 	id: z.string(),
 	name: z.string(),
 	last_queued: z.string().nullable(),
@@ -339,6 +363,12 @@ export const zAnyCheckResponse = z.object({
 });
 
 export const zCheckListItem = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 	id: z.string(),
 	name: z.string(),
 	url: z.url().nullable(),
@@ -455,6 +485,12 @@ export const zDnsCheckResponse = z.object({
 });
 
 export const zDnsCheckInput = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 	name: z.string(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -481,6 +517,7 @@ export const zDnsCheckInput = z.object({
 });
 
 export const zDnsCheckPatch = z.object({
+	project_id: z.string().optional(),
 	name: z.string().optional(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -550,6 +587,12 @@ export const zTcpCheckResponse = z.object({
 });
 
 export const zTcpCheckInput = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 	name: z.string(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -577,6 +620,7 @@ export const zTcpCheckInput = z.object({
 });
 
 export const zTcpCheckPatch = z.object({
+	project_id: z.string().optional(),
 	name: z.string().optional(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -624,6 +668,12 @@ export const zUptimeCheckResponse = z.object({
 });
 
 export const zUptimeCheckInput = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 	name: z.string(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -685,6 +735,7 @@ export const zUptimeCheckInput = z.object({
 });
 
 export const zUptimeCheckPatch = z.object({
+	project_id: z.string().optional(),
 	name: z.string().optional(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -766,6 +817,12 @@ export const zBrowserCheckResponse = z.object({
  * Browser check create payload. Provide either url for a URL-based browser check or script for a scripted Playwright check.
  */
 export const zBrowserCheckInput = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 	name: z.string(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -829,6 +886,7 @@ export const zBrowserCheckInput = z.object({
 });
 
 export const zBrowserCheckPatch = z.object({
+	project_id: z.string().optional(),
 	name: z.string().optional(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -1069,6 +1127,12 @@ export const zPublicTcpCheckResultsResponse = z.object({
 });
 
 export const zCheck = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 	id: z.string(),
 	name: z.string(),
 	url: z.url().nullable(),
@@ -1165,6 +1229,12 @@ export const zCheckResponse = z.object({
 });
 
 export const zCheckInput = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 	name: z.string(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -1231,6 +1301,7 @@ export const zCheckInput = z.object({
 });
 
 export const zCheckPatch = z.object({
+	project_id: z.string().optional(),
 	name: z.string().optional(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -1293,6 +1364,12 @@ export const zCheckPatch = z.object({
 });
 
 export const zEnvironmentVariableMetadata = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 	id: z.string(),
 	name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 	type: z.enum(["config", "secret"]),
@@ -1302,6 +1379,12 @@ export const zEnvironmentVariableMetadata = z.object({
 });
 
 export const zHeartbeat = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 	id: z.string(),
 	name: z.string(),
 	status: z.enum(["UP", "DOWN", "PENDING", "PAUSED", "MAINTENANCE", "MUTED"]),
@@ -1371,6 +1454,18 @@ export const zInvitation = z.object({
 	email: z.string(),
 	role: z.enum(["ADMIN", "STANDARD"]),
 	created_at: z.string(),
+});
+
+export const zProject = z.object({
+	id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+	name: z.string().min(1).max(255),
+	is_default: z.boolean(),
+	created_at: z.iso.datetime(),
+	updated_at: z.iso.datetime(),
 });
 
 export const zStatusPage = z.object({
@@ -1561,7 +1656,14 @@ export const zStatusPageIncidentDetail =
 	);
 
 export const zWebhook = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 	id: z.string(),
+	enabled: z.boolean(),
 	url: z.string(),
 	description: z.string().nullable(),
 	events: z.array(
@@ -1767,6 +1869,7 @@ export const zListTokensResponse = z.object({
 				grants: z.array(
 					z.object({
 						scope: z.enum([
+							"PROJECTS",
 							"UPTIME_CHECKS",
 							"STATUS_PAGES",
 							"HEARTBEAT_CHECKS",
@@ -1811,6 +1914,7 @@ export const zCreateTokenBody = z.object({
 	grants: z.array(
 		z.object({
 			scope: z.enum([
+				"PROJECTS",
 				"UPTIME_CHECKS",
 				"STATUS_PAGES",
 				"HEARTBEAT_CHECKS",
@@ -1911,6 +2015,7 @@ export const zGetTokenResponse = z.object({
 		grants: z.array(
 			z.object({
 				scope: z.enum([
+					"PROJECTS",
 					"UPTIME_CHECKS",
 					"STATUS_PAGES",
 					"HEARTBEAT_CHECKS",
@@ -2216,6 +2321,51 @@ export const zUpdateBrowserCheckPath = z.object({
  */
 export const zUpdateBrowserCheckResponse = zBrowserCheckResponse;
 
+export const zMoveCheckBody = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+});
+
+export const zMoveCheckHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zMoveCheckPath = z.object({
+	check_id: z.string().min(8),
+});
+
+/**
+ * Moved check identity and destination
+ */
+export const zMoveCheckResponse = z.object({
+	result: z.object({
+		id: z.string().min(8),
+		project_id: z
+			.string()
+			.min(16)
+			.max(128)
+			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
 export const zListUptimeCheckIncidentsHeaders = z.object({
 	"X-OnlineOrNot-Organisation": z.string().optional(),
 });
@@ -2388,6 +2538,12 @@ export const zListChecksQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 	filter: z
 		.enum([
 			"DOWN",
@@ -2538,6 +2694,12 @@ export const zListEnvironmentVariablesHeaders = z.object({
 export const zListEnvironmentVariablesQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 	search: z.string().max(64).optional(),
 });
 
@@ -2570,6 +2732,12 @@ export const zListEnvironmentVariablesResponse = z.object({
 });
 
 export const zCreateEnvironmentVariableBody = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 	name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 	type: z.enum(["config", "secret"]),
 	value: z.string(),
@@ -2585,6 +2753,12 @@ export const zCreateEnvironmentVariableHeaders = z.object({
 export const zCreateEnvironmentVariableResponse = z.object({
 	result: z.union([
 		z.object({
+			project_id: z
+				.string()
+				.min(16)
+				.max(128)
+				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+				.optional(),
 			id: z.string(),
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 			type: z.enum(["secret"]),
@@ -2593,6 +2767,12 @@ export const zCreateEnvironmentVariableResponse = z.object({
 			updated_at: z.iso.datetime(),
 		}),
 		z.object({
+			project_id: z
+				.string()
+				.min(16)
+				.max(128)
+				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+				.optional(),
 			id: z.string(),
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 			type: z.enum(["config"]),
@@ -2665,6 +2845,12 @@ export const zGetEnvironmentVariablePath = z.object({
 export const zGetEnvironmentVariableResponse = z.object({
 	result: z.union([
 		z.object({
+			project_id: z
+				.string()
+				.min(16)
+				.max(128)
+				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+				.optional(),
 			id: z.string(),
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 			type: z.enum(["secret"]),
@@ -2673,6 +2859,12 @@ export const zGetEnvironmentVariableResponse = z.object({
 			updated_at: z.iso.datetime(),
 		}),
 		z.object({
+			project_id: z
+				.string()
+				.min(16)
+				.max(128)
+				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+				.optional(),
 			id: z.string(),
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 			type: z.enum(["config"]),
@@ -2700,6 +2892,7 @@ export const zGetEnvironmentVariableResponse = z.object({
 });
 
 export const zUpdateEnvironmentVariableBody = z.object({
+	project_id: z.string().optional(),
 	name: z
 		.string()
 		.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)
@@ -2721,6 +2914,12 @@ export const zUpdateEnvironmentVariablePath = z.object({
 export const zUpdateEnvironmentVariableResponse = z.object({
 	result: z.union([
 		z.object({
+			project_id: z
+				.string()
+				.min(16)
+				.max(128)
+				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+				.optional(),
 			id: z.string(),
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 			type: z.enum(["secret"]),
@@ -2729,6 +2928,12 @@ export const zUpdateEnvironmentVariableResponse = z.object({
 			updated_at: z.iso.datetime(),
 		}),
 		z.object({
+			project_id: z
+				.string()
+				.min(16)
+				.max(128)
+				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+				.optional(),
 			id: z.string(),
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 			type: z.enum(["config"]),
@@ -2755,6 +2960,51 @@ export const zUpdateEnvironmentVariableResponse = z.object({
 	),
 });
 
+export const zMoveHeartbeatBody = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+});
+
+export const zMoveHeartbeatHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zMoveHeartbeatPath = z.object({
+	heartbeat_id: z.string().min(8),
+});
+
+/**
+ * Moved heartbeat identity and destination
+ */
+export const zMoveHeartbeatResponse = z.object({
+	result: z.object({
+		id: z.string().min(8),
+		project_id: z
+			.string()
+			.min(16)
+			.max(128)
+			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
 export const zListHeartbeatsHeaders = z.object({
 	"X-OnlineOrNot-Organisation": z.string().optional(),
 });
@@ -2763,6 +3013,12 @@ export const zListHeartbeatsQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 });
 
 /**
@@ -2810,6 +3066,12 @@ export const zListHeartbeatsResponse = z.union([
 ]);
 
 export const zCreateHeartbeatBody = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 	name: z.string(),
 	report_period: z.int().gte(1).optional(),
 	report_period_cron: z.string().optional(),
@@ -2917,6 +3179,7 @@ export const zGetHeartbeatResponse = z.object({
 });
 
 export const zUpdateHeartbeatBody = z.object({
+	project_id: z.string().optional(),
 	name: z.string().optional(),
 	report_period: z.int().gte(1).nullish(),
 	report_period_cron: z.string().nullish(),
@@ -3337,6 +3600,185 @@ export const zCreateInvitationHeaders = z.object({
  */
 export const zCreateInvitationResponse = z.object({
 	result: zInvitation,
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zListProjectsHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zListProjectsQuery = z.object({
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
+});
+
+/**
+ * Paginated owned projects
+ */
+export const zListProjectsResponse = z.object({
+	result: z.array(zProject),
+	result_info: z.object({
+		page: z.number().optional().default(1),
+		per_page: z.number().optional().default(20),
+		count: z.number(),
+		total_count: z.number(),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zCreateProjectBody = z.object({
+	name: z.string().min(1).max(255),
+});
+
+export const zCreateProjectHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+/**
+ * Project created
+ */
+export const zCreateProjectResponse = z.object({
+	result: zProject,
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zDeleteProjectHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zDeleteProjectPath = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+});
+
+/**
+ * Deleted project identity
+ */
+export const zDeleteProjectResponse = z.object({
+	result: z.object({
+		id: z
+			.string()
+			.min(16)
+			.max(128)
+			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zGetProjectHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zGetProjectPath = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+});
+
+/**
+ * Owned project
+ */
+export const zGetProjectResponse = z.object({
+	result: zProject,
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zUpdateProjectBody = z.object({
+	name: z.string().min(1).max(255),
+});
+
+export const zUpdateProjectHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zUpdateProjectPath = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+});
+
+/**
+ * Renamed project
+ */
+export const zUpdateProjectResponse = z.object({
+	result: zProject,
 	success: z.boolean(),
 	errors: z.array(
 		z.object({
@@ -4857,6 +5299,275 @@ export const zUpdateStatusPageScheduledMaintenanceResponse = z.object({
 	),
 });
 
+export const zGetWebhookDeliverySummaryHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zGetWebhookDeliverySummaryQuery = z.object({
+	webhook_ids: z.string().max(12900),
+});
+
+/**
+ * Owned webhook delivery history
+ */
+export const zGetWebhookDeliverySummaryResponse = z.object({
+	result: z.array(
+		z.object({
+			delivery_count: z.int().gte(0),
+			error_count: z.int().gte(0),
+			average_response_time_ms: z.number().gte(0).nullable(),
+			error_rate: z.number().gte(0).lte(100).nullable(),
+			webhook_id: z.string(),
+			buckets: z.array(
+				z.object({
+					delivery_count: z.int().gte(0),
+					error_count: z.int().gte(0),
+					average_response_time_ms: z.number().gte(0).nullable(),
+					error_rate: z.number().gte(0).lte(100).nullable(),
+					timestamp: z.iso.datetime(),
+				}),
+			),
+		}),
+	),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zGetWebhookDeliveryActivityHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zGetWebhookDeliveryActivityPath = z.object({
+	webhook_id: z.string().min(8),
+});
+
+export const zGetWebhookDeliveryActivityQuery = z.object({
+	period: z.enum(["24h", "7d", "14d"]).optional().default("24h"),
+});
+
+/**
+ * Owned webhook delivery history
+ */
+export const zGetWebhookDeliveryActivityResponse = z.object({
+	result: z.object({
+		summary: z.object({
+			delivery_count: z.int().gte(0),
+			error_count: z.int().gte(0),
+			average_response_time_ms: z.number().gte(0).nullable(),
+			error_rate: z.number().gte(0).lte(100).nullable(),
+			webhook_id: z.string(),
+			buckets: z.array(
+				z.object({
+					delivery_count: z.int().gte(0),
+					error_count: z.int().gte(0),
+					average_response_time_ms: z.number().gte(0).nullable(),
+					error_rate: z.number().gte(0).lte(100).nullable(),
+					timestamp: z.iso.datetime(),
+				}),
+			),
+		}),
+		buckets: z.array(
+			z.object({
+				delivery_count: z.int().gte(0),
+				error_count: z.int().gte(0),
+				average_response_time_ms: z.number().gte(0).nullable(),
+				error_rate: z.number().gte(0).lte(100).nullable(),
+				timestamp: z.iso.datetime(),
+			}),
+		),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zListWebhookDeliveriesHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zListWebhookDeliveriesPath = z.object({
+	webhook_id: z.string().min(8),
+});
+
+export const zListWebhookDeliveriesQuery = z.object({
+	period: z.enum(["24h", "7d", "14d"]).optional().default("24h"),
+	event_type: z
+		.enum([
+			"status_page.incident.started",
+			"status_page.incident.updated",
+			"status_page.incident.resolved",
+			"uptime.down",
+			"uptime.up",
+			"heartbeat.down",
+			"heartbeat.up",
+		])
+		.optional(),
+	outcome: z
+		.enum([
+			"success",
+			"http_error",
+			"timeout",
+			"network_error",
+			"resolution_error",
+			"skipped",
+		])
+		.optional(),
+	limit: z.int().gte(1).lte(100).optional().default(25),
+	cursor: z.string().max(2048).optional(),
+});
+
+/**
+ * Owned webhook delivery history
+ */
+export const zListWebhookDeliveriesResponse = z.object({
+	result: z.object({
+		deliveries: z.array(
+			z.object({
+				schema_version: z.literal(1),
+				webhook_id: z.string(),
+				event_id: z.string(),
+				attempt_id: z.string(),
+				event_type: z.enum([
+					"status_page.incident.started",
+					"status_page.incident.updated",
+					"status_page.incident.resolved",
+					"uptime.down",
+					"uptime.up",
+					"heartbeat.down",
+					"heartbeat.up",
+				]),
+				queued_at: z.iso.datetime(),
+				attempted_at: z.iso.datetime(),
+				completed_at: z.iso.datetime(),
+				outcome: z.enum([
+					"success",
+					"http_error",
+					"timeout",
+					"network_error",
+					"resolution_error",
+					"skipped",
+				]),
+				failure_reason: z.string().max(128).nullable(),
+				http_status: z.int().gte(100).lte(599).nullable(),
+				response_time_ms: z.number().gte(0).nullable(),
+				request_method: z.enum(["POST"]),
+			}),
+		),
+		next_cursor: z.string().nullable(),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zGetWebhookDeliveryHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zGetWebhookDeliveryPath = z.object({
+	webhook_id: z.string().min(8),
+	attempt_id: z.string(),
+});
+
+/**
+ * Owned webhook delivery history
+ */
+export const zGetWebhookDeliveryResponse = z.object({
+	result: z.object({
+		schema_version: z.literal(1),
+		webhook_id: z.string(),
+		event_id: z.string(),
+		attempt_id: z.string(),
+		event_type: z.enum([
+			"status_page.incident.started",
+			"status_page.incident.updated",
+			"status_page.incident.resolved",
+			"uptime.down",
+			"uptime.up",
+			"heartbeat.down",
+			"heartbeat.up",
+		]),
+		queued_at: z.iso.datetime(),
+		attempted_at: z.iso.datetime(),
+		completed_at: z.iso.datetime(),
+		outcome: z.enum([
+			"success",
+			"http_error",
+			"timeout",
+			"network_error",
+			"resolution_error",
+			"skipped",
+		]),
+		failure_reason: z.string().max(128).nullable(),
+		http_status: z.int().gte(100).lte(599).nullable(),
+		response_time_ms: z.number().gte(0).nullable(),
+		request_method: z.enum(["POST"]),
+		request_headers: z.string(),
+		request_body: z.string().nullable(),
+		request_body_state: z.enum(["captured", "truncated", "unavailable"]),
+		response_headers: z.string(),
+		response_body: z.string().nullable(),
+		response_body_state: z.enum([
+			"captured",
+			"truncated",
+			"unavailable",
+			"not_received",
+		]),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
 export const zListWebhooksHeaders = z.object({
 	"X-OnlineOrNot-Organisation": z.string().optional(),
 });
@@ -4865,6 +5576,12 @@ export const zListWebhooksQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
 });
 
 /**
@@ -4915,6 +5632,13 @@ export const zListWebhooksResponse = z.union([
  * At least one nonempty status_page_ids, check_ids, or heartbeat_ids association is required. Each selected resource type requires a matching event type, and each subscribed event type requires a resource of its type. Events and association IDs must not contain duplicates.
  */
 export const zCreateWebhookBody = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.optional(),
+	enabled: z.boolean().optional(),
 	url: z.string(),
 	description: z.string().optional(),
 	events: z
@@ -5027,6 +5751,8 @@ export const zGetWebhookResponse = z.object({
  * Partial webhook update. The merged saved state must have matching resource and event types, at least one resource and event, and no duplicate events or association IDs.
  */
 export const zUpdateWebhookBody = z.object({
+	project_id: z.string().optional(),
+	enabled: z.boolean().optional(),
 	url: z.string().optional(),
 	description: z.string().optional(),
 	events: z

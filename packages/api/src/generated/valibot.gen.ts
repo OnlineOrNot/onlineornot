@@ -51,6 +51,14 @@ export const vPublicApiServerError = v.object({
 });
 
 export const vExpandedUptimeCheck = v.object({
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	id: v.string(),
 	name: v.string(),
 	url: v.nullable(v.pipe(v.string(), v.url())),
@@ -123,6 +131,14 @@ export const vExpandedUptimeCheck = v.object({
 });
 
 export const vExpandedBrowserCheck = v.object({
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	id: v.string(),
 	name: v.string(),
 	url: v.nullable(v.pipe(v.string(), v.url())),
@@ -215,6 +231,14 @@ export const vDnsAssertion = v.object({
 });
 
 export const vExpandedDnsCheck = v.object({
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	id: v.string(),
 	name: v.string(),
 	last_queued: v.nullable(v.string()),
@@ -275,6 +299,14 @@ export const vTcpAssertion = v.object({
 });
 
 export const vExpandedTcpCheck = v.object({
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	id: v.string(),
 	name: v.string(),
 	last_queued: v.nullable(v.string()),
@@ -362,6 +394,14 @@ export const vAnyCheckResponse = v.object({
 });
 
 export const vCheckListItem = v.object({
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	id: v.string(),
 	name: v.string(),
 	url: v.nullable(v.pipe(v.string(), v.url())),
@@ -483,6 +523,14 @@ export const vDnsCheckResponse = v.object({
 });
 
 export const vDnsCheckInput = v.strictObject({
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	name: v.string(),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -518,6 +566,7 @@ export const vDnsCheckInput = v.strictObject({
 });
 
 export const vDnsCheckPatch = v.strictObject({
+	project_id: v.optional(v.string()),
 	name: v.optional(v.string()),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -593,6 +642,14 @@ export const vTcpCheckResponse = v.object({
 });
 
 export const vTcpCheckInput = v.strictObject({
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	name: v.string(),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -629,6 +686,7 @@ export const vTcpCheckInput = v.strictObject({
 });
 
 export const vTcpCheckPatch = v.strictObject({
+	project_id: v.optional(v.string()),
 	name: v.optional(v.string()),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -686,6 +744,14 @@ export const vUptimeCheckResponse = v.object({
 });
 
 export const vUptimeCheckInput = v.strictObject({
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	name: v.string(),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -756,6 +822,7 @@ export const vUptimeCheckInput = v.strictObject({
 });
 
 export const vUptimeCheckPatch = v.strictObject({
+	project_id: v.optional(v.string()),
 	name: v.optional(v.string()),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -845,6 +912,14 @@ export const vBrowserCheckResponse = v.object({
  * Browser check create payload. Provide either url for a URL-based browser check or script for a scripted Playwright check.
  */
 export const vBrowserCheckInput = v.strictObject({
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	name: v.string(),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -917,6 +992,7 @@ export const vBrowserCheckInput = v.strictObject({
 });
 
 export const vBrowserCheckPatch = v.strictObject({
+	project_id: v.optional(v.string()),
 	name: v.optional(v.string()),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -1167,6 +1243,14 @@ export const vPublicTcpCheckResultsResponse = v.strictObject({
 });
 
 export const vCheck = v.object({
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	id: v.string(),
 	name: v.string(),
 	url: v.nullable(v.pipe(v.string(), v.url())),
@@ -1264,6 +1348,14 @@ export const vCheckResponse = v.object({
 });
 
 export const vCheckInput = v.object({
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	name: v.string(),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -1339,6 +1431,7 @@ export const vCheckInput = v.object({
 });
 
 export const vCheckPatch = v.object({
+	project_id: v.optional(v.string()),
 	name: v.optional(v.string()),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -1409,6 +1502,14 @@ export const vCheckPatch = v.object({
 });
 
 export const vEnvironmentVariableMetadata = v.object({
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	id: v.string(),
 	name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
 	type: v.picklist(["config", "secret"]),
@@ -1418,6 +1519,14 @@ export const vEnvironmentVariableMetadata = v.object({
 });
 
 export const vHeartbeat = v.object({
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	id: v.string(),
 	name: v.string(),
 	status: v.picklist([
@@ -1496,6 +1605,19 @@ export const vInvitation = v.object({
 	email: v.string(),
 	role: v.picklist(["ADMIN", "STANDARD"]),
 	created_at: v.string(),
+});
+
+export const vProject = v.strictObject({
+	id: v.pipe(
+		v.string(),
+		v.minLength(16),
+		v.maxLength(128),
+		v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+	),
+	name: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+	is_default: v.boolean(),
+	created_at: v.pipe(v.string(), v.isoTimestamp()),
+	updated_at: v.pipe(v.string(), v.isoTimestamp()),
 });
 
 export const vStatusPage = v.object({
@@ -1688,7 +1810,16 @@ export const vStatusPageIncidentDetail = v.intersect([
 ]);
 
 export const vWebhook = v.object({
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	id: v.string(),
+	enabled: v.boolean(),
 	url: v.string(),
 	description: v.nullable(v.string()),
 	events: v.array(
@@ -1896,6 +2027,7 @@ export const vListTokensResponse = v.object({
 				grants: v.array(
 					v.object({
 						scope: v.picklist([
+							"PROJECTS",
 							"UPTIME_CHECKS",
 							"STATUS_PAGES",
 							"HEARTBEAT_CHECKS",
@@ -1940,6 +2072,7 @@ export const vCreateTokenBody = v.object({
 	grants: v.array(
 		v.object({
 			scope: v.picklist([
+				"PROJECTS",
 				"UPTIME_CHECKS",
 				"STATUS_PAGES",
 				"HEARTBEAT_CHECKS",
@@ -2040,6 +2173,7 @@ export const vGetTokenResponse = v.object({
 		grants: v.array(
 			v.object({
 				scope: v.picklist([
+					"PROJECTS",
 					"UPTIME_CHECKS",
 					"STATUS_PAGES",
 					"HEARTBEAT_CHECKS",
@@ -2347,6 +2481,53 @@ export const vUpdateBrowserCheckPath = v.object({
  */
 export const vUpdateBrowserCheckResponse = vBrowserCheckResponse;
 
+export const vMoveCheckBody = v.strictObject({
+	project_id: v.pipe(
+		v.string(),
+		v.minLength(16),
+		v.maxLength(128),
+		v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+	),
+});
+
+export const vMoveCheckHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vMoveCheckPath = v.object({
+	check_id: v.pipe(v.string(), v.minLength(8)),
+});
+
+/**
+ * Moved check identity and destination
+ */
+export const vMoveCheckResponse = v.object({
+	result: v.strictObject({
+		id: v.pipe(v.string(), v.minLength(8)),
+		project_id: v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
 export const vListUptimeCheckIncidentsHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
 });
@@ -2543,6 +2724,14 @@ export const vListChecksQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	filter: v.optional(
 		v.picklist([
 			"DOWN",
@@ -2695,6 +2884,14 @@ export const vListEnvironmentVariablesHeaders = v.object({
 export const vListEnvironmentVariablesQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	search: v.optional(v.pipe(v.string(), v.maxLength(64))),
 });
 
@@ -2727,6 +2924,14 @@ export const vListEnvironmentVariablesResponse = v.object({
 });
 
 export const vCreateEnvironmentVariableBody = v.strictObject({
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
 	type: v.picklist(["config", "secret"]),
 	value: v.string(),
@@ -2742,6 +2947,14 @@ export const vCreateEnvironmentVariableHeaders = v.object({
 export const vCreateEnvironmentVariableResponse = v.object({
 	result: v.union([
 		v.strictObject({
+			project_id: v.optional(
+				v.pipe(
+					v.string(),
+					v.minLength(16),
+					v.maxLength(128),
+					v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+				),
+			),
 			id: v.string(),
 			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
 			type: v.picklist(["secret"]),
@@ -2750,6 +2963,14 @@ export const vCreateEnvironmentVariableResponse = v.object({
 			updated_at: v.pipe(v.string(), v.isoTimestamp()),
 		}),
 		v.strictObject({
+			project_id: v.optional(
+				v.pipe(
+					v.string(),
+					v.minLength(16),
+					v.maxLength(128),
+					v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+				),
+			),
 			id: v.string(),
 			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
 			type: v.picklist(["config"]),
@@ -2822,6 +3043,14 @@ export const vGetEnvironmentVariablePath = v.object({
 export const vGetEnvironmentVariableResponse = v.object({
 	result: v.union([
 		v.strictObject({
+			project_id: v.optional(
+				v.pipe(
+					v.string(),
+					v.minLength(16),
+					v.maxLength(128),
+					v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+				),
+			),
 			id: v.string(),
 			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
 			type: v.picklist(["secret"]),
@@ -2830,6 +3059,14 @@ export const vGetEnvironmentVariableResponse = v.object({
 			updated_at: v.pipe(v.string(), v.isoTimestamp()),
 		}),
 		v.strictObject({
+			project_id: v.optional(
+				v.pipe(
+					v.string(),
+					v.minLength(16),
+					v.maxLength(128),
+					v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+				),
+			),
 			id: v.string(),
 			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
 			type: v.picklist(["config"]),
@@ -2857,6 +3094,7 @@ export const vGetEnvironmentVariableResponse = v.object({
 });
 
 export const vUpdateEnvironmentVariableBody = v.strictObject({
+	project_id: v.optional(v.string()),
 	name: v.optional(v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/))),
 	value: v.optional(v.string()),
 });
@@ -2875,6 +3113,14 @@ export const vUpdateEnvironmentVariablePath = v.object({
 export const vUpdateEnvironmentVariableResponse = v.object({
 	result: v.union([
 		v.strictObject({
+			project_id: v.optional(
+				v.pipe(
+					v.string(),
+					v.minLength(16),
+					v.maxLength(128),
+					v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+				),
+			),
 			id: v.string(),
 			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
 			type: v.picklist(["secret"]),
@@ -2883,6 +3129,14 @@ export const vUpdateEnvironmentVariableResponse = v.object({
 			updated_at: v.pipe(v.string(), v.isoTimestamp()),
 		}),
 		v.strictObject({
+			project_id: v.optional(
+				v.pipe(
+					v.string(),
+					v.minLength(16),
+					v.maxLength(128),
+					v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+				),
+			),
 			id: v.string(),
 			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
 			type: v.picklist(["config"]),
@@ -2909,6 +3163,53 @@ export const vUpdateEnvironmentVariableResponse = v.object({
 	),
 });
 
+export const vMoveHeartbeatBody = v.strictObject({
+	project_id: v.pipe(
+		v.string(),
+		v.minLength(16),
+		v.maxLength(128),
+		v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+	),
+});
+
+export const vMoveHeartbeatHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vMoveHeartbeatPath = v.object({
+	heartbeat_id: v.pipe(v.string(), v.minLength(8)),
+});
+
+/**
+ * Moved heartbeat identity and destination
+ */
+export const vMoveHeartbeatResponse = v.object({
+	result: v.strictObject({
+		id: v.pipe(v.string(), v.minLength(8)),
+		project_id: v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
 export const vListHeartbeatsHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
 });
@@ -2917,6 +3218,14 @@ export const vListHeartbeatsQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 });
 
 /**
@@ -2965,6 +3274,14 @@ export const vListHeartbeatsResponse = v.union([
 ]);
 
 export const vCreateHeartbeatBody = v.object({
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	name: v.string(),
 	report_period: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1))),
 	report_period_cron: v.optional(v.string()),
@@ -3075,6 +3392,7 @@ export const vGetHeartbeatResponse = v.object({
 });
 
 export const vUpdateHeartbeatBody = v.object({
+	project_id: v.optional(v.string()),
 	name: v.optional(v.string()),
 	report_period: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(1))),
 	report_period_cron: v.nullish(v.string()),
@@ -3503,6 +3821,189 @@ export const vCreateInvitationHeaders = v.object({
  */
 export const vCreateInvitationResponse = v.object({
 	result: vInvitation,
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vListProjectsHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vListProjectsQuery = v.object({
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+});
+
+/**
+ * Paginated owned projects
+ */
+export const vListProjectsResponse = v.object({
+	result: v.array(vProject),
+	result_info: v.object({
+		page: v.optional(v.number(), 1),
+		per_page: v.optional(v.number(), 20),
+		count: v.number(),
+		total_count: v.number(),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vCreateProjectBody = v.strictObject({
+	name: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+});
+
+export const vCreateProjectHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+/**
+ * Project created
+ */
+export const vCreateProjectResponse = v.object({
+	result: vProject,
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vDeleteProjectHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vDeleteProjectPath = v.object({
+	project_id: v.pipe(
+		v.string(),
+		v.minLength(16),
+		v.maxLength(128),
+		v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+	),
+});
+
+/**
+ * Deleted project identity
+ */
+export const vDeleteProjectResponse = v.object({
+	result: v.strictObject({
+		id: v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vGetProjectHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vGetProjectPath = v.object({
+	project_id: v.pipe(
+		v.string(),
+		v.minLength(16),
+		v.maxLength(128),
+		v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+	),
+});
+
+/**
+ * Owned project
+ */
+export const vGetProjectResponse = v.object({
+	result: vProject,
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vUpdateProjectBody = v.strictObject({
+	name: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+});
+
+export const vUpdateProjectHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vUpdateProjectPath = v.object({
+	project_id: v.pipe(
+		v.string(),
+		v.minLength(16),
+		v.maxLength(128),
+		v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+	),
+});
+
+/**
+ * Renamed project
+ */
+export const vUpdateProjectResponse = v.object({
+	result: vProject,
 	success: v.boolean(),
 	errors: v.array(
 		v.object({
@@ -5029,6 +5530,296 @@ export const vUpdateStatusPageScheduledMaintenanceResponse = v.object({
 	),
 });
 
+export const vGetWebhookDeliverySummaryHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vGetWebhookDeliverySummaryQuery = v.object({
+	webhook_ids: v.pipe(v.string(), v.maxLength(12900)),
+});
+
+/**
+ * Owned webhook delivery history
+ */
+export const vGetWebhookDeliverySummaryResponse = v.object({
+	result: v.array(
+		v.object({
+			delivery_count: v.pipe(v.number(), v.integer(), v.minValue(0)),
+			error_count: v.pipe(v.number(), v.integer(), v.minValue(0)),
+			average_response_time_ms: v.nullable(v.pipe(v.number(), v.minValue(0))),
+			error_rate: v.nullable(
+				v.pipe(v.number(), v.minValue(0), v.maxValue(100)),
+			),
+			webhook_id: v.string(),
+			buckets: v.array(
+				v.object({
+					delivery_count: v.pipe(v.number(), v.integer(), v.minValue(0)),
+					error_count: v.pipe(v.number(), v.integer(), v.minValue(0)),
+					average_response_time_ms: v.nullable(
+						v.pipe(v.number(), v.minValue(0)),
+					),
+					error_rate: v.nullable(
+						v.pipe(v.number(), v.minValue(0), v.maxValue(100)),
+					),
+					timestamp: v.pipe(v.string(), v.isoTimestamp()),
+				}),
+			),
+		}),
+	),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vGetWebhookDeliveryActivityHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vGetWebhookDeliveryActivityPath = v.object({
+	webhook_id: v.pipe(v.string(), v.minLength(8)),
+});
+
+export const vGetWebhookDeliveryActivityQuery = v.object({
+	period: v.optional(v.picklist(["24h", "7d", "14d"]), "24h"),
+});
+
+/**
+ * Owned webhook delivery history
+ */
+export const vGetWebhookDeliveryActivityResponse = v.object({
+	result: v.object({
+		summary: v.object({
+			delivery_count: v.pipe(v.number(), v.integer(), v.minValue(0)),
+			error_count: v.pipe(v.number(), v.integer(), v.minValue(0)),
+			average_response_time_ms: v.nullable(v.pipe(v.number(), v.minValue(0))),
+			error_rate: v.nullable(
+				v.pipe(v.number(), v.minValue(0), v.maxValue(100)),
+			),
+			webhook_id: v.string(),
+			buckets: v.array(
+				v.object({
+					delivery_count: v.pipe(v.number(), v.integer(), v.minValue(0)),
+					error_count: v.pipe(v.number(), v.integer(), v.minValue(0)),
+					average_response_time_ms: v.nullable(
+						v.pipe(v.number(), v.minValue(0)),
+					),
+					error_rate: v.nullable(
+						v.pipe(v.number(), v.minValue(0), v.maxValue(100)),
+					),
+					timestamp: v.pipe(v.string(), v.isoTimestamp()),
+				}),
+			),
+		}),
+		buckets: v.array(
+			v.object({
+				delivery_count: v.pipe(v.number(), v.integer(), v.minValue(0)),
+				error_count: v.pipe(v.number(), v.integer(), v.minValue(0)),
+				average_response_time_ms: v.nullable(v.pipe(v.number(), v.minValue(0))),
+				error_rate: v.nullable(
+					v.pipe(v.number(), v.minValue(0), v.maxValue(100)),
+				),
+				timestamp: v.pipe(v.string(), v.isoTimestamp()),
+			}),
+		),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vListWebhookDeliveriesHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vListWebhookDeliveriesPath = v.object({
+	webhook_id: v.pipe(v.string(), v.minLength(8)),
+});
+
+export const vListWebhookDeliveriesQuery = v.object({
+	period: v.optional(v.picklist(["24h", "7d", "14d"]), "24h"),
+	event_type: v.optional(
+		v.picklist([
+			"status_page.incident.started",
+			"status_page.incident.updated",
+			"status_page.incident.resolved",
+			"uptime.down",
+			"uptime.up",
+			"heartbeat.down",
+			"heartbeat.up",
+		]),
+	),
+	outcome: v.optional(
+		v.picklist([
+			"success",
+			"http_error",
+			"timeout",
+			"network_error",
+			"resolution_error",
+			"skipped",
+		]),
+	),
+	limit: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(100)),
+		25,
+	),
+	cursor: v.optional(v.pipe(v.string(), v.maxLength(2048))),
+});
+
+/**
+ * Owned webhook delivery history
+ */
+export const vListWebhookDeliveriesResponse = v.object({
+	result: v.object({
+		deliveries: v.array(
+			v.object({
+				schema_version: v.picklist([1]),
+				webhook_id: v.string(),
+				event_id: v.string(),
+				attempt_id: v.string(),
+				event_type: v.picklist([
+					"status_page.incident.started",
+					"status_page.incident.updated",
+					"status_page.incident.resolved",
+					"uptime.down",
+					"uptime.up",
+					"heartbeat.down",
+					"heartbeat.up",
+				]),
+				queued_at: v.pipe(v.string(), v.isoTimestamp()),
+				attempted_at: v.pipe(v.string(), v.isoTimestamp()),
+				completed_at: v.pipe(v.string(), v.isoTimestamp()),
+				outcome: v.picklist([
+					"success",
+					"http_error",
+					"timeout",
+					"network_error",
+					"resolution_error",
+					"skipped",
+				]),
+				failure_reason: v.nullable(v.pipe(v.string(), v.maxLength(128))),
+				http_status: v.nullable(
+					v.pipe(v.number(), v.integer(), v.minValue(100), v.maxValue(599)),
+				),
+				response_time_ms: v.nullable(v.pipe(v.number(), v.minValue(0))),
+				request_method: v.picklist(["POST"]),
+			}),
+		),
+		next_cursor: v.nullable(v.string()),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vGetWebhookDeliveryHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vGetWebhookDeliveryPath = v.object({
+	webhook_id: v.pipe(v.string(), v.minLength(8)),
+	attempt_id: v.string(),
+});
+
+/**
+ * Owned webhook delivery history
+ */
+export const vGetWebhookDeliveryResponse = v.object({
+	result: v.object({
+		schema_version: v.picklist([1]),
+		webhook_id: v.string(),
+		event_id: v.string(),
+		attempt_id: v.string(),
+		event_type: v.picklist([
+			"status_page.incident.started",
+			"status_page.incident.updated",
+			"status_page.incident.resolved",
+			"uptime.down",
+			"uptime.up",
+			"heartbeat.down",
+			"heartbeat.up",
+		]),
+		queued_at: v.pipe(v.string(), v.isoTimestamp()),
+		attempted_at: v.pipe(v.string(), v.isoTimestamp()),
+		completed_at: v.pipe(v.string(), v.isoTimestamp()),
+		outcome: v.picklist([
+			"success",
+			"http_error",
+			"timeout",
+			"network_error",
+			"resolution_error",
+			"skipped",
+		]),
+		failure_reason: v.nullable(v.pipe(v.string(), v.maxLength(128))),
+		http_status: v.nullable(
+			v.pipe(v.number(), v.integer(), v.minValue(100), v.maxValue(599)),
+		),
+		response_time_ms: v.nullable(v.pipe(v.number(), v.minValue(0))),
+		request_method: v.picklist(["POST"]),
+		request_headers: v.string(),
+		request_body: v.nullable(v.string()),
+		request_body_state: v.picklist(["captured", "truncated", "unavailable"]),
+		response_headers: v.string(),
+		response_body: v.nullable(v.string()),
+		response_body_state: v.picklist([
+			"captured",
+			"truncated",
+			"unavailable",
+			"not_received",
+		]),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
 export const vListWebhooksHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
 });
@@ -5037,6 +5828,14 @@ export const vListWebhooksQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 });
 
 /**
@@ -5088,6 +5887,15 @@ export const vListWebhooksResponse = v.union([
  * At least one nonempty status_page_ids, check_ids, or heartbeat_ids association is required. Each selected resource type requires a matching event type, and each subscribed event type requires a resource of its type. Events and association IDs must not contain duplicates.
  */
 export const vCreateWebhookBody = v.object({
+	project_id: v.optional(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
+	enabled: v.optional(v.boolean()),
 	url: v.string(),
 	description: v.optional(v.string()),
 	events: v.pipe(
@@ -5201,6 +6009,8 @@ export const vGetWebhookResponse = v.object({
  * Partial webhook update. The merged saved state must have matching resource and event types, at least one resource and event, and no duplicate events or association IDs.
  */
 export const vUpdateWebhookBody = v.object({
+	project_id: v.optional(v.string()),
+	enabled: v.optional(v.boolean()),
 	url: v.optional(v.string()),
 	description: v.optional(v.string()),
 	events: v.optional(

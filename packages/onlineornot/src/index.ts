@@ -6,9 +6,12 @@ import { printBanner } from "./banner";
 import { billingHandler, billingOptions } from "./billing";
 import { checks } from "./checks";
 import { docsHandler, docsOptions } from "./docs";
+import { heartbeats } from "./heartbeats";
 import { logger } from "./logger";
 import { loginHandler, loginOptions } from "./login";
 import { logoutHandler, logoutOptions } from "./logout";
+import { ParseError } from "./parse";
+import { projects } from "./projects";
 import { setupHandler, setupOptions } from "./setup";
 import { uninstallHandler, uninstallOptions } from "./uninstall";
 import { updateHandler, updateOptions } from "./update";
@@ -100,6 +103,13 @@ export function createCLIParser(argv: string[]) {
 	onlineornot.command("checks", "✅ Manage your uptime checks", (d1Yargs) => {
 		return checks(d1Yargs.command(subHelp));
 	});
+
+	onlineornot.command("projects", "Manage projects", (args) =>
+		projects(args.command(subHelp)),
+	);
+	onlineornot.command("heartbeats", "List and move heartbeats", (args) =>
+		heartbeats(args.command(subHelp)),
+	);
 
 	// billing
 	onlineornot.command(
@@ -195,7 +205,13 @@ export async function main(argv: string[]): Promise<void> {
 			// The `onlineornot` object is "frozen"; we cannot reuse that with different args, so we must create a new CLI parser to generate the help message.
 			await createCLIParser([...argv, "--help"]).parse();
 		} else {
-			logger.error(e instanceof Error ? e.message : e);
+			logger.error(
+				e instanceof ParseError
+					? [e.message, ...e.notes.map((note) => note.text)].join("\n")
+					: e instanceof Error
+						? e.message
+						: e,
+			);
 			logger.log(
 				`${fgGreenColor}%s${resetColor}`,
 				"If you think this is a bug then please create an issue at https://github.com/OnlineOrNot/onlineornot/issues/new/choose",

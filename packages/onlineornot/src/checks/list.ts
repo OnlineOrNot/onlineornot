@@ -9,11 +9,16 @@ import type {
 import type { CheckListItem } from "./types";
 
 export function options(yargs: CommonYargsArgv) {
-	return yargs.option("json", {
-		describe: "Return output as JSON",
-		type: "boolean",
-		default: false,
-	});
+	return yargs
+		.option("project-id", {
+			type: "string",
+			describe: "Filter by encoded project ID; omit for all projects",
+		})
+		.option("json", {
+			describe: "Return output as JSON",
+			type: "boolean",
+			default: false,
+		});
 }
 
 export async function handler(
@@ -23,7 +28,7 @@ export async function handler(
 		await printBanner();
 	}
 	await verifyToken();
-	const results: CheckListItem[] = await listChecks();
+	const results: CheckListItem[] = await listChecks(args.projectId);
 
 	if (args.json) {
 		logger.log(JSON.stringify(results, null, "  "));
