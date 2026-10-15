@@ -4,6 +4,7 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 
 import { afterAll, beforeAll, beforeEach, expect, it } from "vitest";
@@ -116,7 +117,7 @@ async function cli(...args: string[]) {
 		process.execPath,
 		[
 			"--import",
-			path.resolve("test-fixtures/projects-http.mjs"),
+			pathToFileURL(path.resolve("test-fixtures/projects-http.mjs")).href,
 			path.resolve("bin/onlineornot.js"),
 			...args,
 		],
@@ -124,6 +125,7 @@ async function cli(...args: string[]) {
 			env: {
 				...process.env,
 				HOME: home,
+				USERPROFILE: home,
 				ONLINEORNOT_API_TOKEN: "fabricated-project-token",
 				ONLINEORNOT_TEST_API_ORIGIN: origin,
 				NODE_ENV: "test",
