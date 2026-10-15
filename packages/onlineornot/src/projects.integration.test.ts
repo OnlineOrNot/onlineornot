@@ -244,6 +244,9 @@ it("rejects ownership PATCH flags rather than silently moving a check", async ()
 			projectId,
 			"--json",
 		),
-	).rejects.toMatchObject({ code: 1 });
+	).rejects.toMatchObject({
+		code: 1,
+		stderr: expect.stringMatching(/Unknown arguments?:.*project-id/),
+	});
 	expect(requests).toHaveLength(0);
 });
