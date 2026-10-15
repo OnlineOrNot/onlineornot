@@ -1,5 +1,11 @@
 # @onlineornot/api
 
+## 0.6.0
+
+### Minor Changes
+
+- [#113](https://github.com/OnlineOrNot/onlineornot/pull/113) [`17ba776`](https://github.com/OnlineOrNot/onlineornot/commit/17ba77660a3c7735014877040736edad0fe23ab0) Thanks [@rozenmd](https://github.com/rozenmd)! - FEAT: Regenerate the API SDK from the deployed Projects contract, including project CRUD, resource project selectors, and dedicated check and heartbeat move operations. The refreshed snapshot also includes webhook delivery operations and enabled webhook metadata.
+
 ## 0.5.2
 
 ### Patch Changes
