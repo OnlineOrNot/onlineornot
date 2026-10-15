@@ -30,6 +30,9 @@ import type {
 	CreateMaintenanceWindowData,
 	CreateMaintenanceWindowErrors,
 	CreateMaintenanceWindowResponses,
+	CreateProjectData,
+	CreateProjectErrors,
+	CreateProjectResponses,
 	CreateStatusPageComponentData,
 	CreateStatusPageComponentErrors,
 	CreateStatusPageComponentGroupData,
@@ -81,6 +84,9 @@ import type {
 	DeleteMaintenanceWindowData,
 	DeleteMaintenanceWindowErrors,
 	DeleteMaintenanceWindowResponses,
+	DeleteProjectData,
+	DeleteProjectErrors,
+	DeleteProjectResponses,
 	DeleteStatusPageComponentData,
 	DeleteStatusPageComponentErrors,
 	DeleteStatusPageComponentGroupData,
@@ -132,6 +138,9 @@ import type {
 	GetMaintenanceWindowData,
 	GetMaintenanceWindowErrors,
 	GetMaintenanceWindowResponses,
+	GetProjectData,
+	GetProjectErrors,
+	GetProjectResponses,
 	GetStatusPageComponentData,
 	GetStatusPageComponentErrors,
 	GetStatusPageComponentGroupData,
@@ -166,6 +175,15 @@ import type {
 	GetUptimeCheckErrors,
 	GetUptimeCheckResponses,
 	GetWebhookData,
+	GetWebhookDeliveryActivityData,
+	GetWebhookDeliveryActivityErrors,
+	GetWebhookDeliveryActivityResponses,
+	GetWebhookDeliveryData,
+	GetWebhookDeliveryErrors,
+	GetWebhookDeliveryResponses,
+	GetWebhookDeliverySummaryData,
+	GetWebhookDeliverySummaryErrors,
+	GetWebhookDeliverySummaryResponses,
 	GetWebhookErrors,
 	GetWebhookResponses,
 	ListAuditLogsData,
@@ -198,6 +216,9 @@ import type {
 	ListMaintenanceWindowsData,
 	ListMaintenanceWindowsErrors,
 	ListMaintenanceWindowsResponses,
+	ListProjectsData,
+	ListProjectsErrors,
+	ListProjectsResponses,
 	ListStatusPageComponentGroupsData,
 	ListStatusPageComponentGroupsErrors,
 	ListStatusPageComponentGroupsResponses,
@@ -234,9 +255,18 @@ import type {
 	ListUsersData,
 	ListUsersErrors,
 	ListUsersResponses,
+	ListWebhookDeliveriesData,
+	ListWebhookDeliveriesErrors,
+	ListWebhookDeliveriesResponses,
 	ListWebhooksData,
 	ListWebhooksErrors,
 	ListWebhooksResponses,
+	MoveCheckData,
+	MoveCheckErrors,
+	MoveCheckResponses,
+	MoveHeartbeatData,
+	MoveHeartbeatErrors,
+	MoveHeartbeatResponses,
 	PingHeartbeatData,
 	PingHeartbeatErrors,
 	PingHeartbeatGetData,
@@ -264,6 +294,9 @@ import type {
 	UpdateMaintenanceWindowData,
 	UpdateMaintenanceWindowErrors,
 	UpdateMaintenanceWindowResponses,
+	UpdateProjectData,
+	UpdateProjectErrors,
+	UpdateProjectResponses,
 	UpdateStatusPageComponentData,
 	UpdateStatusPageComponentErrors,
 	UpdateStatusPageComponentGroupData,
@@ -890,6 +923,28 @@ export const updateBrowserCheck = <ThrowOnError extends boolean = false>(
 	});
 
 /**
+ * Move a check to another project
+ *
+ * Requires UPTIME_CHECKS:EDIT.
+ */
+export const moveCheck = <ThrowOnError extends boolean = false>(
+	options: Options<MoveCheckData, ThrowOnError>,
+): RequestResult<MoveCheckResponses, MoveCheckErrors, ThrowOnError> =>
+	(options.client ?? client).post<
+		MoveCheckResponses,
+		MoveCheckErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/checks/{check_id}/move",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
  * Review recent failures and recoveries for a specific uptime check
  *
  * List incidents for an uptime check. Use from and to to include incidents that overlap the time range. Results are sorted by start time, then ID, newest first. Timestamps accept up to three decimal places for seconds. Pagination accepts safe integers, including the calculated offset. The per_page limit is 100.
@@ -1216,7 +1271,7 @@ export const listEnvironmentVariables = <ThrowOnError extends boolean = false>(
 /**
  * Create an environment variable
  *
- * Create a reusable config or secret for uptime check request headers, HTTP Basic Auth usernames and passwords, and webhook URL templates. Reference variables using {{NAME}}. Each uptime check supports at most 32 distinct variable references across its headers and HTTP Basic Auth combined. Browser checks do not support environment variable references. See [variable-backed webhook URL examples](https://developers.onlineornot.com/api/webhooks#create-a-webhook). Config values are readable; secrets are write-only. A variable's type cannot be changed after creation. Anyone who can edit uptime checks can use variables from the same organization. Exact secret values are automatically redacted from results; encoded or transformed values may remain visible.
+ * Create a reusable config or secret for uptime check request headers, HTTP Basic Auth usernames and passwords, and webhook URL templates. Reference variables using {{NAME}}. Each uptime check supports at most 32 distinct variable references across its headers and HTTP Basic Auth combined. Browser checks do not support environment variable references. See [variable-backed webhook URL examples](https://developers.onlineornot.com/api/webhooks#create-a-webhook). Config values are readable; secrets are write-only. A variable's type cannot be changed after creation. Anyone who can edit uptime checks can use variables from the same organization and project, without inheritance or cross-project fallback. Exact secret values are automatically redacted from results; encoded or transformed values may remain visible.
  *
  * Requires ENVIRONMENT_VARIABLES:EDIT.
  */
@@ -1310,6 +1365,28 @@ export const updateEnvironmentVariable = <ThrowOnError extends boolean = false>(
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
 		url: "/v1/env/{environment_variable_id}",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
+ * Move a heartbeat to another project
+ *
+ * Requires HEARTBEAT_CHECKS:EDIT.
+ */
+export const moveHeartbeat = <ThrowOnError extends boolean = false>(
+	options: Options<MoveHeartbeatData, ThrowOnError>,
+): RequestResult<MoveHeartbeatResponses, MoveHeartbeatErrors, ThrowOnError> =>
+	(options.client ?? client).post<
+		MoveHeartbeatResponses,
+		MoveHeartbeatErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/heartbeats/{heartbeat_id}/move",
 		...options,
 		headers: {
 			"Content-Type": "application/json",
@@ -1650,6 +1727,104 @@ export const createInvitation = <ThrowOnError extends boolean = false>(
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
 		url: "/v1/invitations",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
+ * List projects
+ *
+ * Requires PROJECTS:READ.
+ */
+export const listProjects = <ThrowOnError extends boolean = false>(
+	options?: Options<ListProjectsData, ThrowOnError>,
+): RequestResult<ListProjectsResponses, ListProjectsErrors, ThrowOnError> =>
+	(options?.client ?? client).get<
+		ListProjectsResponses,
+		ListProjectsErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/projects",
+		...options,
+	});
+
+/**
+ * Create a project
+ *
+ * Requires PROJECTS:EDIT.
+ */
+export const createProject = <ThrowOnError extends boolean = false>(
+	options: Options<CreateProjectData, ThrowOnError>,
+): RequestResult<CreateProjectResponses, CreateProjectErrors, ThrowOnError> =>
+	(options.client ?? client).post<
+		CreateProjectResponses,
+		CreateProjectErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/projects",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
+ * Delete an empty non-Default project
+ *
+ * Requires PROJECTS:EDIT.
+ */
+export const deleteProject = <ThrowOnError extends boolean = false>(
+	options: Options<DeleteProjectData, ThrowOnError>,
+): RequestResult<DeleteProjectResponses, DeleteProjectErrors, ThrowOnError> =>
+	(options.client ?? client).delete<
+		DeleteProjectResponses,
+		DeleteProjectErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/projects/{project_id}",
+		...options,
+	});
+
+/**
+ * Get a project
+ *
+ * Requires PROJECTS:READ.
+ */
+export const getProject = <ThrowOnError extends boolean = false>(
+	options: Options<GetProjectData, ThrowOnError>,
+): RequestResult<GetProjectResponses, GetProjectErrors, ThrowOnError> =>
+	(options.client ?? client).get<
+		GetProjectResponses,
+		GetProjectErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/projects/{project_id}",
+		...options,
+	});
+
+/**
+ * Rename a project
+ *
+ * Requires PROJECTS:EDIT.
+ */
+export const updateProject = <ThrowOnError extends boolean = false>(
+	options: Options<UpdateProjectData, ThrowOnError>,
+): RequestResult<UpdateProjectResponses, UpdateProjectErrors, ThrowOnError> =>
+	(options.client ?? client).patch<
+		UpdateProjectResponses,
+		UpdateProjectErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/projects/{project_id}",
 		...options,
 		headers: {
 			"Content-Type": "application/json",
@@ -2539,6 +2714,96 @@ export const updateStatusPageScheduledMaintenance = <
 			"Content-Type": "application/json",
 			...options.headers,
 		},
+	});
+
+/**
+ * Read last-24-hour webhook summaries
+ *
+ * Requires WEBHOOKS:READ.
+ */
+export const getWebhookDeliverySummary = <ThrowOnError extends boolean = false>(
+	options: Options<GetWebhookDeliverySummaryData, ThrowOnError>,
+): RequestResult<
+	GetWebhookDeliverySummaryResponses,
+	GetWebhookDeliverySummaryErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		GetWebhookDeliverySummaryResponses,
+		GetWebhookDeliverySummaryErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/webhooks/delivery-summary",
+		...options,
+	});
+
+/**
+ * Read webhook delivery activity
+ *
+ * Requires WEBHOOKS:READ.
+ */
+export const getWebhookDeliveryActivity = <
+	ThrowOnError extends boolean = false,
+>(
+	options: Options<GetWebhookDeliveryActivityData, ThrowOnError>,
+): RequestResult<
+	GetWebhookDeliveryActivityResponses,
+	GetWebhookDeliveryActivityErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		GetWebhookDeliveryActivityResponses,
+		GetWebhookDeliveryActivityErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/webhooks/{webhook_id}/delivery-activity",
+		...options,
+	});
+
+/**
+ * List webhook delivery attempts
+ *
+ * Requires WEBHOOKS:READ.
+ */
+export const listWebhookDeliveries = <ThrowOnError extends boolean = false>(
+	options: Options<ListWebhookDeliveriesData, ThrowOnError>,
+): RequestResult<
+	ListWebhookDeliveriesResponses,
+	ListWebhookDeliveriesErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		ListWebhookDeliveriesResponses,
+		ListWebhookDeliveriesErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/webhooks/{webhook_id}/deliveries",
+		...options,
+	});
+
+/**
+ * Inspect a webhook delivery attempt
+ *
+ * Requires WEBHOOKS:READ.
+ */
+export const getWebhookDelivery = <ThrowOnError extends boolean = false>(
+	options: Options<GetWebhookDeliveryData, ThrowOnError>,
+): RequestResult<
+	GetWebhookDeliveryResponses,
+	GetWebhookDeliveryErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		GetWebhookDeliveryResponses,
+		GetWebhookDeliveryErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/webhooks/{webhook_id}/deliveries/{attempt_id}",
+		...options,
 	});
 
 /**
