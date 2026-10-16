@@ -1,5 +1,11 @@
 # @onlineornot/api
 
+## 0.7.0
+
+### Minor Changes
+
+- [#115](https://github.com/OnlineOrNot/onlineornot/pull/115) [`1448dbe`](https://github.com/OnlineOrNot/onlineornot/commit/1448dbe1115df03e248d6eccfc47ddb85c25f9bf) Thanks [@rozenmd](https://github.com/rozenmd)! - FEAT: Accept nullable project assignments in resource responses and an optional legacy Default project flag in generated types, Zod validators and Valibot validators. Request project IDs remain unchanged during the compatibility rollout.
+
 ## 0.6.0
 
 ### Minor Changes
