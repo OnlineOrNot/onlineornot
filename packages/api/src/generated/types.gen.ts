@@ -75,9 +75,9 @@ export type AnyCheck =
 
 export type ExpandedUptimeCheck = {
 	/**
-	 * Encoded project ID, not a project name or raw database ID.
+	 * Project ID, or null for Unassigned.
 	 */
-	project_id?: string;
+	project_id?: string | null;
 	/**
 	 * Uptime Check ID
 	 */
@@ -241,9 +241,9 @@ export type ExpandedUptimeCheck = {
 
 export type ExpandedBrowserCheck = {
 	/**
-	 * Encoded project ID, not a project name or raw database ID.
+	 * Project ID, or null for Unassigned.
 	 */
-	project_id?: string;
+	project_id?: string | null;
 	/**
 	 * Uptime Check ID
 	 */
@@ -410,9 +410,9 @@ export type ExpandedBrowserCheck = {
 
 export type ExpandedDnsCheck = {
 	/**
-	 * Encoded project ID, not a project name or raw database ID.
+	 * Project ID, or null for Unassigned.
 	 */
-	project_id?: string;
+	project_id?: string | null;
 	/**
 	 * Uptime Check ID
 	 */
@@ -559,9 +559,9 @@ export type DnsAssertion = {
 
 export type ExpandedTcpCheck = {
 	/**
-	 * Encoded project ID, not a project name or raw database ID.
+	 * Project ID, or null for Unassigned.
 	 */
-	project_id?: string;
+	project_id?: string | null;
 	/**
 	 * Uptime Check ID
 	 */
@@ -748,9 +748,9 @@ export type CheckListResponse = {
 
 export type CheckListItem = {
 	/**
-	 * Encoded project ID, not a project name or raw database ID.
+	 * Project ID, or null for Unassigned.
 	 */
-	project_id?: string;
+	project_id?: string | null;
 	/**
 	 * Uptime Check ID
 	 */
@@ -860,7 +860,7 @@ export type DnsCheckResponse = {
 
 export type DnsCheckInput = {
 	/**
-	 * Omit to select the organisation's stable Default project.
+	 * Project ID. Omit to select the organisation Default project during the compatibility rollout.
 	 */
 	project_id?: string;
 	name: string;
@@ -1037,7 +1037,7 @@ export type TcpCheckResponse = {
 
 export type TcpCheckInput = {
 	/**
-	 * Omit to select the organisation's stable Default project.
+	 * Project ID. Omit to select the organisation Default project during the compatibility rollout.
 	 */
 	project_id?: string;
 	name: string;
@@ -1202,7 +1202,7 @@ export type UptimeCheckResponse = {
 
 export type UptimeCheckInput = {
 	/**
-	 * Omit to select the organisation's stable Default project.
+	 * Project ID. Omit to select the organisation Default project during the compatibility rollout.
 	 */
 	project_id?: string;
 	name: string;
@@ -1458,7 +1458,7 @@ export type BrowserCheckResponse = {
  */
 export type BrowserCheckInput = {
 	/**
-	 * Omit to select the organisation's stable Default project.
+	 * Project ID. Omit to select the organisation Default project during the compatibility rollout.
 	 */
 	project_id?: string;
 	name: string;
@@ -2053,9 +2053,9 @@ export type ExpandedCheck = Check & {
 
 export type Check = {
 	/**
-	 * Encoded project ID, not a project name or raw database ID.
+	 * Project ID, or null for Unassigned.
 	 */
-	project_id?: string;
+	project_id?: string | null;
 	/**
 	 * Uptime Check ID
 	 */
@@ -2089,7 +2089,7 @@ export type Check = {
 
 export type CheckInput = {
 	/**
-	 * Omit to select the organisation's stable Default project.
+	 * Project ID. Omit to select the organisation Default project during the compatibility rollout.
 	 */
 	project_id?: string;
 	name: string;
@@ -2341,9 +2341,9 @@ export type CheckPatch = {
 
 export type EnvironmentVariableMetadata = {
 	/**
-	 * Encoded project ID, not a project name or raw database ID.
+	 * Project ID, or null for Unassigned.
 	 */
-	project_id?: string;
+	project_id?: string | null;
 	/**
 	 * Stable public environment variable ID.
 	 */
@@ -2372,9 +2372,9 @@ export type EnvironmentVariableMetadata = {
 
 export type Heartbeat = {
 	/**
-	 * Encoded project ID, not a project name or raw database ID.
+	 * Project ID, or null for Unassigned.
 	 */
-	project_id?: string;
+	project_id?: string | null;
 	/**
 	 * Heartbeat ID
 	 */
@@ -2553,17 +2553,17 @@ export type Invitation = {
 
 export type Project = {
 	/**
-	 * Encoded project ID, not a project name or raw database ID.
+	 * Project ID.
 	 */
 	id: string;
 	/**
-	 * Editable display label. Project names need not be unique.
+	 * Project name.
 	 */
 	name: string;
 	/**
-	 * Stable Default identity, independent of the editable name.
+	 * Legacy Default project marker, retained during the compatibility rollout.
 	 */
-	is_default: boolean;
+	is_default?: boolean;
 	created_at: string;
 	updated_at: string;
 };
@@ -2964,9 +2964,9 @@ export type IncidentUpdate = {
 
 export type Webhook = {
 	/**
-	 * Encoded project ID, not a project name or raw database ID.
+	 * Project ID, or null for Unassigned.
 	 */
-	project_id?: string;
+	project_id?: string | null;
 	/**
 	 * Webhook ID
 	 */
@@ -4639,7 +4639,7 @@ export type UpdateBrowserCheckResponse =
 export type MoveCheckData = {
 	body: {
 		/**
-		 * Encoded project ID, not a project name or raw database ID.
+		 * Project ID.
 		 */
 		project_id: string;
 	};
@@ -4703,9 +4703,9 @@ export type MoveCheckResponses = {
 			 */
 			id: string;
 			/**
-			 * Encoded project ID, not a project name or raw database ID.
+			 * Project ID, or null for Unassigned.
 			 */
-			project_id: string;
+			project_id: string | null;
 		};
 		/**
 		 * Whether the API call was successful
@@ -5333,7 +5333,7 @@ export type ListChecksData = {
 		 */
 		search?: string;
 		/**
-		 * Omit to list resources across all authorized projects.
+		 * Project ID. Omit to list all authorised resources.
 		 */
 		project_id?: string;
 		/**
@@ -5677,7 +5677,7 @@ export type ListEnvironmentVariablesData = {
 		 */
 		per_page?: number;
 		/**
-		 * Omit to list resources across all authorized projects.
+		 * Project ID. Omit to list all authorised resources.
 		 */
 		project_id?: string;
 		/**
@@ -5765,7 +5765,7 @@ export type ListEnvironmentVariablesResponse =
 export type CreateEnvironmentVariableData = {
 	body: {
 		/**
-		 * Omit to select the organisation's stable Default project.
+		 * Project ID. Omit to select the organisation Default project during the compatibility rollout.
 		 */
 		project_id?: string;
 		/**
@@ -5834,9 +5834,9 @@ export type CreateEnvironmentVariableResponses = {
 		result:
 			| {
 					/**
-					 * Encoded project ID, not a project name or raw database ID.
+					 * Project ID, or null for Unassigned.
 					 */
-					project_id?: string;
+					project_id?: string | null;
 					/**
 					 * Stable public environment variable ID.
 					 */
@@ -5861,9 +5861,9 @@ export type CreateEnvironmentVariableResponses = {
 			  }
 			| {
 					/**
-					 * Encoded project ID, not a project name or raw database ID.
+					 * Project ID, or null for Unassigned.
 					 */
-					project_id?: string;
+					project_id?: string | null;
 					/**
 					 * Stable public environment variable ID.
 					 */
@@ -6046,9 +6046,9 @@ export type GetEnvironmentVariableResponses = {
 		result:
 			| {
 					/**
-					 * Encoded project ID, not a project name or raw database ID.
+					 * Project ID, or null for Unassigned.
 					 */
-					project_id?: string;
+					project_id?: string | null;
 					/**
 					 * Stable public environment variable ID.
 					 */
@@ -6073,9 +6073,9 @@ export type GetEnvironmentVariableResponses = {
 			  }
 			| {
 					/**
-					 * Encoded project ID, not a project name or raw database ID.
+					 * Project ID, or null for Unassigned.
 					 */
-					project_id?: string;
+					project_id?: string | null;
 					/**
 					 * Stable public environment variable ID.
 					 */
@@ -6192,9 +6192,9 @@ export type UpdateEnvironmentVariableResponses = {
 		result:
 			| {
 					/**
-					 * Encoded project ID, not a project name or raw database ID.
+					 * Project ID, or null for Unassigned.
 					 */
-					project_id?: string;
+					project_id?: string | null;
 					/**
 					 * Stable public environment variable ID.
 					 */
@@ -6219,9 +6219,9 @@ export type UpdateEnvironmentVariableResponses = {
 			  }
 			| {
 					/**
-					 * Encoded project ID, not a project name or raw database ID.
+					 * Project ID, or null for Unassigned.
 					 */
-					project_id?: string;
+					project_id?: string | null;
 					/**
 					 * Stable public environment variable ID.
 					 */
@@ -6271,7 +6271,7 @@ export type UpdateEnvironmentVariableResponse =
 export type MoveHeartbeatData = {
 	body: {
 		/**
-		 * Encoded project ID, not a project name or raw database ID.
+		 * Project ID.
 		 */
 		project_id: string;
 	};
@@ -6331,9 +6331,9 @@ export type MoveHeartbeatResponses = {
 			 */
 			id: string;
 			/**
-			 * Encoded project ID, not a project name or raw database ID.
+			 * Project ID, or null for Unassigned.
 			 */
-			project_id: string;
+			project_id: string | null;
 		};
 		/**
 		 * Whether the API call was successful
@@ -6378,7 +6378,7 @@ export type ListHeartbeatsData = {
 		 */
 		search?: string;
 		/**
-		 * Omit to list resources across all authorized projects.
+		 * Project ID. Omit to list all authorised resources.
 		 */
 		project_id?: string;
 	};
@@ -6466,7 +6466,7 @@ export type ListHeartbeatsResponse =
 export type CreateHeartbeatData = {
 	body: {
 		/**
-		 * Omit to select the organisation's stable Default project.
+		 * Project ID. Omit to select the organisation Default project during the compatibility rollout.
 		 */
 		project_id?: string;
 		name: string;
@@ -7743,7 +7743,7 @@ export type ListProjectsResponse =
 export type CreateProjectData = {
 	body: {
 		/**
-		 * Editable display label. Project names need not be unique.
+		 * Project name.
 		 */
 		name: string;
 	};
@@ -7819,7 +7819,7 @@ export type DeleteProjectData = {
 	};
 	path: {
 		/**
-		 * Encoded project ID, not a project name or raw database ID.
+		 * Project ID.
 		 */
 		project_id: string;
 	};
@@ -7867,7 +7867,7 @@ export type DeleteProjectResponses = {
 	200: {
 		result: {
 			/**
-			 * Encoded project ID, not a project name or raw database ID.
+			 * Project ID.
 			 */
 			id: string;
 		};
@@ -7901,7 +7901,7 @@ export type GetProjectData = {
 	};
 	path: {
 		/**
-		 * Encoded project ID, not a project name or raw database ID.
+		 * Project ID.
 		 */
 		project_id: string;
 	};
@@ -7966,7 +7966,7 @@ export type GetProjectResponse = GetProjectResponses[keyof GetProjectResponses];
 export type UpdateProjectData = {
 	body: {
 		/**
-		 * Editable display label. Project names need not be unique.
+		 * Project name.
 		 */
 		name: string;
 	};
@@ -7978,7 +7978,7 @@ export type UpdateProjectData = {
 	};
 	path: {
 		/**
-		 * Encoded project ID, not a project name or raw database ID.
+		 * Project ID.
 		 */
 		project_id: string;
 	};
@@ -11714,7 +11714,7 @@ export type ListWebhooksData = {
 		 */
 		search?: string;
 		/**
-		 * Omit to list resources across all authorized projects.
+		 * Project ID. Omit to list all authorised resources.
 		 */
 		project_id?: string;
 	};
@@ -11804,7 +11804,7 @@ export type CreateWebhookData = {
 	 */
 	body: {
 		/**
-		 * Omit to select the organisation's stable Default project.
+		 * Project ID. Omit to select the organisation Default project during the compatibility rollout.
 		 */
 		project_id?: string;
 		/**

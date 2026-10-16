@@ -53,7 +53,7 @@ export const zExpandedUptimeCheck = z.object({
 		.min(16)
 		.max(128)
 		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-		.optional(),
+		.nullish(),
 	id: z.string(),
 	name: z.string(),
 	url: z.url().nullable(),
@@ -131,7 +131,7 @@ export const zExpandedBrowserCheck = z.object({
 		.min(16)
 		.max(128)
 		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-		.optional(),
+		.nullish(),
 	id: z.string(),
 	name: z.string(),
 	url: z.url().nullable(),
@@ -229,7 +229,7 @@ export const zExpandedDnsCheck = z.object({
 		.min(16)
 		.max(128)
 		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-		.optional(),
+		.nullish(),
 	id: z.string(),
 	name: z.string(),
 	last_queued: z.string().nullable(),
@@ -295,7 +295,7 @@ export const zExpandedTcpCheck = z.object({
 		.min(16)
 		.max(128)
 		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-		.optional(),
+		.nullish(),
 	id: z.string(),
 	name: z.string(),
 	last_queued: z.string().nullable(),
@@ -368,7 +368,7 @@ export const zCheckListItem = z.object({
 		.min(16)
 		.max(128)
 		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-		.optional(),
+		.nullish(),
 	id: z.string(),
 	name: z.string(),
 	url: z.url().nullable(),
@@ -1132,7 +1132,7 @@ export const zCheck = z.object({
 		.min(16)
 		.max(128)
 		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-		.optional(),
+		.nullish(),
 	id: z.string(),
 	name: z.string(),
 	url: z.url().nullable(),
@@ -1369,7 +1369,7 @@ export const zEnvironmentVariableMetadata = z.object({
 		.min(16)
 		.max(128)
 		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-		.optional(),
+		.nullish(),
 	id: z.string(),
 	name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 	type: z.enum(["config", "secret"]),
@@ -1384,7 +1384,7 @@ export const zHeartbeat = z.object({
 		.min(16)
 		.max(128)
 		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-		.optional(),
+		.nullish(),
 	id: z.string(),
 	name: z.string(),
 	status: z.enum(["UP", "DOWN", "PENDING", "PAUSED", "MAINTENANCE", "MUTED"]),
@@ -1463,7 +1463,7 @@ export const zProject = z.object({
 		.max(128)
 		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
 	name: z.string().min(1).max(255),
-	is_default: z.boolean(),
+	is_default: z.boolean().optional(),
 	created_at: z.iso.datetime(),
 	updated_at: z.iso.datetime(),
 });
@@ -1661,7 +1661,7 @@ export const zWebhook = z.object({
 		.min(16)
 		.max(128)
 		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-		.optional(),
+		.nullish(),
 	id: z.string(),
 	enabled: z.boolean(),
 	url: z.string(),
@@ -2347,7 +2347,8 @@ export const zMoveCheckResponse = z.object({
 			.string()
 			.min(16)
 			.max(128)
-			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+			.nullable(),
 	}),
 	success: z.boolean(),
 	errors: z.array(
@@ -2758,7 +2759,7 @@ export const zCreateEnvironmentVariableResponse = z.object({
 				.min(16)
 				.max(128)
 				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-				.optional(),
+				.nullish(),
 			id: z.string(),
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 			type: z.enum(["secret"]),
@@ -2772,7 +2773,7 @@ export const zCreateEnvironmentVariableResponse = z.object({
 				.min(16)
 				.max(128)
 				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-				.optional(),
+				.nullish(),
 			id: z.string(),
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 			type: z.enum(["config"]),
@@ -2850,7 +2851,7 @@ export const zGetEnvironmentVariableResponse = z.object({
 				.min(16)
 				.max(128)
 				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-				.optional(),
+				.nullish(),
 			id: z.string(),
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 			type: z.enum(["secret"]),
@@ -2864,7 +2865,7 @@ export const zGetEnvironmentVariableResponse = z.object({
 				.min(16)
 				.max(128)
 				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-				.optional(),
+				.nullish(),
 			id: z.string(),
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 			type: z.enum(["config"]),
@@ -2919,7 +2920,7 @@ export const zUpdateEnvironmentVariableResponse = z.object({
 				.min(16)
 				.max(128)
 				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-				.optional(),
+				.nullish(),
 			id: z.string(),
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 			type: z.enum(["secret"]),
@@ -2933,7 +2934,7 @@ export const zUpdateEnvironmentVariableResponse = z.object({
 				.min(16)
 				.max(128)
 				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-				.optional(),
+				.nullish(),
 			id: z.string(),
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 			type: z.enum(["config"]),
@@ -2986,7 +2987,8 @@ export const zMoveHeartbeatResponse = z.object({
 			.string()
 			.min(16)
 			.max(128)
-			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+			.nullable(),
 	}),
 	success: z.boolean(),
 	errors: z.array(
