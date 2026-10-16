@@ -51,7 +51,7 @@ export const vPublicApiServerError = v.object({
 });
 
 export const vExpandedUptimeCheck = v.object({
-	project_id: v.optional(
+	project_id: v.nullish(
 		v.pipe(
 			v.string(),
 			v.minLength(16),
@@ -131,7 +131,7 @@ export const vExpandedUptimeCheck = v.object({
 });
 
 export const vExpandedBrowserCheck = v.object({
-	project_id: v.optional(
+	project_id: v.nullish(
 		v.pipe(
 			v.string(),
 			v.minLength(16),
@@ -231,7 +231,7 @@ export const vDnsAssertion = v.object({
 });
 
 export const vExpandedDnsCheck = v.object({
-	project_id: v.optional(
+	project_id: v.nullish(
 		v.pipe(
 			v.string(),
 			v.minLength(16),
@@ -299,7 +299,7 @@ export const vTcpAssertion = v.object({
 });
 
 export const vExpandedTcpCheck = v.object({
-	project_id: v.optional(
+	project_id: v.nullish(
 		v.pipe(
 			v.string(),
 			v.minLength(16),
@@ -394,7 +394,7 @@ export const vAnyCheckResponse = v.object({
 });
 
 export const vCheckListItem = v.object({
-	project_id: v.optional(
+	project_id: v.nullish(
 		v.pipe(
 			v.string(),
 			v.minLength(16),
@@ -1243,7 +1243,7 @@ export const vPublicTcpCheckResultsResponse = v.strictObject({
 });
 
 export const vCheck = v.object({
-	project_id: v.optional(
+	project_id: v.nullish(
 		v.pipe(
 			v.string(),
 			v.minLength(16),
@@ -1502,7 +1502,7 @@ export const vCheckPatch = v.object({
 });
 
 export const vEnvironmentVariableMetadata = v.object({
-	project_id: v.optional(
+	project_id: v.nullish(
 		v.pipe(
 			v.string(),
 			v.minLength(16),
@@ -1519,7 +1519,7 @@ export const vEnvironmentVariableMetadata = v.object({
 });
 
 export const vHeartbeat = v.object({
-	project_id: v.optional(
+	project_id: v.nullish(
 		v.pipe(
 			v.string(),
 			v.minLength(16),
@@ -1615,7 +1615,7 @@ export const vProject = v.strictObject({
 		v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
 	),
 	name: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
-	is_default: v.boolean(),
+	is_default: v.optional(v.boolean()),
 	created_at: v.pipe(v.string(), v.isoTimestamp()),
 	updated_at: v.pipe(v.string(), v.isoTimestamp()),
 });
@@ -1810,7 +1810,7 @@ export const vStatusPageIncidentDetail = v.intersect([
 ]);
 
 export const vWebhook = v.object({
-	project_id: v.optional(
+	project_id: v.nullish(
 		v.pipe(
 			v.string(),
 			v.minLength(16),
@@ -2504,11 +2504,13 @@ export const vMoveCheckPath = v.object({
 export const vMoveCheckResponse = v.object({
 	result: v.strictObject({
 		id: v.pipe(v.string(), v.minLength(8)),
-		project_id: v.pipe(
-			v.string(),
-			v.minLength(16),
-			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		project_id: v.nullable(
+			v.pipe(
+				v.string(),
+				v.minLength(16),
+				v.maxLength(128),
+				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			),
 		),
 	}),
 	success: v.boolean(),
@@ -2947,7 +2949,7 @@ export const vCreateEnvironmentVariableHeaders = v.object({
 export const vCreateEnvironmentVariableResponse = v.object({
 	result: v.union([
 		v.strictObject({
-			project_id: v.optional(
+			project_id: v.nullish(
 				v.pipe(
 					v.string(),
 					v.minLength(16),
@@ -2963,7 +2965,7 @@ export const vCreateEnvironmentVariableResponse = v.object({
 			updated_at: v.pipe(v.string(), v.isoTimestamp()),
 		}),
 		v.strictObject({
-			project_id: v.optional(
+			project_id: v.nullish(
 				v.pipe(
 					v.string(),
 					v.minLength(16),
@@ -3043,7 +3045,7 @@ export const vGetEnvironmentVariablePath = v.object({
 export const vGetEnvironmentVariableResponse = v.object({
 	result: v.union([
 		v.strictObject({
-			project_id: v.optional(
+			project_id: v.nullish(
 				v.pipe(
 					v.string(),
 					v.minLength(16),
@@ -3059,7 +3061,7 @@ export const vGetEnvironmentVariableResponse = v.object({
 			updated_at: v.pipe(v.string(), v.isoTimestamp()),
 		}),
 		v.strictObject({
-			project_id: v.optional(
+			project_id: v.nullish(
 				v.pipe(
 					v.string(),
 					v.minLength(16),
@@ -3113,7 +3115,7 @@ export const vUpdateEnvironmentVariablePath = v.object({
 export const vUpdateEnvironmentVariableResponse = v.object({
 	result: v.union([
 		v.strictObject({
-			project_id: v.optional(
+			project_id: v.nullish(
 				v.pipe(
 					v.string(),
 					v.minLength(16),
@@ -3129,7 +3131,7 @@ export const vUpdateEnvironmentVariableResponse = v.object({
 			updated_at: v.pipe(v.string(), v.isoTimestamp()),
 		}),
 		v.strictObject({
-			project_id: v.optional(
+			project_id: v.nullish(
 				v.pipe(
 					v.string(),
 					v.minLength(16),
@@ -3186,11 +3188,13 @@ export const vMoveHeartbeatPath = v.object({
 export const vMoveHeartbeatResponse = v.object({
 	result: v.strictObject({
 		id: v.pipe(v.string(), v.minLength(8)),
-		project_id: v.pipe(
-			v.string(),
-			v.minLength(16),
-			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		project_id: v.nullable(
+			v.pipe(
+				v.string(),
+				v.minLength(16),
+				v.maxLength(128),
+				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			),
 		),
 	}),
 	success: v.boolean(),
