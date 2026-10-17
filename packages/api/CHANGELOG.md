@@ -1,5 +1,17 @@
 # @onlineornot/api
 
+## 0.8.0
+
+### Minor Changes
+
+- [#117](https://github.com/OnlineOrNot/onlineornot/pull/117) [`3cf277f`](https://github.com/OnlineOrNot/onlineornot/commit/3cf277f70ac854e578854db71e9d3ca74b611080) Thanks [@rozenmd](https://github.com/rozenmd)! - FEAT: Regenerate the SDK from the latest published API schema, adding webhook, environment variable, and atomic resource moves, nullable assignment inputs, and Unassigned list filters.
+
+## 0.7.0
+
+### Minor Changes
+
+- [#115](https://github.com/OnlineOrNot/onlineornot/pull/115) [`1448dbe`](https://github.com/OnlineOrNot/onlineornot/commit/1448dbe1115df03e248d6eccfc47ddb85c25f9bf) Thanks [@rozenmd](https://github.com/rozenmd)! - FEAT: Accept nullable project assignments in resource responses and an optional legacy Default project flag in generated types, Zod validators and Valibot validators. Request project IDs remain unchanged during the compatibility rollout.
+
 ## 0.6.0
 
 ### Minor Changes

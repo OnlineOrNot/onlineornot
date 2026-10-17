@@ -860,9 +860,9 @@ export type DnsCheckResponse = {
 
 export type DnsCheckInput = {
 	/**
-	 * Project ID. Omit to select the organisation Default project during the compatibility rollout.
+	 * Project ID. Omit or use null to leave the resource Unassigned.
 	 */
-	project_id?: string;
+	project_id?: string | null;
 	name: string;
 	/**
 	 * Interval in seconds between checks
@@ -1037,9 +1037,9 @@ export type TcpCheckResponse = {
 
 export type TcpCheckInput = {
 	/**
-	 * Project ID. Omit to select the organisation Default project during the compatibility rollout.
+	 * Project ID. Omit or use null to leave the resource Unassigned.
 	 */
-	project_id?: string;
+	project_id?: string | null;
 	name: string;
 	/**
 	 * Interval in seconds between checks
@@ -1202,9 +1202,9 @@ export type UptimeCheckResponse = {
 
 export type UptimeCheckInput = {
 	/**
-	 * Project ID. Omit to select the organisation Default project during the compatibility rollout.
+	 * Project ID. Omit or use null to leave the resource Unassigned.
 	 */
-	project_id?: string;
+	project_id?: string | null;
 	name: string;
 	/**
 	 * Interval in seconds between checks
@@ -1458,9 +1458,9 @@ export type BrowserCheckResponse = {
  */
 export type BrowserCheckInput = {
 	/**
-	 * Project ID. Omit to select the organisation Default project during the compatibility rollout.
+	 * Project ID. Omit or use null to leave the resource Unassigned.
 	 */
-	project_id?: string;
+	project_id?: string | null;
 	name: string;
 	/**
 	 * Interval in seconds between checks
@@ -2089,9 +2089,9 @@ export type Check = {
 
 export type CheckInput = {
 	/**
-	 * Project ID. Omit to select the organisation Default project during the compatibility rollout.
+	 * Project ID. Omit or use null to leave the resource Unassigned.
 	 */
-	project_id?: string;
+	project_id?: string | null;
 	name: string;
 	/**
 	 * Interval in seconds between checks
@@ -4639,9 +4639,9 @@ export type UpdateBrowserCheckResponse =
 export type MoveCheckData = {
 	body: {
 		/**
-		 * Project ID.
+		 * Project ID, or null for Unassigned.
 		 */
-		project_id: string;
+		project_id: string | null;
 	};
 	headers?: {
 		/**
@@ -5333,9 +5333,9 @@ export type ListChecksData = {
 		 */
 		search?: string;
 		/**
-		 * Project ID. Omit to list all authorised resources.
+		 * Project ID, or unassigned to list only Unassigned resources. Omit to list all resources.
 		 */
-		project_id?: string;
+		project_id?: string | "unassigned";
 		/**
 		 * Filter by current check status. NA, omitted and unrecognized values leave status unfiltered.
 		 */
@@ -5677,9 +5677,9 @@ export type ListEnvironmentVariablesData = {
 		 */
 		per_page?: number;
 		/**
-		 * Project ID. Omit to list all authorised resources.
+		 * Project ID, or unassigned to list only Unassigned resources. Omit to list all resources.
 		 */
-		project_id?: string;
+		project_id?: string | "unassigned";
 		/**
 		 * Case-insensitive substring search on environment variable names.
 		 */
@@ -5765,9 +5765,9 @@ export type ListEnvironmentVariablesResponse =
 export type CreateEnvironmentVariableData = {
 	body: {
 		/**
-		 * Project ID. Omit to select the organisation Default project during the compatibility rollout.
+		 * Project ID. Omit or use null to leave the resource Unassigned.
 		 */
-		project_id?: string;
+		project_id?: string | null;
 		/**
 		 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the project.
 		 */
@@ -6271,9 +6271,9 @@ export type UpdateEnvironmentVariableResponse =
 export type MoveHeartbeatData = {
 	body: {
 		/**
-		 * Project ID.
+		 * Project ID, or null for Unassigned.
 		 */
-		project_id: string;
+		project_id: string | null;
 	};
 	headers?: {
 		/**
@@ -6378,9 +6378,9 @@ export type ListHeartbeatsData = {
 		 */
 		search?: string;
 		/**
-		 * Project ID. Omit to list all authorised resources.
+		 * Project ID, or unassigned to list only Unassigned resources. Omit to list all resources.
 		 */
-		project_id?: string;
+		project_id?: string | "unassigned";
 	};
 	url: "/v1/heartbeats";
 };
@@ -6466,9 +6466,9 @@ export type ListHeartbeatsResponse =
 export type CreateHeartbeatData = {
 	body: {
 		/**
-		 * Project ID. Omit to select the organisation Default project during the compatibility rollout.
+		 * Project ID. Omit or use null to leave the resource Unassigned.
 		 */
-		project_id?: string;
+		project_id?: string | null;
 		name: string;
 		/**
 		 * Expected interval in seconds between heartbeat pings (for simple schedule)
@@ -7648,6 +7648,261 @@ export type CreateInvitationResponses = {
 
 export type CreateInvitationResponse =
 	CreateInvitationResponses[keyof CreateInvitationResponses];
+
+export type MoveWebhookData = {
+	body: {
+		/**
+		 * Project ID, or null for Unassigned.
+		 */
+		project_id: string | null;
+	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Webhook ID
+		 */
+		webhook_id: string;
+	};
+	query?: never;
+	url: "/v1/webhooks/{webhook_id}/move";
+};
+
+export type MoveWebhookErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource or project not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Move would break variable references or create a name conflict
+	 */
+	409: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type MoveWebhookError = MoveWebhookErrors[keyof MoveWebhookErrors];
+
+export type MoveWebhookResponses = {
+	/**
+	 * Moved resource and destination
+	 */
+	200: {
+		result: {
+			id: string;
+			/**
+			 * Project ID, or null for Unassigned.
+			 */
+			project_id: string | null;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type MoveWebhookResponse =
+	MoveWebhookResponses[keyof MoveWebhookResponses];
+
+export type MoveEnvironmentVariableData = {
+	body: {
+		/**
+		 * Project ID, or null for Unassigned.
+		 */
+		project_id: string | null;
+	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Environment variable ID.
+		 */
+		environment_variable_id: string;
+	};
+	query?: never;
+	url: "/v1/env/{environment_variable_id}/move";
+};
+
+export type MoveEnvironmentVariableErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource or project not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Move would break variable references or create a name conflict
+	 */
+	409: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type MoveEnvironmentVariableError =
+	MoveEnvironmentVariableErrors[keyof MoveEnvironmentVariableErrors];
+
+export type MoveEnvironmentVariableResponses = {
+	/**
+	 * Moved resource and destination
+	 */
+	200: {
+		result: {
+			id: string;
+			/**
+			 * Project ID, or null for Unassigned.
+			 */
+			project_id: string | null;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type MoveEnvironmentVariableResponse =
+	MoveEnvironmentVariableResponses[keyof MoveEnvironmentVariableResponses];
+
+export type MoveResourcesData = {
+	body: {
+		/**
+		 * Project ID, or null for Unassigned.
+		 */
+		project_id: string | null;
+		resources: Array<{
+			kind: "check" | "heartbeat" | "webhook" | "environment_variable";
+			id: string;
+		}>;
+	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path?: never;
+	query?: never;
+	url: "/v1/resources/move";
+};
+
+export type MoveResourcesErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource or project not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Move would break variable references or create a name conflict
+	 */
+	409: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type MoveResourcesError = MoveResourcesErrors[keyof MoveResourcesErrors];
+
+export type MoveResourcesResponses = {
+	/**
+	 * Moved selection and destination
+	 */
+	200: {
+		result: {
+			/**
+			 * Project ID, or null for Unassigned.
+			 */
+			project_id: string | null;
+			resources: Array<{
+				kind: "check" | "heartbeat" | "webhook" | "environment_variable";
+				id: string;
+			}>;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type MoveResourcesResponse =
+	MoveResourcesResponses[keyof MoveResourcesResponses];
 
 export type ListProjectsData = {
 	body?: never;
@@ -11714,9 +11969,9 @@ export type ListWebhooksData = {
 		 */
 		search?: string;
 		/**
-		 * Project ID. Omit to list all authorised resources.
+		 * Project ID, or unassigned to list only Unassigned resources. Omit to list all resources.
 		 */
-		project_id?: string;
+		project_id?: string | "unassigned";
 	};
 	url: "/v1/webhooks";
 };
@@ -11804,9 +12059,9 @@ export type CreateWebhookData = {
 	 */
 	body: {
 		/**
-		 * Project ID. Omit to select the organisation Default project during the compatibility rollout.
+		 * Project ID. Omit or use null to leave the resource Unassigned.
 		 */
-		project_id?: string;
+		project_id?: string | null;
 		/**
 		 * Whether webhook delivery is enabled. Defaults to true on creation; omitted PATCH values preserve the current state.
 		 */

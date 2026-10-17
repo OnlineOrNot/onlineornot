@@ -1,5 +1,19 @@
 # onlineornot
 
+## 1.7.8
+
+### Patch Changes
+
+- Updated dependencies [[`3cf277f`](https://github.com/OnlineOrNot/onlineornot/commit/3cf277f70ac854e578854db71e9d3ca74b611080)]:
+  - @onlineornot/api@0.8.0
+
+## 1.7.7
+
+### Patch Changes
+
+- Updated dependencies [[`1448dbe`](https://github.com/OnlineOrNot/onlineornot/commit/1448dbe1115df03e248d6eccfc47ddb85c25f9bf)]:
+  - @onlineornot/api@0.7.0
+
 ## 1.7.6
 
 ### Patch Changes
