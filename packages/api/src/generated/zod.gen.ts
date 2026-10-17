@@ -490,7 +490,7 @@ export const zDnsCheckInput = z.object({
 		.min(16)
 		.max(128)
 		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-		.optional(),
+		.nullish(),
 	name: z.string(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -592,7 +592,7 @@ export const zTcpCheckInput = z.object({
 		.min(16)
 		.max(128)
 		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-		.optional(),
+		.nullish(),
 	name: z.string(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -673,7 +673,7 @@ export const zUptimeCheckInput = z.object({
 		.min(16)
 		.max(128)
 		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-		.optional(),
+		.nullish(),
 	name: z.string(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -822,7 +822,7 @@ export const zBrowserCheckInput = z.object({
 		.min(16)
 		.max(128)
 		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-		.optional(),
+		.nullish(),
 	name: z.string(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -1234,7 +1234,7 @@ export const zCheckInput = z.object({
 		.min(16)
 		.max(128)
 		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-		.optional(),
+		.nullish(),
 	name: z.string(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -2326,7 +2326,8 @@ export const zMoveCheckBody = z.object({
 		.string()
 		.min(16)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.nullable(),
 });
 
 export const zMoveCheckHeaders = z.object({
@@ -2540,10 +2541,14 @@ export const zListChecksQuery = z.object({
 	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
 	project_id: z
-		.string()
-		.min(16)
-		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.union([
+			z
+				.string()
+				.min(16)
+				.max(128)
+				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			z.enum(["unassigned"]),
+		])
 		.optional(),
 	filter: z
 		.enum([
@@ -2696,10 +2701,14 @@ export const zListEnvironmentVariablesQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
 	project_id: z
-		.string()
-		.min(16)
-		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.union([
+			z
+				.string()
+				.min(16)
+				.max(128)
+				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			z.enum(["unassigned"]),
+		])
 		.optional(),
 	search: z.string().max(64).optional(),
 });
@@ -2738,7 +2747,7 @@ export const zCreateEnvironmentVariableBody = z.object({
 		.min(16)
 		.max(128)
 		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-		.optional(),
+		.nullish(),
 	name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 	type: z.enum(["config", "secret"]),
 	value: z.string(),
@@ -2966,7 +2975,8 @@ export const zMoveHeartbeatBody = z.object({
 		.string()
 		.min(16)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.nullable(),
 });
 
 export const zMoveHeartbeatHeaders = z.object({
@@ -3016,10 +3026,14 @@ export const zListHeartbeatsQuery = z.object({
 	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
 	project_id: z
-		.string()
-		.min(16)
-		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.union([
+			z
+				.string()
+				.min(16)
+				.max(128)
+				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			z.enum(["unassigned"]),
+		])
 		.optional(),
 });
 
@@ -3073,7 +3087,7 @@ export const zCreateHeartbeatBody = z.object({
 		.min(16)
 		.max(128)
 		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-		.optional(),
+		.nullish(),
 	name: z.string(),
 	report_period: z.int().gte(1).optional(),
 	report_period_cron: z.string().optional(),
@@ -3602,6 +3616,157 @@ export const zCreateInvitationHeaders = z.object({
  */
 export const zCreateInvitationResponse = z.object({
 	result: zInvitation,
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zMoveWebhookBody = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.nullable(),
+});
+
+export const zMoveWebhookHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zMoveWebhookPath = z.object({
+	webhook_id: z.string().min(8),
+});
+
+/**
+ * Moved resource and destination
+ */
+export const zMoveWebhookResponse = z.object({
+	result: z.object({
+		id: z.string(),
+		project_id: z
+			.string()
+			.min(16)
+			.max(128)
+			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+			.nullable(),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zMoveEnvironmentVariableBody = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.nullable(),
+});
+
+export const zMoveEnvironmentVariableHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zMoveEnvironmentVariablePath = z.object({
+	environment_variable_id: z.string().min(1),
+});
+
+/**
+ * Moved resource and destination
+ */
+export const zMoveEnvironmentVariableResponse = z.object({
+	result: z.object({
+		id: z.string(),
+		project_id: z
+			.string()
+			.min(16)
+			.max(128)
+			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+			.nullable(),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zMoveResourcesBody = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.nullable(),
+	resources: z
+		.array(
+			z.object({
+				kind: z.enum(["check", "heartbeat", "webhook", "environment_variable"]),
+				id: z.string().min(1).max(128),
+			}),
+		)
+		.min(1)
+		.max(100),
+});
+
+export const zMoveResourcesHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+/**
+ * Moved selection and destination
+ */
+export const zMoveResourcesResponse = z.object({
+	result: z.object({
+		project_id: z
+			.string()
+			.min(16)
+			.max(128)
+			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+			.nullable(),
+		resources: z.array(
+			z.object({
+				kind: z.enum(["check", "heartbeat", "webhook", "environment_variable"]),
+				id: z.string().min(1).max(128),
+			}),
+		),
+	}),
 	success: z.boolean(),
 	errors: z.array(
 		z.object({
@@ -5579,10 +5744,14 @@ export const zListWebhooksQuery = z.object({
 	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
 	project_id: z
-		.string()
-		.min(16)
-		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.union([
+			z
+				.string()
+				.min(16)
+				.max(128)
+				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			z.enum(["unassigned"]),
+		])
 		.optional(),
 });
 
@@ -5639,7 +5808,7 @@ export const zCreateWebhookBody = z.object({
 		.min(16)
 		.max(128)
 		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
-		.optional(),
+		.nullish(),
 	enabled: z.boolean().optional(),
 	url: z.string(),
 	description: z.string().optional(),

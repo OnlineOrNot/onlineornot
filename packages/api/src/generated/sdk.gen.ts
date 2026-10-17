@@ -264,9 +264,18 @@ import type {
 	MoveCheckData,
 	MoveCheckErrors,
 	MoveCheckResponses,
+	MoveEnvironmentVariableData,
+	MoveEnvironmentVariableErrors,
+	MoveEnvironmentVariableResponses,
 	MoveHeartbeatData,
 	MoveHeartbeatErrors,
 	MoveHeartbeatResponses,
+	MoveResourcesData,
+	MoveResourcesErrors,
+	MoveResourcesResponses,
+	MoveWebhookData,
+	MoveWebhookErrors,
+	MoveWebhookResponses,
 	PingHeartbeatData,
 	PingHeartbeatErrors,
 	PingHeartbeatGetData,
@@ -923,7 +932,7 @@ export const updateBrowserCheck = <ThrowOnError extends boolean = false>(
 	});
 
 /**
- * Move a check to another project
+ * Assign or unassign a check
  *
  * Requires UPTIME_CHECKS:EDIT.
  */
@@ -1373,7 +1382,7 @@ export const updateEnvironmentVariable = <ThrowOnError extends boolean = false>(
 	});
 
 /**
- * Move a heartbeat to another project
+ * Assign or unassign a heartbeat
  *
  * Requires HEARTBEAT_CHECKS:EDIT.
  */
@@ -1727,6 +1736,78 @@ export const createInvitation = <ThrowOnError extends boolean = false>(
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
 		url: "/v1/invitations",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
+ * Assign or unassign a webhook
+ *
+ * Requires WEBHOOKS:EDIT.
+ */
+export const moveWebhook = <ThrowOnError extends boolean = false>(
+	options: Options<MoveWebhookData, ThrowOnError>,
+): RequestResult<MoveWebhookResponses, MoveWebhookErrors, ThrowOnError> =>
+	(options.client ?? client).post<
+		MoveWebhookResponses,
+		MoveWebhookErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/webhooks/{webhook_id}/move",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
+ * Assign or unassign an environment variable
+ *
+ * Requires ENVIRONMENT_VARIABLES:EDIT.
+ */
+export const moveEnvironmentVariable = <ThrowOnError extends boolean = false>(
+	options: Options<MoveEnvironmentVariableData, ThrowOnError>,
+): RequestResult<
+	MoveEnvironmentVariableResponses,
+	MoveEnvironmentVariableErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).post<
+		MoveEnvironmentVariableResponses,
+		MoveEnvironmentVariableErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/env/{environment_variable_id}/move",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
+ * Assign or unassign explicitly selected resources atomically
+ *
+ * Requires EDIT permission for every selected resource type. Moves only the selected resources; rejects broken variable references and name conflicts without partial changes.
+ *
+ * Requires PROJECTS:EDIT.
+ */
+export const moveResources = <ThrowOnError extends boolean = false>(
+	options: Options<MoveResourcesData, ThrowOnError>,
+): RequestResult<MoveResourcesResponses, MoveResourcesErrors, ThrowOnError> =>
+	(options.client ?? client).post<
+		MoveResourcesResponses,
+		MoveResourcesErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/resources/move",
 		...options,
 		headers: {
 			"Content-Type": "application/json",

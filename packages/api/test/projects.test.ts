@@ -3,7 +3,7 @@ import { createServer } from "node:http";
 
 import { afterAll, beforeAll, beforeEach, expect, it } from "vitest";
 
-import type { CheckInput } from "../src/index";
+import type { CheckInput, MoveResourcesData } from "../src/index";
 import {
 	createCheck,
 	createClient,
@@ -13,7 +13,10 @@ import {
 	listChecks,
 	listProjects,
 	moveCheck,
+	moveEnvironmentVariable,
 	moveHeartbeat,
+	moveResources,
+	moveWebhook,
 	updateProject,
 } from "../src/index";
 
@@ -123,7 +126,7 @@ it("exposes all project CRUD operations over HTTP with encoded identity and bear
 	).toBe(true);
 	expect(JSON.parse(requests[3].body)).toEqual({ name: "Renamed" });
 });
-it.each([undefined, projectId])(
+it.each([undefined, projectId, null])(
 	"preserves optional project selection %s without inventing defaults",
 	async (selected) => {
 		const isolated = client();
@@ -135,37 +138,74 @@ it.each([undefined, projectId])(
 		});
 		await listChecks({
 			client: isolated,
-			query: selected ? { project_id: selected } : {},
+			query: { project_id: selected === null ? "unassigned" : selected },
 		});
 		const sentBody: unknown = JSON.parse(requests[0].body);
-		if (selected) expect(sentBody).toHaveProperty("project_id", selected);
+		if (selected !== undefined)
+			expect(sentBody).toHaveProperty("project_id", selected);
 		else expect(sentBody).not.toHaveProperty("project_id");
 		expect(
 			new URL(requests[1].url, origin).searchParams.get("project_id"),
-		).toBe(selected ?? null);
+		).toBe(selected === null ? "unassigned" : (selected ?? null));
 	},
 );
-it("moves checks and heartbeats only through the dedicated POST operations", async () => {
-	const isolated = client();
-	await moveCheck({
-		client: isolated,
-		path: { check_id: "check-public-001" },
-		body: { project_id: projectId },
-	});
-	await moveHeartbeat({
-		client: isolated,
-		path: { heartbeat_id: "heartbeat-public-001" },
-		body: { project_id: projectId },
-	});
-	expect(requests.map((r) => [r.method, r.url, JSON.parse(r.body)])).toEqual([
-		["POST", "/v1/checks/check-public-001/move", { project_id: projectId }],
-		[
-			"POST",
-			"/v1/heartbeats/heartbeat-public-001/move",
-			{ project_id: projectId },
-		],
-	]);
-});
+it.each([projectId, null])(
+	"assigns or unassigns every supported resource over HTTP to %s",
+	async (project) => {
+		const isolated = client();
+		await moveCheck({
+			client: isolated,
+			path: { check_id: "check-public-001" },
+			body: { project_id: project },
+		});
+		await moveHeartbeat({
+			client: isolated,
+			path: { heartbeat_id: "heartbeat-public-001" },
+			body: { project_id: project },
+		});
+		await moveWebhook({
+			client: isolated,
+			path: { webhook_id: "webhook-public-001" },
+			body: { project_id: project },
+		});
+		await moveEnvironmentVariable({
+			client: isolated,
+			path: { environment_variable_id: "variable-public-001" },
+			body: { project_id: project },
+		});
+		expect(requests.map((r) => [r.method, r.url, JSON.parse(r.body)])).toEqual([
+			["POST", "/v1/checks/check-public-001/move", { project_id: project }],
+			[
+				"POST",
+				"/v1/heartbeats/heartbeat-public-001/move",
+				{ project_id: project },
+			],
+			["POST", "/v1/webhooks/webhook-public-001/move", { project_id: project }],
+			["POST", "/v1/env/variable-public-001/move", { project_id: project }],
+		]);
+	},
+);
+it.each([projectId, null])(
+	"sends an explicit atomic resource selection to %s",
+	async (project) => {
+		const body = {
+			project_id: project,
+			resources: [
+				{ kind: "check", id: "check-public-001" },
+				{ kind: "heartbeat", id: "heartbeat-public-001" },
+				{ kind: "webhook", id: "webhook-public-001" },
+				{ kind: "environment_variable", id: "variable-public-001" },
+			],
+		} satisfies MoveResourcesData["body"];
+
+		await moveResources({ client: client(), body });
+
+		expect(requests.map((r) => [r.method, r.url, JSON.parse(r.body)])).toEqual([
+			["POST", "/v1/resources/move", body],
+		]);
+		expect(requests[0].authorization).toBe("Bearer fabricated-project-token");
+	},
+);
 it("preserves move conflicts as SDK errors without turning them into success", async () => {
 	conflict = true;
 	const result = await moveCheck({
@@ -179,4 +219,24 @@ it("preserves move conflicts as SDK errors without turning them into success", a
 		success: false,
 		errors: [{ message: "project_move_variable_conflict" }],
 	});
+});
+
+it("preserves atomic move conflicts without retrying individual resources", async () => {
+	conflict = true;
+
+	const result = await moveResources({
+		client: client(),
+		body: {
+			project_id: null,
+			resources: [{ kind: "check", id: "check-public-001" }],
+		},
+	});
+
+	expect(result.response?.status).toBe(409);
+	expect(result.data).toBeUndefined();
+	expect(result.error).toMatchObject({
+		success: false,
+		errors: [{ message: "project_move_variable_conflict" }],
+	});
+	expect(requests).toHaveLength(1);
 });

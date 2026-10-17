@@ -1,6 +1,6 @@
 {
-	"schema": "https://raw.githubusercontent.com/OnlineOrNot/api-schemas/2a24b23b0b902980543df1faeede5fad0ca6d742/openapi.json",
-	"count": 109,
+	"schema": "https://raw.githubusercontent.com/OnlineOrNot/api-schemas/d2e3f791194751be3c47ecbfa2098b7104e947a9/openapi.json",
+	"count": 112,
 	"operations": [
 		"createBrowserCheck",
 		"createCheck",
@@ -87,7 +87,10 @@
 		"listWebhookDeliveries",
 		"listWebhooks",
 		"moveCheck",
+		"moveEnvironmentVariable",
 		"moveHeartbeat",
+		"moveResources",
+		"moveWebhook",
 		"pingHeartbeat",
 		"pingHeartbeatGet",
 		"removeUser",
