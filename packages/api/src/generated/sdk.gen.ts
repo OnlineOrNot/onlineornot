@@ -1856,7 +1856,7 @@ export const createProject = <ThrowOnError extends boolean = false>(
 	});
 
 /**
- * Delete an empty non-Default project
+ * Delete an empty project
  *
  * Requires PROJECTS:EDIT.
  */
