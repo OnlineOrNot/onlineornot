@@ -1,5 +1,11 @@
 # @onlineornot/api
 
+## 0.9.0
+
+### Minor Changes
+
+- [#119](https://github.com/OnlineOrNot/onlineornot/pull/119) [`aaacd8c`](https://github.com/OnlineOrNot/onlineornot/commit/aaacd8ce1e1e17899b107fb0fa3267c1d9f4612b) Thanks [@rozenmd](https://github.com/rozenmd)! - FEAT: Regenerate the API SDK without the legacy Default project flag. Project types and validators now match the deployed contract, while nullable resource assignments and all 112 operations remain supported.
+
 ## 0.8.0
 
 ### Minor Changes
