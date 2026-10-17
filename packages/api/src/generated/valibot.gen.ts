@@ -1615,7 +1615,6 @@ export const vProject = v.strictObject({
 		v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
 	),
 	name: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
-	is_default: v.optional(v.boolean()),
 	created_at: v.pipe(v.string(), v.isoTimestamp()),
 	updated_at: v.pipe(v.string(), v.isoTimestamp()),
 });

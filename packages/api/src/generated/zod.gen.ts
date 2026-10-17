@@ -1463,7 +1463,6 @@ export const zProject = z.object({
 		.max(128)
 		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
 	name: z.string().min(1).max(255),
-	is_default: z.boolean().optional(),
 	created_at: z.iso.datetime(),
 	updated_at: z.iso.datetime(),
 });

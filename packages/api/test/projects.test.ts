@@ -60,7 +60,6 @@ const server = createServer((request, response) => {
 								id: projectId,
 								project_id: projectId,
 								name: "Staging",
-								is_default: false,
 							},
 						},
 			),
