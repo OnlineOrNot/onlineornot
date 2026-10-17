@@ -268,10 +268,33 @@ it.each([undefined, projectId, null])(
 	},
 );
 
-it.each([undefined, true, false])(
-	"validates project HTTP responses with legacy flag %s",
+it("validates a project HTTP response without legacy metadata", async () => {
+	const payload = {
+		success: true,
+		errors: [],
+		messages: [],
+		result: {
+			id: projectId,
+			name: "Staging",
+			created_at: timestamp,
+			updated_at: timestamp,
+		},
+	};
+	responseBody = JSON.stringify(payload);
+
+	const received = await getProject({
+		client: createClient({ baseUrl: origin }),
+		path: { project_id: projectId },
+	});
+
+	expect(received.data).toEqual(payload);
+	expect(zGetProjectResponse.parse(received.data)).toEqual(payload);
+	expect(parse(vGetProjectResponse, received.data)).toEqual(payload);
+});
+
+it.each([true, false])(
+	"does not expose the removed project marker %s through validators",
 	async (flag) => {
-		const marker = flag === undefined ? {} : { is_default: flag };
 		const payload = {
 			success: true,
 			errors: [],
@@ -281,19 +304,21 @@ it.each([undefined, true, false])(
 				name: "Staging",
 				created_at: timestamp,
 				updated_at: timestamp,
-				...marker,
 			},
 		};
-		responseBody = JSON.stringify(payload);
+		responseBody = JSON.stringify({
+			...payload,
+			result: { ...payload.result, is_default: flag },
+		});
 
 		const received = await getProject({
 			client: createClient({ baseUrl: origin }),
 			path: { project_id: projectId },
 		});
 
-		expect(received.data).toEqual(payload);
+		expect(received.response?.status).toBe(200);
 		expect(zGetProjectResponse.parse(received.data)).toEqual(payload);
-		expect(parse(vGetProjectResponse, received.data)).toEqual(payload);
+		expect(safeParse(vGetProjectResponse, received.data).success).toBe(false);
 	},
 );
 
@@ -312,7 +337,7 @@ it.each([42, true, {}, "short"])(
 	},
 );
 
-it("exposes nullable response assignments and an optional legacy flag in public types", () => {
+it("exposes nullable assignments without legacy project metadata in public types", () => {
 	expectTypeOf<ExpandedUptimeCheck["project_id"]>().toEqualTypeOf<
 		string | null | undefined
 	>();
@@ -337,5 +362,7 @@ it("exposes nullable response assignments and an optional legacy flag in public 
 	expectTypeOf<Webhook["project_id"]>().toEqualTypeOf<
 		string | null | undefined
 	>();
-	expectTypeOf<Project["is_default"]>().toEqualTypeOf<boolean | undefined>();
+	expectTypeOf<keyof Project>().toEqualTypeOf<
+		"id" | "name" | "created_at" | "updated_at"
+	>();
 });

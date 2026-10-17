@@ -2560,10 +2560,6 @@ export type Project = {
 	 * Project name.
 	 */
 	name: string;
-	/**
-	 * Legacy Default project marker, retained during the compatibility rollout.
-	 */
-	is_default?: boolean;
 	created_at: string;
 	updated_at: string;
 };
@@ -8100,7 +8096,7 @@ export type DeleteProjectErrors = {
 	 */
 	404: PublicApiErrorResponse;
 	/**
-	 * project_is_default or project_not_empty
+	 * project_not_empty
 	 */
 	409: PublicApiErrorResponse;
 	/**
