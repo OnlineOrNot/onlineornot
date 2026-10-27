@@ -2027,27 +2027,19 @@ export const vListTokensResponse = v.object({
 	result: v.object({
 		result: v.array(
 			v.object({
+				project_id: v.nullish(
+					v.pipe(
+						v.string(),
+						v.minLength(16),
+						v.maxLength(128),
+						v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+					),
+				),
 				id: v.string(),
 				name: v.string(),
 				expiresAfter: v.nullable(v.string()),
 				createdAt: v.string(),
-				grants: v.array(
-					v.object({
-						scope: v.picklist([
-							"PROJECTS",
-							"UPTIME_CHECKS",
-							"STATUS_PAGES",
-							"HEARTBEAT_CHECKS",
-							"MAINTENANCE_WINDOWS",
-							"PEOPLE",
-							"INTEGRATIONS",
-							"API_TOKENS",
-							"WEBHOOKS",
-							"ENVIRONMENT_VARIABLES",
-						]),
-						permission: v.picklist(["READ", "EDIT"]),
-					}),
-				),
+				grants: v.array(v.unknown()),
 			}),
 		),
 		result_info: v.object({
@@ -2076,24 +2068,16 @@ export const vListTokensResponse = v.object({
 
 export const vCreateTokenBody = v.object({
 	name: v.string(),
-	grants: v.array(
-		v.object({
-			scope: v.picklist([
-				"PROJECTS",
-				"UPTIME_CHECKS",
-				"STATUS_PAGES",
-				"HEARTBEAT_CHECKS",
-				"MAINTENANCE_WINDOWS",
-				"PEOPLE",
-				"INTEGRATIONS",
-				"API_TOKENS",
-				"WEBHOOKS",
-				"ENVIRONMENT_VARIABLES",
-			]),
-			permission: v.picklist(["READ", "EDIT"]),
-		}),
-	),
+	grants: v.array(v.unknown()),
 	expiresAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+	project_id: v.nullish(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 });
 
 export const vCreateTokenHeaders = v.object({
@@ -2105,6 +2089,14 @@ export const vCreateTokenHeaders = v.object({
  */
 export const vCreateTokenResponse = v.object({
 	result: v.object({
+		project_id: v.nullish(
+			v.pipe(
+				v.string(),
+				v.minLength(16),
+				v.maxLength(128),
+				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			),
+		),
 		id: v.string(),
 		name: v.string(),
 		expiresAfter: v.nullable(v.string()),
@@ -2173,27 +2165,19 @@ export const vGetTokenPath = v.object({
  */
 export const vGetTokenResponse = v.object({
 	result: v.object({
+		project_id: v.nullish(
+			v.pipe(
+				v.string(),
+				v.minLength(16),
+				v.maxLength(128),
+				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			),
+		),
 		id: v.string(),
 		name: v.string(),
 		expiresAfter: v.nullable(v.string()),
 		createdAt: v.string(),
-		grants: v.array(
-			v.object({
-				scope: v.picklist([
-					"PROJECTS",
-					"UPTIME_CHECKS",
-					"STATUS_PAGES",
-					"HEARTBEAT_CHECKS",
-					"MAINTENANCE_WINDOWS",
-					"PEOPLE",
-					"INTEGRATIONS",
-					"API_TOKENS",
-					"WEBHOOKS",
-					"ENVIRONMENT_VARIABLES",
-				]),
-				permission: v.picklist(["READ", "EDIT"]),
-			}),
-		),
+		grants: v.array(v.unknown()),
 	}),
 	success: v.boolean(),
 	errors: v.array(

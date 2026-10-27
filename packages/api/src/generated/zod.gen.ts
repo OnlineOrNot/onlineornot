@@ -1867,26 +1867,39 @@ export const zListTokensResponse = z.object({
 	result: z.object({
 		result: z.array(
 			z.object({
+				project_id: z
+					.string()
+					.min(16)
+					.max(128)
+					.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+					.nullish(),
 				id: z.string(),
 				name: z.string(),
 				expiresAfter: z.string().nullable(),
 				createdAt: z.string(),
 				grants: z.array(
-					z.object({
-						scope: z.enum([
-							"PROJECTS",
-							"UPTIME_CHECKS",
-							"STATUS_PAGES",
-							"HEARTBEAT_CHECKS",
-							"MAINTENANCE_WINDOWS",
-							"PEOPLE",
-							"INTEGRATIONS",
-							"API_TOKENS",
-							"WEBHOOKS",
-							"ENVIRONMENT_VARIABLES",
-						]),
-						permission: z.enum(["READ", "EDIT"]),
-					}),
+					z.union([
+						z.object({
+							scope: z.enum([
+								"PROJECTS",
+								"LOGS",
+								"UPTIME_CHECKS",
+								"STATUS_PAGES",
+								"HEARTBEAT_CHECKS",
+								"MAINTENANCE_WINDOWS",
+								"PEOPLE",
+								"INTEGRATIONS",
+								"API_TOKENS",
+								"WEBHOOKS",
+								"ENVIRONMENT_VARIABLES",
+							]),
+							permission: z.enum(["READ", "EDIT"]),
+						}),
+						z.object({
+							scope: z.enum(["LOGS"]),
+							permission: z.enum(["SEND"]),
+						}),
+					]),
 				),
 			}),
 		),
@@ -1917,23 +1930,36 @@ export const zListTokensResponse = z.object({
 export const zCreateTokenBody = z.object({
 	name: z.string(),
 	grants: z.array(
-		z.object({
-			scope: z.enum([
-				"PROJECTS",
-				"UPTIME_CHECKS",
-				"STATUS_PAGES",
-				"HEARTBEAT_CHECKS",
-				"MAINTENANCE_WINDOWS",
-				"PEOPLE",
-				"INTEGRATIONS",
-				"API_TOKENS",
-				"WEBHOOKS",
-				"ENVIRONMENT_VARIABLES",
-			]),
-			permission: z.enum(["READ", "EDIT"]),
-		}),
+		z.union([
+			z.object({
+				scope: z.enum([
+					"PROJECTS",
+					"LOGS",
+					"UPTIME_CHECKS",
+					"STATUS_PAGES",
+					"HEARTBEAT_CHECKS",
+					"MAINTENANCE_WINDOWS",
+					"PEOPLE",
+					"INTEGRATIONS",
+					"API_TOKENS",
+					"WEBHOOKS",
+					"ENVIRONMENT_VARIABLES",
+				]),
+				permission: z.enum(["READ", "EDIT"]),
+			}),
+			z.object({
+				scope: z.enum(["LOGS"]),
+				permission: z.enum(["SEND"]),
+			}),
+		]),
 	),
 	expiresAt: z.iso.datetime().nullish(),
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.nullish(),
 });
 
 export const zCreateTokenHeaders = z.object({
@@ -1945,6 +1971,12 @@ export const zCreateTokenHeaders = z.object({
  */
 export const zCreateTokenResponse = z.object({
 	result: z.object({
+		project_id: z
+			.string()
+			.min(16)
+			.max(128)
+			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+			.nullish(),
 		id: z.string(),
 		name: z.string(),
 		expiresAfter: z.string().nullable(),
@@ -2013,26 +2045,39 @@ export const zGetTokenPath = z.object({
  */
 export const zGetTokenResponse = z.object({
 	result: z.object({
+		project_id: z
+			.string()
+			.min(16)
+			.max(128)
+			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+			.nullish(),
 		id: z.string(),
 		name: z.string(),
 		expiresAfter: z.string().nullable(),
 		createdAt: z.string(),
 		grants: z.array(
-			z.object({
-				scope: z.enum([
-					"PROJECTS",
-					"UPTIME_CHECKS",
-					"STATUS_PAGES",
-					"HEARTBEAT_CHECKS",
-					"MAINTENANCE_WINDOWS",
-					"PEOPLE",
-					"INTEGRATIONS",
-					"API_TOKENS",
-					"WEBHOOKS",
-					"ENVIRONMENT_VARIABLES",
-				]),
-				permission: z.enum(["READ", "EDIT"]),
-			}),
+			z.union([
+				z.object({
+					scope: z.enum([
+						"PROJECTS",
+						"LOGS",
+						"UPTIME_CHECKS",
+						"STATUS_PAGES",
+						"HEARTBEAT_CHECKS",
+						"MAINTENANCE_WINDOWS",
+						"PEOPLE",
+						"INTEGRATIONS",
+						"API_TOKENS",
+						"WEBHOOKS",
+						"ENVIRONMENT_VARIABLES",
+					]),
+					permission: z.enum(["READ", "EDIT"]),
+				}),
+				z.object({
+					scope: z.enum(["LOGS"]),
+					permission: z.enum(["SEND"]),
+				}),
+			]),
 		),
 	}),
 	success: z.boolean(),

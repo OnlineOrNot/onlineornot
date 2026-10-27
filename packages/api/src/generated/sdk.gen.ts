@@ -489,7 +489,13 @@ export const listTokens = <ThrowOnError extends boolean = false>(
  * - EDIT permits READ or EDIT for the same scope.
  * - READ permits only READ for the same scope.
  * - The API returns HTTP 403 if your token does not have a required permission.
- * - This limit does not apply when you use session cookies.
+ * - This limit does not apply when you use session cookies. LOGS:EDIT and LOGS:SEND still require current ADMIN membership.
+ * - OAuth callers also require current ADMIN membership to issue LOGS:EDIT or LOGS:SEND.
+ * - LOGS:SEND can be combined with other explicitly granted permissions. Tokens with LOGS:SEND may specify project_id; omit it or use null for Unassigned.
+ * - Project scope applies only to sending; other grants remain organisation-wide.
+ * - Issuing LOGS:SEND requires LOGS:EDIT or explicit LOGS:SEND delegation authority in addition to API_TOKENS:EDIT for bearer callers. LOGS:EDIT itself does not authorize sending logs.
+ * - Project scope is fixed at creation. Revoke and replace the token to change it. A sending credential with API_TOKENS:EDIT may delegate sending only to its own project unless it also holds organisation-wide LOGS:EDIT.
+ * - Logs grants are available to authorized callers in every organisation. Ingestion and search are not available yet.
  *
  * Example requirements:
  * - Read permissions: API_TOKENS:EDIT and UPTIME_CHECKS:READ (or UPTIME_CHECKS:EDIT).

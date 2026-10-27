@@ -3407,6 +3407,10 @@ export type ListTokensResponses = {
 		result: {
 			result: Array<{
 				/**
+				 * Project receiving logs, or null for Unassigned. Present for tokens with LOGS:SEND; other grants remain organisation-wide.
+				 */
+				project_id?: string | null;
+				/**
 				 * Token ID
 				 */
 				id: string;
@@ -3425,20 +3429,27 @@ export type ListTokensResponses = {
 				/**
 				 * List of grants (scope and permission pairs) assigned to this token
 				 */
-				grants: Array<{
-					scope:
-						| "PROJECTS"
-						| "UPTIME_CHECKS"
-						| "STATUS_PAGES"
-						| "HEARTBEAT_CHECKS"
-						| "MAINTENANCE_WINDOWS"
-						| "PEOPLE"
-						| "INTEGRATIONS"
-						| "API_TOKENS"
-						| "WEBHOOKS"
-						| "ENVIRONMENT_VARIABLES";
-					permission: "READ" | "EDIT";
-				}>;
+				grants: Array<
+					| {
+							scope:
+								| "PROJECTS"
+								| "LOGS"
+								| "UPTIME_CHECKS"
+								| "STATUS_PAGES"
+								| "HEARTBEAT_CHECKS"
+								| "MAINTENANCE_WINDOWS"
+								| "PEOPLE"
+								| "INTEGRATIONS"
+								| "API_TOKENS"
+								| "WEBHOOKS"
+								| "ENVIRONMENT_VARIABLES";
+							permission: "READ" | "EDIT";
+					  }
+					| {
+							scope: "LOGS";
+							permission: "SEND";
+					  }
+				>;
 			}>;
 			result_info: {
 				page: number;
@@ -3473,26 +3484,37 @@ export type CreateTokenData = {
 		 */
 		name: string;
 		/**
-		 * List of grants (scope and permission pairs) for the token
+		 * Permissions explicitly granted to this token.
 		 */
-		grants: Array<{
-			scope:
-				| "PROJECTS"
-				| "UPTIME_CHECKS"
-				| "STATUS_PAGES"
-				| "HEARTBEAT_CHECKS"
-				| "MAINTENANCE_WINDOWS"
-				| "PEOPLE"
-				| "INTEGRATIONS"
-				| "API_TOKENS"
-				| "WEBHOOKS"
-				| "ENVIRONMENT_VARIABLES";
-			permission: "READ" | "EDIT";
-		}>;
+		grants: Array<
+			| {
+					scope:
+						| "PROJECTS"
+						| "LOGS"
+						| "UPTIME_CHECKS"
+						| "STATUS_PAGES"
+						| "HEARTBEAT_CHECKS"
+						| "MAINTENANCE_WINDOWS"
+						| "PEOPLE"
+						| "INTEGRATIONS"
+						| "API_TOKENS"
+						| "WEBHOOKS"
+						| "ENVIRONMENT_VARIABLES";
+					permission: "READ" | "EDIT";
+			  }
+			| {
+					scope: "LOGS";
+					permission: "SEND";
+			  }
+		>;
 		/**
-		 * Custom expiration date for the token. If not provided, defaults to 365 days from now. Set to null for no expiration.
+		 * Custom expiration date. Omit for 365 days from now, or use null for no expiration.
 		 */
 		expiresAt?: string | null;
+		/**
+		 * Project receiving logs. Omit or use null for Unassigned. Requires LOGS:SEND and applies only to sending; other grants remain organisation-wide. Scope cannot be changed after issuance.
+		 */
+		project_id?: string | null;
 	};
 	headers?: {
 		/**
@@ -3519,9 +3541,17 @@ export type CreateTokenErrors = {
 	 */
 	403: PublicApiErrorResponse;
 	/**
+	 * Project not found in this organisation
+	 */
+	404: PublicApiErrorResponse;
+	/**
 	 * Internal Server Error
 	 */
 	500: PublicApiServerError;
+	/**
+	 * Log credential storage is unavailable
+	 */
+	503: PublicApiErrorResponse;
 };
 
 export type CreateTokenError = CreateTokenErrors[keyof CreateTokenErrors];
@@ -3532,6 +3562,10 @@ export type CreateTokenResponses = {
 	 */
 	201: {
 		result: {
+			/**
+			 * Project receiving logs, or null for Unassigned. Present for tokens with LOGS:SEND; other grants remain organisation-wide.
+			 */
+			project_id?: string | null;
 			/**
 			 * Token ID
 			 */
@@ -3694,6 +3728,10 @@ export type GetTokenResponses = {
 	200: {
 		result: {
 			/**
+			 * Project receiving logs, or null for Unassigned. Present for tokens with LOGS:SEND; other grants remain organisation-wide.
+			 */
+			project_id?: string | null;
+			/**
 			 * Token ID
 			 */
 			id: string;
@@ -3712,20 +3750,27 @@ export type GetTokenResponses = {
 			/**
 			 * List of grants (scope and permission pairs) assigned to this token
 			 */
-			grants: Array<{
-				scope:
-					| "PROJECTS"
-					| "UPTIME_CHECKS"
-					| "STATUS_PAGES"
-					| "HEARTBEAT_CHECKS"
-					| "MAINTENANCE_WINDOWS"
-					| "PEOPLE"
-					| "INTEGRATIONS"
-					| "API_TOKENS"
-					| "WEBHOOKS"
-					| "ENVIRONMENT_VARIABLES";
-				permission: "READ" | "EDIT";
-			}>;
+			grants: Array<
+				| {
+						scope:
+							| "PROJECTS"
+							| "LOGS"
+							| "UPTIME_CHECKS"
+							| "STATUS_PAGES"
+							| "HEARTBEAT_CHECKS"
+							| "MAINTENANCE_WINDOWS"
+							| "PEOPLE"
+							| "INTEGRATIONS"
+							| "API_TOKENS"
+							| "WEBHOOKS"
+							| "ENVIRONMENT_VARIABLES";
+						permission: "READ" | "EDIT";
+				  }
+				| {
+						scope: "LOGS";
+						permission: "SEND";
+				  }
+			>;
 		};
 		/**
 		 * Whether the API call was successful
