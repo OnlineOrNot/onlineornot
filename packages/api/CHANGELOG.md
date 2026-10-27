@@ -1,5 +1,11 @@
 # @onlineornot/api
 
+## 0.10.0
+
+### Minor Changes
+
+- [#121](https://github.com/OnlineOrNot/onlineornot/pull/121) [`8f723bf`](https://github.com/OnlineOrNot/onlineornot/commit/8f723bf556933701b729f758a11af266c67ada7c) Thanks [@rozenmd](https://github.com/rozenmd)! - FEAT: Update the bundled SDK to the latest API schema with maintenance window project ownership, project filtering, and move operations.
+
 ## 0.9.0
 
 ### Minor Changes
