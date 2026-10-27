@@ -83,6 +83,34 @@ export default defineConfig({
 		{
 			name: "valibot",
 			includeInEntry: false,
+			$resolvers: {
+				array: (ctx) => {
+					if (!ctx.schema.items || ctx.schema.items.length < 2) return;
+					const element = ctx.walk(
+						{
+							items: ctx.schema.items,
+							logicalOperator: ctx.schema.logicalOperator ?? "or",
+						},
+						ctx,
+					);
+					ctx.pipes.push(
+						ctx.pipes.current,
+						ctx
+							.$(ctx.plugin.imports.v)
+							.attr("array")
+							.call(
+								ctx.pipes.toNode(ctx.applyModifiers(element).pipes, ctx.plugin),
+							),
+					);
+					const length = ctx.nodes.length(ctx);
+					if (length) ctx.pipes.push(ctx.pipes.current, length);
+					else {
+						ctx.pipes.push(ctx.pipes.current, ctx.nodes.minLength(ctx));
+						ctx.pipes.push(ctx.pipes.current, ctx.nodes.maxLength(ctx));
+					}
+					return ctx.pipes.current;
+				},
+			},
 		},
 	],
 });
