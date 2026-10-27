@@ -2463,6 +2463,10 @@ export type ExpandedHeartbeat = Heartbeat & {
 
 export type MaintenanceWindow = {
 	/**
+	 * Project ID, or null for Unassigned.
+	 */
+	project_id: string | null;
+	/**
 	 * Maintenance Window ID
 	 */
 	id: string;
@@ -6889,6 +6893,10 @@ export type ListMaintenanceWindowsData = {
 		 * Search term to filter maintenance windows by name
 		 */
 		search?: string;
+		/**
+		 * Project ID, or unassigned to list only Unassigned resources. Omit to list all resources.
+		 */
+		project_id?: string | "unassigned";
 	};
 	url: "/v1/maintenance-windows";
 };
@@ -6906,6 +6914,10 @@ export type ListMaintenanceWindowsErrors = {
 	 * Insufficient permissions
 	 */
 	403: PublicApiErrorResponse;
+	/**
+	 * Project not found
+	 */
+	404: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
@@ -6969,6 +6981,10 @@ export type ListMaintenanceWindowsResponse =
 
 export type CreateMaintenanceWindowData = {
 	body: {
+		/**
+		 * Project ID. Omit or use null to leave the resource Unassigned.
+		 */
+		project_id?: string | null;
 		name: string;
 		/**
 		 * Start date and time of the maintenance window, as a timestamp
@@ -7027,6 +7043,14 @@ export type CreateMaintenanceWindowErrors = {
 	 * Insufficient permissions
 	 */
 	403: PublicApiErrorResponse;
+	/**
+	 * Project or maintenance target not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Maintenance targets must belong to the same project as the window
+	 */
+	409: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
@@ -7209,6 +7233,7 @@ export type GetMaintenanceWindowResponse =
 
 export type UpdateMaintenanceWindowData = {
 	body: {
+		project_id?: string;
 		name?: string;
 		/**
 		 * Start date and time of the maintenance window, as a timestamp
@@ -7277,6 +7302,10 @@ export type UpdateMaintenanceWindowErrors = {
 	 * Not Found - Maintenance window does not exist or belongs to different organization
 	 */
 	404: PublicApiErrorResponse;
+	/**
+	 * Maintenance targets must belong to the same project as the window
+	 */
+	409: PublicApiErrorResponse;
 	/**
 	 * Internal Server Error
 	 */
@@ -7686,7 +7715,7 @@ export type MoveWebhookErrors = {
 	 */
 	404: PublicApiErrorResponse;
 	/**
-	 * Move would break variable references or create a name conflict
+	 * Move would break variable references, create a name conflict, or separate maintenance windows from their targets
 	 */
 	409: PublicApiErrorResponse;
 	/**
@@ -7770,7 +7799,7 @@ export type MoveEnvironmentVariableErrors = {
 	 */
 	404: PublicApiErrorResponse;
 	/**
-	 * Move would break variable references or create a name conflict
+	 * Move would break variable references, create a name conflict, or separate maintenance windows from their targets
 	 */
 	409: PublicApiErrorResponse;
 	/**
@@ -7821,7 +7850,12 @@ export type MoveResourcesData = {
 		 */
 		project_id: string | null;
 		resources: Array<{
-			kind: "check" | "heartbeat" | "webhook" | "environment_variable";
+			kind:
+				| "check"
+				| "heartbeat"
+				| "webhook"
+				| "environment_variable"
+				| "maintenance_window";
 			id: string;
 		}>;
 	};
@@ -7854,7 +7888,7 @@ export type MoveResourcesErrors = {
 	 */
 	404: PublicApiErrorResponse;
 	/**
-	 * Move would break variable references or create a name conflict
+	 * Move would break variable references, create a name conflict, or separate maintenance windows from their targets
 	 */
 	409: PublicApiErrorResponse;
 	/**
@@ -7876,7 +7910,12 @@ export type MoveResourcesResponses = {
 			 */
 			project_id: string | null;
 			resources: Array<{
-				kind: "check" | "heartbeat" | "webhook" | "environment_variable";
+				kind:
+					| "check"
+					| "heartbeat"
+					| "webhook"
+					| "environment_variable"
+					| "maintenance_window";
 				id: string;
 			}>;
 		};
@@ -7899,6 +7938,91 @@ export type MoveResourcesResponses = {
 
 export type MoveResourcesResponse =
 	MoveResourcesResponses[keyof MoveResourcesResponses];
+
+export type MoveMaintenanceWindowData = {
+	body: {
+		/**
+		 * Project ID, or null for Unassigned.
+		 */
+		project_id: string | null;
+	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Maintenance Window ID
+		 */
+		maintenance_window_id: string;
+	};
+	query?: never;
+	url: "/v1/maintenance-windows/{maintenance_window_id}/move";
+};
+
+export type MoveMaintenanceWindowErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Resource or project not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Move would break variable references, create a name conflict, or separate maintenance windows from their targets
+	 */
+	409: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type MoveMaintenanceWindowError =
+	MoveMaintenanceWindowErrors[keyof MoveMaintenanceWindowErrors];
+
+export type MoveMaintenanceWindowResponses = {
+	/**
+	 * Moved resource and destination
+	 */
+	200: {
+		result: {
+			id: string;
+			/**
+			 * Project ID, or null for Unassigned.
+			 */
+			project_id: string | null;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type MoveMaintenanceWindowResponse =
+	MoveMaintenanceWindowResponses[keyof MoveMaintenanceWindowResponses];
 
 export type ListProjectsData = {
 	body?: never;

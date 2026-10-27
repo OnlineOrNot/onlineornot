@@ -270,6 +270,9 @@ import type {
 	MoveHeartbeatData,
 	MoveHeartbeatErrors,
 	MoveHeartbeatResponses,
+	MoveMaintenanceWindowData,
+	MoveMaintenanceWindowErrors,
+	MoveMaintenanceWindowResponses,
 	MoveResourcesData,
 	MoveResourcesErrors,
 	MoveResourcesResponses,
@@ -1526,7 +1529,7 @@ export const updateHeartbeat = <ThrowOnError extends boolean = false>(
 /**
  * List all maintenance windows
  *
- * Retrieve a paginated list of all maintenance windows
+ * Retrieve maintenance windows across all projects, or filter by project_id. Use unassigned for windows without a project.
  *
  * Requires MAINTENANCE_WINDOWS:READ.
  */
@@ -1550,7 +1553,7 @@ export const listMaintenanceWindows = <ThrowOnError extends boolean = false>(
 /**
  * Create a new maintenance window
  *
- * Create a new maintenance window with associated checks and heartbeats
+ * Create a maintenance window. Omitted or null project_id leaves it Unassigned. Every selected check and heartbeat must belong to the same organisation and project.
  *
  * Requires MAINTENANCE_WINDOWS:EDIT.
  */
@@ -1626,7 +1629,7 @@ export const getMaintenanceWindow = <ThrowOnError extends boolean = false>(
 /**
  * Update a maintenance window
  *
- * Update a maintenance window. All fields are optional - only provided fields will be updated. Updating checks or heartbeats replaces existing associations.
+ * Update a maintenance window. All fields are optional - only provided fields will be updated. Updating checks or heartbeats replaces existing associations and requires the same project assignment. Assignment changes use the move operation.
  *
  * Requires MAINTENANCE_WINDOWS:EDIT.
  */
@@ -1794,7 +1797,7 @@ export const moveEnvironmentVariable = <ThrowOnError extends boolean = false>(
 /**
  * Assign or unassign explicitly selected resources atomically
  *
- * Requires EDIT permission for every selected resource type. Moves only the selected resources; rejects broken variable references and name conflicts without partial changes.
+ * Requires EDIT permission for every selected resource type. Moves only the selected resources; rejects broken variable references, name conflicts and cross-project maintenance targets without partial changes.
  *
  * Requires PROJECTS:EDIT.
  */
@@ -1808,6 +1811,34 @@ export const moveResources = <ThrowOnError extends boolean = false>(
 	>({
 		security: [{ scheme: "bearer", type: "http" }],
 		url: "/v1/resources/move",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
+ * Assign or unassign a maintenance window
+ *
+ * The window and all its checks and heartbeats must retain the same assignment. Use the atomic resources move to select linked resources together.
+ *
+ * Requires MAINTENANCE_WINDOWS:EDIT.
+ */
+export const moveMaintenanceWindow = <ThrowOnError extends boolean = false>(
+	options: Options<MoveMaintenanceWindowData, ThrowOnError>,
+): RequestResult<
+	MoveMaintenanceWindowResponses,
+	MoveMaintenanceWindowErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).post<
+		MoveMaintenanceWindowResponses,
+		MoveMaintenanceWindowErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/maintenance-windows/{maintenance_window_id}/move",
 		...options,
 		headers: {
 			"Content-Type": "application/json",

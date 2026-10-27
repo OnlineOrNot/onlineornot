@@ -1414,6 +1414,12 @@ export const zExpandedHeartbeat = zHeartbeat.and(
 );
 
 export const zMaintenanceWindow = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.nullable(),
 	id: z.string(),
 	name: z.string(),
 	start_date: z.string(),
@@ -3253,6 +3259,16 @@ export const zListMaintenanceWindowsQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
+	project_id: z
+		.union([
+			z
+				.string()
+				.min(16)
+				.max(128)
+				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			z.enum(["unassigned"]),
+		])
+		.optional(),
 });
 
 /**
@@ -3300,6 +3316,12 @@ export const zListMaintenanceWindowsResponse = z.union([
 ]);
 
 export const zCreateMaintenanceWindowBody = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.nullish(),
 	name: z.string().min(1),
 	start_date: z.string(),
 	duration_minutes: z.int().gt(0),
@@ -3410,6 +3432,7 @@ export const zGetMaintenanceWindowResponse = z.object({
 });
 
 export const zUpdateMaintenanceWindowBody = z.object({
+	project_id: z.string().optional(),
 	name: z.string().min(1).optional(),
 	start_date: z.string().optional(),
 	duration_minutes: z.int().gt(0).optional(),
@@ -3736,7 +3759,13 @@ export const zMoveResourcesBody = z.object({
 	resources: z
 		.array(
 			z.object({
-				kind: z.enum(["check", "heartbeat", "webhook", "environment_variable"]),
+				kind: z.enum([
+					"check",
+					"heartbeat",
+					"webhook",
+					"environment_variable",
+					"maintenance_window",
+				]),
 				id: z.string().min(1).max(128),
 			}),
 		)
@@ -3761,10 +3790,63 @@ export const zMoveResourcesResponse = z.object({
 			.nullable(),
 		resources: z.array(
 			z.object({
-				kind: z.enum(["check", "heartbeat", "webhook", "environment_variable"]),
+				kind: z.enum([
+					"check",
+					"heartbeat",
+					"webhook",
+					"environment_variable",
+					"maintenance_window",
+				]),
 				id: z.string().min(1).max(128),
 			}),
 		),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zMoveMaintenanceWindowBody = z.object({
+	project_id: z
+		.string()
+		.min(16)
+		.max(128)
+		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.nullable(),
+});
+
+export const zMoveMaintenanceWindowHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zMoveMaintenanceWindowPath = z.object({
+	maintenance_window_id: z.string().min(8),
+});
+
+/**
+ * Moved resource and destination
+ */
+export const zMoveMaintenanceWindowResponse = z.object({
+	result: z.object({
+		id: z.string(),
+		project_id: z
+			.string()
+			.min(16)
+			.max(128)
+			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+			.nullable(),
 	}),
 	success: z.boolean(),
 	errors: z.array(
