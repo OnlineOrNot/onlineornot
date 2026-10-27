@@ -2039,7 +2039,30 @@ export const vListTokensResponse = v.object({
 				name: v.string(),
 				expiresAfter: v.nullable(v.string()),
 				createdAt: v.string(),
-				grants: v.array(v.unknown()),
+				grants: v.array(
+					v.union([
+						v.object({
+							scope: v.picklist([
+								"PROJECTS",
+								"LOGS",
+								"UPTIME_CHECKS",
+								"STATUS_PAGES",
+								"HEARTBEAT_CHECKS",
+								"MAINTENANCE_WINDOWS",
+								"PEOPLE",
+								"INTEGRATIONS",
+								"API_TOKENS",
+								"WEBHOOKS",
+								"ENVIRONMENT_VARIABLES",
+							]),
+							permission: v.picklist(["READ", "EDIT"]),
+						}),
+						v.object({
+							scope: v.picklist(["LOGS"]),
+							permission: v.picklist(["SEND"]),
+						}),
+					]),
+				),
 			}),
 		),
 		result_info: v.object({
@@ -2068,7 +2091,30 @@ export const vListTokensResponse = v.object({
 
 export const vCreateTokenBody = v.object({
 	name: v.string(),
-	grants: v.array(v.unknown()),
+	grants: v.array(
+		v.union([
+			v.object({
+				scope: v.picklist([
+					"PROJECTS",
+					"LOGS",
+					"UPTIME_CHECKS",
+					"STATUS_PAGES",
+					"HEARTBEAT_CHECKS",
+					"MAINTENANCE_WINDOWS",
+					"PEOPLE",
+					"INTEGRATIONS",
+					"API_TOKENS",
+					"WEBHOOKS",
+					"ENVIRONMENT_VARIABLES",
+				]),
+				permission: v.picklist(["READ", "EDIT"]),
+			}),
+			v.object({
+				scope: v.picklist(["LOGS"]),
+				permission: v.picklist(["SEND"]),
+			}),
+		]),
+	),
 	expiresAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
 	project_id: v.nullish(
 		v.pipe(
@@ -2177,7 +2223,30 @@ export const vGetTokenResponse = v.object({
 		name: v.string(),
 		expiresAfter: v.nullable(v.string()),
 		createdAt: v.string(),
-		grants: v.array(v.unknown()),
+		grants: v.array(
+			v.union([
+				v.object({
+					scope: v.picklist([
+						"PROJECTS",
+						"LOGS",
+						"UPTIME_CHECKS",
+						"STATUS_PAGES",
+						"HEARTBEAT_CHECKS",
+						"MAINTENANCE_WINDOWS",
+						"PEOPLE",
+						"INTEGRATIONS",
+						"API_TOKENS",
+						"WEBHOOKS",
+						"ENVIRONMENT_VARIABLES",
+					]),
+					permission: v.picklist(["READ", "EDIT"]),
+				}),
+				v.object({
+					scope: v.picklist(["LOGS"]),
+					permission: v.picklist(["SEND"]),
+				}),
+			]),
+		),
 	}),
 	success: v.boolean(),
 	errors: v.array(
