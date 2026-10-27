@@ -1564,6 +1564,14 @@ export const vExpandedHeartbeat = v.intersect([
 ]);
 
 export const vMaintenanceWindow = v.object({
+	project_id: v.nullable(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	id: v.string(),
 	name: v.string(),
 	start_date: v.string(),
@@ -3469,6 +3477,17 @@ export const vListMaintenanceWindowsQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
+	project_id: v.optional(
+		v.union([
+			v.pipe(
+				v.string(),
+				v.minLength(16),
+				v.maxLength(128),
+				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			),
+			v.picklist(["unassigned"]),
+		]),
+	),
 });
 
 /**
@@ -3517,6 +3536,14 @@ export const vListMaintenanceWindowsResponse = v.union([
 ]);
 
 export const vCreateMaintenanceWindowBody = v.object({
+	project_id: v.nullish(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
 	name: v.pipe(v.string(), v.minLength(1)),
 	start_date: v.string(),
 	duration_minutes: v.pipe(v.number(), v.integer(), v.gtValue(0)),
@@ -3628,6 +3655,7 @@ export const vGetMaintenanceWindowResponse = v.object({
 });
 
 export const vUpdateMaintenanceWindowBody = v.object({
+	project_id: v.optional(v.string()),
 	name: v.optional(v.pipe(v.string(), v.minLength(1))),
 	start_date: v.optional(v.string()),
 	duration_minutes: v.optional(v.pipe(v.number(), v.integer(), v.gtValue(0))),
@@ -3973,6 +4001,7 @@ export const vMoveResourcesBody = v.strictObject({
 					"heartbeat",
 					"webhook",
 					"environment_variable",
+					"maintenance_window",
 				]),
 				id: v.pipe(v.string(), v.minLength(1), v.maxLength(128)),
 			}),
@@ -4006,9 +4035,61 @@ export const vMoveResourcesResponse = v.object({
 					"heartbeat",
 					"webhook",
 					"environment_variable",
+					"maintenance_window",
 				]),
 				id: v.pipe(v.string(), v.minLength(1), v.maxLength(128)),
 			}),
+		),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vMoveMaintenanceWindowBody = v.strictObject({
+	project_id: v.nullable(
+		v.pipe(
+			v.string(),
+			v.minLength(16),
+			v.maxLength(128),
+			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		),
+	),
+});
+
+export const vMoveMaintenanceWindowHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vMoveMaintenanceWindowPath = v.object({
+	maintenance_window_id: v.pipe(v.string(), v.minLength(8)),
+});
+
+/**
+ * Moved resource and destination
+ */
+export const vMoveMaintenanceWindowResponse = v.object({
+	result: v.strictObject({
+		id: v.string(),
+		project_id: v.nullable(
+			v.pipe(
+				v.string(),
+				v.minLength(16),
+				v.maxLength(128),
+				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			),
 		),
 	}),
 	success: v.boolean(),

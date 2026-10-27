@@ -3,18 +3,25 @@ import { createServer } from "node:http";
 
 import { afterAll, beforeAll, beforeEach, expect, it } from "vitest";
 
-import type { CheckInput, MoveResourcesData } from "../src/index";
+import type {
+	CheckInput,
+	CreateMaintenanceWindowData,
+	MoveResourcesData,
+} from "../src/index";
 import {
 	createCheck,
 	createClient,
+	createMaintenanceWindow,
 	createProject,
 	deleteProject,
 	getProject,
 	listChecks,
+	listMaintenanceWindows,
 	listProjects,
 	moveCheck,
 	moveEnvironmentVariable,
 	moveHeartbeat,
+	moveMaintenanceWindow,
 	moveResources,
 	moveWebhook,
 	updateProject,
@@ -194,6 +201,7 @@ it.each([projectId, null])(
 				{ kind: "heartbeat", id: "heartbeat-public-001" },
 				{ kind: "webhook", id: "webhook-public-001" },
 				{ kind: "environment_variable", id: "variable-public-001" },
+				{ kind: "maintenance_window", id: "maintenance-public-001" },
 			],
 		} satisfies MoveResourcesData["body"];
 
@@ -237,5 +245,83 @@ it("preserves atomic move conflicts without retrying individual resources", asyn
 		success: false,
 		errors: [{ message: "project_move_variable_conflict" }],
 	});
+	expect(requests).toHaveLength(1);
+});
+
+it.each([undefined, projectId, null])(
+	"preserves maintenance window project selection %s on creation",
+	async (selected) => {
+		const body: CreateMaintenanceWindowData["body"] = {
+			name: "Maintenance",
+			start_date: "2026-10-28T00:00:00Z",
+			duration_minutes: 30,
+			days_of_week: ["MONDAY"],
+			timezone: "UTC",
+		};
+		if (selected !== undefined) body.project_id = selected;
+
+		const result = await createMaintenanceWindow({ client: client(), body });
+
+		expect(result.data?.result.project_id).toBe(projectId);
+		expect(requests[0].method).toBe("POST");
+		expect(requests[0].url).toBe("/v1/maintenance-windows");
+		if (selected === undefined)
+			expect(JSON.parse(requests[0].body)).not.toHaveProperty("project_id");
+		else
+			expect(JSON.parse(requests[0].body)).toHaveProperty(
+				"project_id",
+				selected,
+			);
+	},
+);
+
+it.each([undefined, projectId, "unassigned"])(
+	"filters maintenance windows by %s without inventing a project",
+	async (selected) => {
+		await listMaintenanceWindows({
+			client: client(),
+			query: { project_id: selected },
+		});
+
+		expect(requests[0].method).toBe("GET");
+		expect(
+			new URL(requests[0].url, origin).searchParams.get("project_id"),
+		).toBe(selected ?? null);
+	},
+);
+
+it.each([projectId, null])(
+	"moves maintenance window assignment to %s",
+	async (selected) => {
+		const result = await moveMaintenanceWindow({
+			client: client(),
+			path: { maintenance_window_id: "maintenance-public-001" },
+			body: { project_id: selected },
+		});
+
+		expect(result.response?.status).toBe(200);
+		expect(requests.map((r) => [r.method, r.url, JSON.parse(r.body)])).toEqual([
+			[
+				"POST",
+				"/v1/maintenance-windows/maintenance-public-001/move",
+				{ project_id: selected },
+			],
+		]);
+		expect(requests[0].authorization).toBe("Bearer fabricated-project-token");
+	},
+);
+
+it("preserves maintenance target conflicts as errors", async () => {
+	conflict = true;
+
+	const result = await moveMaintenanceWindow({
+		client: client(),
+		path: { maintenance_window_id: "maintenance-public-001" },
+		body: { project_id: null },
+	});
+
+	expect(result.response?.status).toBe(409);
+	expect(result.data).toBeUndefined();
+	expect(result.error?.success).toBe(false);
 	expect(requests).toHaveLength(1);
 });
