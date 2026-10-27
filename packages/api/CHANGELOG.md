@@ -1,5 +1,15 @@
 # @onlineornot/api
 
+## 0.10.1
+
+### Patch Changes
+
+- [#123](https://github.com/OnlineOrNot/onlineornot/pull/123) [`3f334a1`](https://github.com/OnlineOrNot/onlineornot/commit/3f334a1d35c0e404a3247d0800daa78ed9dba305) Thanks [@rozenmd](https://github.com/rozenmd)! - feature: support log sending permissions and token project assignments.
+
+  Regenerate the SDK from the published API schema. Token operations and optional validators support LOGS:SEND alongside other explicit grants, with project metadata for sending credentials.
+
+  Preserve grant validation and inferred grant types in all optional Valibot token schemas, including invalid scope/permission rejection.
+
 ## 0.10.0
 
 ### Minor Changes
