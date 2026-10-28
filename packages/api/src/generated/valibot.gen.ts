@@ -503,6 +503,32 @@ export const vPublicCheckResultsErrorResponse = v.object({
 	messages: v.pipe(v.array(v.unknown()), v.length(0)),
 });
 
+export const vLogBatch = v.strictObject({
+	logs: v.pipe(
+		v.array(
+			v.strictObject({
+				timestamp: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+				level: v.optional(
+					v.picklist(["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"]),
+					"INFO",
+				),
+				message: v.pipe(v.string(), v.minLength(1), v.maxLength(65536)),
+				service: v.optional(
+					v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+				),
+				environment: v.optional(
+					v.pipe(v.string(), v.minLength(1), v.maxLength(128)),
+				),
+				attributes: v.optional(v.record(v.string(), v.unknown())),
+				trace_id: v.optional(v.pipe(v.string(), v.regex(/^[a-f0-9]{32}$\/i/))),
+				span_id: v.optional(v.pipe(v.string(), v.regex(/^[a-f0-9]{16}$\/i/))),
+			}),
+		),
+		v.minLength(1),
+		v.maxLength(100),
+	),
+});
+
 export const vDnsCheckResponse = v.object({
 	result: vExpandedDnsCheck,
 	success: v.boolean(),
@@ -1868,6 +1894,125 @@ export const vPingHeartbeatGetPath = v.object({
 
 export const vPingHeartbeatPath = v.object({
 	heartbeat_id: v.pipe(v.string(), v.minLength(8)),
+});
+
+export const vSearchLogsHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vSearchLogsQuery = v.object({
+	from: v.pipe(v.string(), v.isoTimestamp()),
+	to: v.pipe(v.string(), v.isoTimestamp()),
+	limit: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(100)),
+		50,
+	),
+	cursor: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(512))),
+	project_id: v.optional(
+		v.union([
+			v.pipe(
+				v.string(),
+				v.minLength(16),
+				v.maxLength(128),
+				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			),
+			v.picklist(["unassigned"]),
+		]),
+	),
+	service: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(255))),
+	environment: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(128))),
+	level: v.optional(
+		v.picklist(["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"]),
+	),
+	q: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(256))),
+});
+
+/**
+ * Matching logs and a continuation cursor
+ */
+export const vSearchLogsResponse = v.object({
+	result: v.strictObject({
+		logs: v.pipe(
+			v.array(
+				v.strictObject({
+					id: v.pipe(v.string(), v.uuid()),
+					project_id: v.nullable(
+						v.pipe(
+							v.string(),
+							v.minLength(16),
+							v.maxLength(128),
+							v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+						),
+					),
+					timestamp: v.pipe(v.string(), v.isoTimestamp()),
+					received_at: v.pipe(v.string(), v.isoTimestamp()),
+					level: v.picklist([
+						"TRACE",
+						"DEBUG",
+						"INFO",
+						"WARN",
+						"ERROR",
+						"FATAL",
+					]),
+					message: v.string(),
+					service: v.nullable(v.string()),
+					environment: v.nullable(v.string()),
+					attributes: v.record(v.string(), v.unknown()),
+					trace_id: v.nullable(v.string()),
+					span_id: v.nullable(v.string()),
+				}),
+			),
+			v.maxLength(100),
+		),
+		next_cursor: v.nullable(v.string()),
+		scanned_bytes: v.pipe(v.number(), v.integer(), v.minValue(0)),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vSendLogsBody = vLogBatch;
+
+/**
+ * Log batch accepted for processing
+ */
+export const vSendLogsResponse = v.object({
+	result: v.strictObject({
+		accepted: v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(100)),
+		ids: v.pipe(
+			v.array(v.pipe(v.string(), v.uuid())),
+			v.minLength(1),
+			v.maxLength(100),
+		),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
 });
 
 export const vListAuditLogsHeaders = v.object({
