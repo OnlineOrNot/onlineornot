@@ -1,5 +1,13 @@
 # @onlineornot/api
 
+## 0.10.2
+
+### Patch Changes
+
+- [#125](https://github.com/OnlineOrNot/onlineornot/pull/125) [`9699de9`](https://github.com/OnlineOrNot/onlineornot/commit/9699de9843d4adb232be1cc1c125025aea451f95) Thanks [@open-session-jcjv](https://github.com/apps/open-session-jcjv)! - fix: regenerate the SDK with lowercase unassigned descriptions.
+
+  Update the pinned API schema, including generated log sending and search operations and their optional validators. Accept valid hexadecimal trace and span IDs in both optional validators.
+
 ## 0.10.1
 
 ### Patch Changes
