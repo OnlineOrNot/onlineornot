@@ -1,6 +1,6 @@
 {
-	"schema": "https://raw.githubusercontent.com/OnlineOrNot/api-schemas/ef1e1260341e6bc2da84e676349820c3bae69859/openapi.json",
-	"count": 113,
+	"schema": "https://raw.githubusercontent.com/OnlineOrNot/api-schemas/51f554e7b9f37df3d0557adbcb5f026f947f1873/openapi.json",
+	"count": 115,
 	"operations": [
 		"createBrowserCheck",
 		"createCheck",
@@ -95,6 +95,8 @@
 		"pingHeartbeat",
 		"pingHeartbeatGet",
 		"removeUser",
+		"searchLogs",
+		"sendLogs",
 		"updateBrowserCheck",
 		"updateCheck",
 		"updateDnsCheck",

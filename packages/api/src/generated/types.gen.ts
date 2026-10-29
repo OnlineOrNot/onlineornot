@@ -75,7 +75,7 @@ export type AnyCheck =
 
 export type ExpandedUptimeCheck = {
 	/**
-	 * Project ID, or null for Unassigned.
+	 * Project ID, or null for unassigned.
 	 */
 	project_id?: string | null;
 	/**
@@ -241,7 +241,7 @@ export type ExpandedUptimeCheck = {
 
 export type ExpandedBrowserCheck = {
 	/**
-	 * Project ID, or null for Unassigned.
+	 * Project ID, or null for unassigned.
 	 */
 	project_id?: string | null;
 	/**
@@ -410,7 +410,7 @@ export type ExpandedBrowserCheck = {
 
 export type ExpandedDnsCheck = {
 	/**
-	 * Project ID, or null for Unassigned.
+	 * Project ID, or null for unassigned.
 	 */
 	project_id?: string | null;
 	/**
@@ -559,7 +559,7 @@ export type DnsAssertion = {
 
 export type ExpandedTcpCheck = {
 	/**
-	 * Project ID, or null for Unassigned.
+	 * Project ID, or null for unassigned.
 	 */
 	project_id?: string | null;
 	/**
@@ -748,7 +748,7 @@ export type CheckListResponse = {
 
 export type CheckListItem = {
 	/**
-	 * Project ID, or null for Unassigned.
+	 * Project ID, or null for unassigned.
 	 */
 	project_id?: string | null;
 	/**
@@ -840,6 +840,21 @@ export type PublicCheckResultsErrorResponse = {
 	messages: Array<unknown>;
 };
 
+export type LogBatch = {
+	logs: Array<{
+		timestamp?: string;
+		level?: "TRACE" | "DEBUG" | "INFO" | "WARN" | "ERROR" | "FATAL";
+		message: string;
+		service?: string;
+		environment?: string;
+		attributes?: {
+			[key: string]: unknown;
+		};
+		trace_id?: string;
+		span_id?: string;
+	}>;
+};
+
 export type DnsCheckResponse = {
 	result: ExpandedDnsCheck;
 	/**
@@ -860,7 +875,7 @@ export type DnsCheckResponse = {
 
 export type DnsCheckInput = {
 	/**
-	 * Project ID. Omit or use null to leave the resource Unassigned.
+	 * Project ID. Omit or use null to leave the resource unassigned.
 	 */
 	project_id?: string | null;
 	name: string;
@@ -1037,7 +1052,7 @@ export type TcpCheckResponse = {
 
 export type TcpCheckInput = {
 	/**
-	 * Project ID. Omit or use null to leave the resource Unassigned.
+	 * Project ID. Omit or use null to leave the resource unassigned.
 	 */
 	project_id?: string | null;
 	name: string;
@@ -1202,7 +1217,7 @@ export type UptimeCheckResponse = {
 
 export type UptimeCheckInput = {
 	/**
-	 * Project ID. Omit or use null to leave the resource Unassigned.
+	 * Project ID. Omit or use null to leave the resource unassigned.
 	 */
 	project_id?: string | null;
 	name: string;
@@ -1458,7 +1473,7 @@ export type BrowserCheckResponse = {
  */
 export type BrowserCheckInput = {
 	/**
-	 * Project ID. Omit or use null to leave the resource Unassigned.
+	 * Project ID. Omit or use null to leave the resource unassigned.
 	 */
 	project_id?: string | null;
 	name: string;
@@ -2053,7 +2068,7 @@ export type ExpandedCheck = Check & {
 
 export type Check = {
 	/**
-	 * Project ID, or null for Unassigned.
+	 * Project ID, or null for unassigned.
 	 */
 	project_id?: string | null;
 	/**
@@ -2089,7 +2104,7 @@ export type Check = {
 
 export type CheckInput = {
 	/**
-	 * Project ID. Omit or use null to leave the resource Unassigned.
+	 * Project ID. Omit or use null to leave the resource unassigned.
 	 */
 	project_id?: string | null;
 	name: string;
@@ -2341,7 +2356,7 @@ export type CheckPatch = {
 
 export type EnvironmentVariableMetadata = {
 	/**
-	 * Project ID, or null for Unassigned.
+	 * Project ID, or null for unassigned.
 	 */
 	project_id?: string | null;
 	/**
@@ -2372,7 +2387,7 @@ export type EnvironmentVariableMetadata = {
 
 export type Heartbeat = {
 	/**
-	 * Project ID, or null for Unassigned.
+	 * Project ID, or null for unassigned.
 	 */
 	project_id?: string | null;
 	/**
@@ -2463,7 +2478,7 @@ export type ExpandedHeartbeat = Heartbeat & {
 
 export type MaintenanceWindow = {
 	/**
-	 * Project ID, or null for Unassigned.
+	 * Project ID, or null for unassigned.
 	 */
 	project_id: string | null;
 	/**
@@ -2964,7 +2979,7 @@ export type IncidentUpdate = {
 
 export type Webhook = {
 	/**
-	 * Project ID, or null for Unassigned.
+	 * Project ID, or null for unassigned.
 	 */
 	project_id?: string | null;
 	/**
@@ -3116,6 +3131,181 @@ export type PingHeartbeatResponses = {
 	 */
 	200: unknown;
 };
+
+export type SearchLogsData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path?: never;
+	query: {
+		/**
+		 * Inclusive server receipt time, in RFC 3339 format.
+		 */
+		from: string;
+		/**
+		 * Exclusive server receipt time, at most one hour after from.
+		 */
+		to: string;
+		limit?: number;
+		cursor?: string;
+		project_id?: string | "unassigned";
+		service?: string;
+		environment?: string;
+		level?: "TRACE" | "DEBUG" | "INFO" | "WARN" | "ERROR" | "FATAL";
+		/**
+		 * Case-insensitive literal substring of the log message.
+		 */
+		q?: string;
+	};
+	url: "/v1/logs";
+};
+
+export type SearchLogsErrors = {
+	/**
+	 * Invalid or unbounded search request
+	 */
+	400: PublicApiErrorResponse;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Project not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+	/**
+	 * Log search unavailable
+	 */
+	503: PublicApiErrorResponse;
+};
+
+export type SearchLogsError = SearchLogsErrors[keyof SearchLogsErrors];
+
+export type SearchLogsResponses = {
+	/**
+	 * Matching logs and a continuation cursor
+	 */
+	200: {
+		result: {
+			logs: Array<{
+				id: string;
+				/**
+				 * Project ID, or null for unassigned.
+				 */
+				project_id: string | null;
+				timestamp: string;
+				received_at: string;
+				level: "TRACE" | "DEBUG" | "INFO" | "WARN" | "ERROR" | "FATAL";
+				message: string;
+				service: string | null;
+				environment: string | null;
+				attributes: {
+					[key: string]: unknown;
+				};
+				trace_id: string | null;
+				span_id: string | null;
+			}>;
+			next_cursor: string | null;
+			scanned_bytes: number;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type SearchLogsResponse = SearchLogsResponses[keyof SearchLogsResponses];
+
+export type SendLogsData = {
+	body: LogBatch;
+	path?: never;
+	query?: never;
+	url: "/v1/logs";
+};
+
+export type SendLogsErrors = {
+	/**
+	 * Invalid log batch
+	 */
+	400: PublicApiErrorResponse;
+	/**
+	 * Missing or invalid API token
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Requires an explicit LOGS:SEND grant
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Batch or record exceeds its byte limit
+	 */
+	413: PublicApiErrorResponse;
+	/**
+	 * Requires uncompressed application/json
+	 */
+	415: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+	/**
+	 * Ingestion unavailable or delivery not confirmed
+	 */
+	503: PublicApiErrorResponse;
+};
+
+export type SendLogsError = SendLogsErrors[keyof SendLogsErrors];
+
+export type SendLogsResponses = {
+	/**
+	 * Log batch accepted for processing
+	 */
+	202: {
+		result: {
+			accepted: number;
+			ids: Array<string>;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type SendLogsResponse = SendLogsResponses[keyof SendLogsResponses];
 
 export type ListAuditLogsData = {
 	body?: never;
@@ -3407,7 +3597,7 @@ export type ListTokensResponses = {
 		result: {
 			result: Array<{
 				/**
-				 * Project receiving logs, or null for Unassigned. Present for tokens with LOGS:SEND; other grants remain organisation-wide.
+				 * Project receiving logs, or null for unassigned. Present for tokens with LOGS:SEND; other grants remain organisation-wide.
 				 */
 				project_id?: string | null;
 				/**
@@ -3512,7 +3702,7 @@ export type CreateTokenData = {
 		 */
 		expiresAt?: string | null;
 		/**
-		 * Project receiving logs. Omit or use null for Unassigned. Requires LOGS:SEND and applies only to sending; other grants remain organisation-wide. Scope cannot be changed after issuance.
+		 * Project receiving logs. Omit or use null for unassigned. Requires LOGS:SEND and applies only to sending; other grants remain organisation-wide. Scope cannot be changed after issuance.
 		 */
 		project_id?: string | null;
 	};
@@ -3563,7 +3753,7 @@ export type CreateTokenResponses = {
 	201: {
 		result: {
 			/**
-			 * Project receiving logs, or null for Unassigned. Present for tokens with LOGS:SEND; other grants remain organisation-wide.
+			 * Project receiving logs, or null for unassigned. Present for tokens with LOGS:SEND; other grants remain organisation-wide.
 			 */
 			project_id?: string | null;
 			/**
@@ -3728,7 +3918,7 @@ export type GetTokenResponses = {
 	200: {
 		result: {
 			/**
-			 * Project receiving logs, or null for Unassigned. Present for tokens with LOGS:SEND; other grants remain organisation-wide.
+			 * Project receiving logs, or null for unassigned. Present for tokens with LOGS:SEND; other grants remain organisation-wide.
 			 */
 			project_id?: string | null;
 			/**
@@ -4684,7 +4874,7 @@ export type UpdateBrowserCheckResponse =
 export type MoveCheckData = {
 	body: {
 		/**
-		 * Project ID, or null for Unassigned.
+		 * Project ID, or null for unassigned.
 		 */
 		project_id: string | null;
 	};
@@ -4748,7 +4938,7 @@ export type MoveCheckResponses = {
 			 */
 			id: string;
 			/**
-			 * Project ID, or null for Unassigned.
+			 * Project ID, or null for unassigned.
 			 */
 			project_id: string | null;
 		};
@@ -5378,7 +5568,7 @@ export type ListChecksData = {
 		 */
 		search?: string;
 		/**
-		 * Project ID, or unassigned to list only Unassigned resources. Omit to list all resources.
+		 * Project ID, or unassigned to list only unassigned resources. Omit to list all resources.
 		 */
 		project_id?: string | "unassigned";
 		/**
@@ -5722,7 +5912,7 @@ export type ListEnvironmentVariablesData = {
 		 */
 		per_page?: number;
 		/**
-		 * Project ID, or unassigned to list only Unassigned resources. Omit to list all resources.
+		 * Project ID, or unassigned to list only unassigned resources. Omit to list all resources.
 		 */
 		project_id?: string | "unassigned";
 		/**
@@ -5810,7 +6000,7 @@ export type ListEnvironmentVariablesResponse =
 export type CreateEnvironmentVariableData = {
 	body: {
 		/**
-		 * Project ID. Omit or use null to leave the resource Unassigned.
+		 * Project ID. Omit or use null to leave the resource unassigned.
 		 */
 		project_id?: string | null;
 		/**
@@ -5879,7 +6069,7 @@ export type CreateEnvironmentVariableResponses = {
 		result:
 			| {
 					/**
-					 * Project ID, or null for Unassigned.
+					 * Project ID, or null for unassigned.
 					 */
 					project_id?: string | null;
 					/**
@@ -5906,7 +6096,7 @@ export type CreateEnvironmentVariableResponses = {
 			  }
 			| {
 					/**
-					 * Project ID, or null for Unassigned.
+					 * Project ID, or null for unassigned.
 					 */
 					project_id?: string | null;
 					/**
@@ -6091,7 +6281,7 @@ export type GetEnvironmentVariableResponses = {
 		result:
 			| {
 					/**
-					 * Project ID, or null for Unassigned.
+					 * Project ID, or null for unassigned.
 					 */
 					project_id?: string | null;
 					/**
@@ -6118,7 +6308,7 @@ export type GetEnvironmentVariableResponses = {
 			  }
 			| {
 					/**
-					 * Project ID, or null for Unassigned.
+					 * Project ID, or null for unassigned.
 					 */
 					project_id?: string | null;
 					/**
@@ -6237,7 +6427,7 @@ export type UpdateEnvironmentVariableResponses = {
 		result:
 			| {
 					/**
-					 * Project ID, or null for Unassigned.
+					 * Project ID, or null for unassigned.
 					 */
 					project_id?: string | null;
 					/**
@@ -6264,7 +6454,7 @@ export type UpdateEnvironmentVariableResponses = {
 			  }
 			| {
 					/**
-					 * Project ID, or null for Unassigned.
+					 * Project ID, or null for unassigned.
 					 */
 					project_id?: string | null;
 					/**
@@ -6316,7 +6506,7 @@ export type UpdateEnvironmentVariableResponse =
 export type MoveHeartbeatData = {
 	body: {
 		/**
-		 * Project ID, or null for Unassigned.
+		 * Project ID, or null for unassigned.
 		 */
 		project_id: string | null;
 	};
@@ -6376,7 +6566,7 @@ export type MoveHeartbeatResponses = {
 			 */
 			id: string;
 			/**
-			 * Project ID, or null for Unassigned.
+			 * Project ID, or null for unassigned.
 			 */
 			project_id: string | null;
 		};
@@ -6423,7 +6613,7 @@ export type ListHeartbeatsData = {
 		 */
 		search?: string;
 		/**
-		 * Project ID, or unassigned to list only Unassigned resources. Omit to list all resources.
+		 * Project ID, or unassigned to list only unassigned resources. Omit to list all resources.
 		 */
 		project_id?: string | "unassigned";
 	};
@@ -6511,7 +6701,7 @@ export type ListHeartbeatsResponse =
 export type CreateHeartbeatData = {
 	body: {
 		/**
-		 * Project ID. Omit or use null to leave the resource Unassigned.
+		 * Project ID. Omit or use null to leave the resource unassigned.
 		 */
 		project_id?: string | null;
 		name: string;
@@ -6939,7 +7129,7 @@ export type ListMaintenanceWindowsData = {
 		 */
 		search?: string;
 		/**
-		 * Project ID, or unassigned to list only Unassigned resources. Omit to list all resources.
+		 * Project ID, or unassigned to list only unassigned resources. Omit to list all resources.
 		 */
 		project_id?: string | "unassigned";
 	};
@@ -7027,7 +7217,7 @@ export type ListMaintenanceWindowsResponse =
 export type CreateMaintenanceWindowData = {
 	body: {
 		/**
-		 * Project ID. Omit or use null to leave the resource Unassigned.
+		 * Project ID. Omit or use null to leave the resource unassigned.
 		 */
 		project_id?: string | null;
 		name: string;
@@ -7722,7 +7912,7 @@ export type CreateInvitationResponse =
 export type MoveWebhookData = {
 	body: {
 		/**
-		 * Project ID, or null for Unassigned.
+		 * Project ID, or null for unassigned.
 		 */
 		project_id: string | null;
 	};
@@ -7779,7 +7969,7 @@ export type MoveWebhookResponses = {
 		result: {
 			id: string;
 			/**
-			 * Project ID, or null for Unassigned.
+			 * Project ID, or null for unassigned.
 			 */
 			project_id: string | null;
 		};
@@ -7806,7 +7996,7 @@ export type MoveWebhookResponse =
 export type MoveEnvironmentVariableData = {
 	body: {
 		/**
-		 * Project ID, or null for Unassigned.
+		 * Project ID, or null for unassigned.
 		 */
 		project_id: string | null;
 	};
@@ -7864,7 +8054,7 @@ export type MoveEnvironmentVariableResponses = {
 		result: {
 			id: string;
 			/**
-			 * Project ID, or null for Unassigned.
+			 * Project ID, or null for unassigned.
 			 */
 			project_id: string | null;
 		};
@@ -7891,7 +8081,7 @@ export type MoveEnvironmentVariableResponse =
 export type MoveResourcesData = {
 	body: {
 		/**
-		 * Project ID, or null for Unassigned.
+		 * Project ID, or null for unassigned.
 		 */
 		project_id: string | null;
 		resources: Array<{
@@ -7951,7 +8141,7 @@ export type MoveResourcesResponses = {
 	200: {
 		result: {
 			/**
-			 * Project ID, or null for Unassigned.
+			 * Project ID, or null for unassigned.
 			 */
 			project_id: string | null;
 			resources: Array<{
@@ -7987,7 +8177,7 @@ export type MoveResourcesResponse =
 export type MoveMaintenanceWindowData = {
 	body: {
 		/**
-		 * Project ID, or null for Unassigned.
+		 * Project ID, or null for unassigned.
 		 */
 		project_id: string | null;
 	};
@@ -8045,7 +8235,7 @@ export type MoveMaintenanceWindowResponses = {
 		result: {
 			id: string;
 			/**
-			 * Project ID, or null for Unassigned.
+			 * Project ID, or null for unassigned.
 			 */
 			project_id: string | null;
 		};
@@ -12134,7 +12324,7 @@ export type ListWebhooksData = {
 		 */
 		search?: string;
 		/**
-		 * Project ID, or unassigned to list only Unassigned resources. Omit to list all resources.
+		 * Project ID, or unassigned to list only unassigned resources. Omit to list all resources.
 		 */
 		project_id?: string | "unassigned";
 	};
@@ -12224,7 +12414,7 @@ export type CreateWebhookData = {
 	 */
 	body: {
 		/**
-		 * Project ID. Omit or use null to leave the resource Unassigned.
+		 * Project ID. Omit or use null to leave the resource unassigned.
 		 */
 		project_id?: string | null;
 		/**

@@ -465,6 +465,33 @@ export const zPublicCheckResultsErrorResponse = z.object({
 	messages: z.array(z.unknown()).length(0),
 });
 
+export const zLogBatch = z.object({
+	logs: z
+		.array(
+			z.object({
+				timestamp: z.iso.datetime().optional(),
+				level: z
+					.enum(["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"])
+					.optional()
+					.default("INFO"),
+				message: z.string().min(1).max(65536),
+				service: z.string().min(1).max(255).optional(),
+				environment: z.string().min(1).max(128).optional(),
+				attributes: z.record(z.string(), z.unknown()).optional(),
+				trace_id: z
+					.string()
+					.regex(/^[a-fA-F0-9]{32}$/)
+					.optional(),
+				span_id: z
+					.string()
+					.regex(/^[a-fA-F0-9]{16}$/)
+					.optional(),
+			}),
+		)
+		.min(1)
+		.max(100),
+});
+
 export const zDnsCheckResponse = z.object({
 	result: zExpandedDnsCheck,
 	success: z.boolean(),
@@ -1710,6 +1737,107 @@ export const zPingHeartbeatGetPath = z.object({
 
 export const zPingHeartbeatPath = z.object({
 	heartbeat_id: z.string().min(8),
+});
+
+export const zSearchLogsHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zSearchLogsQuery = z.object({
+	from: z.iso.datetime(),
+	to: z.iso.datetime(),
+	limit: z.int().gte(1).lte(100).optional().default(50),
+	cursor: z.string().min(1).max(512).optional(),
+	project_id: z
+		.union([
+			z
+				.string()
+				.min(16)
+				.max(128)
+				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			z.enum(["unassigned"]),
+		])
+		.optional(),
+	service: z.string().min(1).max(255).optional(),
+	environment: z.string().min(1).max(128).optional(),
+	level: z
+		.enum(["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"])
+		.optional(),
+	q: z.string().min(1).max(256).optional(),
+});
+
+/**
+ * Matching logs and a continuation cursor
+ */
+export const zSearchLogsResponse = z.object({
+	result: z.object({
+		logs: z
+			.array(
+				z.object({
+					id: z.uuid(),
+					project_id: z
+						.string()
+						.min(16)
+						.max(128)
+						.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+						.nullable(),
+					timestamp: z.iso.datetime(),
+					received_at: z.iso.datetime(),
+					level: z.enum(["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"]),
+					message: z.string(),
+					service: z.string().nullable(),
+					environment: z.string().nullable(),
+					attributes: z.record(z.string(), z.unknown()),
+					trace_id: z.string().nullable(),
+					span_id: z.string().nullable(),
+				}),
+			)
+			.max(100),
+		next_cursor: z.string().nullable(),
+		scanned_bytes: z.int().gte(0),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zSendLogsBody = zLogBatch;
+
+/**
+ * Log batch accepted for processing
+ */
+export const zSendLogsResponse = z.object({
+	result: z.object({
+		accepted: z.int().gte(1).lte(100),
+		ids: z.array(z.uuid()).min(1).max(100),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
 });
 
 export const zListAuditLogsHeaders = z.object({

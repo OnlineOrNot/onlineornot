@@ -288,6 +288,12 @@ import type {
 	RemoveUserData,
 	RemoveUserErrors,
 	RemoveUserResponses,
+	SearchLogsData,
+	SearchLogsErrors,
+	SearchLogsResponses,
+	SendLogsData,
+	SendLogsErrors,
+	SendLogsResponses,
 	UpdateBrowserCheckData,
 	UpdateBrowserCheckErrors,
 	UpdateBrowserCheckResponses,
@@ -401,6 +407,48 @@ export const pingHeartbeat = <ThrowOnError extends boolean = false>(
 	>({ baseUrl: "https://oonchk.com", url: "/{heartbeat_id}", ...options });
 
 /**
+ * Search logs
+ *
+ * Search logs by the time they were received, over a non-empty range of at most one hour. Results are newest-first, with at most 100 logs and a continuation cursor. Omit project_id to search all projects in the authenticated organisation, or use unassigned for only unassigned logs. Sending-project assignments do not restrict explicitly granted read access. Message search is a case-insensitive literal substring. New logs may take minutes to become searchable. Searches may scan more data than they return; scanned_bytes reports the bytes scanned.
+ *
+ * Requires LOGS:READ.
+ */
+export const searchLogs = <ThrowOnError extends boolean = false>(
+	options: Options<SearchLogsData, ThrowOnError>,
+): RequestResult<SearchLogsResponses, SearchLogsErrors, ThrowOnError> =>
+	(options.client ?? client).get<
+		SearchLogsResponses,
+		SearchLogsErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/logs",
+		...options,
+	});
+
+/**
+ * Send JSON logs
+ *
+ * Requires an API token with an explicit LOGS:SEND grant; session cookies and OAuth tokens are not accepted. The token determines the organisation and sending project; null means unassigned. Send at most 100 logs and 1 MiB of uncompressed JSON per request. Log records are limited to 128 KiB. HTTP 202 confirms acceptance for processing, not search availability. A delivery error may have accepted some or all logs; retrying may create duplicates.
+ */
+export const sendLogs = <ThrowOnError extends boolean = false>(
+	options: Options<SendLogsData, ThrowOnError>,
+): RequestResult<SendLogsResponses, SendLogsErrors, ThrowOnError> =>
+	(options.client ?? client).post<
+		SendLogsResponses,
+		SendLogsErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/logs",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
  * List audit log events
  *
  * Retrieve a paginated list of audit log events for your organisation
@@ -491,7 +539,7 @@ export const listTokens = <ThrowOnError extends boolean = false>(
  * - The API returns HTTP 403 if your token does not have a required permission.
  * - This limit does not apply when you use session cookies. LOGS:EDIT and LOGS:SEND still require current ADMIN membership.
  * - OAuth callers also require current ADMIN membership to issue LOGS:EDIT or LOGS:SEND.
- * - LOGS:SEND can be combined with other explicitly granted permissions. Tokens with LOGS:SEND may specify project_id; omit it or use null for Unassigned.
+ * - LOGS:SEND can be combined with other explicitly granted permissions. Tokens with LOGS:SEND may specify project_id; omit it or use null for unassigned.
  * - Project scope applies only to sending; other grants remain organisation-wide.
  * - Issuing LOGS:SEND requires LOGS:EDIT or explicit LOGS:SEND delegation authority in addition to API_TOKENS:EDIT for bearer callers. LOGS:EDIT itself does not authorize sending logs.
  * - Project scope is fixed at creation. Revoke and replace the token to change it. A sending credential with API_TOKENS:EDIT may delegate sending only to its own project unless it also holds organisation-wide LOGS:EDIT.
@@ -1559,7 +1607,7 @@ export const listMaintenanceWindows = <ThrowOnError extends boolean = false>(
 /**
  * Create a new maintenance window
  *
- * Create a maintenance window. Omitted or null project_id leaves it Unassigned. Every selected check and heartbeat must belong to the same organisation and project.
+ * Create a maintenance window. Omitted or null project_id leaves it unassigned. Every selected check and heartbeat must belong to the same organisation and project.
  *
  * Requires MAINTENANCE_WINDOWS:EDIT.
  */

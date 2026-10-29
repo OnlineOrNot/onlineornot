@@ -1,9 +1,50 @@
 import { parse } from "valibot";
 import { describe, expect, it } from "vitest";
 
-import { vCheckDeleteResponse, vCreateCheckBody } from "../src/valibot";
+import {
+	vCheckDeleteResponse,
+	vCreateCheckBody,
+	vSendLogsBody,
+} from "../src/valibot";
 
 describe("generated Valibot schemas", () => {
+	describe.each([
+		["trace_id", 32],
+		["span_id", 16],
+	] as const)("log %s validation", (field, length) => {
+		it.each(["a", "A", "aF09"])(
+			"accepts hexadecimal IDs with %s",
+			(characters) => {
+				const value = characters.repeat(length / characters.length);
+				const body = {
+					logs: [{ message: "request completed", [field]: value }],
+				};
+
+				const parsed = parse(vSendLogsBody, body);
+
+				expect(parsed.logs[0][field]).toBe(value);
+			},
+		);
+		it.each(["short", "long", "non-hex", "literal-flags"])(
+			"rejects %s IDs",
+			(kind) => {
+				const value =
+					kind === "short"
+						? "a".repeat(length - 1)
+						: kind === "long"
+							? "a".repeat(length + 1)
+							: kind === "non-hex"
+								? "g".repeat(length)
+								: `${"a".repeat(length)}/i`;
+				const body = {
+					logs: [{ message: "request completed", [field]: value }],
+				};
+
+				expect(() => parse(vSendLogsBody, body)).toThrow();
+			},
+		);
+	});
+
 	it("parses a representative request body", () => {
 		const result = parse(vCreateCheckBody, {
 			name: "Website",
