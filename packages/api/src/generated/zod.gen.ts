@@ -480,11 +480,11 @@ export const zLogBatch = z.object({
 				attributes: z.record(z.string(), z.unknown()).optional(),
 				trace_id: z
 					.string()
-					.regex(/^[a-f0-9]{32}$\/i/)
+					.regex(/^[a-fA-F0-9]{32}$/)
 					.optional(),
 				span_id: z
 					.string()
-					.regex(/^[a-f0-9]{16}$\/i/)
+					.regex(/^[a-fA-F0-9]{16}$/)
 					.optional(),
 			}),
 		)
