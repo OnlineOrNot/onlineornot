@@ -35,6 +35,31 @@ export default defineConfig({
 				throw new Error("The pinned schema must use OpenAPI 3.1");
 			}
 
+			for (const path of [
+				"/v1/checks",
+				"/v1/heartbeats",
+				"/v1/webhooks",
+				"/v1/env",
+				"/v1/maintenance-windows",
+			] as const) {
+				for (const parameter of spec.paths?.[path]?.get?.parameters ?? []) {
+					if (
+						"$ref" in parameter ||
+						parameter.in !== "query" ||
+						parameter.name !== "project_id"
+					)
+						continue;
+					const schema = parameter.schema;
+					if (!schema || "$ref" in schema || schema.type !== "array") continue;
+					// One query value and repeated query values are both supported API inputs.
+					parameter.schema = {
+						anyOf: [{ type: "string" }, { ...schema, minItems: 1 }],
+						description: schema.description,
+						example: schema.example,
+					};
+				}
+			}
+
 			for (const schema of Object.values(spec.components?.schemas ?? {})) {
 				if (!("$ref" in schema)) removeRequiredPropertyDefaults(schema);
 			}

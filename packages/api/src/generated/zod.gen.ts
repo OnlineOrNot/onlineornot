@@ -2908,7 +2908,9 @@ export const zListChecksQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
-	project_id: z.array(z.string()).max(100).optional(),
+	project_id: z
+		.union([z.string(), z.array(z.string()).min(1).max(100)])
+		.optional(),
 	filter: z
 		.enum([
 			"DOWN",
@@ -3059,7 +3061,9 @@ export const zListEnvironmentVariablesHeaders = z.object({
 export const zListEnvironmentVariablesQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
-	project_id: z.array(z.string()).max(100).optional(),
+	project_id: z
+		.union([z.string(), z.array(z.string()).min(1).max(100)])
+		.optional(),
 	search: z.string().max(64).optional(),
 });
 
@@ -3375,7 +3379,9 @@ export const zListHeartbeatsQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
-	project_id: z.array(z.string()).max(100).optional(),
+	project_id: z
+		.union([z.string(), z.array(z.string()).min(1).max(100)])
+		.optional(),
 });
 
 /**
@@ -3595,7 +3601,9 @@ export const zListMaintenanceWindowsQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
-	project_id: z.array(z.string()).max(100).optional(),
+	project_id: z
+		.union([z.string(), z.array(z.string()).min(1).max(100)])
+		.optional(),
 });
 
 /**
@@ -6151,7 +6159,9 @@ export const zListWebhooksQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
-	project_id: z.array(z.string()).max(100).optional(),
+	project_id: z
+		.union([z.string(), z.array(z.string()).min(1).max(100)])
+		.optional(),
 });
 
 /**

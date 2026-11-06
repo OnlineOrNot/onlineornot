@@ -3223,7 +3223,12 @@ export const vListChecksQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
-	project_id: v.optional(v.pipe(v.array(v.string()), v.maxLength(100))),
+	project_id: v.optional(
+		v.union([
+			v.string(),
+			v.pipe(v.array(v.string()), v.minLength(1), v.maxLength(100)),
+		]),
+	),
 	filter: v.optional(
 		v.picklist([
 			"DOWN",
@@ -3376,7 +3381,12 @@ export const vListEnvironmentVariablesHeaders = v.object({
 export const vListEnvironmentVariablesQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
-	project_id: v.optional(v.pipe(v.array(v.string()), v.maxLength(100))),
+	project_id: v.optional(
+		v.union([
+			v.string(),
+			v.pipe(v.array(v.string()), v.minLength(1), v.maxLength(100)),
+		]),
+	),
 	search: v.optional(v.pipe(v.string(), v.maxLength(64))),
 });
 
@@ -3707,7 +3717,12 @@ export const vListHeartbeatsQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
-	project_id: v.optional(v.pipe(v.array(v.string()), v.maxLength(100))),
+	project_id: v.optional(
+		v.union([
+			v.string(),
+			v.pipe(v.array(v.string()), v.minLength(1), v.maxLength(100)),
+		]),
+	),
 });
 
 /**
@@ -3935,7 +3950,12 @@ export const vListMaintenanceWindowsQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
-	project_id: v.optional(v.pipe(v.array(v.string()), v.maxLength(100))),
+	project_id: v.optional(
+		v.union([
+			v.string(),
+			v.pipe(v.array(v.string()), v.minLength(1), v.maxLength(100)),
+		]),
+	),
 });
 
 /**
@@ -6547,7 +6567,12 @@ export const vListWebhooksQuery = v.object({
 	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	search: v.optional(v.string()),
-	project_id: v.optional(v.pipe(v.array(v.string()), v.maxLength(100))),
+	project_id: v.optional(
+		v.union([
+			v.string(),
+			v.pipe(v.array(v.string()), v.minLength(1), v.maxLength(100)),
+		]),
+	),
 });
 
 /**

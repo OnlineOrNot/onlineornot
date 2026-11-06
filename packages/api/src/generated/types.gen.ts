@@ -5818,7 +5818,7 @@ export type ListChecksData = {
 		/**
 		 * Project IDs, or unassigned for resources without a project. Repeat the parameter to include several, for example project_id=a1b2c3d4e5f6g7h8&project_id=unassigned. Omit to list all resources.
 		 */
-		project_id?: Array<string>;
+		project_id?: string | Array<string>;
 		/**
 		 * Filter by current check status. NA, omitted and unrecognized values leave status unfiltered.
 		 */
@@ -6162,7 +6162,7 @@ export type ListEnvironmentVariablesData = {
 		/**
 		 * Project IDs, or unassigned for resources without a project. Repeat the parameter to include several, for example project_id=a1b2c3d4e5f6g7h8&project_id=unassigned. Omit to list all resources.
 		 */
-		project_id?: Array<string>;
+		project_id?: string | Array<string>;
 		/**
 		 * Case-insensitive substring search on environment variable names.
 		 */
@@ -6863,7 +6863,7 @@ export type ListHeartbeatsData = {
 		/**
 		 * Project IDs, or unassigned for resources without a project. Repeat the parameter to include several, for example project_id=a1b2c3d4e5f6g7h8&project_id=unassigned. Omit to list all resources.
 		 */
-		project_id?: Array<string>;
+		project_id?: string | Array<string>;
 	};
 	url: "/v1/heartbeats";
 };
@@ -7379,7 +7379,7 @@ export type ListMaintenanceWindowsData = {
 		/**
 		 * Project IDs, or unassigned for resources without a project. Repeat the parameter to include several, for example project_id=a1b2c3d4e5f6g7h8&project_id=unassigned. Omit to list all resources.
 		 */
-		project_id?: Array<string>;
+		project_id?: string | Array<string>;
 	};
 	url: "/v1/maintenance-windows";
 };
@@ -12582,7 +12582,7 @@ export type ListWebhooksData = {
 		/**
 		 * Project IDs, or unassigned for resources without a project. Repeat the parameter to include several, for example project_id=a1b2c3d4e5f6g7h8&project_id=unassigned. Omit to list all resources.
 		 */
-		project_id?: Array<string>;
+		project_id?: string | Array<string>;
 	};
 	url: "/v1/webhooks";
 };

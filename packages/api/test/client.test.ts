@@ -61,28 +61,37 @@ describe("generated client", () => {
 		expect(request?.headers.get("authorization")).toBe("Bearer test-token");
 	});
 
-	it.each([
+	describe.each([
 		["checks", listChecks],
 		["env", listEnvironmentVariables],
 		["heartbeats", listHeartbeats],
 		["maintenance-windows", listMaintenanceWindows],
 		["webhooks", listWebhooks],
-	] as const)(
-		"serializes %s project filters as repeated parameters",
-		async (path, list) => {
-			let request: Request | undefined;
-			await list({
-				query: { project_id: ["a1b2c3d4e5f6g7h8", "unassigned"] },
-				fetch: async (input) => {
-					request = input instanceof Request ? input : new Request(input);
-					return ok();
-				},
-			});
-			expect(request?.url).toBe(
-				`https://api.onlineornot.com/v1/${path}?project_id=a1b2c3d4e5f6g7h8&project_id=unassigned`,
-			);
-		},
-	);
+	] as const)("%s project filters", (path, list) => {
+		it.each([
+			{ value: "a", query: "project_id=a" },
+			{ value: ["a", "b"], query: "project_id=a&project_id=b" },
+			{
+				value: ["a1b2c3d4e5f6g7h8", "unassigned"],
+				query: "project_id=a1b2c3d4e5f6g7h8&project_id=unassigned",
+			},
+		])(
+			"serializes $value without brackets or comma joining",
+			async ({ value, query }) => {
+				let request: Request | undefined;
+				await list({
+					query: { project_id: value },
+					fetch: async (input) => {
+						request = input instanceof Request ? input : new Request(input);
+						return ok();
+					},
+				});
+				expect(request?.url).toBe(
+					`https://api.onlineornot.com/v1/${path}?${query}`,
+				);
+			},
+		);
+	});
 
 	it("preserves project name conflict error envelopes", async () => {
 		expectTypeOf<
