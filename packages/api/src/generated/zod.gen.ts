@@ -84,30 +84,38 @@ export const zExpandedUptimeCheck = z.object({
 	follow_redirects: z.boolean(),
 	assertions: z
 		.array(
-			z.object({
-				type: z.enum([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: z.string(),
-				comparison: z.enum([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: z.string(),
-			}),
+			z.union([
+				z.object({
+					type: z.enum([
+						"JSON_BODY",
+						"TEXT_BODY",
+						"RESPONSE_HEADERS",
+						"HTML_BODY",
+					]),
+					property: z.string(),
+					comparison: z.enum([
+						"EQUALS",
+						"NOT_EQUALS",
+						"GREATER_THAN",
+						"LESS_THAN",
+						"NULL",
+						"NOT_NULL",
+						"EMPTY",
+						"NOT_EMPTY",
+						"CONTAINS",
+						"NOT_CONTAINS",
+						"FALSE",
+						"TRUE",
+					]),
+					expected: z.string(),
+				}),
+				z.object({
+					type: z.enum(["STATUS_CODE"]),
+					property: z.enum([""]),
+					comparison: z.enum(["IS_ONE_OF"]),
+					expected: z.array(z.int().gte(100).lte(599)).min(1).max(500),
+				}),
+			]),
 		)
 		.nullable(),
 	auth_username: z.string().nullable(),
@@ -161,30 +169,38 @@ export const zExpandedBrowserCheck = z.object({
 	follow_redirects: z.boolean(),
 	assertions: z
 		.array(
-			z.object({
-				type: z.enum([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: z.string(),
-				comparison: z.enum([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: z.string(),
-			}),
+			z.union([
+				z.object({
+					type: z.enum([
+						"JSON_BODY",
+						"TEXT_BODY",
+						"RESPONSE_HEADERS",
+						"HTML_BODY",
+					]),
+					property: z.string(),
+					comparison: z.enum([
+						"EQUALS",
+						"NOT_EQUALS",
+						"GREATER_THAN",
+						"LESS_THAN",
+						"NULL",
+						"NOT_NULL",
+						"EMPTY",
+						"NOT_EMPTY",
+						"CONTAINS",
+						"NOT_CONTAINS",
+						"FALSE",
+						"TRUE",
+					]),
+					expected: z.string(),
+				}),
+				z.object({
+					type: z.enum(["STATUS_CODE"]),
+					property: z.enum([""]),
+					comparison: z.enum(["IS_ONE_OF"]),
+					expected: z.array(z.int().gte(100).lte(599)).min(1).max(500),
+				}),
+			]),
 		)
 		.nullable(),
 	auth_username: z.string().nullable(),
@@ -465,6 +481,99 @@ export const zPublicCheckResultsErrorResponse = z.object({
 	messages: z.array(z.unknown()).length(0),
 });
 
+export const zOtlpLogExportResponse = z.record(z.string(), z.never());
+
+export const zOtlpStatus = z.object({
+	message: z.string(),
+});
+
+export const zOtlpLogExport = z.object({
+	resourceLogs: z
+		.array(
+			z.object({
+				resource: z
+					.object({
+						attributes: z
+							.array(
+								z.object({
+									key: z.string().min(1).max(128),
+									value: z.unknown().optional(),
+								}),
+							)
+							.max(64)
+							.nullish(),
+						droppedAttributesCount: z.int().gte(0).lte(4294967295).nullish(),
+					})
+					.nullish(),
+				schemaUrl: z.string().nullish(),
+				scopeLogs: z
+					.array(
+						z.object({
+							scope: z
+								.object({
+									attributes: z
+										.array(
+											z.object({
+												key: z.string().min(1).max(128),
+												value: z.unknown().optional(),
+											}),
+										)
+										.max(64)
+										.nullish(),
+									droppedAttributesCount: z
+										.int()
+										.gte(0)
+										.lte(4294967295)
+										.nullish(),
+									name: z.string().nullish(),
+									version: z.string().nullish(),
+								})
+								.nullish(),
+							schemaUrl: z.string().nullish(),
+							logRecords: z
+								.array(
+									z.object({
+										timeUnixNano: z
+											.union([z.string().regex(/^-?\d+$/), z.number()])
+											.nullish(),
+										observedTimeUnixNano: z
+											.union([z.string().regex(/^-?\d+$/), z.number()])
+											.nullish(),
+										severityNumber: z.int().gte(0).lte(24).nullish(),
+										severityText: z.string().nullish(),
+										body: z.unknown().optional(),
+										attributes: z
+											.array(
+												z.object({
+													key: z.string().min(1).max(128),
+													value: z.unknown().optional(),
+												}),
+											)
+											.max(64)
+											.nullish(),
+										droppedAttributesCount: z
+											.int()
+											.gte(0)
+											.lte(4294967295)
+											.nullish(),
+										flags: z.int().gte(0).lte(4294967295).nullish(),
+										traceId: z.string().nullish(),
+										spanId: z.string().nullish(),
+										eventName: z.string().nullish(),
+									}),
+								)
+								.max(100)
+								.nullish(),
+						}),
+					)
+					.max(100)
+					.nullish(),
+			}),
+		)
+		.max(100)
+		.nullish(),
+});
+
 export const zLogBatch = z.object({
 	logs: z
 		.array(
@@ -730,30 +839,38 @@ export const zUptimeCheckInput = z.object({
 	follow_redirects: z.boolean().optional().default(true),
 	assertions: z
 		.array(
-			z.object({
-				type: z.enum([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: z.string(),
-				comparison: z.enum([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: z.string(),
-			}),
+			z.union([
+				z.object({
+					type: z.enum([
+						"JSON_BODY",
+						"TEXT_BODY",
+						"RESPONSE_HEADERS",
+						"HTML_BODY",
+					]),
+					property: z.string(),
+					comparison: z.enum([
+						"EQUALS",
+						"NOT_EQUALS",
+						"GREATER_THAN",
+						"LESS_THAN",
+						"NULL",
+						"NOT_NULL",
+						"EMPTY",
+						"NOT_EMPTY",
+						"CONTAINS",
+						"NOT_CONTAINS",
+						"FALSE",
+						"TRUE",
+					]),
+					expected: z.string(),
+				}),
+				z.object({
+					type: z.enum(["STATUS_CODE"]),
+					property: z.enum([""]),
+					comparison: z.enum(["IS_ONE_OF"]),
+					expected: z.array(z.int().gte(100).lte(599)).min(1).max(500),
+				}),
+			]),
 		)
 		.optional(),
 	verify_ssl: z.boolean().optional().default(true),
@@ -790,30 +907,38 @@ export const zUptimeCheckPatch = z.object({
 	follow_redirects: z.boolean().optional(),
 	assertions: z
 		.array(
-			z.object({
-				type: z.enum([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: z.string(),
-				comparison: z.enum([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: z.string(),
-			}),
+			z.union([
+				z.object({
+					type: z.enum([
+						"JSON_BODY",
+						"TEXT_BODY",
+						"RESPONSE_HEADERS",
+						"HTML_BODY",
+					]),
+					property: z.string(),
+					comparison: z.enum([
+						"EQUALS",
+						"NOT_EQUALS",
+						"GREATER_THAN",
+						"LESS_THAN",
+						"NULL",
+						"NOT_NULL",
+						"EMPTY",
+						"NOT_EMPTY",
+						"CONTAINS",
+						"NOT_CONTAINS",
+						"FALSE",
+						"TRUE",
+					]),
+					expected: z.string(),
+				}),
+				z.object({
+					type: z.enum(["STATUS_CODE"]),
+					property: z.enum([""]),
+					comparison: z.enum(["IS_ONE_OF"]),
+					expected: z.array(z.int().gte(100).lte(599)).min(1).max(500),
+				}),
+			]),
 		)
 		.optional(),
 	verify_ssl: z.boolean().optional(),
@@ -1195,30 +1320,38 @@ export const zExpandedCheck = zCheck.and(
 		follow_redirects: z.boolean(),
 		assertions: z
 			.array(
-				z.object({
-					type: z.enum([
-						"JSON_BODY",
-						"TEXT_BODY",
-						"RESPONSE_HEADERS",
-						"HTML_BODY",
-					]),
-					property: z.string(),
-					comparison: z.enum([
-						"EQUALS",
-						"NOT_EQUALS",
-						"GREATER_THAN",
-						"LESS_THAN",
-						"NULL",
-						"NOT_NULL",
-						"EMPTY",
-						"NOT_EMPTY",
-						"CONTAINS",
-						"NOT_CONTAINS",
-						"FALSE",
-						"TRUE",
-					]),
-					expected: z.string(),
-				}),
+				z.union([
+					z.object({
+						type: z.enum([
+							"JSON_BODY",
+							"TEXT_BODY",
+							"RESPONSE_HEADERS",
+							"HTML_BODY",
+						]),
+						property: z.string(),
+						comparison: z.enum([
+							"EQUALS",
+							"NOT_EQUALS",
+							"GREATER_THAN",
+							"LESS_THAN",
+							"NULL",
+							"NOT_NULL",
+							"EMPTY",
+							"NOT_EMPTY",
+							"CONTAINS",
+							"NOT_CONTAINS",
+							"FALSE",
+							"TRUE",
+						]),
+						expected: z.string(),
+					}),
+					z.object({
+						type: z.enum(["STATUS_CODE"]),
+						property: z.enum([""]),
+						comparison: z.enum(["IS_ONE_OF"]),
+						expected: z.array(z.int().gte(100).lte(599)).min(1).max(500),
+					}),
+				]),
 			)
 			.nullable(),
 		auth_username: z.string().nullable(),
@@ -1294,30 +1427,38 @@ export const zCheckInput = z.object({
 	follow_redirects: z.boolean().optional().default(true),
 	assertions: z
 		.array(
-			z.object({
-				type: z.enum([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: z.string(),
-				comparison: z.enum([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: z.string(),
-			}),
+			z.union([
+				z.object({
+					type: z.enum([
+						"JSON_BODY",
+						"TEXT_BODY",
+						"RESPONSE_HEADERS",
+						"HTML_BODY",
+					]),
+					property: z.string(),
+					comparison: z.enum([
+						"EQUALS",
+						"NOT_EQUALS",
+						"GREATER_THAN",
+						"LESS_THAN",
+						"NULL",
+						"NOT_NULL",
+						"EMPTY",
+						"NOT_EMPTY",
+						"CONTAINS",
+						"NOT_CONTAINS",
+						"FALSE",
+						"TRUE",
+					]),
+					expected: z.string(),
+				}),
+				z.object({
+					type: z.enum(["STATUS_CODE"]),
+					property: z.enum([""]),
+					comparison: z.enum(["IS_ONE_OF"]),
+					expected: z.array(z.int().gte(100).lte(599)).min(1).max(500),
+				}),
+			]),
 		)
 		.optional(),
 	verify_ssl: z.boolean().optional().default(true),
@@ -1357,30 +1498,38 @@ export const zCheckPatch = z.object({
 	follow_redirects: z.boolean().optional(),
 	assertions: z
 		.array(
-			z.object({
-				type: z.enum([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: z.string(),
-				comparison: z.enum([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: z.string(),
-			}),
+			z.union([
+				z.object({
+					type: z.enum([
+						"JSON_BODY",
+						"TEXT_BODY",
+						"RESPONSE_HEADERS",
+						"HTML_BODY",
+					]),
+					property: z.string(),
+					comparison: z.enum([
+						"EQUALS",
+						"NOT_EQUALS",
+						"GREATER_THAN",
+						"LESS_THAN",
+						"NULL",
+						"NOT_NULL",
+						"EMPTY",
+						"NOT_EMPTY",
+						"CONTAINS",
+						"NOT_CONTAINS",
+						"FALSE",
+						"TRUE",
+					]),
+					expected: z.string(),
+				}),
+				z.object({
+					type: z.enum(["STATUS_CODE"]),
+					property: z.enum([""]),
+					comparison: z.enum(["IS_ONE_OF"]),
+					expected: z.array(z.int().gte(100).lte(599)).min(1).max(500),
+				}),
+			]),
 		)
 		.optional(),
 	verify_ssl: z.boolean().optional(),
@@ -1739,6 +1888,13 @@ export const zPingHeartbeatPath = z.object({
 	heartbeat_id: z.string().min(8),
 });
 
+export const zExportOtlpLogsBody = zOtlpLogExport;
+
+/**
+ * OTLP full success, in the request encoding
+ */
+export const zExportOtlpLogsResponse = zOtlpLogExportResponse;
+
 export const zSearchLogsHeaders = z.object({
 	"X-OnlineOrNot-Organisation": z.string().optional(),
 });
@@ -1822,6 +1978,40 @@ export const zSendLogsResponse = z.object({
 	result: z.object({
 		accepted: z.int().gte(1).lte(100),
 		ids: z.array(z.uuid()).min(1).max(100),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zGetLogUsageHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+/**
+ * Current log usage and allowance
+ */
+export const zGetLogUsageResponse = z.object({
+	result: z.object({
+		period_start: z.iso.datetime(),
+		period_end: z.iso.datetime(),
+		used_bytes: z.int().gte(0),
+		used_records: z.int().gte(0),
+		limit_bytes: z.int().gte(0),
+		remaining_bytes: z.int().gte(0),
+		retention_days: z.int().gt(0),
 	}),
 	success: z.boolean(),
 	errors: z.array(
@@ -2718,16 +2908,7 @@ export const zListChecksQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
-	project_id: z
-		.union([
-			z
-				.string()
-				.min(16)
-				.max(128)
-				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
-			z.enum(["unassigned"]),
-		])
-		.optional(),
+	project_id: z.array(z.string()).max(100).optional(),
 	filter: z
 		.enum([
 			"DOWN",
@@ -2878,16 +3059,7 @@ export const zListEnvironmentVariablesHeaders = z.object({
 export const zListEnvironmentVariablesQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
-	project_id: z
-		.union([
-			z
-				.string()
-				.min(16)
-				.max(128)
-				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
-			z.enum(["unassigned"]),
-		])
-		.optional(),
+	project_id: z.array(z.string()).max(100).optional(),
 	search: z.string().max(64).optional(),
 });
 
@@ -3203,16 +3375,7 @@ export const zListHeartbeatsQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
-	project_id: z
-		.union([
-			z
-				.string()
-				.min(16)
-				.max(128)
-				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
-			z.enum(["unassigned"]),
-		])
-		.optional(),
+	project_id: z.array(z.string()).max(100).optional(),
 });
 
 /**
@@ -3432,16 +3595,7 @@ export const zListMaintenanceWindowsQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
-	project_id: z
-		.union([
-			z
-				.string()
-				.min(16)
-				.max(128)
-				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
-			z.enum(["unassigned"]),
-		])
-		.optional(),
+	project_id: z.array(z.string()).max(100).optional(),
 });
 
 /**
@@ -5997,16 +6151,7 @@ export const zListWebhooksQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).optional().default(20),
 	search: z.string().optional(),
-	project_id: z
-		.union([
-			z
-				.string()
-				.min(16)
-				.max(128)
-				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
-			z.enum(["unassigned"]),
-		])
-		.optional(),
+	project_id: z.array(z.string()).max(100).optional(),
 });
 
 /**

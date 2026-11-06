@@ -120,6 +120,9 @@ import type {
 	DeleteWebhookData,
 	DeleteWebhookErrors,
 	DeleteWebhookResponses,
+	ExportOtlpLogsData,
+	ExportOtlpLogsErrors,
+	ExportOtlpLogsResponses,
 	GetBrowserCheckData,
 	GetBrowserCheckErrors,
 	GetBrowserCheckResponses,
@@ -135,6 +138,9 @@ import type {
 	GetHeartbeatData,
 	GetHeartbeatErrors,
 	GetHeartbeatResponses,
+	GetLogUsageData,
+	GetLogUsageErrors,
+	GetLogUsageResponses,
 	GetMaintenanceWindowData,
 	GetMaintenanceWindowErrors,
 	GetMaintenanceWindowResponses,
@@ -407,9 +413,31 @@ export const pingHeartbeat = <ThrowOnError extends boolean = false>(
 	>({ baseUrl: "https://oonchk.com", url: "/{heartbeat_id}", ...options });
 
 /**
+ * Export OpenTelemetry logs
+ *
+ * Requires an API token with LOGS:SEND. Supports gzip compression.
+ */
+export const exportOtlpLogs = <ThrowOnError extends boolean = false>(
+	options: Options<ExportOtlpLogsData, ThrowOnError>,
+): RequestResult<ExportOtlpLogsResponses, ExportOtlpLogsErrors, ThrowOnError> =>
+	(options.client ?? client).post<
+		ExportOtlpLogsResponses,
+		ExportOtlpLogsErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/logs/otlp",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
  * Search logs
  *
- * Search logs by the time they were received, over a non-empty range of at most one hour. Results are newest-first, with at most 100 logs and a continuation cursor. Omit project_id to search all projects in the authenticated organisation, or use unassigned for only unassigned logs. Sending-project assignments do not restrict explicitly granted read access. Message search is a case-insensitive literal substring. New logs may take minutes to become searchable. Searches may scan more data than they return; scanned_bytes reports the bytes scanned.
+ * Search logs by receipt time.
  *
  * Requires LOGS:READ.
  */
@@ -429,7 +457,7 @@ export const searchLogs = <ThrowOnError extends boolean = false>(
 /**
  * Send JSON logs
  *
- * Requires an API token with an explicit LOGS:SEND grant; session cookies and OAuth tokens are not accepted. The token determines the organisation and sending project; null means unassigned. Send at most 100 logs and 1 MiB of uncompressed JSON per request. Log records are limited to 128 KiB. HTTP 202 confirms acceptance for processing, not search availability. A delivery error may have accepted some or all logs; retrying may create duplicates.
+ * Requires an API token with LOGS:SEND.
  */
 export const sendLogs = <ThrowOnError extends boolean = false>(
 	options: Options<SendLogsData, ThrowOnError>,
@@ -446,6 +474,26 @@ export const sendLogs = <ThrowOnError extends boolean = false>(
 			"Content-Type": "application/json",
 			...options.headers,
 		},
+	});
+
+/**
+ * Read log usage
+ *
+ * Read log usage for the current billing period.
+ *
+ * Requires LOGS:READ.
+ */
+export const getLogUsage = <ThrowOnError extends boolean = false>(
+	options?: Options<GetLogUsageData, ThrowOnError>,
+): RequestResult<GetLogUsageResponses, GetLogUsageErrors, ThrowOnError> =>
+	(options?.client ?? client).get<
+		GetLogUsageResponses,
+		GetLogUsageErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/logs/usage",
+		...options,
 	});
 
 /**

@@ -3,15 +3,23 @@ import { describe, expect, expectTypeOf, it } from "vitest";
 import {
 	createCheck,
 	createClient,
+	createProject,
 	getHeartbeat,
 	listChecks,
+	listEnvironmentVariables,
+	listHeartbeats,
+	listMaintenanceWindows,
+	listWebhooks,
 	pingHeartbeat,
 	pingHeartbeatGet,
 	updateCheck,
+	updateProject,
 	type CheckListItem,
 	type CheckListResponse,
+	type CreateProjectErrors,
 	type GetHeartbeatErrors,
 	type ListChecksResponses,
+	type UpdateProjectErrors,
 	type PublicApiErrorResponse,
 	type VerifyTokenErrors,
 } from "../src/index";
@@ -51,6 +59,61 @@ describe("generated client", () => {
 			"https://api.onlineornot.com/v1/checks?page=2&per_page=10&search=website",
 		);
 		expect(request?.headers.get("authorization")).toBe("Bearer test-token");
+	});
+
+	it.each([
+		["checks", listChecks],
+		["env", listEnvironmentVariables],
+		["heartbeats", listHeartbeats],
+		["maintenance-windows", listMaintenanceWindows],
+		["webhooks", listWebhooks],
+	] as const)(
+		"serializes %s project filters as repeated parameters",
+		async (path, list) => {
+			let request: Request | undefined;
+			await list({
+				query: { project_id: ["a1b2c3d4e5f6g7h8", "unassigned"] },
+				fetch: async (input) => {
+					request = input instanceof Request ? input : new Request(input);
+					return ok();
+				},
+			});
+			expect(request?.url).toBe(
+				`https://api.onlineornot.com/v1/${path}?project_id=a1b2c3d4e5f6g7h8&project_id=unassigned`,
+			);
+		},
+	);
+
+	it("preserves project name conflict error envelopes", async () => {
+		expectTypeOf<
+			CreateProjectErrors[409]
+		>().toEqualTypeOf<PublicApiErrorResponse>();
+		expectTypeOf<
+			UpdateProjectErrors[409]
+		>().toEqualTypeOf<PublicApiErrorResponse>();
+		const failure = {
+			success: false,
+			result: null,
+			errors: [{ code: 1000, message: "project_name_taken" }],
+			messages: [],
+		} satisfies CreateProjectErrors[409];
+		const options = {
+			body: { name: "Production" },
+			fetch: async () =>
+				new Response(JSON.stringify(failure), {
+					status: 409,
+					headers: { "content-type": "application/json" },
+				}),
+		};
+		const responses = [
+			await createProject(options),
+			await updateProject({ ...options, path: { project_id: "project-id" } }),
+		];
+		for (const response of responses) {
+			expect(response.response?.status).toBe(409);
+			expect(response.data).toBeUndefined();
+			expect(response.error).toEqual(failure);
+		}
 	});
 
 	it("serializes path and body inputs", async () => {

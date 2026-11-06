@@ -144,7 +144,12 @@ it.each([undefined, projectId, null])(
 		});
 		await listChecks({
 			client: isolated,
-			query: { project_id: selected === null ? "unassigned" : selected },
+			query: {
+				project_id:
+					selected === undefined
+						? undefined
+						: [selected === null ? "unassigned" : selected],
+			},
 		});
 		const sentBody: unknown = JSON.parse(requests[0].body);
 		if (selected !== undefined)
@@ -280,7 +285,7 @@ it.each([undefined, projectId, "unassigned"])(
 	async (selected) => {
 		await listMaintenanceWindows({
 			client: client(),
-			query: { project_id: selected },
+			query: { project_id: selected === undefined ? undefined : [selected] },
 		});
 
 		expect(requests[0].method).toBe("GET");
