@@ -28,9 +28,6 @@ entrypoints. CLI-specific authentication, errors, and pagination live in the CLI
   a verified input. Use package scripts rather than calling the generator directly.
 - The parser requires OpenAPI 3.1 and removes defaults from required properties
   in the schemas it visits, preserving required-input validation semantics.
-- The five project-filter list queries accept scalar strings as well as arrays.
-  The parser normalizes array-only snapshots to that input union; snapshots
-  already documenting the union pass through unchanged.
 - `generate.mjs` patches both heartbeat ping operations to `https://oonchk.com`
   because the pinned generator does not emit operation-level servers. Preserve
   its assertions when upgrading the generator.
