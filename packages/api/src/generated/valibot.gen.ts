@@ -89,30 +89,44 @@ export const vExpandedUptimeCheck = v.object({
 	follow_redirects: v.boolean(),
 	assertions: v.nullable(
 		v.array(
-			v.object({
-				type: v.picklist([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: v.string(),
-				comparison: v.picklist([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: v.string(),
-			}),
+			v.union([
+				v.object({
+					type: v.picklist([
+						"JSON_BODY",
+						"TEXT_BODY",
+						"RESPONSE_HEADERS",
+						"HTML_BODY",
+					]),
+					property: v.string(),
+					comparison: v.picklist([
+						"EQUALS",
+						"NOT_EQUALS",
+						"GREATER_THAN",
+						"LESS_THAN",
+						"NULL",
+						"NOT_NULL",
+						"EMPTY",
+						"NOT_EMPTY",
+						"CONTAINS",
+						"NOT_CONTAINS",
+						"FALSE",
+						"TRUE",
+					]),
+					expected: v.string(),
+				}),
+				v.object({
+					type: v.picklist(["STATUS_CODE"]),
+					property: v.picklist([""]),
+					comparison: v.picklist(["IS_ONE_OF"]),
+					expected: v.pipe(
+						v.array(
+							v.pipe(v.number(), v.integer(), v.minValue(100), v.maxValue(599)),
+						),
+						v.minLength(1),
+						v.maxLength(500),
+					),
+				}),
+			]),
 		),
 	),
 	auth_username: v.nullable(v.string()),
@@ -168,30 +182,44 @@ export const vExpandedBrowserCheck = v.object({
 	follow_redirects: v.boolean(),
 	assertions: v.nullable(
 		v.array(
-			v.object({
-				type: v.picklist([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: v.string(),
-				comparison: v.picklist([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: v.string(),
-			}),
+			v.union([
+				v.object({
+					type: v.picklist([
+						"JSON_BODY",
+						"TEXT_BODY",
+						"RESPONSE_HEADERS",
+						"HTML_BODY",
+					]),
+					property: v.string(),
+					comparison: v.picklist([
+						"EQUALS",
+						"NOT_EQUALS",
+						"GREATER_THAN",
+						"LESS_THAN",
+						"NULL",
+						"NOT_NULL",
+						"EMPTY",
+						"NOT_EMPTY",
+						"CONTAINS",
+						"NOT_CONTAINS",
+						"FALSE",
+						"TRUE",
+					]),
+					expected: v.string(),
+				}),
+				v.object({
+					type: v.picklist(["STATUS_CODE"]),
+					property: v.picklist([""]),
+					comparison: v.picklist(["IS_ONE_OF"]),
+					expected: v.pipe(
+						v.array(
+							v.pipe(v.number(), v.integer(), v.minValue(100), v.maxValue(599)),
+						),
+						v.minLength(1),
+						v.maxLength(500),
+					),
+				}),
+			]),
 		),
 	),
 	auth_username: v.nullable(v.string()),
@@ -501,6 +529,152 @@ export const vPublicCheckResultsErrorResponse = v.object({
 		v.minLength(1),
 	),
 	messages: v.pipe(v.array(v.unknown()), v.length(0)),
+});
+
+export const vOtlpLogExportResponse = v.strictObject({});
+
+export const vOtlpStatus = v.strictObject({
+	message: v.string(),
+});
+
+export const vOtlpLogExport = v.object({
+	resourceLogs: v.nullish(
+		v.pipe(
+			v.array(
+				v.object({
+					resource: v.nullish(
+						v.object({
+							attributes: v.nullish(
+								v.pipe(
+									v.array(
+										v.object({
+											key: v.pipe(v.string(), v.minLength(1), v.maxLength(128)),
+											value: v.optional(v.unknown()),
+										}),
+									),
+									v.maxLength(64),
+								),
+							),
+							droppedAttributesCount: v.nullish(
+								v.pipe(
+									v.number(),
+									v.integer(),
+									v.minValue(0),
+									v.maxValue(4294967295),
+								),
+							),
+						}),
+					),
+					schemaUrl: v.nullish(v.string()),
+					scopeLogs: v.nullish(
+						v.pipe(
+							v.array(
+								v.object({
+									scope: v.nullish(
+										v.object({
+											attributes: v.nullish(
+												v.pipe(
+													v.array(
+														v.object({
+															key: v.pipe(
+																v.string(),
+																v.minLength(1),
+																v.maxLength(128),
+															),
+															value: v.optional(v.unknown()),
+														}),
+													),
+													v.maxLength(64),
+												),
+											),
+											droppedAttributesCount: v.nullish(
+												v.pipe(
+													v.number(),
+													v.integer(),
+													v.minValue(0),
+													v.maxValue(4294967295),
+												),
+											),
+											name: v.nullish(v.string()),
+											version: v.nullish(v.string()),
+										}),
+									),
+									schemaUrl: v.nullish(v.string()),
+									logRecords: v.nullish(
+										v.pipe(
+											v.array(
+												v.object({
+													timeUnixNano: v.nullish(
+														v.union([
+															v.pipe(v.string(), v.regex(/^-?\d+$/)),
+															v.number(),
+														]),
+													),
+													observedTimeUnixNano: v.nullish(
+														v.union([
+															v.pipe(v.string(), v.regex(/^-?\d+$/)),
+															v.number(),
+														]),
+													),
+													severityNumber: v.nullish(
+														v.pipe(
+															v.number(),
+															v.integer(),
+															v.minValue(0),
+															v.maxValue(24),
+														),
+													),
+													severityText: v.nullish(v.string()),
+													body: v.optional(v.unknown()),
+													attributes: v.nullish(
+														v.pipe(
+															v.array(
+																v.object({
+																	key: v.pipe(
+																		v.string(),
+																		v.minLength(1),
+																		v.maxLength(128),
+																	),
+																	value: v.optional(v.unknown()),
+																}),
+															),
+															v.maxLength(64),
+														),
+													),
+													droppedAttributesCount: v.nullish(
+														v.pipe(
+															v.number(),
+															v.integer(),
+															v.minValue(0),
+															v.maxValue(4294967295),
+														),
+													),
+													flags: v.nullish(
+														v.pipe(
+															v.number(),
+															v.integer(),
+															v.minValue(0),
+															v.maxValue(4294967295),
+														),
+													),
+													traceId: v.nullish(v.string()),
+													spanId: v.nullish(v.string()),
+													eventName: v.nullish(v.string()),
+												}),
+											),
+											v.maxLength(100),
+										),
+									),
+								}),
+							),
+							v.maxLength(100),
+						),
+					),
+				}),
+			),
+			v.maxLength(100),
+		),
+	),
 });
 
 export const vLogBatch = v.strictObject({
@@ -816,30 +990,44 @@ export const vUptimeCheckInput = v.strictObject({
 	follow_redirects: v.optional(v.boolean(), true),
 	assertions: v.optional(
 		v.array(
-			v.object({
-				type: v.picklist([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: v.string(),
-				comparison: v.picklist([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: v.string(),
-			}),
+			v.union([
+				v.object({
+					type: v.picklist([
+						"JSON_BODY",
+						"TEXT_BODY",
+						"RESPONSE_HEADERS",
+						"HTML_BODY",
+					]),
+					property: v.string(),
+					comparison: v.picklist([
+						"EQUALS",
+						"NOT_EQUALS",
+						"GREATER_THAN",
+						"LESS_THAN",
+						"NULL",
+						"NOT_NULL",
+						"EMPTY",
+						"NOT_EMPTY",
+						"CONTAINS",
+						"NOT_CONTAINS",
+						"FALSE",
+						"TRUE",
+					]),
+					expected: v.string(),
+				}),
+				v.object({
+					type: v.picklist(["STATUS_CODE"]),
+					property: v.picklist([""]),
+					comparison: v.picklist(["IS_ONE_OF"]),
+					expected: v.pipe(
+						v.array(
+							v.pipe(v.number(), v.integer(), v.minValue(100), v.maxValue(599)),
+						),
+						v.minLength(1),
+						v.maxLength(500),
+					),
+				}),
+			]),
 		),
 	),
 	verify_ssl: v.optional(v.boolean(), true),
@@ -884,30 +1072,44 @@ export const vUptimeCheckPatch = v.strictObject({
 	follow_redirects: v.optional(v.boolean()),
 	assertions: v.optional(
 		v.array(
-			v.object({
-				type: v.picklist([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: v.string(),
-				comparison: v.picklist([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: v.string(),
-			}),
+			v.union([
+				v.object({
+					type: v.picklist([
+						"JSON_BODY",
+						"TEXT_BODY",
+						"RESPONSE_HEADERS",
+						"HTML_BODY",
+					]),
+					property: v.string(),
+					comparison: v.picklist([
+						"EQUALS",
+						"NOT_EQUALS",
+						"GREATER_THAN",
+						"LESS_THAN",
+						"NULL",
+						"NOT_NULL",
+						"EMPTY",
+						"NOT_EMPTY",
+						"CONTAINS",
+						"NOT_CONTAINS",
+						"FALSE",
+						"TRUE",
+					]),
+					expected: v.string(),
+				}),
+				v.object({
+					type: v.picklist(["STATUS_CODE"]),
+					property: v.picklist([""]),
+					comparison: v.picklist(["IS_ONE_OF"]),
+					expected: v.pipe(
+						v.array(
+							v.pipe(v.number(), v.integer(), v.minValue(100), v.maxValue(599)),
+						),
+						v.minLength(1),
+						v.maxLength(500),
+					),
+				}),
+			]),
 		),
 	),
 	verify_ssl: v.optional(v.boolean()),
@@ -1313,30 +1515,49 @@ export const vExpandedCheck = v.intersect([
 		follow_redirects: v.boolean(),
 		assertions: v.nullable(
 			v.array(
-				v.object({
-					type: v.picklist([
-						"JSON_BODY",
-						"TEXT_BODY",
-						"RESPONSE_HEADERS",
-						"HTML_BODY",
-					]),
-					property: v.string(),
-					comparison: v.picklist([
-						"EQUALS",
-						"NOT_EQUALS",
-						"GREATER_THAN",
-						"LESS_THAN",
-						"NULL",
-						"NOT_NULL",
-						"EMPTY",
-						"NOT_EMPTY",
-						"CONTAINS",
-						"NOT_CONTAINS",
-						"FALSE",
-						"TRUE",
-					]),
-					expected: v.string(),
-				}),
+				v.union([
+					v.object({
+						type: v.picklist([
+							"JSON_BODY",
+							"TEXT_BODY",
+							"RESPONSE_HEADERS",
+							"HTML_BODY",
+						]),
+						property: v.string(),
+						comparison: v.picklist([
+							"EQUALS",
+							"NOT_EQUALS",
+							"GREATER_THAN",
+							"LESS_THAN",
+							"NULL",
+							"NOT_NULL",
+							"EMPTY",
+							"NOT_EMPTY",
+							"CONTAINS",
+							"NOT_CONTAINS",
+							"FALSE",
+							"TRUE",
+						]),
+						expected: v.string(),
+					}),
+					v.object({
+						type: v.picklist(["STATUS_CODE"]),
+						property: v.picklist([""]),
+						comparison: v.picklist(["IS_ONE_OF"]),
+						expected: v.pipe(
+							v.array(
+								v.pipe(
+									v.number(),
+									v.integer(),
+									v.minValue(100),
+									v.maxValue(599),
+								),
+							),
+							v.minLength(1),
+							v.maxLength(500),
+						),
+					}),
+				]),
 			),
 		),
 		auth_username: v.nullable(v.string()),
@@ -1423,30 +1644,44 @@ export const vCheckInput = v.object({
 	follow_redirects: v.optional(v.boolean(), true),
 	assertions: v.optional(
 		v.array(
-			v.object({
-				type: v.picklist([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: v.string(),
-				comparison: v.picklist([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: v.string(),
-			}),
+			v.union([
+				v.object({
+					type: v.picklist([
+						"JSON_BODY",
+						"TEXT_BODY",
+						"RESPONSE_HEADERS",
+						"HTML_BODY",
+					]),
+					property: v.string(),
+					comparison: v.picklist([
+						"EQUALS",
+						"NOT_EQUALS",
+						"GREATER_THAN",
+						"LESS_THAN",
+						"NULL",
+						"NOT_NULL",
+						"EMPTY",
+						"NOT_EMPTY",
+						"CONTAINS",
+						"NOT_CONTAINS",
+						"FALSE",
+						"TRUE",
+					]),
+					expected: v.string(),
+				}),
+				v.object({
+					type: v.picklist(["STATUS_CODE"]),
+					property: v.picklist([""]),
+					comparison: v.picklist(["IS_ONE_OF"]),
+					expected: v.pipe(
+						v.array(
+							v.pipe(v.number(), v.integer(), v.minValue(100), v.maxValue(599)),
+						),
+						v.minLength(1),
+						v.maxLength(500),
+					),
+				}),
+			]),
 		),
 	),
 	verify_ssl: v.optional(v.boolean(), true),
@@ -1494,30 +1729,44 @@ export const vCheckPatch = v.object({
 	follow_redirects: v.optional(v.boolean()),
 	assertions: v.optional(
 		v.array(
-			v.object({
-				type: v.picklist([
-					"JSON_BODY",
-					"TEXT_BODY",
-					"RESPONSE_HEADERS",
-					"HTML_BODY",
-				]),
-				property: v.string(),
-				comparison: v.picklist([
-					"EQUALS",
-					"NOT_EQUALS",
-					"GREATER_THAN",
-					"LESS_THAN",
-					"NULL",
-					"NOT_NULL",
-					"EMPTY",
-					"NOT_EMPTY",
-					"CONTAINS",
-					"NOT_CONTAINS",
-					"FALSE",
-					"TRUE",
-				]),
-				expected: v.string(),
-			}),
+			v.union([
+				v.object({
+					type: v.picklist([
+						"JSON_BODY",
+						"TEXT_BODY",
+						"RESPONSE_HEADERS",
+						"HTML_BODY",
+					]),
+					property: v.string(),
+					comparison: v.picklist([
+						"EQUALS",
+						"NOT_EQUALS",
+						"GREATER_THAN",
+						"LESS_THAN",
+						"NULL",
+						"NOT_NULL",
+						"EMPTY",
+						"NOT_EMPTY",
+						"CONTAINS",
+						"NOT_CONTAINS",
+						"FALSE",
+						"TRUE",
+					]),
+					expected: v.string(),
+				}),
+				v.object({
+					type: v.picklist(["STATUS_CODE"]),
+					property: v.picklist([""]),
+					comparison: v.picklist(["IS_ONE_OF"]),
+					expected: v.pipe(
+						v.array(
+							v.pipe(v.number(), v.integer(), v.minValue(100), v.maxValue(599)),
+						),
+						v.minLength(1),
+						v.maxLength(500),
+					),
+				}),
+			]),
 		),
 	),
 	verify_ssl: v.optional(v.boolean()),
@@ -1896,6 +2145,13 @@ export const vPingHeartbeatPath = v.object({
 	heartbeat_id: v.pipe(v.string(), v.minLength(8)),
 });
 
+export const vExportOtlpLogsBody = vOtlpLogExport;
+
+/**
+ * OTLP full success, in the request encoding
+ */
+export const vExportOtlpLogsResponse = vOtlpLogExportResponse;
+
 export const vSearchLogsHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
 });
@@ -1997,6 +2253,40 @@ export const vSendLogsResponse = v.object({
 			v.minLength(1),
 			v.maxLength(100),
 		),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vGetLogUsageHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+/**
+ * Current log usage and allowance
+ */
+export const vGetLogUsageResponse = v.object({
+	result: v.strictObject({
+		period_start: v.pipe(v.string(), v.isoTimestamp()),
+		period_end: v.pipe(v.string(), v.isoTimestamp()),
+		used_bytes: v.pipe(v.number(), v.integer(), v.minValue(0)),
+		used_records: v.pipe(v.number(), v.integer(), v.minValue(0)),
+		limit_bytes: v.pipe(v.number(), v.integer(), v.minValue(0)),
+		remaining_bytes: v.pipe(v.number(), v.integer(), v.minValue(0)),
+		retention_days: v.pipe(v.number(), v.integer(), v.gtValue(0)),
 	}),
 	success: v.boolean(),
 	errors: v.array(
@@ -2935,13 +3225,8 @@ export const vListChecksQuery = v.object({
 	search: v.optional(v.string()),
 	project_id: v.optional(
 		v.union([
-			v.pipe(
-				v.string(),
-				v.minLength(16),
-				v.maxLength(128),
-				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
-			),
-			v.picklist(["unassigned"]),
+			v.string(),
+			v.pipe(v.array(v.string()), v.minLength(1), v.maxLength(100)),
 		]),
 	),
 	filter: v.optional(
@@ -3098,13 +3383,8 @@ export const vListEnvironmentVariablesQuery = v.object({
 	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
 	project_id: v.optional(
 		v.union([
-			v.pipe(
-				v.string(),
-				v.minLength(16),
-				v.maxLength(128),
-				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
-			),
-			v.picklist(["unassigned"]),
+			v.string(),
+			v.pipe(v.array(v.string()), v.minLength(1), v.maxLength(100)),
 		]),
 	),
 	search: v.optional(v.pipe(v.string(), v.maxLength(64))),
@@ -3439,13 +3719,8 @@ export const vListHeartbeatsQuery = v.object({
 	search: v.optional(v.string()),
 	project_id: v.optional(
 		v.union([
-			v.pipe(
-				v.string(),
-				v.minLength(16),
-				v.maxLength(128),
-				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
-			),
-			v.picklist(["unassigned"]),
+			v.string(),
+			v.pipe(v.array(v.string()), v.minLength(1), v.maxLength(100)),
 		]),
 	),
 });
@@ -3677,13 +3952,8 @@ export const vListMaintenanceWindowsQuery = v.object({
 	search: v.optional(v.string()),
 	project_id: v.optional(
 		v.union([
-			v.pipe(
-				v.string(),
-				v.minLength(16),
-				v.maxLength(128),
-				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
-			),
-			v.picklist(["unassigned"]),
+			v.string(),
+			v.pipe(v.array(v.string()), v.minLength(1), v.maxLength(100)),
 		]),
 	),
 });
@@ -6299,13 +6569,8 @@ export const vListWebhooksQuery = v.object({
 	search: v.optional(v.string()),
 	project_id: v.optional(
 		v.union([
-			v.pipe(
-				v.string(),
-				v.minLength(16),
-				v.maxLength(128),
-				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
-			),
-			v.picklist(["unassigned"]),
+			v.string(),
+			v.pipe(v.array(v.string()), v.minLength(1), v.maxLength(100)),
 		]),
 	),
 });

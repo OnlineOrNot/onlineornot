@@ -1,6 +1,6 @@
 {
-	"schema": "https://raw.githubusercontent.com/OnlineOrNot/api-schemas/51f554e7b9f37df3d0557adbcb5f026f947f1873/openapi.json",
-	"count": 115,
+	"schema": "https://raw.githubusercontent.com/OnlineOrNot/api-schemas/b8377486de2c78047600846380c5d9f794826953/openapi.json",
+	"count": 117,
 	"operations": [
 		"createBrowserCheck",
 		"createCheck",
@@ -39,11 +39,13 @@
 		"deleteToken",
 		"deleteUptimeCheck",
 		"deleteWebhook",
+		"exportOtlpLogs",
 		"getBrowserCheck",
 		"getCheck",
 		"getDnsCheck",
 		"getEnvironmentVariable",
 		"getHeartbeat",
+		"getLogUsage",
 		"getMaintenanceWindow",
 		"getProject",
 		"getStatusPage",

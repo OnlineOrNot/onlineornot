@@ -158,36 +158,44 @@ export type ExpandedUptimeCheck = {
 	/**
 	 * Assertions to validate the response
 	 */
-	assertions: Array<{
-		/**
-		 * Type of assertion
-		 */
-		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
-		/**
-		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
-		 */
-		property: string;
-		/**
-		 * Comparison operator
-		 */
-		comparison:
-			| "EQUALS"
-			| "NOT_EQUALS"
-			| "GREATER_THAN"
-			| "LESS_THAN"
-			| "NULL"
-			| "NOT_NULL"
-			| "EMPTY"
-			| "NOT_EMPTY"
-			| "CONTAINS"
-			| "NOT_CONTAINS"
-			| "FALSE"
-			| "TRUE";
-		/**
-		 * Expected value
-		 */
-		expected: string;
-	}> | null;
+	assertions: Array<
+		| {
+				/**
+				 * Type of assertion
+				 */
+				type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+				/**
+				 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+				 */
+				property: string;
+				/**
+				 * Comparison operator
+				 */
+				comparison:
+					| "EQUALS"
+					| "NOT_EQUALS"
+					| "GREATER_THAN"
+					| "LESS_THAN"
+					| "NULL"
+					| "NOT_NULL"
+					| "EMPTY"
+					| "NOT_EMPTY"
+					| "CONTAINS"
+					| "NOT_CONTAINS"
+					| "FALSE"
+					| "TRUE";
+				/**
+				 * Expected value
+				 */
+				expected: string;
+		  }
+		| {
+				type: "STATUS_CODE";
+				property: "";
+				comparison: "IS_ONE_OF";
+				expected: Array<number>;
+		  }
+	> | null;
 	/**
 	 * Username for HTTP Basic Auth. Null when unset; an empty string represents an empty user-id.
 	 */
@@ -323,36 +331,44 @@ export type ExpandedBrowserCheck = {
 	/**
 	 * Assertions to validate the response
 	 */
-	assertions: Array<{
-		/**
-		 * Type of assertion
-		 */
-		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
-		/**
-		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
-		 */
-		property: string;
-		/**
-		 * Comparison operator
-		 */
-		comparison:
-			| "EQUALS"
-			| "NOT_EQUALS"
-			| "GREATER_THAN"
-			| "LESS_THAN"
-			| "NULL"
-			| "NOT_NULL"
-			| "EMPTY"
-			| "NOT_EMPTY"
-			| "CONTAINS"
-			| "NOT_CONTAINS"
-			| "FALSE"
-			| "TRUE";
-		/**
-		 * Expected value
-		 */
-		expected: string;
-	}> | null;
+	assertions: Array<
+		| {
+				/**
+				 * Type of assertion
+				 */
+				type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+				/**
+				 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+				 */
+				property: string;
+				/**
+				 * Comparison operator
+				 */
+				comparison:
+					| "EQUALS"
+					| "NOT_EQUALS"
+					| "GREATER_THAN"
+					| "LESS_THAN"
+					| "NULL"
+					| "NOT_NULL"
+					| "EMPTY"
+					| "NOT_EMPTY"
+					| "CONTAINS"
+					| "NOT_CONTAINS"
+					| "FALSE"
+					| "TRUE";
+				/**
+				 * Expected value
+				 */
+				expected: string;
+		  }
+		| {
+				type: "STATUS_CODE";
+				property: "";
+				comparison: "IS_ONE_OF";
+				expected: Array<number>;
+		  }
+	> | null;
 	/**
 	 * Username for HTTP Basic Auth. Null when unset; an empty string represents an empty user-id.
 	 */
@@ -840,6 +856,67 @@ export type PublicCheckResultsErrorResponse = {
 	messages: Array<unknown>;
 };
 
+export type OtlpLogExportResponse = {
+	[key: string]: never;
+};
+
+export type OtlpStatus = {
+	message: string;
+};
+
+export type OtlpLogExport = {
+	resourceLogs?: Array<{
+		resource?: {
+			attributes?: Array<{
+				key: string;
+				/**
+				 * OTLP AnyValue.
+				 */
+				value?: unknown;
+			}> | null;
+			droppedAttributesCount?: number | null;
+		} | null;
+		schemaUrl?: string | null;
+		scopeLogs?: Array<{
+			scope?: {
+				attributes?: Array<{
+					key: string;
+					/**
+					 * OTLP AnyValue.
+					 */
+					value?: unknown;
+				}> | null;
+				droppedAttributesCount?: number | null;
+				name?: string | null;
+				version?: string | null;
+			} | null;
+			schemaUrl?: string | null;
+			logRecords?: Array<{
+				timeUnixNano?: string | number | null;
+				observedTimeUnixNano?: string | number | null;
+				severityNumber?: number | null;
+				severityText?: string | null;
+				/**
+				 * Log body as an OTLP AnyValue.
+				 */
+				body?: unknown;
+				attributes?: Array<{
+					key: string;
+					/**
+					 * OTLP AnyValue.
+					 */
+					value?: unknown;
+				}> | null;
+				droppedAttributesCount?: number | null;
+				flags?: number | null;
+				traceId?: string | null;
+				spanId?: string | null;
+				eventName?: string | null;
+			}> | null;
+		}> | null;
+	}> | null;
+};
+
 export type LogBatch = {
 	logs: Array<{
 		timestamp?: string;
@@ -1288,36 +1365,44 @@ export type UptimeCheckInput = {
 	/**
 	 * Assertions to run on the response
 	 */
-	assertions?: Array<{
-		/**
-		 * Type of assertion
-		 */
-		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
-		/**
-		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
-		 */
-		property: string;
-		/**
-		 * Comparison operator
-		 */
-		comparison:
-			| "EQUALS"
-			| "NOT_EQUALS"
-			| "GREATER_THAN"
-			| "LESS_THAN"
-			| "NULL"
-			| "NOT_NULL"
-			| "EMPTY"
-			| "NOT_EMPTY"
-			| "CONTAINS"
-			| "NOT_CONTAINS"
-			| "FALSE"
-			| "TRUE";
-		/**
-		 * Expected value
-		 */
-		expected: string;
-	}>;
+	assertions?: Array<
+		| {
+				/**
+				 * Type of assertion
+				 */
+				type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+				/**
+				 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+				 */
+				property: string;
+				/**
+				 * Comparison operator
+				 */
+				comparison:
+					| "EQUALS"
+					| "NOT_EQUALS"
+					| "GREATER_THAN"
+					| "LESS_THAN"
+					| "NULL"
+					| "NOT_NULL"
+					| "EMPTY"
+					| "NOT_EMPTY"
+					| "CONTAINS"
+					| "NOT_CONTAINS"
+					| "FALSE"
+					| "TRUE";
+				/**
+				 * Expected value
+				 */
+				expected: string;
+		  }
+		| {
+				type: "STATUS_CODE";
+				property: "";
+				comparison: "IS_ONE_OF";
+				expected: Array<number>;
+		  }
+	>;
 	/**
 	 * Whether to fail a check if SSL verification fails
 	 */
@@ -1406,36 +1491,44 @@ export type UptimeCheckPatch = {
 	method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
 	body?: string;
 	follow_redirects?: boolean;
-	assertions?: Array<{
-		/**
-		 * Type of assertion
-		 */
-		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
-		/**
-		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
-		 */
-		property: string;
-		/**
-		 * Comparison operator
-		 */
-		comparison:
-			| "EQUALS"
-			| "NOT_EQUALS"
-			| "GREATER_THAN"
-			| "LESS_THAN"
-			| "NULL"
-			| "NOT_NULL"
-			| "EMPTY"
-			| "NOT_EMPTY"
-			| "CONTAINS"
-			| "NOT_CONTAINS"
-			| "FALSE"
-			| "TRUE";
-		/**
-		 * Expected value
-		 */
-		expected: string;
-	}>;
+	assertions?: Array<
+		| {
+				/**
+				 * Type of assertion
+				 */
+				type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+				/**
+				 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+				 */
+				property: string;
+				/**
+				 * Comparison operator
+				 */
+				comparison:
+					| "EQUALS"
+					| "NOT_EQUALS"
+					| "GREATER_THAN"
+					| "LESS_THAN"
+					| "NULL"
+					| "NOT_NULL"
+					| "EMPTY"
+					| "NOT_EMPTY"
+					| "CONTAINS"
+					| "NOT_CONTAINS"
+					| "FALSE"
+					| "TRUE";
+				/**
+				 * Expected value
+				 */
+				expected: string;
+		  }
+		| {
+				type: "STATUS_CODE";
+				property: "";
+				comparison: "IS_ONE_OF";
+				expected: Array<number>;
+		  }
+	>;
 	/**
 	 * Whether to fail a check if SSL verification fails
 	 */
@@ -1541,9 +1634,6 @@ export type BrowserCheckInput = {
 	method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
 	body?: string;
 	follow_redirects?: boolean;
-	/**
-	 * Assertions to run on the response
-	 */
 	assertions?: Array<{
 		/**
 		 * Type of assertion
@@ -1986,36 +2076,44 @@ export type ExpandedCheck = Check & {
 	/**
 	 * Assertions to validate the response
 	 */
-	assertions: Array<{
-		/**
-		 * Type of assertion
-		 */
-		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
-		/**
-		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
-		 */
-		property: string;
-		/**
-		 * Comparison operator
-		 */
-		comparison:
-			| "EQUALS"
-			| "NOT_EQUALS"
-			| "GREATER_THAN"
-			| "LESS_THAN"
-			| "NULL"
-			| "NOT_NULL"
-			| "EMPTY"
-			| "NOT_EMPTY"
-			| "CONTAINS"
-			| "NOT_CONTAINS"
-			| "FALSE"
-			| "TRUE";
-		/**
-		 * Expected value
-		 */
-		expected: string;
-	}> | null;
+	assertions: Array<
+		| {
+				/**
+				 * Type of assertion
+				 */
+				type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+				/**
+				 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+				 */
+				property: string;
+				/**
+				 * Comparison operator
+				 */
+				comparison:
+					| "EQUALS"
+					| "NOT_EQUALS"
+					| "GREATER_THAN"
+					| "LESS_THAN"
+					| "NULL"
+					| "NOT_NULL"
+					| "EMPTY"
+					| "NOT_EMPTY"
+					| "CONTAINS"
+					| "NOT_CONTAINS"
+					| "FALSE"
+					| "TRUE";
+				/**
+				 * Expected value
+				 */
+				expected: string;
+		  }
+		| {
+				type: "STATUS_CODE";
+				property: "";
+				comparison: "IS_ONE_OF";
+				expected: Array<number>;
+		  }
+	> | null;
 	/**
 	 * Username for HTTP Basic Auth. Null when unset; an empty string represents an empty user-id.
 	 */
@@ -2175,36 +2273,44 @@ export type CheckInput = {
 	/**
 	 * Assertions to run on the response
 	 */
-	assertions?: Array<{
-		/**
-		 * Type of assertion
-		 */
-		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
-		/**
-		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
-		 */
-		property: string;
-		/**
-		 * Comparison operator
-		 */
-		comparison:
-			| "EQUALS"
-			| "NOT_EQUALS"
-			| "GREATER_THAN"
-			| "LESS_THAN"
-			| "NULL"
-			| "NOT_NULL"
-			| "EMPTY"
-			| "NOT_EMPTY"
-			| "CONTAINS"
-			| "NOT_CONTAINS"
-			| "FALSE"
-			| "TRUE";
-		/**
-		 * Expected value
-		 */
-		expected: string;
-	}>;
+	assertions?: Array<
+		| {
+				/**
+				 * Type of assertion
+				 */
+				type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+				/**
+				 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+				 */
+				property: string;
+				/**
+				 * Comparison operator
+				 */
+				comparison:
+					| "EQUALS"
+					| "NOT_EQUALS"
+					| "GREATER_THAN"
+					| "LESS_THAN"
+					| "NULL"
+					| "NOT_NULL"
+					| "EMPTY"
+					| "NOT_EMPTY"
+					| "CONTAINS"
+					| "NOT_CONTAINS"
+					| "FALSE"
+					| "TRUE";
+				/**
+				 * Expected value
+				 */
+				expected: string;
+		  }
+		| {
+				type: "STATUS_CODE";
+				property: "";
+				comparison: "IS_ONE_OF";
+				expected: Array<number>;
+		  }
+	>;
 	/**
 	 * Whether to fail a check if SSL verification fails
 	 */
@@ -2302,36 +2408,44 @@ export type CheckPatch = {
 	method?: "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE";
 	body?: string;
 	follow_redirects?: boolean;
-	assertions?: Array<{
-		/**
-		 * Type of assertion
-		 */
-		type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
-		/**
-		 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
-		 */
-		property: string;
-		/**
-		 * Comparison operator
-		 */
-		comparison:
-			| "EQUALS"
-			| "NOT_EQUALS"
-			| "GREATER_THAN"
-			| "LESS_THAN"
-			| "NULL"
-			| "NOT_NULL"
-			| "EMPTY"
-			| "NOT_EMPTY"
-			| "CONTAINS"
-			| "NOT_CONTAINS"
-			| "FALSE"
-			| "TRUE";
-		/**
-		 * Expected value
-		 */
-		expected: string;
-	}>;
+	assertions?: Array<
+		| {
+				/**
+				 * Type of assertion
+				 */
+				type: "JSON_BODY" | "TEXT_BODY" | "RESPONSE_HEADERS" | "HTML_BODY";
+				/**
+				 * Property to assert on (JSONPath for JSON_BODY, header name for RESPONSE_HEADERS, CSS selector for HTML_BODY; unused for TEXT_BODY)
+				 */
+				property: string;
+				/**
+				 * Comparison operator
+				 */
+				comparison:
+					| "EQUALS"
+					| "NOT_EQUALS"
+					| "GREATER_THAN"
+					| "LESS_THAN"
+					| "NULL"
+					| "NOT_NULL"
+					| "EMPTY"
+					| "NOT_EMPTY"
+					| "CONTAINS"
+					| "NOT_CONTAINS"
+					| "FALSE"
+					| "TRUE";
+				/**
+				 * Expected value
+				 */
+				expected: string;
+		  }
+		| {
+				type: "STATUS_CODE";
+				property: "";
+				comparison: "IS_ONE_OF";
+				expected: Array<number>;
+		  }
+	>;
 	/**
 	 * Whether to fail a check if SSL verification fails
 	 */
@@ -2576,7 +2690,7 @@ export type Project = {
 	 */
 	id: string;
 	/**
-	 * Project name.
+	 * Project name. Unique within the organisation, ignoring case and surrounding spaces.
 	 */
 	name: string;
 	created_at: string;
@@ -3132,6 +3246,61 @@ export type PingHeartbeatResponses = {
 	200: unknown;
 };
 
+export type ExportOtlpLogsData = {
+	body: OtlpLogExport;
+	path?: never;
+	query?: never;
+	url: "/v1/logs/otlp";
+};
+
+export type ExportOtlpLogsErrors = {
+	/**
+	 * Invalid OTLP export
+	 */
+	400: OtlpStatus;
+	/**
+	 * Missing or invalid API token
+	 */
+	401: OtlpStatus;
+	/**
+	 * Requires an explicit LOGS:SEND grant
+	 */
+	403: OtlpStatus;
+	/**
+	 * Requires POST
+	 */
+	405: OtlpStatus;
+	/**
+	 * Export or record exceeds a size limit
+	 */
+	413: OtlpStatus;
+	/**
+	 * Unsupported content type or compression
+	 */
+	415: OtlpStatus;
+	/**
+	 * Log ingestion allowance exceeded
+	 */
+	429: OtlpStatus;
+	/**
+	 * Ingestion unavailable or delivery not confirmed
+	 */
+	503: OtlpStatus;
+};
+
+export type ExportOtlpLogsError =
+	ExportOtlpLogsErrors[keyof ExportOtlpLogsErrors];
+
+export type ExportOtlpLogsResponses = {
+	/**
+	 * OTLP full success, in the request encoding
+	 */
+	200: OtlpLogExportResponse;
+};
+
+export type ExportOtlpLogsResponse =
+	ExportOtlpLogsResponses[keyof ExportOtlpLogsResponses];
+
 export type SearchLogsData = {
 	body?: never;
 	headers?: {
@@ -3268,6 +3437,10 @@ export type SendLogsErrors = {
 	 */
 	415: PublicApiErrorResponse;
 	/**
+	 * Log ingestion allowance exceeded
+	 */
+	429: PublicApiErrorResponse;
+	/**
 	 * Internal server error
 	 */
 	500: PublicApiServerError;
@@ -3306,6 +3479,81 @@ export type SendLogsResponses = {
 };
 
 export type SendLogsResponse = SendLogsResponses[keyof SendLogsResponses];
+
+export type GetLogUsageData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path?: never;
+	query?: never;
+	url: "/v1/logs/usage";
+};
+
+export type GetLogUsageErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+	/**
+	 * Log usage unavailable
+	 */
+	503: PublicApiErrorResponse;
+};
+
+export type GetLogUsageError = GetLogUsageErrors[keyof GetLogUsageErrors];
+
+export type GetLogUsageResponses = {
+	/**
+	 * Current log usage and allowance
+	 */
+	200: {
+		result: {
+			period_start: string;
+			period_end: string;
+			/**
+			 * Log bytes after decoding, including metadata.
+			 */
+			used_bytes: number;
+			used_records: number;
+			limit_bytes: number;
+			remaining_bytes: number;
+			retention_days: number;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type GetLogUsageResponse =
+	GetLogUsageResponses[keyof GetLogUsageResponses];
 
 export type ListAuditLogsData = {
 	body?: never;
@@ -5568,9 +5816,9 @@ export type ListChecksData = {
 		 */
 		search?: string;
 		/**
-		 * Project ID, or unassigned to list only unassigned resources. Omit to list all resources.
+		 * Project IDs, or unassigned for resources without a project. Repeat the parameter to include several, for example project_id=a1b2c3d4e5f6g7h8&project_id=unassigned. Omit to list all resources.
 		 */
-		project_id?: string | "unassigned";
+		project_id?: string | Array<string>;
 		/**
 		 * Filter by current check status. NA, omitted and unrecognized values leave status unfiltered.
 		 */
@@ -5912,9 +6160,9 @@ export type ListEnvironmentVariablesData = {
 		 */
 		per_page?: number;
 		/**
-		 * Project ID, or unassigned to list only unassigned resources. Omit to list all resources.
+		 * Project IDs, or unassigned for resources without a project. Repeat the parameter to include several, for example project_id=a1b2c3d4e5f6g7h8&project_id=unassigned. Omit to list all resources.
 		 */
-		project_id?: string | "unassigned";
+		project_id?: string | Array<string>;
 		/**
 		 * Case-insensitive substring search on environment variable names.
 		 */
@@ -6613,9 +6861,9 @@ export type ListHeartbeatsData = {
 		 */
 		search?: string;
 		/**
-		 * Project ID, or unassigned to list only unassigned resources. Omit to list all resources.
+		 * Project IDs, or unassigned for resources without a project. Repeat the parameter to include several, for example project_id=a1b2c3d4e5f6g7h8&project_id=unassigned. Omit to list all resources.
 		 */
-		project_id?: string | "unassigned";
+		project_id?: string | Array<string>;
 	};
 	url: "/v1/heartbeats";
 };
@@ -7129,9 +7377,9 @@ export type ListMaintenanceWindowsData = {
 		 */
 		search?: string;
 		/**
-		 * Project ID, or unassigned to list only unassigned resources. Omit to list all resources.
+		 * Project IDs, or unassigned for resources without a project. Repeat the parameter to include several, for example project_id=a1b2c3d4e5f6g7h8&project_id=unassigned. Omit to list all resources.
 		 */
-		project_id?: string | "unassigned";
+		project_id?: string | Array<string>;
 	};
 	url: "/v1/maintenance-windows";
 };
@@ -8353,7 +8601,7 @@ export type ListProjectsResponse =
 export type CreateProjectData = {
 	body: {
 		/**
-		 * Project name.
+		 * Project name. Unique within the organisation, ignoring case and surrounding spaces.
 		 */
 		name: string;
 	};
@@ -8381,6 +8629,10 @@ export type CreateProjectErrors = {
 	 * Insufficient permissions
 	 */
 	403: PublicApiErrorResponse;
+	/**
+	 * project_name_taken
+	 */
+	409: PublicApiErrorResponse;
 	/**
 	 * Rate limit exceeded
 	 */
@@ -8576,7 +8828,7 @@ export type GetProjectResponse = GetProjectResponses[keyof GetProjectResponses];
 export type UpdateProjectData = {
 	body: {
 		/**
-		 * Project name.
+		 * Project name. Unique within the organisation, ignoring case and surrounding spaces.
 		 */
 		name: string;
 	};
@@ -8613,6 +8865,10 @@ export type UpdateProjectErrors = {
 	 * Project not found
 	 */
 	404: PublicApiErrorResponse;
+	/**
+	 * project_name_taken
+	 */
+	409: PublicApiErrorResponse;
 	/**
 	 * Rate limit exceeded
 	 */
@@ -12324,9 +12580,9 @@ export type ListWebhooksData = {
 		 */
 		search?: string;
 		/**
-		 * Project ID, or unassigned to list only unassigned resources. Omit to list all resources.
+		 * Project IDs, or unassigned for resources without a project. Repeat the parameter to include several, for example project_id=a1b2c3d4e5f6g7h8&project_id=unassigned. Omit to list all resources.
 		 */
-		project_id?: string | "unassigned";
+		project_id?: string | Array<string>;
 	};
 	url: "/v1/webhooks";
 };
