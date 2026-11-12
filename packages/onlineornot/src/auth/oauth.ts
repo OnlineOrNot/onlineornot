@@ -1,5 +1,5 @@
 import http from "node:http";
-import type { AddressInfo } from "node:net";
+import type { AddressInfo, Socket } from "node:net";
 
 import { generatePKCECodes, generateState } from "./pkce";
 
@@ -225,10 +225,21 @@ export async function startOAuthCallbackServer(
 	});
 
 	const server = http.createServer();
-	const close = async () => {
+	const sockets = new Set<Socket>();
+	server.on("connection", (socket) => {
+		sockets.add(socket);
+		socket.once("close", () => sockets.delete(socket));
+	});
+	let closePromise: Promise<void> | undefined;
+	const close = () => {
+		if (closePromise) return closePromise;
 		if (timeout) clearTimeout(timeout);
-		if (!server.listening) return;
-		await new Promise<void>((resolve) => server.close(() => resolve()));
+		closePromise = new Promise<void>((resolve) => {
+			server.close(() => resolve());
+			// Flush queued redirects, then close even unused browser preconnections.
+			for (const socket of sockets) socket.destroySoon();
+		});
+		return closePromise;
 	};
 	const rejectOnce = (error: Error) => {
 		if (settled) return;
