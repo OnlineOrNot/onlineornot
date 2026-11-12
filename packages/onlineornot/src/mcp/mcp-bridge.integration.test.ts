@@ -205,6 +205,7 @@ async function createHarness(
 		ONLINEORNOT_API_TOKEN: options.environmentToken ?? "",
 		PATH: process.env.PATH ?? "",
 		HOME: home,
+		USERPROFILE: home,
 		XDG_CONFIG_HOME: home,
 		OON_MCP_TEST_ORIGIN: `http://127.0.0.1:${address.port}`,
 	};
@@ -273,9 +274,9 @@ async function collectProcess(child: ChildProcessWithoutNullStreams) {
 		stderr += chunk;
 	});
 	const timeout = setTimeout(() => child.kill("SIGKILL"), 5_000);
-	const [code] = await once(child, "close");
+	const [code, signal] = await once(child, "close");
 	clearTimeout(timeout);
-	return { code, stdout, stderr };
+	return { code, signal, stdout, stderr };
 }
 
 describe("onlineornot mcp stdio bridge", () => {
@@ -401,7 +402,7 @@ describe("onlineornot mcp stdio bridge", () => {
 		}
 	});
 
-	it.each(["eof", "SIGTERM"])("exits cleanly on %s", async (shutdown) => {
+	it.each(["eof", "SIGTERM"])("terminates on %s", async (shutdown) => {
 		const harness = await createHarness();
 		try {
 			const child = harness.spawnCLI(["mcp"]);
@@ -409,13 +410,25 @@ describe("onlineornot mcp stdio bridge", () => {
 			child.stdin.write(
 				`${JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2025-03-26", capabilities: {}, clientInfo: { name: "shutdown", version: "1" } } })}\n`,
 			);
-			await once(child.stdout, "data");
+			await Promise.race([
+				once(child.stdout, "data"),
+				collected.then((result) => {
+					throw new Error(
+						`MCP CLI exited before initialization (code ${result.code}, signal ${result.signal}): ${result.stderr}`,
+					);
+				}),
+			]);
 
 			if (shutdown === "eof") child.stdin.end();
 			else child.kill("SIGTERM");
 			const result = await collected;
 
-			expect(result.code).toBe(0);
+			if (process.platform === "win32" && shutdown === "SIGTERM") {
+				expect(result.signal).toBe("SIGTERM");
+			} else {
+				expect(result.code).toBe(0);
+				expect(result.signal).toBeNull();
+			}
 			expect(result.stderr).toBe("");
 			expect(
 				JSONRPCMessageSchema.parse(JSON.parse(result.stdout.trim())),
