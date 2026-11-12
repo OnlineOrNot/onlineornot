@@ -3,6 +3,7 @@ import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 
 import { build } from "esbuild";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
@@ -104,7 +105,7 @@ function runCli(args: string[], input = "", authenticated = true) {
 		(resolve, reject) => {
 			const child = spawn(
 				process.execPath,
-				["--import", preloadPath, cliPath, ...args],
+				["--import", pathToFileURL(preloadPath).href, cliPath, ...args],
 				{
 					cwd: directory,
 					env: {
@@ -317,33 +318,61 @@ describe("Forge-generated commands through the executable and real HTTP", () => 
 	});
 
 	it.each([
-		["create", "--body", "{"],
-		["create", "--body", '{"name":"Bad","grace_period":0}'],
-		[
-			"create",
-			"--name",
-			"Bad",
-			"--grace-period",
-			"10",
-			"--alert-priority",
-			"URGENT",
-		],
-		["create", "--body", '{"name":"Bad","grace_period":10,"typo":true}'],
-		[
-			"create",
-			"--name",
-			"Conflicting",
-			"--body",
-			'{"name":"Bad","grace_period":10}',
-		],
-		["update", "heartbeat123", "--body", '{"project_id":"project1234567890"}'],
-		["update", "heartbeat123", "--body", "null"],
-		["create", "--body", "@does-not-exist.json"],
-		["list", "--page", "0"],
-	])("rejects invalid input before HTTP: %j", async (...args) => {
+		{ args: ["create", "--body", "{"], error: "Invalid command body" },
+		{
+			args: ["create", "--body", '{"name":"Bad","grace_period":0}'],
+			error: "grace_period",
+		},
+		{
+			args: [
+				"create",
+				"--name",
+				"Bad",
+				"--grace-period",
+				"10",
+				"--alert-priority",
+				"URGENT",
+			],
+			error: "alert-priority",
+		},
+		{
+			args: [
+				"create",
+				"--body",
+				'{"name":"Bad","grace_period":10,"typo":true}',
+			],
+			error: "typo",
+		},
+		{
+			args: [
+				"create",
+				"--name",
+				"Conflicting",
+				"--body",
+				'{"name":"Bad","grace_period":10}',
+			],
+			error: "conflicts",
+		},
+		{
+			args: [
+				"update",
+				"heartbeat123",
+				"--body",
+				'{"project_id":"project1234567890"}',
+			],
+			error: "project_id",
+		},
+		{
+			args: ["update", "heartbeat123", "--body", "null"],
+			error: "expected a JSON object",
+		},
+		{ args: ["create", "--body", "@does-not-exist.json"], error: "ENOENT" },
+		{ args: ["list", "--page", "0"], error: "page" },
+	])("rejects invalid input before HTTP: $error", async ({ args, error }) => {
 		const result = await runCli(["heartbeats", ...args]);
 		expect(result.code).toBe(1);
 		expect(result.stdout).toBe("");
+		expect(result.stderr).toContain(error);
 		expect(requests).toHaveLength(0);
 	});
 
