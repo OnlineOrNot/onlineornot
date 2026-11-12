@@ -16,6 +16,8 @@ import { promisify } from "node:util";
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
+import { runGenerationCommand } from "../scripts/generation-command.mjs";
+
 const execute = promisify(execFile);
 let directory: string;
 beforeAll(async () => {
@@ -37,19 +39,67 @@ async function generatedTree(output: string) {
 	return entries;
 }
 
-function generateCli(args: string[]) {
+function generateCli(args: string[], cwd = process.cwd()) {
 	return execute(process.execPath, ["scripts/generate-cli.mjs", ...args], {
+		cwd,
 		timeout: 90000,
 		maxBuffer: 2_000_000,
 	});
+}
+
+async function createGeneratorWorkspace(name: string) {
+	const workspace = path.join(directory, name);
+	const fixture = path.join(workspace, "packages/onlineornot");
+	await mkdir(fixture, { recursive: true });
+	for (const entry of [
+		"package.json",
+		"tsconfig.json",
+		"src",
+		"scripts",
+		"generator",
+		"bin",
+		"sea-config.json",
+	])
+		await cp(entry, path.join(fixture, entry), { recursive: true });
+	for (const entry of [".oxfmtrc.json", "tsconfig.json", "pnpm-lock.yaml"])
+		await cp(path.resolve("../..", entry), path.join(workspace, entry));
+	await symlink(
+		path.resolve("../../node_modules"),
+		path.join(workspace, "node_modules"),
+		"junction",
+	);
+	await symlink(
+		path.resolve("node_modules"),
+		path.join(fixture, "node_modules"),
+		"junction",
+	);
+	await symlink(
+		path.resolve("../api"),
+		path.join(workspace, "packages/api"),
+		"junction",
+	);
+	return fixture;
 }
 
 describe("pinned Forge binary and compiled CLI plugin", () => {
 	it("generates identical command trees twice and records every operation's disposition", async () => {
 		const first = path.join(directory, "first");
 		const second = path.join(directory, "second");
-		await generateCli(["--output", first]);
-		await generateCli(["--output", second]);
+		const cache = path.join(directory, "determinism-cache");
+		const built = await generateCli([
+			"--output",
+			first,
+			"--plugin-cache",
+			cache,
+		]);
+		const reused = await generateCli([
+			"--output",
+			second,
+			"--plugin-cache",
+			cache,
+		]);
+		expect(built.stderr).toContain("Compiled CLI plugin");
+		expect(reused.stderr).toContain("Reused CLI plugin");
 		expect(await generatedTree(first)).toEqual(await generatedTree(second));
 		const coverage = JSON.parse(
 			await readFile(path.join(first, "coverage.json"), "utf8"),
@@ -61,6 +111,47 @@ describe("pinned Forge binary and compiled CLI plugin", () => {
 					operation.operationId === "pingHeartbeat",
 			).status,
 		).toBe("excluded");
+	}, 180000);
+
+	it("rebuilds a corrupted compiled plugin without changing generated commands", async () => {
+		const cache = path.join(directory, "corrupt-cache");
+		const first = path.join(directory, "corrupt-first");
+		const repaired = path.join(directory, "corrupt-repaired");
+		await generateCli(["--output", first, "--plugin-cache", cache]);
+		const artifact = (await readdir(cache)).find((file) =>
+			file.endsWith(".wasm"),
+		);
+		if (!artifact) throw new Error("Compiled CLI plugin was not cached");
+		await writeFile(path.join(cache, artifact), "invalid wasm");
+
+		const result = await generateCli([
+			"--output",
+			repaired,
+			"--plugin-cache",
+			cache,
+		]);
+
+		expect(result.stderr).toContain("Compiled CLI plugin");
+		expect(await generatedTree(repaired)).toEqual(await generatedTree(first));
+	}, 180000);
+
+	it("invalidates the compiled plugin when its source changes", async () => {
+		const fixture = await createGeneratorWorkspace("plugin-input-change");
+		const cache = path.join(directory, "source-change-cache");
+		const output = path.join(directory, "source-change-output");
+		const args = ["--output", output, "--plugin-cache", cache];
+		await generateCli(args, fixture);
+		const source = path.join(fixture, "generator/cli-plugin.ts");
+		await writeFile(source, `${await readFile(source, "utf8")}\n`);
+
+		const rebuilt = await generateCli(args, fixture);
+		const reused = await generateCli(args, fixture);
+
+		expect(rebuilt.stderr).toContain("Compiled CLI plugin");
+		expect(reused.stderr).toContain("Reused CLI plugin");
+		expect(await generatedTree(output)).toEqual(
+			await generatedTree("src/generated-cli"),
+		);
 	}, 180000);
 
 	it("detects generated drift without rewriting the changed file", async () => {
@@ -111,36 +202,7 @@ describe("pinned Forge binary and compiled CLI plugin", () => {
 	it.each(["bundle", "build:sea"])(
 		"rejects stale committed output before %s and leaves it unchanged",
 		async (script) => {
-			const workspace = path.join(directory, script.replace(":", "-"));
-			const fixture = path.join(workspace, "packages/onlineornot");
-			await mkdir(fixture, { recursive: true });
-			for (const entry of [
-				"package.json",
-				"tsconfig.json",
-				"src",
-				"scripts",
-				"generator",
-				"bin",
-				"sea-config.json",
-			])
-				await cp(entry, path.join(fixture, entry), { recursive: true });
-			for (const entry of [".oxfmtrc.json", "tsconfig.json"])
-				await cp(path.resolve("../..", entry), path.join(workspace, entry));
-			await symlink(
-				path.resolve("../../node_modules"),
-				path.join(workspace, "node_modules"),
-				"junction",
-			);
-			await symlink(
-				path.resolve("node_modules"),
-				path.join(fixture, "node_modules"),
-				"junction",
-			);
-			await symlink(
-				path.resolve("../api"),
-				path.join(workspace, "packages/api"),
-				"junction",
-			);
+			const fixture = await createGeneratorWorkspace(script.replace(":", "-"));
 			const output = path.join(fixture, "src/generated-cli");
 			await writeFile(path.join(output, "catalog.json"), "{}\n");
 			const staleTree = await generatedTree(output);
@@ -225,4 +287,42 @@ describe("pinned Forge binary and compiled CLI plugin", () => {
 		},
 		90000,
 	);
+});
+
+describe("generation subprocess supervision", () => {
+	it("terminates a stalled phase and its descendants while retaining diagnostic output", async () => {
+		const script = `
+			const { spawn } = require("node:child_process");
+			spawn(process.execPath, ["-e", "process.stderr.write('descendant started\\n'); setInterval(() => {}, 1000)"], { stdio: "inherit" });
+			setInterval(() => {}, 1000);
+		`;
+
+		await expect(
+			runGenerationCommand(
+				"stalled fixture",
+				process.execPath,
+				["-e", script],
+				undefined,
+				2000,
+			),
+		).rejects.toThrow(
+			/CLI generation stalled fixture timed out after 2000ms:[\s\S]*descendant started/,
+		);
+	}, 10000);
+
+	it("retains stderr and identifies a failed generation phase", async () => {
+		await expect(
+			runGenerationCommand(
+				"invalid fixture",
+				process.execPath,
+				[
+					"-e",
+					"console.error('fixture compiler rejected input'); process.exitCode = 7",
+				],
+				undefined,
+			),
+		).rejects.toThrow(
+			/CLI generation invalid fixture failed \(7\):[\s\S]*fixture compiler rejected input/,
+		);
+	});
 });
