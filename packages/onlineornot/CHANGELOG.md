@@ -1,5 +1,13 @@
 # onlineornot
 
+## 1.8.1
+
+### Patch Changes
+
+- [#131](https://github.com/OnlineOrNot/onlineornot/pull/131) [`156fa89`](https://github.com/OnlineOrNot/onlineornot/commit/156fa8980d459452813ee55cef01ec2001fbccb4) Thanks [@open-session-jcjv](https://github.com/apps/open-session-jcjv)! - fix: Exit cleanly after browser login completes
+
+  Close leftover OAuth callback connections, including unused browser preconnections, without dropping the browser redirect. Repeated cleanup calls now wait for the same shutdown to finish, preventing the CLI from hanging after a successful login.
+
 ## 1.8.0
 
 ### Minor Changes
