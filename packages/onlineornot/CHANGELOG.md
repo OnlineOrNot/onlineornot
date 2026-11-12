@@ -1,5 +1,21 @@
 # onlineornot
 
+## 1.8.1
+
+### Patch Changes
+
+- [#131](https://github.com/OnlineOrNot/onlineornot/pull/131) [`156fa89`](https://github.com/OnlineOrNot/onlineornot/commit/156fa8980d459452813ee55cef01ec2001fbccb4) Thanks [@open-session-jcjv](https://github.com/apps/open-session-jcjv)! - fix: Exit cleanly after browser login completes
+
+  Close leftover OAuth callback connections, including unused browser preconnections, without dropping the browser redirect. Repeated cleanup calls now wait for the same shutdown to finish, preventing the CLI from hanging after a successful login.
+
+## 1.8.0
+
+### Minor Changes
+
+- [#129](https://github.com/OnlineOrNot/onlineornot/pull/129) [`33edd9f`](https://github.com/OnlineOrNot/onlineornot/commit/33edd9fb7f8d1e3ec39c66dcdc558ccc1560fd9c) Thanks [@rozenmd](https://github.com/rozenmd)! - FEATURE: Generate heartbeat management commands from the pinned OpenAPI schema with Forge.
+
+  Add heartbeat list, get, create, update, delete and project-move commands with generated flags, JSON output, file/stdin bodies, validated request previews, explicit deletion confirmation and command discovery. Keep existing checks and authentication commands unchanged. Heartbeat ping is not exposed.
+
 ## 1.7.11
 
 ### Patch Changes
