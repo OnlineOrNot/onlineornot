@@ -17,6 +17,7 @@ export const command = createApiCommand(
 		method: "POST",
 		path: "/v1/heartbeats/{heartbeat_id}/move",
 		hasBody: true,
+		requiresAuth: true,
 		confirmation: false,
 		flags: [
 			{

@@ -31,10 +31,11 @@ const annotationSchema = z.discriminatedUnion("status", [
 	z
 		.object({
 			status: z.literal("generated"),
-			group: z.string().regex(/^[a-z][a-z0-9-]*$/),
+			group: z.string().regex(/^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)*$/),
 			method: z.string().regex(/^[a-z][a-z0-9-]*$/),
 			positionals: z.record(z.string(), z.string()),
 			flags: z.record(z.string(), z.string()),
+			sensitive: z.array(z.string()).default([]),
 		})
 		.strict(),
 	z.object({ status: z.literal("handwritten"), command: z.string() }).strict(),
@@ -53,10 +54,14 @@ const operationSchema = z
 		operationId: z.string(),
 		parameters: z.array(z.json()).optional(),
 		requestBody: z.json().optional(),
+		security: z.array(z.record(z.string(), z.array(z.string()))).optional(),
 	})
 	.passthrough();
 const documentSchema = z
-	.object({ paths: z.record(z.string(), z.record(z.string(), z.json())) })
+	.object({
+		paths: z.record(z.string(), z.record(z.string(), z.json())),
+		security: z.array(z.record(z.string(), z.array(z.string()))).optional(),
+	})
 	.passthrough();
 const methods = new Set([
 	"get",
@@ -138,6 +143,7 @@ for (const [apiPath, item] of Object.entries(document.paths)) {
 				if (prohibited.success) forbidden.push(name);
 			}
 		}
+		const security = operation.security ?? document.security ?? [];
 		const prepared = {
 			...operation,
 			"x-forge-group-name": annotation.group,
@@ -146,6 +152,12 @@ for (const [apiPath, item] of Object.entries(document.paths)) {
 			"x-onlineornot-cli": {
 				positionals: annotation.positionals,
 				flags: annotation.flags,
+				sensitive: annotation.sensitive,
+				requiresAuth:
+					security.length > 0 &&
+					!security.some(
+						(requirement) => Object.keys(requirement).length === 0,
+					),
 				forbidden,
 			},
 		};

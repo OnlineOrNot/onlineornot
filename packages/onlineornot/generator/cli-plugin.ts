@@ -6,6 +6,8 @@ const commandMetadataSchema = z.object({
 	positionals: z.record(z.string(), z.string()),
 	flags: z.record(z.string(), z.string()),
 	forbidden: z.array(z.string()),
+	sensitive: z.array(z.string()),
+	requiresAuth: z.boolean(),
 });
 
 interface CommandFlag {
@@ -128,7 +130,7 @@ function commandArguments(method: Method) {
 			required: field.required,
 			positional,
 			description: field.description || field.wireName,
-			sensitive: field.sensitive,
+			sensitive: field.sensitive || metadata.sensitive.includes(field.wireName),
 		});
 	}
 	for (const field of objectFields(method.request)) {
@@ -137,7 +139,36 @@ function commandArguments(method: Method) {
 	}
 	for (const field of method.headers?.fields ?? []) add(field, "header");
 	for (const field of objectFields(method.body?.json?.type)) add(field, "body");
-	return { flags, forbidden: metadata.forbidden };
+	return {
+		flags,
+		forbidden: metadata.forbidden,
+		requiresAuth: metadata.requiresAuth,
+	};
+}
+
+function sdkRequestField(
+	field: Field,
+	parsed: string,
+	location: string,
+	keys: string[],
+): string {
+	const current = unwrappedType(field.type);
+	const value =
+		current.kind === "object"
+			? `{ ${current.fields
+					.filter((child) => !child.readOnly)
+					.map((child) => {
+						const key = JSON.stringify(child.wireName);
+						return `${key}: ${sdkRequestField(child, `${parsed}?.[${key}]`, location, [...keys, child.wireName])}`;
+					})
+					.join(",")} }`
+			: parsed;
+	if (field.required) return value;
+	const absent =
+		keys.length === 1
+			? `input.${location}?.[${JSON.stringify(keys[0])}] === undefined`
+			: `!hasCommandInputField(input.${location}, ${JSON.stringify(keys)})`;
+	return `${absent} ? undefined : ${value}`;
 }
 
 function sdkAdapter(method: Method, id: string, forbidden: string[]): string {
@@ -178,14 +209,14 @@ function sdkAdapter(method: Method, id: string, forbidden: string[]): string {
 			.map((field) => {
 				const key = JSON.stringify(field.wireName);
 				const parsed = `${location}[${key}]`;
-				return `${key}: ${field.required ? parsed : `input.${location}?.[${key}] === undefined ? undefined : ${parsed}`}`;
+				return `${key}: ${sdkRequestField(field, parsed, location, [field.wireName])}`;
 			});
 		request.push(`${location}: { ${properties.join(",")} }`);
 	}
 	return `import { ${id} } from "@onlineornot/api";
 import { ${validators.join(", ")} } from "@onlineornot/api/zod";
 import { getApiConfig, unwrapApiEnvelope } from "../api/infrastructure";
-import { createApiCommand } from "../command-runtime/api-command";
+import { createApiCommand${request.some((part) => part.includes("hasCommandInputField")) ? ", hasCommandInputField" : ""} } from "../command-runtime/api-command";
 
 export const command = createApiCommand(SPEC, (input) => {
 ${declarations.join("\n")}
@@ -195,21 +226,40 @@ return { request, execute: async (token) => unwrapApiEnvelope(await ${id}({ ...g
 `;
 }
 
+interface CommandGroup {
+	methods: string[];
+	children: Map<string, CommandGroup>;
+}
+
+function registerCommandGroups(
+	groups: Map<string, CommandGroup>,
+	parent: string,
+	depth: number,
+): string {
+	const parser = `group${depth}`;
+	return [...groups]
+		.map(
+			([name, group]) =>
+				`${parent}.command(${JSON.stringify(name)}, ${JSON.stringify(`Manage ${name}`)}, (${parser}) => { ${group.methods.map((method) => `${parser}.command(${method});`).join(" ")} ${registerCommandGroups(group.children, parser, depth + 1)} return ${parser}.demandCommand(1); }, () => {});`,
+		)
+		.join("\n");
+}
+
 export const { generate } = definePlugin({
 	generate(forge) {
 		const commands = [];
 		const files: File[] = [];
 		const addresses = new Set<string>();
 		const imports: string[] = [];
-		const grouped = new Map<string, string[]>();
+		const grouped = new Map<string, CommandGroup>();
 		for (const group of forge.groups) {
 			for (const method of group.methods) {
 				const id = z
 					.string()
 					.parse(method.extension("x-onlineornot-operation-id"));
-				if (group.path.length !== 1)
+				if (group.path.length === 0)
 					throw new Error(
-						`CLI operation must belong to one resource group: ${id}`,
+						`CLI operation must belong to a resource group: ${id}`,
 					);
 				const words = [
 					...group.path.map((name) => name.kebab()),
@@ -219,7 +269,7 @@ export const { generate } = definePlugin({
 				if (addresses.has(address))
 					throw new Error(`Duplicate CLI command: ${address}`);
 				addresses.add(address);
-				const { flags, forbidden } = commandArguments(method);
+				const { flags, forbidden, requiresAuth } = commandArguments(method);
 				const spec = {
 					operationId: id,
 					command: `onlineornot ${address}`,
@@ -228,6 +278,7 @@ export const { generate } = definePlugin({
 					method: method.httpMethod,
 					path: method.path,
 					hasBody: method.body !== undefined,
+					requiresAuth,
 					confirmation:
 						method.httpMethod === "DELETE" || method.confirmation !== undefined,
 					flags,
@@ -241,10 +292,16 @@ export const { generate } = definePlugin({
 					),
 				});
 				imports.push(`import { command as ${id} } from "./${id}";`);
-				const root = words[0];
-				const leaves = grouped.get(root) ?? [];
-				leaves.push(id);
-				grouped.set(root, leaves);
+				let groups = grouped;
+				for (const [index, word] of words.slice(0, -1).entries()) {
+					let current = groups.get(word);
+					if (!current) {
+						current = { methods: [], children: new Map() };
+						groups.set(word, current);
+					}
+					if (index === words.length - 2) current.methods.push(id);
+					groups = current.children;
+				}
 			}
 		}
 		commands.sort((left, right) => left.command.localeCompare(right.command));
@@ -257,7 +314,7 @@ import catalog from "./catalog.json";
 ${imports.join("\n")}
 
 export function registerGeneratedCommands(parser: CommonYargsArgv) {
-${[...grouped].map(([root, leaves]) => `parser.command(${JSON.stringify(root)}, ${JSON.stringify(`Manage ${root}`)}, (group) => { ${leaves.map((name) => `group.command(${name});`).join(" ")} return group.demandCommand(1); }, () => {});`).join("\n")}
+${registerCommandGroups(grouped, "parser", 1)}
 registerCommandCatalog(parser, catalog);
 }
 `,

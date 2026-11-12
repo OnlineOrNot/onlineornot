@@ -5,6 +5,316 @@
 	},
 	"commands": [
 		{
+			"operationId": "createEnvironmentVariable",
+			"command": "onlineornot environment-variables create",
+			"words": ["environment-variables", "create"],
+			"description": "Create an environment variable",
+			"method": "POST",
+			"path": "/v1/env",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "project-id",
+					"wireName": "project_id",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Project ID. Omit or use null to leave the resource unassigned.",
+					"sensitive": false
+				},
+				{
+					"name": "name",
+					"wireName": "name",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the project.",
+					"sensitive": false
+				},
+				{
+					"name": "type",
+					"wireName": "type",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"choices": ["config", "secret"],
+					"required": true,
+					"positional": false,
+					"description": "Immutable variable type. Config values are readable and unsuitable for credentials; secret values are write-only.",
+					"sensitive": false
+				},
+				{
+					"name": "value",
+					"wireName": "value",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Value of the variable, limited to 8 KiB of UTF-8. Secret values are write-only and never appear in API responses.",
+					"sensitive": true
+				}
+			]
+		},
+		{
+			"operationId": "deleteEnvironmentVariable",
+			"command": "onlineornot environment-variables delete",
+			"words": ["environment-variables", "delete"],
+			"description": "Delete an environment variable",
+			"method": "DELETE",
+			"path": "/v1/env/{environment_variable_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": true,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "environment_variable_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Environment variable ID.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "getEnvironmentVariable",
+			"command": "onlineornot environment-variables get",
+			"words": ["environment-variables", "get"],
+			"description": "Get an environment variable",
+			"method": "GET",
+			"path": "/v1/env/{environment_variable_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "environment_variable_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Environment variable ID.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "listEnvironmentVariables",
+			"command": "onlineornot environment-variables list",
+			"words": ["environment-variables", "list"],
+			"description": "List environment variables",
+			"method": "GET",
+			"path": "/v1/env",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "page",
+					"wireName": "page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Page number of paginated results, starting at 1.",
+					"sensitive": false
+				},
+				{
+					"name": "per-page",
+					"wireName": "per_page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.",
+					"sensitive": false
+				},
+				{
+					"name": "project-id",
+					"wireName": "project_id",
+					"location": "query",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Project IDs, or unassigned for resources without a project. Repeat the parameter to include several, for example project_id=a1b2c3d4e5f6g7h8&project_id=unassigned. Omit to list all resources.",
+					"sensitive": false
+				},
+				{
+					"name": "search",
+					"wireName": "search",
+					"location": "query",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Case-insensitive substring search on environment variable names.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "moveEnvironmentVariable",
+			"command": "onlineornot environment-variables move",
+			"words": ["environment-variables", "move"],
+			"description": "Assign or unassign an environment variable",
+			"method": "POST",
+			"path": "/v1/env/{environment_variable_id}/move",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "environment_variable_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Environment variable ID.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "project-id",
+					"wireName": "project_id",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Project ID, or null for unassigned.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "updateEnvironmentVariable",
+			"command": "onlineornot environment-variables update",
+			"words": ["environment-variables", "update"],
+			"description": "Update an environment variable",
+			"method": "PATCH",
+			"path": "/v1/env/{environment_variable_id}",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "environment_variable_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Environment variable ID.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "name",
+					"wireName": "name",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the project.",
+					"sensitive": false
+				},
+				{
+					"name": "value",
+					"wireName": "value",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Value of the variable, limited to 8 KiB of UTF-8. Secret values are write-only and never appear in API responses.",
+					"sensitive": true
+				}
+			]
+		},
+		{
 			"operationId": "createHeartbeat",
 			"command": "onlineornot heartbeats create",
 			"words": ["heartbeats", "create"],
@@ -12,6 +322,7 @@
 			"method": "POST",
 			"path": "/v1/heartbeats",
 			"hasBody": true,
+			"requiresAuth": true,
 			"confirmation": false,
 			"flags": [
 				{
@@ -223,6 +534,7 @@
 			"method": "DELETE",
 			"path": "/v1/heartbeats/{heartbeat_id}",
 			"hasBody": false,
+			"requiresAuth": true,
 			"confirmation": true,
 			"flags": [
 				{
@@ -257,6 +569,7 @@
 			"method": "GET",
 			"path": "/v1/heartbeats/{heartbeat_id}",
 			"hasBody": false,
+			"requiresAuth": true,
 			"confirmation": false,
 			"flags": [
 				{
@@ -291,6 +604,7 @@
 			"method": "GET",
 			"path": "/v1/heartbeats",
 			"hasBody": false,
+			"requiresAuth": true,
 			"confirmation": false,
 			"flags": [
 				{
@@ -358,6 +672,7 @@
 			"method": "POST",
 			"path": "/v1/heartbeats/{heartbeat_id}/move",
 			"hasBody": true,
+			"requiresAuth": true,
 			"confirmation": false,
 			"flags": [
 				{
@@ -403,6 +718,7 @@
 			"method": "PATCH",
 			"path": "/v1/heartbeats/{heartbeat_id}",
 			"hasBody": true,
+			"requiresAuth": true,
 			"confirmation": false,
 			"flags": [
 				{
@@ -624,6 +940,3653 @@
 					"required": false,
 					"positional": false,
 					"description": "Suppresses alerts without stopping heartbeat monitoring.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "createMaintenanceWindow",
+			"command": "onlineornot maintenance-windows create",
+			"words": ["maintenance-windows", "create"],
+			"description": "Create a new maintenance window",
+			"method": "POST",
+			"path": "/v1/maintenance-windows",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "project-id",
+					"wireName": "project_id",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Project ID. Omit or use null to leave the resource unassigned.",
+					"sensitive": false
+				},
+				{
+					"name": "name",
+					"wireName": "name",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "name",
+					"sensitive": false
+				},
+				{
+					"name": "start-date",
+					"wireName": "start_date",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Start date and time of the maintenance window, as a timestamp",
+					"sensitive": false
+				},
+				{
+					"name": "duration-minutes",
+					"wireName": "duration_minutes",
+					"location": "body",
+					"type": "number",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Duration of the maintenance window in minutes",
+					"sensitive": false
+				},
+				{
+					"name": "timezone",
+					"wireName": "timezone",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Timezone for the maintenance window",
+					"sensitive": false
+				},
+				{
+					"name": "days-of-week",
+					"wireName": "days_of_week",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"choices": [
+						"SUNDAY",
+						"MONDAY",
+						"TUESDAY",
+						"WEDNESDAY",
+						"THURSDAY",
+						"FRIDAY",
+						"SATURDAY"
+					],
+					"required": true,
+					"positional": false,
+					"description": "Days of the week when the maintenance window is active",
+					"sensitive": false
+				},
+				{
+					"name": "checks",
+					"wireName": "checks",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Uptime check IDs to associate with this maintenance window",
+					"sensitive": false
+				},
+				{
+					"name": "heartbeats",
+					"wireName": "heartbeats",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Heartbeat IDs to associate with this maintenance window",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "deleteMaintenanceWindow",
+			"command": "onlineornot maintenance-windows delete",
+			"words": ["maintenance-windows", "delete"],
+			"description": "Delete a maintenance window",
+			"method": "DELETE",
+			"path": "/v1/maintenance-windows/{maintenance_window_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": true,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "maintenance_window_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Maintenance Window ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "getMaintenanceWindow",
+			"command": "onlineornot maintenance-windows get",
+			"words": ["maintenance-windows", "get"],
+			"description": "Get a maintenance window by ID",
+			"method": "GET",
+			"path": "/v1/maintenance-windows/{maintenance_window_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "maintenance_window_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Maintenance Window ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "listMaintenanceWindows",
+			"command": "onlineornot maintenance-windows list",
+			"words": ["maintenance-windows", "list"],
+			"description": "List all maintenance windows",
+			"method": "GET",
+			"path": "/v1/maintenance-windows",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "page",
+					"wireName": "page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Page number of paginated results, starting at 1.",
+					"sensitive": false
+				},
+				{
+					"name": "per-page",
+					"wireName": "per_page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.",
+					"sensitive": false
+				},
+				{
+					"name": "search",
+					"wireName": "search",
+					"location": "query",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Search term to filter maintenance windows by name",
+					"sensitive": false
+				},
+				{
+					"name": "project-id",
+					"wireName": "project_id",
+					"location": "query",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Project IDs, or unassigned for resources without a project. Repeat the parameter to include several, for example project_id=a1b2c3d4e5f6g7h8&project_id=unassigned. Omit to list all resources.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "moveMaintenanceWindow",
+			"command": "onlineornot maintenance-windows move",
+			"words": ["maintenance-windows", "move"],
+			"description": "Assign or unassign a maintenance window",
+			"method": "POST",
+			"path": "/v1/maintenance-windows/{maintenance_window_id}/move",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "maintenance_window_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Maintenance Window ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "project-id",
+					"wireName": "project_id",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Project ID, or null for unassigned.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "updateMaintenanceWindow",
+			"command": "onlineornot maintenance-windows update",
+			"words": ["maintenance-windows", "update"],
+			"description": "Update a maintenance window",
+			"method": "PATCH",
+			"path": "/v1/maintenance-windows/{maintenance_window_id}",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "maintenance_window_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Maintenance Window ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "name",
+					"wireName": "name",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "name",
+					"sensitive": false
+				},
+				{
+					"name": "start-date",
+					"wireName": "start_date",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Start date and time of the maintenance window, as a timestamp",
+					"sensitive": false
+				},
+				{
+					"name": "duration-minutes",
+					"wireName": "duration_minutes",
+					"location": "body",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Duration of the maintenance window in minutes",
+					"sensitive": false
+				},
+				{
+					"name": "timezone",
+					"wireName": "timezone",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Timezone for the maintenance window",
+					"sensitive": false
+				},
+				{
+					"name": "days-of-week",
+					"wireName": "days_of_week",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"choices": [
+						"SUNDAY",
+						"MONDAY",
+						"TUESDAY",
+						"WEDNESDAY",
+						"THURSDAY",
+						"FRIDAY",
+						"SATURDAY"
+					],
+					"required": false,
+					"positional": false,
+					"description": "Days of the week when the maintenance window is active",
+					"sensitive": false
+				},
+				{
+					"name": "status",
+					"wireName": "status",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"choices": ["ENABLED", "DISABLED"],
+					"required": false,
+					"positional": false,
+					"description": "status",
+					"sensitive": false
+				},
+				{
+					"name": "checks",
+					"wireName": "checks",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Uptime check IDs. Replaces existing associations.",
+					"sensitive": false
+				},
+				{
+					"name": "heartbeats",
+					"wireName": "heartbeats",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Heartbeat IDs. Replaces existing associations.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "createProject",
+			"command": "onlineornot projects create",
+			"words": ["projects", "create"],
+			"description": "Create a project",
+			"method": "POST",
+			"path": "/v1/projects",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "name",
+					"wireName": "name",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Project name. Unique within the organisation, ignoring case and surrounding spaces.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "deleteProject",
+			"command": "onlineornot projects delete",
+			"words": ["projects", "delete"],
+			"description": "Delete an empty project",
+			"method": "DELETE",
+			"path": "/v1/projects/{project_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": true,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "project_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Project ID.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "getProject",
+			"command": "onlineornot projects get",
+			"words": ["projects", "get"],
+			"description": "Get a project",
+			"method": "GET",
+			"path": "/v1/projects/{project_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "project_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Project ID.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "listProjects",
+			"command": "onlineornot projects list",
+			"words": ["projects", "list"],
+			"description": "List projects",
+			"method": "GET",
+			"path": "/v1/projects",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "page",
+					"wireName": "page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Page number of paginated results, starting at 1.",
+					"sensitive": false
+				},
+				{
+					"name": "per-page",
+					"wireName": "per_page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "updateProject",
+			"command": "onlineornot projects update",
+			"words": ["projects", "update"],
+			"description": "Rename a project",
+			"method": "PATCH",
+			"path": "/v1/projects/{project_id}",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "project_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Project ID.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "name",
+					"wireName": "name",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Project name. Unique within the organisation, ignoring case and surrounding spaces.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "createStatusPageComponent",
+			"command": "onlineornot status-pages components create",
+			"words": ["status-pages", "components", "create"],
+			"description": "Create a component",
+			"method": "POST",
+			"path": "/v1/status_pages/{status_page_id}/components",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "name",
+					"wireName": "name",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "a name for the component",
+					"sensitive": false
+				},
+				{
+					"name": "status",
+					"wireName": "status",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"choices": [
+						"OPERATIONAL",
+						"MAJOR_OUTAGE",
+						"PARTIAL_OUTAGE",
+						"DEGRADED_PERFORMANCE",
+						"NO_IMPACT",
+						"MAINTENANCE"
+					],
+					"required": false,
+					"positional": false,
+					"description": "Status of the component",
+					"sensitive": false
+				},
+				{
+					"name": "display-uptime",
+					"wireName": "display_uptime",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Show this component's uptime and historical incidents on the status page.",
+					"sensitive": false
+				},
+				{
+					"name": "display-metrics",
+					"wireName": "display_metrics",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Show this component's response time metrics on the status page.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "deleteStatusPageComponent",
+			"command": "onlineornot status-pages components delete",
+			"words": ["status-pages", "components", "delete"],
+			"description": "Delete a component",
+			"method": "DELETE",
+			"path": "/v1/status_pages/{status_page_id}/components/{status_page_component_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": true,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "id",
+					"wireName": "status_page_component_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page Component ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "getStatusPageComponent",
+			"command": "onlineornot status-pages components get",
+			"words": ["status-pages", "components", "get"],
+			"description": "Retrieve a component",
+			"method": "GET",
+			"path": "/v1/status_pages/{status_page_id}/components/{status_page_component_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "id",
+					"wireName": "status_page_component_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page Component ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "listStatusPageComponents",
+			"command": "onlineornot status-pages components list",
+			"words": ["status-pages", "components", "list"],
+			"description": "List all components",
+			"method": "GET",
+			"path": "/v1/status_pages/{status_page_id}/components",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "page",
+					"wireName": "page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Page number of paginated results, starting at 1.",
+					"sensitive": false
+				},
+				{
+					"name": "per-page",
+					"wireName": "per_page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "updateStatusPageComponentSortOrder",
+			"command": "onlineornot status-pages components sort-order",
+			"words": ["status-pages", "components", "sort-order"],
+			"description": "Update the sort order of ungrouped components",
+			"method": "PUT",
+			"path": "/v1/status_pages/{status_page_id}/components/sort-order",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "component-ids",
+					"wireName": "component_ids",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": true,
+					"positional": false,
+					"description": "Ordered list of ungrouped component IDs",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "updateStatusPageComponent",
+			"command": "onlineornot status-pages components update",
+			"words": ["status-pages", "components", "update"],
+			"description": "Update a component",
+			"method": "PATCH",
+			"path": "/v1/status_pages/{status_page_id}/components/{status_page_component_id}",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "id",
+					"wireName": "status_page_component_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page Component ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "name",
+					"wireName": "name",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "a name for the component",
+					"sensitive": false
+				},
+				{
+					"name": "status",
+					"wireName": "status",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"choices": [
+						"OPERATIONAL",
+						"MAJOR_OUTAGE",
+						"PARTIAL_OUTAGE",
+						"DEGRADED_PERFORMANCE",
+						"NO_IMPACT",
+						"MAINTENANCE"
+					],
+					"required": false,
+					"positional": false,
+					"description": "Status of the component",
+					"sensitive": false
+				},
+				{
+					"name": "display-uptime",
+					"wireName": "display_uptime",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Show this component's uptime and historical incidents on the status page.",
+					"sensitive": false
+				},
+				{
+					"name": "display-metrics",
+					"wireName": "display_metrics",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Show this component's response time metrics on the status page.",
+					"sensitive": false
+				},
+				{
+					"name": "group-id",
+					"wireName": "group_id",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Component group ID to associate this component with. Set to null to remove from group.",
+					"sensitive": false
+				},
+				{
+					"name": "check-ids",
+					"wireName": "check_ids",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Array of uptime check IDs to associate with this component",
+					"sensitive": false
+				},
+				{
+					"name": "heartbeat-id",
+					"wireName": "heartbeat_id",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Heartbeat ID to associate with this component. Set to null to remove.",
+					"sensitive": false
+				},
+				{
+					"name": "override-status",
+					"wireName": "override_status",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Override the automatic status from external status page. When true, status can be manually set.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "createStatusPage",
+			"command": "onlineornot status-pages create",
+			"words": ["status-pages", "create"],
+			"description": "Create a status page",
+			"method": "POST",
+			"path": "/v1/status_pages",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "favicon",
+					"wireName": "favicon",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Image file contents as a base64 data URL, not a hosted URL. Supports PNG, JPEG, GIF, WebP, SVG and ICO; maximum decoded file size 10 MB. Omit to preserve the image; send null to remove it.",
+					"sensitive": false
+				},
+				{
+					"name": "logo",
+					"wireName": "logo",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Image file contents as a base64 data URL, not a hosted URL. Supports PNG, JPEG, GIF, WebP, SVG and ICO; maximum decoded file size 10 MB. Omit to preserve the image; send null to remove it.",
+					"sensitive": false
+				},
+				{
+					"name": "dark-logo",
+					"wireName": "dark_logo",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Image file contents as a base64 data URL, not a hosted URL. Supports PNG, JPEG, GIF, WebP, SVG and ICO; maximum decoded file size 10 MB. Omit to preserve the image; send null to remove it.",
+					"sensitive": false
+				},
+				{
+					"name": "name",
+					"wireName": "name",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "name",
+					"sensitive": false
+				},
+				{
+					"name": "subdomain",
+					"wireName": "subdomain",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "The subdomain your status page will be hosted at. For example \"status\" would become \"status.onlineornot.com\"",
+					"sensitive": false
+				},
+				{
+					"name": "custom-domain",
+					"wireName": "custom_domain",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "The custom domain URL. On update, send null to remove the existing custom domain.",
+					"sensitive": false
+				},
+				{
+					"name": "password",
+					"wireName": "password",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Password protection. Send null or an empty string to remove it; omit to leave it unchanged.",
+					"sensitive": true
+				},
+				{
+					"name": "description",
+					"wireName": "description",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "description",
+					"sensitive": false
+				},
+				{
+					"name": "hide-from-search-engines",
+					"wireName": "hide_from_search_engines",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Whether to hide the status page from search engines",
+					"sensitive": false
+				},
+				{
+					"name": "allowed-ips",
+					"wireName": "allowed_ips",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "List of IP addresses or CIDR ranges allowed to access this status page",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "deleteStatusPage",
+			"command": "onlineornot status-pages delete",
+			"words": ["status-pages", "delete"],
+			"description": "Delete a status page",
+			"method": "DELETE",
+			"path": "/v1/status_pages/{status_page_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": true,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "getStatusPage",
+			"command": "onlineornot status-pages get",
+			"words": ["status-pages", "get"],
+			"description": "Retrieve a status page",
+			"method": "GET",
+			"path": "/v1/status_pages/{status_page_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "createStatusPageComponentGroup",
+			"command": "onlineornot status-pages groups create",
+			"words": ["status-pages", "groups", "create"],
+			"description": "Create a component group",
+			"method": "POST",
+			"path": "/v1/status_pages/{status_page_id}/groups",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "name",
+					"wireName": "name",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Name of the component group",
+					"sensitive": false
+				},
+				{
+					"name": "description",
+					"wireName": "description",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Description of the component group",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "deleteStatusPageComponentGroup",
+			"command": "onlineornot status-pages groups delete",
+			"words": ["status-pages", "groups", "delete"],
+			"description": "Delete a component group",
+			"method": "DELETE",
+			"path": "/v1/status_pages/{status_page_id}/groups/{group_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": true,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "id",
+					"wireName": "group_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page Component Group ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "getStatusPageComponentGroup",
+			"command": "onlineornot status-pages groups get",
+			"words": ["status-pages", "groups", "get"],
+			"description": "Retrieve a component group",
+			"method": "GET",
+			"path": "/v1/status_pages/{status_page_id}/groups/{group_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "id",
+					"wireName": "group_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page Component Group ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "listStatusPageComponentGroups",
+			"command": "onlineornot status-pages groups list",
+			"words": ["status-pages", "groups", "list"],
+			"description": "List all component groups",
+			"method": "GET",
+			"path": "/v1/status_pages/{status_page_id}/groups",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "page",
+					"wireName": "page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Page number of paginated results, starting at 1.",
+					"sensitive": false
+				},
+				{
+					"name": "per-page",
+					"wireName": "per_page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "updateStatusPageGroupComponentSortOrder",
+			"command": "onlineornot status-pages groups sort-components",
+			"words": ["status-pages", "groups", "sort-components"],
+			"description": "Update the sort order of components within a group",
+			"method": "PUT",
+			"path": "/v1/status_pages/{status_page_id}/groups/{group_id}/sort-order",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "id",
+					"wireName": "group_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page Component Group ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "component-ids",
+					"wireName": "component_ids",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": true,
+					"positional": false,
+					"description": "Ordered list of component IDs within the group",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "updateStatusPageComponentGroupSortOrder",
+			"command": "onlineornot status-pages groups sort-order",
+			"words": ["status-pages", "groups", "sort-order"],
+			"description": "Update the sort order of component groups",
+			"method": "PUT",
+			"path": "/v1/status_pages/{status_page_id}/groups/sort-order",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "group-ids",
+					"wireName": "group_ids",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": true,
+					"positional": false,
+					"description": "Ordered list of component group IDs",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "updateStatusPageComponentGroup",
+			"command": "onlineornot status-pages groups update",
+			"words": ["status-pages", "groups", "update"],
+			"description": "Update a component group",
+			"method": "PATCH",
+			"path": "/v1/status_pages/{status_page_id}/groups/{group_id}",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "id",
+					"wireName": "group_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page Component Group ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "name",
+					"wireName": "name",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Name of the component group",
+					"sensitive": false
+				},
+				{
+					"name": "description",
+					"wireName": "description",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Description of the component group",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "createStatusPageIncident",
+			"command": "onlineornot status-pages incidents create",
+			"words": ["status-pages", "incidents", "create"],
+			"description": "Create an incident",
+			"method": "POST",
+			"path": "/v1/status_pages/{status_page_id}/incidents",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "title",
+					"wireName": "title",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "a title for the incident",
+					"sensitive": false
+				},
+				{
+					"name": "description",
+					"wireName": "description",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "a description of the incident",
+					"sensitive": false
+				},
+				{
+					"name": "status",
+					"wireName": "status",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"choices": [
+						"INVESTIGATING",
+						"IDENTIFIED",
+						"MONITORING",
+						"RESOLVED",
+						"UPDATE"
+					],
+					"required": true,
+					"positional": false,
+					"description": "The current status of the incident",
+					"sensitive": false
+				},
+				{
+					"name": "components",
+					"wireName": "components",
+					"location": "body",
+					"type": "json",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Components affected by this incident with their status",
+					"sensitive": false
+				},
+				{
+					"name": "notify-subscribers",
+					"wireName": "notify_subscribers",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Whether to notify status page subscribers",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "deleteStatusPageIncident",
+			"command": "onlineornot status-pages incidents delete",
+			"words": ["status-pages", "incidents", "delete"],
+			"description": "Delete an incident",
+			"method": "DELETE",
+			"path": "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": true,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "id",
+					"wireName": "status_page_incident_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page Incident ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "getStatusPageIncident",
+			"command": "onlineornot status-pages incidents get",
+			"words": ["status-pages", "incidents", "get"],
+			"description": "Retrieve an incident",
+			"method": "GET",
+			"path": "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "id",
+					"wireName": "status_page_incident_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page Incident ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "listStatusPageIncidents",
+			"command": "onlineornot status-pages incidents list",
+			"words": ["status-pages", "incidents", "list"],
+			"description": "List all incidents",
+			"method": "GET",
+			"path": "/v1/status_pages/{status_page_id}/incidents",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "page",
+					"wireName": "page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Page number of paginated results, starting at 1.",
+					"sensitive": false
+				},
+				{
+					"name": "per-page",
+					"wireName": "per_page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "updateStatusPageIncident",
+			"command": "onlineornot status-pages incidents update",
+			"words": ["status-pages", "incidents", "update"],
+			"description": "Update an incident",
+			"method": "PATCH",
+			"path": "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "id",
+					"wireName": "status_page_incident_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page Incident ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "title",
+					"wireName": "title",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "a title for the incident",
+					"sensitive": false
+				},
+				{
+					"name": "impact",
+					"wireName": "impact",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"choices": [
+						"MAJOR_OUTAGE",
+						"PARTIAL_OUTAGE",
+						"DEGRADED_PERFORMANCE",
+						"NO_IMPACT",
+						"MAINTENANCE"
+					],
+					"required": true,
+					"positional": false,
+					"description": "Impact of the incident",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "createStatusPageIncidentUpdate",
+			"command": "onlineornot status-pages incidents updates create",
+			"words": ["status-pages", "incidents", "updates", "create"],
+			"description": "Create a new update for an incident",
+			"method": "POST",
+			"path": "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "incident-id",
+					"wireName": "status_page_incident_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page Incident ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "status",
+					"wireName": "status",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"choices": [
+						"INVESTIGATING",
+						"IDENTIFIED",
+						"MONITORING",
+						"RESOLVED",
+						"UPDATE",
+						"SCHEDULED",
+						"IN_PROGRESS",
+						"VERIFYING",
+						"COMPLETED"
+					],
+					"required": true,
+					"positional": false,
+					"description": "Status for this update",
+					"sensitive": false
+				},
+				{
+					"name": "description",
+					"wireName": "description",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Update message",
+					"sensitive": false
+				},
+				{
+					"name": "notify-subscribers",
+					"wireName": "notify_subscribers",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Whether to notify status page subscribers",
+					"sensitive": false
+				},
+				{
+					"name": "components-affected",
+					"wireName": "components_affected",
+					"location": "body",
+					"type": "json",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Components affected by this update with their new status",
+					"sensitive": false
+				},
+				{
+					"name": "date-happened",
+					"wireName": "date_happened",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "When this update occurred (defaults to now)",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "deleteStatusPageIncidentUpdate",
+			"command": "onlineornot status-pages incidents updates delete",
+			"words": ["status-pages", "incidents", "updates", "delete"],
+			"description": "Delete an incident update",
+			"method": "DELETE",
+			"path": "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates/{incident_update_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": true,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "incident-id",
+					"wireName": "status_page_incident_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page Incident ID",
+					"sensitive": false
+				},
+				{
+					"name": "id",
+					"wireName": "incident_update_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Incident Update ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "getStatusPageIncidentUpdate",
+			"command": "onlineornot status-pages incidents updates get",
+			"words": ["status-pages", "incidents", "updates", "get"],
+			"description": "Retrieve a single incident update",
+			"method": "GET",
+			"path": "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates/{incident_update_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "incident-id",
+					"wireName": "status_page_incident_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page Incident ID",
+					"sensitive": false
+				},
+				{
+					"name": "id",
+					"wireName": "incident_update_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Incident Update ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "listStatusPageIncidentUpdates",
+			"command": "onlineornot status-pages incidents updates list",
+			"words": ["status-pages", "incidents", "updates", "list"],
+			"description": "List all updates for an incident",
+			"method": "GET",
+			"path": "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "incident-id",
+					"wireName": "status_page_incident_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page Incident ID",
+					"sensitive": false
+				},
+				{
+					"name": "page",
+					"wireName": "page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Page number of paginated results, starting at 1.",
+					"sensitive": false
+				},
+				{
+					"name": "per-page",
+					"wireName": "per_page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "updateStatusPageIncidentUpdate",
+			"command": "onlineornot status-pages incidents updates update",
+			"words": ["status-pages", "incidents", "updates", "update"],
+			"description": "Update an existing incident update",
+			"method": "PATCH",
+			"path": "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates/{incident_update_id}",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "incident-id",
+					"wireName": "status_page_incident_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page Incident ID",
+					"sensitive": false
+				},
+				{
+					"name": "id",
+					"wireName": "incident_update_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Incident Update ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "status",
+					"wireName": "status",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"choices": [
+						"INVESTIGATING",
+						"IDENTIFIED",
+						"MONITORING",
+						"RESOLVED",
+						"UPDATE",
+						"SCHEDULED",
+						"IN_PROGRESS",
+						"VERIFYING",
+						"COMPLETED"
+					],
+					"required": false,
+					"positional": false,
+					"description": "Updated status",
+					"sensitive": false
+				},
+				{
+					"name": "description",
+					"wireName": "description",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Updated message",
+					"sensitive": false
+				},
+				{
+					"name": "date-happened",
+					"wireName": "date_happened",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Updated timestamp",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "listStatusPages",
+			"command": "onlineornot status-pages list",
+			"words": ["status-pages", "list"],
+			"description": "List all status pages",
+			"method": "GET",
+			"path": "/v1/status_pages",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "page",
+					"wireName": "page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Page number of paginated results, starting at 1.",
+					"sensitive": false
+				},
+				{
+					"name": "per-page",
+					"wireName": "per_page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.",
+					"sensitive": false
+				},
+				{
+					"name": "search",
+					"wireName": "search",
+					"location": "query",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Search term to filter results.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "createStatusPageScheduledMaintenance",
+			"command": "onlineornot status-pages scheduled-maintenance create",
+			"words": ["status-pages", "scheduled-maintenance", "create"],
+			"description": "Schedule maintenance for a status page",
+			"method": "POST",
+			"path": "/v1/status_pages/{status_page_id}/scheduled_maintenance",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "title",
+					"wireName": "title",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Title of the scheduled maintenance",
+					"sensitive": false
+				},
+				{
+					"name": "description",
+					"wireName": "description",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Description of the scheduled maintenance",
+					"sensitive": false
+				},
+				{
+					"name": "start-date",
+					"wireName": "start_date",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "When the scheduled maintenance is expected to start (ISO 8601)",
+					"sensitive": false
+				},
+				{
+					"name": "duration-minutes",
+					"wireName": "duration_minutes",
+					"location": "body",
+					"type": "number",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "How long (in minutes) the maintenance is expected to last",
+					"sensitive": false
+				},
+				{
+					"name": "components-affected",
+					"wireName": "components_affected",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Component IDs affected by this maintenance",
+					"sensitive": false
+				},
+				{
+					"name": "notifications",
+					"wireName": "notifications",
+					"location": "body",
+					"type": "json",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Notification settings for subscribers",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "deleteStatusPageScheduledMaintenance",
+			"command": "onlineornot status-pages scheduled-maintenance delete",
+			"words": ["status-pages", "scheduled-maintenance", "delete"],
+			"description": "Delete a scheduled maintenance",
+			"method": "DELETE",
+			"path": "/v1/status_pages/{status_page_id}/scheduled_maintenance/{scheduled_maintenance_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": true,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "id",
+					"wireName": "scheduled_maintenance_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Scheduled Maintenance ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "getStatusPageScheduledMaintenance",
+			"command": "onlineornot status-pages scheduled-maintenance get",
+			"words": ["status-pages", "scheduled-maintenance", "get"],
+			"description": "Retrieve a scheduled maintenance",
+			"method": "GET",
+			"path": "/v1/status_pages/{status_page_id}/scheduled_maintenance/{scheduled_maintenance_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "id",
+					"wireName": "scheduled_maintenance_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Scheduled Maintenance ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "updateStatusPageScheduledMaintenance",
+			"command": "onlineornot status-pages scheduled-maintenance update",
+			"words": ["status-pages", "scheduled-maintenance", "update"],
+			"description": "Update a scheduled maintenance (only before it has started)",
+			"method": "PATCH",
+			"path": "/v1/status_pages/{status_page_id}/scheduled_maintenance/{scheduled_maintenance_id}",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "id",
+					"wireName": "scheduled_maintenance_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Scheduled Maintenance ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "title",
+					"wireName": "title",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Updated title",
+					"sensitive": false
+				},
+				{
+					"name": "start-date",
+					"wireName": "start_date",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Updated start date (ISO 8601)",
+					"sensitive": false
+				},
+				{
+					"name": "duration-minutes",
+					"wireName": "duration_minutes",
+					"location": "body",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Updated duration in minutes",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "createStatusPageSubscriber",
+			"command": "onlineornot status-pages subscribers create",
+			"words": ["status-pages", "subscribers", "create"],
+			"description": "Create a subscriber",
+			"method": "POST",
+			"path": "/v1/status_pages/{status_page_id}/subscribers",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "email-address",
+					"wireName": "email_address",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Email address of the subscriber",
+					"sensitive": false
+				},
+				{
+					"name": "component-subscription-mode",
+					"wireName": "component_subscription_mode",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"choices": ["ALL_COMPONENTS", "SELECTED_COMPONENTS"],
+					"required": false,
+					"positional": false,
+					"description": "Component alert preference mode for this subscriber",
+					"sensitive": false
+				},
+				{
+					"name": "component-ids",
+					"wireName": "component_ids",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Selected component IDs when component_subscription_mode is SELECTED_COMPONENTS",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "deleteStatusPageSubscriber",
+			"command": "onlineornot status-pages subscribers delete",
+			"words": ["status-pages", "subscribers", "delete"],
+			"description": "Delete a subscriber",
+			"method": "DELETE",
+			"path": "/v1/status_pages/{status_page_id}/subscribers/{subscriber_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": true,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "id",
+					"wireName": "subscriber_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page Subscriber ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "listStatusPageSubscribers",
+			"command": "onlineornot status-pages subscribers list",
+			"words": ["status-pages", "subscribers", "list"],
+			"description": "List all subscribers",
+			"method": "GET",
+			"path": "/v1/status_pages/{status_page_id}/subscribers",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "status-page-id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "page",
+					"wireName": "page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Page number of paginated results, starting at 1.",
+					"sensitive": false
+				},
+				{
+					"name": "per-page",
+					"wireName": "per_page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "getStatusPageSummary",
+			"command": "onlineornot status-pages summary",
+			"words": ["status-pages", "summary"],
+			"description": "Get a status page's overview.",
+			"method": "GET",
+			"path": "/v1/status_pages/{status_page_subdomain}/summary",
+			"hasBody": false,
+			"requiresAuth": false,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "subdomain",
+					"wireName": "status_page_subdomain",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "The subdomain part of a status page's URL",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "updateStatusPage",
+			"command": "onlineornot status-pages update",
+			"words": ["status-pages", "update"],
+			"description": "Update a status page",
+			"method": "POST",
+			"path": "/v1/status_pages/{status_page_id}",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "status_page_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Status Page ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "favicon",
+					"wireName": "favicon",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Image file contents as a base64 data URL, not a hosted URL. Supports PNG, JPEG, GIF, WebP, SVG and ICO; maximum decoded file size 10 MB. Omit to preserve the image; send null to remove it.",
+					"sensitive": false
+				},
+				{
+					"name": "logo",
+					"wireName": "logo",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Image file contents as a base64 data URL, not a hosted URL. Supports PNG, JPEG, GIF, WebP, SVG and ICO; maximum decoded file size 10 MB. Omit to preserve the image; send null to remove it.",
+					"sensitive": false
+				},
+				{
+					"name": "dark-logo",
+					"wireName": "dark_logo",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Image file contents as a base64 data URL, not a hosted URL. Supports PNG, JPEG, GIF, WebP, SVG and ICO; maximum decoded file size 10 MB. Omit to preserve the image; send null to remove it.",
+					"sensitive": false
+				},
+				{
+					"name": "name",
+					"wireName": "name",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "name",
+					"sensitive": false
+				},
+				{
+					"name": "subdomain",
+					"wireName": "subdomain",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "The subdomain your status page will be hosted at. For example \"status\" would become \"status.onlineornot.com\"",
+					"sensitive": false
+				},
+				{
+					"name": "custom-domain",
+					"wireName": "custom_domain",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "The custom domain URL. On update, send null to remove the existing custom domain.",
+					"sensitive": false
+				},
+				{
+					"name": "password",
+					"wireName": "password",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Password protection. Send null or an empty string to remove it; omit to leave it unchanged.",
+					"sensitive": true
+				},
+				{
+					"name": "description",
+					"wireName": "description",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "description",
+					"sensitive": false
+				},
+				{
+					"name": "hide-from-search-engines",
+					"wireName": "hide_from_search_engines",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Whether to hide the status page from search engines",
+					"sensitive": false
+				},
+				{
+					"name": "allowed-ips",
+					"wireName": "allowed_ips",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "List of IP addresses or CIDR ranges allowed to access this status page",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "createToken",
+			"command": "onlineornot tokens create",
+			"words": ["tokens", "create"],
+			"description": "Create an API token",
+			"method": "POST",
+			"path": "/v1/tokens",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "name",
+					"wireName": "name",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Token name",
+					"sensitive": false
+				},
+				{
+					"name": "grants",
+					"wireName": "grants",
+					"location": "body",
+					"type": "json",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Permissions explicitly granted to this token.",
+					"sensitive": false
+				},
+				{
+					"name": "expires-at",
+					"wireName": "expiresAt",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Custom expiration date. Omit for 365 days from now, or use null for no expiration.",
+					"sensitive": false
+				},
+				{
+					"name": "project-id",
+					"wireName": "project_id",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Project receiving logs. Omit or use null for unassigned. Requires LOGS:SEND and applies only to sending; other grants remain organisation-wide. Scope cannot be changed after issuance.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "deleteToken",
+			"command": "onlineornot tokens delete",
+			"words": ["tokens", "delete"],
+			"description": "Delete an API token",
+			"method": "DELETE",
+			"path": "/v1/tokens/{token_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": true,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "token_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "The token ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "getToken",
+			"command": "onlineornot tokens get",
+			"words": ["tokens", "get"],
+			"description": "Retrieve an API token",
+			"method": "GET",
+			"path": "/v1/tokens/{token_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "token_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "The token ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "listTokens",
+			"command": "onlineornot tokens list",
+			"words": ["tokens", "list"],
+			"description": "List all API tokens",
+			"method": "GET",
+			"path": "/v1/tokens",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "page",
+					"wireName": "page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Page number of paginated results, starting at 1.",
+					"sensitive": false
+				},
+				{
+					"name": "per-page",
+					"wireName": "per_page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Number of tokens per page, default 10. Pagination metadata is nested at result.result_info.",
+					"sensitive": false
+				},
+				{
+					"name": "search",
+					"wireName": "search",
+					"location": "query",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Search term to filter results.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "createWebhook",
+			"command": "onlineornot webhooks create",
+			"words": ["webhooks", "create"],
+			"description": "Create a webhook",
+			"method": "POST",
+			"path": "/v1/webhooks",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "project-id",
+					"wireName": "project_id",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Project ID. Omit or use null to leave the resource unassigned.",
+					"sensitive": false
+				},
+				{
+					"name": "enabled",
+					"wireName": "enabled",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Whether webhook delivery is enabled. Defaults to true on creation; omitted PATCH values preserve the current state.",
+					"sensitive": false
+				},
+				{
+					"name": "url",
+					"wireName": "url",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Webhook URL. Use {{NAME}} to reference an environment variable.",
+					"sensitive": false
+				},
+				{
+					"name": "description",
+					"wireName": "description",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Optional description of the webhook",
+					"sensitive": false
+				},
+				{
+					"name": "events",
+					"wireName": "events",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"choices": [
+						"status_page.incident.started",
+						"status_page.incident.updated",
+						"status_page.incident.resolved",
+						"uptime.down",
+						"uptime.up",
+						"heartbeat.down",
+						"heartbeat.up"
+					],
+					"required": true,
+					"positional": false,
+					"description": "Event types this webhook should subscribe to",
+					"sensitive": false
+				},
+				{
+					"name": "status-page-ids",
+					"wireName": "status_page_ids",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "IDs of status pages to associate with this webhook",
+					"sensitive": false
+				},
+				{
+					"name": "check-ids",
+					"wireName": "check_ids",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "IDs of uptime checks to associate with this webhook",
+					"sensitive": false
+				},
+				{
+					"name": "heartbeat-ids",
+					"wireName": "heartbeat_ids",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "IDs of heartbeats to associate with this webhook",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "deleteWebhook",
+			"command": "onlineornot webhooks delete",
+			"words": ["webhooks", "delete"],
+			"description": "Delete a webhook",
+			"method": "DELETE",
+			"path": "/v1/webhooks/{webhook_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": true,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "webhook_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Webhook ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "getWebhook",
+			"command": "onlineornot webhooks get",
+			"words": ["webhooks", "get"],
+			"description": "Retrieve a webhook",
+			"method": "GET",
+			"path": "/v1/webhooks/{webhook_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "webhook_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Webhook ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "listWebhooks",
+			"command": "onlineornot webhooks list",
+			"words": ["webhooks", "list"],
+			"description": "List all webhooks",
+			"method": "GET",
+			"path": "/v1/webhooks",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "page",
+					"wireName": "page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Page number of paginated results, starting at 1.",
+					"sensitive": false
+				},
+				{
+					"name": "per-page",
+					"wireName": "per_page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.",
+					"sensitive": false
+				},
+				{
+					"name": "search",
+					"wireName": "search",
+					"location": "query",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Search term to filter results.",
+					"sensitive": false
+				},
+				{
+					"name": "project-id",
+					"wireName": "project_id",
+					"location": "query",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Project IDs, or unassigned for resources without a project. Repeat the parameter to include several, for example project_id=a1b2c3d4e5f6g7h8&project_id=unassigned. Omit to list all resources.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "moveWebhook",
+			"command": "onlineornot webhooks move",
+			"words": ["webhooks", "move"],
+			"description": "Assign or unassign a webhook",
+			"method": "POST",
+			"path": "/v1/webhooks/{webhook_id}/move",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "webhook_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Webhook ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "project-id",
+					"wireName": "project_id",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Project ID, or null for unassigned.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "updateWebhook",
+			"command": "onlineornot webhooks update",
+			"words": ["webhooks", "update"],
+			"description": "Modify a webhook",
+			"method": "PATCH",
+			"path": "/v1/webhooks/{webhook_id}",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "webhook_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Webhook ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "enabled",
+					"wireName": "enabled",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Whether webhook delivery is enabled. Defaults to true on creation; omitted PATCH values preserve the current state.",
+					"sensitive": false
+				},
+				{
+					"name": "url",
+					"wireName": "url",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Webhook URL. Use {{NAME}} to reference an environment variable.",
+					"sensitive": false
+				},
+				{
+					"name": "description",
+					"wireName": "description",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Optional description of the webhook",
+					"sensitive": false
+				},
+				{
+					"name": "events",
+					"wireName": "events",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"choices": [
+						"status_page.incident.started",
+						"status_page.incident.updated",
+						"status_page.incident.resolved",
+						"uptime.down",
+						"uptime.up",
+						"heartbeat.down",
+						"heartbeat.up"
+					],
+					"required": false,
+					"positional": false,
+					"description": "Event types this webhook should subscribe to",
+					"sensitive": false
+				},
+				{
+					"name": "status-page-ids",
+					"wireName": "status_page_ids",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "IDs of status pages to associate with this webhook",
+					"sensitive": false
+				},
+				{
+					"name": "check-ids",
+					"wireName": "check_ids",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "IDs of uptime checks to associate with this webhook",
+					"sensitive": false
+				},
+				{
+					"name": "heartbeat-ids",
+					"wireName": "heartbeat_ids",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "IDs of heartbeats to associate with this webhook",
 					"sensitive": false
 				}
 			]

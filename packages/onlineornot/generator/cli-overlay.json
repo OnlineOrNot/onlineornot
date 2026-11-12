@@ -37,20 +37,44 @@
 			"command": "setup"
 		},
 		"listTokens": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "tokens",
+			"method": "list",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"createToken": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "tokens",
+			"method": "create",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"getToken": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "tokens",
+			"method": "get",
+			"positionals": {
+				"token_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"deleteToken": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "tokens",
+			"method": "delete",
+			"positionals": {
+				"token_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"createDnsCheck": {
 			"status": "deferred",
@@ -173,24 +197,57 @@
 			"command": "checks update"
 		},
 		"listEnvironmentVariables": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "environment-variables",
+			"method": "list",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"createEnvironmentVariable": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "environment-variables",
+			"method": "create",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			},
+			"sensitive": ["value"]
 		},
 		"getEnvironmentVariable": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "environment-variables",
+			"method": "get",
+			"positionals": {
+				"environment_variable_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"updateEnvironmentVariable": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "environment-variables",
+			"method": "update",
+			"positionals": {
+				"environment_variable_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			},
+			"sensitive": ["value"]
 		},
 		"deleteEnvironmentVariable": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "environment-variables",
+			"method": "delete",
+			"positionals": {
+				"environment_variable_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"moveHeartbeat": {
 			"status": "generated",
@@ -259,24 +316,55 @@
 			}
 		},
 		"listMaintenanceWindows": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "maintenance-windows",
+			"method": "list",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"createMaintenanceWindow": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "maintenance-windows",
+			"method": "create",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"getMaintenanceWindow": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "maintenance-windows",
+			"method": "get",
+			"positionals": {
+				"maintenance_window_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"updateMaintenanceWindow": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "maintenance-windows",
+			"method": "update",
+			"positionals": {
+				"maintenance_window_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"deleteMaintenanceWindow": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "maintenance-windows",
+			"method": "delete",
+			"positionals": {
+				"maintenance_window_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"listUsers": {
 			"status": "deferred",
@@ -295,220 +383,575 @@
 			"reason": "Not exposed by the current CLI."
 		},
 		"moveWebhook": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "webhooks",
+			"method": "move",
+			"positionals": {
+				"webhook_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"moveEnvironmentVariable": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "environment-variables",
+			"method": "move",
+			"positionals": {
+				"environment_variable_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"moveResources": {
 			"status": "deferred",
 			"reason": "Not exposed by the current CLI."
 		},
 		"moveMaintenanceWindow": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "maintenance-windows",
+			"method": "move",
+			"positionals": {
+				"maintenance_window_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"createProject": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "projects",
+			"method": "create",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"listProjects": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "projects",
+			"method": "list",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"getProject": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "projects",
+			"method": "get",
+			"positionals": {
+				"project_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"updateProject": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "projects",
+			"method": "update",
+			"positionals": {
+				"project_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"deleteProject": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "projects",
+			"method": "delete",
+			"positionals": {
+				"project_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"getStatusPage": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages",
+			"method": "get",
+			"positionals": {
+				"status_page_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"updateStatusPage": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages",
+			"method": "update",
+			"positionals": {
+				"status_page_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			},
+			"sensitive": ["password"]
 		},
 		"deleteStatusPage": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages",
+			"method": "delete",
+			"positionals": {
+				"status_page_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"getStatusPageSummary": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages",
+			"method": "summary",
+			"positionals": {
+				"status_page_subdomain": "subdomain"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"createStatusPage": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages",
+			"method": "create",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			},
+			"sensitive": ["password"]
 		},
 		"listStatusPages": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages",
+			"method": "list",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"createStatusPageComponent": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.components",
+			"method": "create",
+			"positionals": {
+				"status_page_id": "status-page-id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"listStatusPageComponents": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.components",
+			"method": "list",
+			"positionals": {
+				"status_page_id": "status-page-id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"getStatusPageComponent": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.components",
+			"method": "get",
+			"positionals": {
+				"status_page_id": "status-page-id",
+				"status_page_component_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"updateStatusPageComponent": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.components",
+			"method": "update",
+			"positionals": {
+				"status_page_id": "status-page-id",
+				"status_page_component_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"deleteStatusPageComponent": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.components",
+			"method": "delete",
+			"positionals": {
+				"status_page_id": "status-page-id",
+				"status_page_component_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"updateStatusPageComponentSortOrder": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.components",
+			"method": "sort-order",
+			"positionals": {
+				"status_page_id": "status-page-id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"listStatusPageComponentGroups": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.groups",
+			"method": "list",
+			"positionals": {
+				"status_page_id": "status-page-id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"createStatusPageComponentGroup": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.groups",
+			"method": "create",
+			"positionals": {
+				"status_page_id": "status-page-id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"getStatusPageComponentGroup": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.groups",
+			"method": "get",
+			"positionals": {
+				"status_page_id": "status-page-id",
+				"group_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"updateStatusPageComponentGroup": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.groups",
+			"method": "update",
+			"positionals": {
+				"status_page_id": "status-page-id",
+				"group_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"deleteStatusPageComponentGroup": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.groups",
+			"method": "delete",
+			"positionals": {
+				"status_page_id": "status-page-id",
+				"group_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"updateStatusPageComponentGroupSortOrder": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.groups",
+			"method": "sort-order",
+			"positionals": {
+				"status_page_id": "status-page-id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"updateStatusPageGroupComponentSortOrder": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.groups",
+			"method": "sort-components",
+			"positionals": {
+				"status_page_id": "status-page-id",
+				"group_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"listStatusPageSubscribers": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.subscribers",
+			"method": "list",
+			"positionals": {
+				"status_page_id": "status-page-id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"createStatusPageSubscriber": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.subscribers",
+			"method": "create",
+			"positionals": {
+				"status_page_id": "status-page-id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"deleteStatusPageSubscriber": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.subscribers",
+			"method": "delete",
+			"positionals": {
+				"status_page_id": "status-page-id",
+				"subscriber_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"listStatusPageIncidents": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.incidents",
+			"method": "list",
+			"positionals": {
+				"status_page_id": "status-page-id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"createStatusPageIncident": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.incidents",
+			"method": "create",
+			"positionals": {
+				"status_page_id": "status-page-id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"getStatusPageIncident": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.incidents",
+			"method": "get",
+			"positionals": {
+				"status_page_id": "status-page-id",
+				"status_page_incident_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"updateStatusPageIncident": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.incidents",
+			"method": "update",
+			"positionals": {
+				"status_page_id": "status-page-id",
+				"status_page_incident_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"deleteStatusPageIncident": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.incidents",
+			"method": "delete",
+			"positionals": {
+				"status_page_id": "status-page-id",
+				"status_page_incident_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"listStatusPageIncidentUpdates": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.incidents.updates",
+			"method": "list",
+			"positionals": {
+				"status_page_id": "status-page-id",
+				"status_page_incident_id": "incident-id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"createStatusPageIncidentUpdate": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.incidents.updates",
+			"method": "create",
+			"positionals": {
+				"status_page_id": "status-page-id",
+				"status_page_incident_id": "incident-id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"getStatusPageIncidentUpdate": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.incidents.updates",
+			"method": "get",
+			"positionals": {
+				"status_page_id": "status-page-id",
+				"status_page_incident_id": "incident-id",
+				"incident_update_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"updateStatusPageIncidentUpdate": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.incidents.updates",
+			"method": "update",
+			"positionals": {
+				"status_page_id": "status-page-id",
+				"status_page_incident_id": "incident-id",
+				"incident_update_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"deleteStatusPageIncidentUpdate": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.incidents.updates",
+			"method": "delete",
+			"positionals": {
+				"status_page_id": "status-page-id",
+				"status_page_incident_id": "incident-id",
+				"incident_update_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"createStatusPageScheduledMaintenance": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.scheduled-maintenance",
+			"method": "create",
+			"positionals": {
+				"status_page_id": "status-page-id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"getStatusPageScheduledMaintenance": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.scheduled-maintenance",
+			"method": "get",
+			"positionals": {
+				"status_page_id": "status-page-id",
+				"scheduled_maintenance_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"updateStatusPageScheduledMaintenance": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.scheduled-maintenance",
+			"method": "update",
+			"positionals": {
+				"status_page_id": "status-page-id",
+				"scheduled_maintenance_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"deleteStatusPageScheduledMaintenance": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "status-pages.scheduled-maintenance",
+			"method": "delete",
+			"positionals": {
+				"status_page_id": "status-page-id",
+				"scheduled_maintenance_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"getWebhookDeliverySummary": {
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Webhook delivery diagnostics are not part of the current CLI rollout."
 		},
 		"getWebhookDeliveryActivity": {
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Webhook delivery diagnostics are not part of the current CLI rollout."
 		},
 		"listWebhookDeliveries": {
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Webhook delivery diagnostics are not part of the current CLI rollout."
 		},
 		"getWebhookDelivery": {
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Webhook delivery diagnostics are not part of the current CLI rollout."
 		},
 		"listWebhooks": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "webhooks",
+			"method": "list",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"createWebhook": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "webhooks",
+			"method": "create",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"getWebhook": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "webhooks",
+			"method": "get",
+			"positionals": {
+				"webhook_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"updateWebhook": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "webhooks",
+			"method": "update",
+			"positionals": {
+				"webhook_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"deleteWebhook": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "webhooks",
+			"method": "delete",
+			"positionals": {
+				"webhook_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		}
 	}
 }
