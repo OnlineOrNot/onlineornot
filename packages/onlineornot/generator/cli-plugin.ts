@@ -8,6 +8,8 @@ const commandMetadataSchema = z.object({
 	flags: z.record(z.string(), z.string()),
 	forbidden: z.array(z.string()),
 	sensitive: z.array(z.string()),
+	omitFlags: z.array(z.string()),
+	requireBodyAnyOf: z.array(z.string()),
 	requiresAuth: z.boolean(),
 });
 
@@ -110,6 +112,7 @@ function commandArguments(method: Method) {
 	function add(field: Field, location: CommandFlag["location"]) {
 		if (
 			field.readOnly ||
+			metadata.omitFlags.includes(field.wireName) ||
 			(location === "body" && metadata.forbidden.includes(field.wireName))
 		)
 			return;
@@ -145,6 +148,7 @@ function commandArguments(method: Method) {
 		forbidden: metadata.forbidden,
 		requiresAuth: metadata.requiresAuth,
 		groupAliases: metadata.groupAliases,
+		requireBodyAnyOf: metadata.requireBodyAnyOf,
 	};
 }
 
@@ -157,7 +161,7 @@ function sdkRequestField(
 	const current = unwrappedType(field.type);
 	const value =
 		current.kind === "object"
-			? `{ ${current.fields
+			? `{ ${current.extra ? `...${parsed}, ` : ""}${current.fields
 					.filter((child) => !child.readOnly)
 					.map((child) => {
 						const key = JSON.stringify(child.wireName);
@@ -243,7 +247,7 @@ function registerCommandGroups(
 	return [...groups]
 		.map(
 			([name, group]) =>
-				`${parent}.command(${JSON.stringify(group.aliases.length ? [name, ...group.aliases] : name)}, ${JSON.stringify(`Manage ${name}`)}, (${parser}) => { ${group.methods.map((method) => `${parser}.command(${method});`).join(" ")} ${registerCommandGroups(group.children, parser, depth + 1)} return ${parser}.demandCommand(1); }, () => {});`,
+				`${parent}.command(${JSON.stringify(group.aliases.length ? [name, ...group.aliases] : name)}, ${JSON.stringify(`Manage ${name}`)}, (${parser}) => { ${group.methods.map((method) => `${parser}.command(${method});`).join(" ")} ${registerCommandGroups(group.children, parser, depth + 1)} return ${depth === 1 ? `(extendGroups[${JSON.stringify(name)}]?.(${parser}) ?? ${parser})` : parser}.demandCommand(1); }, () => {});`,
 		)
 		.join("\n");
 }
@@ -272,8 +276,13 @@ export const { generate } = definePlugin({
 				if (addresses.has(address))
 					throw new Error(`Duplicate CLI command: ${address}`);
 				addresses.add(address);
-				const { flags, forbidden, requiresAuth, groupAliases } =
-					commandArguments(method);
+				const {
+					flags,
+					forbidden,
+					requiresAuth,
+					groupAliases,
+					requireBodyAnyOf,
+				} = commandArguments(method);
 				const spec = {
 					operationId: id,
 					command: `onlineornot ${address}`,
@@ -288,6 +297,9 @@ export const { generate } = definePlugin({
 					method: method.httpMethod,
 					path: method.path,
 					hasBody: method.body !== undefined,
+					requireBodyAnyOf: requireBodyAnyOf.length
+						? requireBodyAnyOf
+						: undefined,
 					requiresAuth,
 					confirmation:
 						method.httpMethod === "DELETE" || method.confirmation !== undefined,
@@ -327,7 +339,7 @@ import { registerCommandCatalog } from "../command-runtime/command-catalog";
 import catalog from "./catalog.json";
 ${imports.join("\n")}
 
-export function registerGeneratedCommands(parser: CommonYargsArgv) {
+export function registerGeneratedCommands(parser: CommonYargsArgv, extendGroups: Partial<Record<${[...grouped.keys()].map((name) => JSON.stringify(name)).join(" | ")}, (parser: CommonYargsArgv) => CommonYargsArgv>> = {}) {
 ${registerCommandGroups(grouped, "parser", 1)}
 registerCommandCatalog(parser, catalog);
 }

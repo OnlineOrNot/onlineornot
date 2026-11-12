@@ -225,4 +225,26 @@ describe("pinned Forge binary and compiled CLI plugin", () => {
 		},
 		90000,
 	);
+
+	it("refuses to generate a command that would shadow a retained check command", async () => {
+		const overlay = JSON.parse(
+			await readFile("generator/cli-overlay.json", "utf8"),
+		);
+		overlay.operations.getCheck = {
+			status: "generated",
+			group: "checks",
+			method: "list",
+			positionals: { check_id: "id" },
+			flags: { "X-OnlineOrNot-Organisation": "organisation" },
+		};
+		const file = path.join(directory, "handwritten-command-collision.json");
+		const output = path.join(directory, "handwritten-command-collision");
+		await writeFile(file, JSON.stringify(overlay));
+		await expect(
+			generateCli(["--overlay", file, "--output", output]),
+		).rejects.toThrow(
+			"CLI command conflicts with handwritten command: checks list",
+		);
+		expect(existsSync(output)).toBe(false);
+	}, 90000);
 });

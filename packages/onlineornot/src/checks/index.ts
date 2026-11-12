@@ -1,5 +1,4 @@
 import type { CommonYargsArgv } from "../yargs-types";
-import * as Create from "./create";
 import * as Delete from "./delete";
 import * as View from "./individualCheck";
 import * as List from "./list";
@@ -13,12 +12,6 @@ export function checks(yargs: CommonYargsArgv) {
 			"View a specific uptime check",
 			View.options,
 			View.handler,
-		)
-		.command(
-			"create <name> <url>",
-			"Create a new uptime check",
-			Create.options,
-			Create.handler,
 		)
 		.command(
 			"update <id>",

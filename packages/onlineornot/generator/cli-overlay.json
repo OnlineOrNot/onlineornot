@@ -81,104 +81,270 @@
 			}
 		},
 		"createDnsCheck": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.dns",
+			"method": "create",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"dns_domain": "domain",
+				"dns_record_type": "record-type",
+				"dns_resolver": "resolver",
+				"dns_protocol": "protocol"
+			},
+			"omitFlags": ["type"]
 		},
 		"getDnsCheck": {
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Use the shared checks get command; a type-specific duplicate is not exposed."
 		},
 		"updateDnsCheck": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.dns",
+			"method": "update",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"dns_domain": "domain",
+				"dns_record_type": "record-type",
+				"dns_resolver": "resolver",
+				"dns_protocol": "protocol"
+			}
 		},
 		"deleteDnsCheck": {
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Use the shared checks delete command; a type-specific duplicate is not exposed."
 		},
 		"createTcpCheck": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.tcp",
+			"method": "create",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"tcp_hostname": "hostname",
+				"tcp_port": "port",
+				"tcp_ip_family": "ip-family",
+				"tcp_data": "data",
+				"tcp_should_fail": "should-fail"
+			},
+			"sensitive": ["tcp_data"],
+			"omitFlags": ["type"]
 		},
 		"getTcpCheck": {
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Use the shared checks get command; a type-specific duplicate is not exposed."
 		},
 		"updateTcpCheck": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.tcp",
+			"method": "update",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"tcp_hostname": "hostname",
+				"tcp_port": "port",
+				"tcp_ip_family": "ip-family",
+				"tcp_data": "data",
+				"tcp_should_fail": "should-fail"
+			},
+			"sensitive": ["tcp_data"]
 		},
 		"deleteTcpCheck": {
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Use the shared checks delete command; a type-specific duplicate is not exposed."
 		},
 		"createUptimeCheck": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.http",
+			"method": "create",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"body": "http-body"
+			},
+			"sensitive": ["headers", "body", "auth_username", "auth_password"],
+			"omitFlags": ["type"]
 		},
 		"getUptimeCheck": {
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Use the shared checks get command; a type-specific duplicate is not exposed."
 		},
 		"updateUptimeCheck": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.http",
+			"method": "update",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"body": "http-body"
+			},
+			"sensitive": ["headers", "body", "auth_username", "auth_password"]
 		},
 		"deleteUptimeCheck": {
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Use the shared checks delete command; a type-specific duplicate is not exposed."
 		},
 		"createBrowserCheck": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.browser",
+			"method": "create",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"body": "http-body",
+				"version": "runtime"
+			},
+			"sensitive": [
+				"headers",
+				"body",
+				"auth_username",
+				"auth_password",
+				"script"
+			],
+			"omitFlags": ["type"],
+			"requireBodyAnyOf": ["url", "script"]
 		},
 		"getBrowserCheck": {
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Use the shared checks get command; a type-specific duplicate is not exposed."
 		},
 		"updateBrowserCheck": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.browser",
+			"method": "update",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"body": "http-body",
+				"version": "runtime"
+			},
+			"sensitive": [
+				"headers",
+				"body",
+				"auth_username",
+				"auth_password",
+				"script"
+			]
 		},
 		"deleteBrowserCheck": {
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Use the shared checks delete command; a type-specific duplicate is not exposed."
 		},
 		"moveCheck": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks",
+			"method": "move",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"listUptimeCheckIncidents": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.http",
+			"method": "incidents",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"per_page": "per-page"
+			}
 		},
 		"listBrowserCheckIncidents": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.browser",
+			"method": "incidents",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"per_page": "per-page"
+			}
 		},
 		"listDnsCheckIncidents": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.dns",
+			"method": "incidents",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"per_page": "per-page"
+			}
 		},
 		"listTcpCheckIncidents": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.tcp",
+			"method": "incidents",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"per_page": "per-page"
+			}
 		},
 		"listUptimeCheckResults": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.http",
+			"method": "results",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"per_page": "per-page"
+			}
 		},
 		"listBrowserCheckResults": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.browser",
+			"method": "results",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"per_page": "per-page"
+			}
 		},
 		"listDnsCheckResults": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.dns",
+			"method": "results",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"per_page": "per-page"
+			}
 		},
 		"listTcpCheckResults": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.tcp",
+			"method": "results",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"per_page": "per-page"
+			}
 		},
 		"listChecks": {
 			"status": "handwritten",
@@ -186,11 +352,18 @@
 		},
 		"createCheck": {
 			"status": "handwritten",
-			"command": "checks create"
+			"command": "setup"
 		},
 		"getCheck": {
-			"status": "handwritten",
-			"command": "checks view"
+			"status": "generated",
+			"group": "checks",
+			"method": "get",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"deleteCheck": {
 			"status": "handwritten",

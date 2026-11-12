@@ -36,6 +36,8 @@ const annotationSchema = z.discriminatedUnion("status", [
 			positionals: z.record(z.string(), z.string()),
 			flags: z.record(z.string(), z.string()),
 			sensitive: z.array(z.string()).default([]),
+			omitFlags: z.array(z.string()).default([]),
+			requireBodyAnyOf: z.array(z.string()).default([]),
 		})
 		.strict(),
 	z.object({ status: z.literal("handwritten"), command: z.string() }).strict(),
@@ -99,6 +101,19 @@ const overlay = overlaySchema.parse(
 		),
 	),
 );
+const handwrittenCommands = new Set(
+	Object.values(overlay.operations)
+		.filter((operation) => operation.status === "handwritten")
+		.map((operation) => operation.command),
+);
+for (const operation of Object.values(overlay.operations)) {
+	if (operation.status !== "generated") continue;
+	const command = `${operation.group.replaceAll(".", " ")} ${operation.method}`;
+	if (handwrittenCommands.has(command))
+		throw new Error(
+			`CLI command conflicts with handwritten command: ${command}`,
+		);
+}
 const generatedGroups = new Set(
 	Object.values(overlay.operations)
 		.filter((operation) => operation.status === "generated")
@@ -191,6 +206,8 @@ for (const [apiPath, item] of Object.entries(document.paths)) {
 				positionals: annotation.positionals,
 				flags: annotation.flags,
 				sensitive: annotation.sensitive,
+				omitFlags: annotation.omitFlags,
+				requireBodyAnyOf: annotation.requireBodyAnyOf,
 				requiresAuth:
 					security.length > 0 &&
 					!security.some(

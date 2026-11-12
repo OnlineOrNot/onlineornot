@@ -30,6 +30,7 @@ interface ApiCommandSpec {
 	method: string;
 	path: string;
 	hasBody: boolean;
+	requireBodyAnyOf?: string[];
 	requiresAuth: boolean;
 	confirmation: boolean;
 	flags: ApiCommandFlag[];
@@ -136,6 +137,16 @@ async function collectCommandInput(
 				break;
 		}
 	}
+	if (
+		spec.requireBodyAnyOf?.length &&
+		!spec.requireBodyAnyOf.some((field) => {
+			const value = input.body?.[field];
+			return value !== undefined && value !== null && value !== "";
+		})
+	)
+		throw new Error(
+			`Command body requires at least one of: ${spec.requireBodyAnyOf.join(", ")}`,
+		);
 	return input;
 }
 

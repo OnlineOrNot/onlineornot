@@ -57,6 +57,8 @@ export function createCLIParser(argv: string[]) {
 	const subHelp: CommandModule<CommonYargsOptions, CommonYargsOptions> = {
 		command: ["*"],
 		handler: async (args) => {
+			if (args._.length > 1)
+				throw new CommandLineArgsError(`Unknown command: ${args._}.`);
 			setImmediate(() =>
 				onlineornot.parse([
 					...args._.map((a: string | number) => `${a}`),
@@ -98,12 +100,9 @@ export function createCLIParser(argv: string[]) {
 		docsHandler,
 	);
 
-	// checks
-	onlineornot.command("checks", "✅ Manage your uptime checks", (d1Yargs) => {
-		return checks(d1Yargs.command(subHelp));
+	registerGeneratedCommands(onlineornot, {
+		checks: (parser) => checks(parser.command(subHelp)),
 	});
-
-	registerGeneratedCommands(onlineornot);
 
 	// billing
 	onlineornot.command(
