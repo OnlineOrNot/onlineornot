@@ -1,6 +1,11 @@
 import http from "node:http";
 import type { AddressInfo, Socket } from "node:net";
 
+import {
+	API_OAUTH_RESOURCE,
+	MCP_OAUTH_RESOURCE,
+	type OAuthResource,
+} from "./oauth-resources";
 import { generatePKCECodes, generateState } from "./pkce";
 
 const CLIENT_ID = "onlineornot-cli";
@@ -158,6 +163,8 @@ export async function buildAuthUrl(
 	authUrl.searchParams.set("client_id", CLIENT_ID);
 	authUrl.searchParams.set("redirect_uri", CALLBACK_URL);
 	authUrl.searchParams.set("scope", SCOPES.join(" "));
+	authUrl.searchParams.append("resource", API_OAUTH_RESOURCE);
+	authUrl.searchParams.append("resource", MCP_OAUTH_RESOURCE);
 	authUrl.searchParams.set("state", state);
 	authUrl.searchParams.set("code_challenge", codeChallenge);
 	authUrl.searchParams.set("code_challenge_method", "S256");
@@ -188,7 +195,7 @@ async function exchangeAuthorizationCode(
 			redirect_uri: callbackUrl,
 			client_id: CLIENT_ID,
 			code_verifier: codeVerifier,
-			resource: "https://onlineornot.com",
+			resource: API_OAUTH_RESOURCE,
 		}),
 	});
 
@@ -371,20 +378,25 @@ export async function waitForCallback(
  */
 export async function refreshAccessToken(
 	refreshToken: string,
+	resource: OAuthResource = API_OAUTH_RESOURCE,
 ): Promise<RefreshTokenResponse> {
 	const response = await fetch(`${AUTH_BASE_URL}/oauth2/token`, {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded" },
+		redirect: "error",
+		signal: AbortSignal.timeout(15_000),
 		body: new URLSearchParams({
 			grant_type: "refresh_token",
 			refresh_token: refreshToken,
 			client_id: CLIENT_ID,
-			resource: "https://onlineornot.com",
+			resource,
 		}),
 	});
 
 	if (!response.ok) {
-		throw new Error("Failed to refresh token");
+		const payload: unknown = await response.json().catch(() => null);
+		const code = isOAuthErrorResponse(payload) ? payload.error : undefined;
+		throw new OAuthRefreshError(response.status, code);
 	}
 
 	const tokens: unknown = await response.json();
@@ -400,6 +412,8 @@ export async function refreshAccessToken(
 export async function revokeToken(refreshToken: string): Promise<void> {
 	await fetch(`${AUTH_BASE_URL}/oauth2/revoke`, {
 		method: "POST",
+		redirect: "error",
+		signal: AbortSignal.timeout(15_000),
 		headers: { "Content-Type": "application/x-www-form-urlencoded" },
 		body: new URLSearchParams({
 			token: refreshToken,
@@ -407,4 +421,14 @@ export async function revokeToken(refreshToken: string): Promise<void> {
 			client_id: CLIENT_ID,
 		}),
 	});
+}
+
+export class OAuthRefreshError extends Error {
+	constructor(
+		public readonly status: number,
+		public readonly oauthCode?: string,
+	) {
+		super(`OAuth token refresh failed (HTTP ${status}).`);
+		this.name = "OAuthRefreshError";
+	}
 }

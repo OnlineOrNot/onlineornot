@@ -1,4 +1,5 @@
 import { getCredentials, clearCredentials, revokeToken } from "../auth";
+import { withCredentialsLock } from "../auth/credentials-lock";
 import { printBanner } from "../banner";
 import { getOnlineOrNotAPITokenFromEnv } from "../environment-variables/misc-variables";
 import { logger } from "../logger";
@@ -19,20 +20,12 @@ export async function logoutHandler() {
 		return;
 	}
 
-	const creds = getCredentials();
-
-	if (!creds) {
-		logger.log("Not logged in.");
-		return;
-	}
-
-	// Revoke the refresh token server-side (best effort)
-	try {
-		await revokeToken(creds.refreshToken);
-	} catch {
-		// Best effort - continue with local logout even if revocation fails
-	}
-
-	clearCredentials();
-	logger.log("Successfully logged out.");
+	const loggedOut = await withCredentialsLock(async () => {
+		const creds = getCredentials();
+		if (!creds) return false;
+		await revokeToken(creds.refreshToken).catch(() => {});
+		clearCredentials();
+		return true;
+	});
+	logger.log(loggedOut ? "Successfully logged out." : "Not logged in.");
 }

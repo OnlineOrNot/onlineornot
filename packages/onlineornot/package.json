@@ -43,12 +43,14 @@
 		"check:generator": "tsc --project generator/tsconfig.json --noEmit"
 	},
 	"dependencies": {
+		"@modelcontextprotocol/sdk": "^1.32.2",
 		"@onlineornot/api": "workspace:^",
 		"chalk": "^6.0.0",
 		"cli-table3": "^0.6.5",
 		"conf": "^15.1.0",
 		"esbuild": "^0.28.2",
 		"open": "^11.0.2",
+		"proper-lockfile": "^4.1.2",
 		"supports-color": "^11.0.0",
 		"update-check": "^1.5.4",
 		"yargs": "^17.7.3",
@@ -58,6 +60,7 @@
 		"@bytecodealliance/jco": "1.37.0",
 		"@cloudflare/forge": "https://pkg.pr.new/cloudflare/forge/@cloudflare/forge@45c005a259a5507763d866e12d1e907af6ce745d",
 		"@types/node": "^22.19.15",
+		"@types/proper-lockfile": "^4.1.4",
 		"@types/yargs": "^17.0.35",
 		"binpatch": "0.4.2",
 		"cross-env": "^10.1.0",
