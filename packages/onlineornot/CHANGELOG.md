@@ -1,5 +1,13 @@
 # onlineornot
 
+## 1.8.0
+
+### Minor Changes
+
+- [#129](https://github.com/OnlineOrNot/onlineornot/pull/129) [`33edd9f`](https://github.com/OnlineOrNot/onlineornot/commit/33edd9fb7f8d1e3ec39c66dcdc558ccc1560fd9c) Thanks [@rozenmd](https://github.com/rozenmd)! - FEATURE: Generate heartbeat management commands from the pinned OpenAPI schema with Forge.
+
+  Add heartbeat list, get, create, update, delete and project-move commands with generated flags, JSON output, file/stdin bodies, validated request previews, explicit deletion confirmation and command discovery. Keep existing checks and authentication commands unchanged. Heartbeat ping is not exposed.
+
 ## 1.7.11
 
 ### Patch Changes
