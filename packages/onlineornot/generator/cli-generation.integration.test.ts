@@ -1,5 +1,14 @@
 import { execFile } from "node:child_process";
-import { mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import {
+	cp,
+	mkdir,
+	mkdtemp,
+	readFile,
+	readdir,
+	rm,
+	symlink,
+	writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
@@ -63,6 +72,54 @@ describe("pinned Forge binary and compiled CLI plugin", () => {
 		);
 		expect(await readFile(file, "utf8")).toBe("{}\n");
 	}, 180000);
+
+	it.each(["bundle", "build:sea"])(
+		"rejects stale committed output before %s and leaves it unchanged",
+		async (script) => {
+			const workspace = path.join(directory, script.replace(":", "-"));
+			const fixture = path.join(workspace, "packages/onlineornot");
+			await mkdir(fixture, { recursive: true });
+			for (const entry of [
+				"package.json",
+				"tsconfig.json",
+				"src",
+				"scripts",
+				"generator",
+				"bin",
+				"sea-config.json",
+			])
+				await cp(entry, path.join(fixture, entry), { recursive: true });
+			for (const entry of [".oxfmtrc.json", "tsconfig.json"])
+				await cp(path.resolve("../..", entry), path.join(workspace, entry));
+			await symlink(
+				path.resolve("../../node_modules"),
+				path.join(workspace, "node_modules"),
+				"junction",
+			);
+			await symlink(
+				path.resolve("node_modules"),
+				path.join(fixture, "node_modules"),
+				"junction",
+			);
+			await symlink(
+				path.resolve("../api"),
+				path.join(workspace, "packages/api"),
+				"junction",
+			);
+			const output = path.join(fixture, "src/generated-cli");
+			await writeFile(path.join(output, "catalog.json"), "{}\n");
+			const staleTree = await generatedTree(output);
+			await expect(
+				execute(process.execPath, ["--run", script], {
+					cwd: fixture,
+					timeout: 90000,
+					maxBuffer: 2_000_000,
+				}),
+			).rejects.toThrow("Generated CLI drift");
+			expect(await generatedTree(output)).toEqual(staleTree);
+		},
+		180000,
+	);
 
 	it.each(["unclassified", "collision", "reserved"])(
 		"rejects %s metadata before publishing generated output",
