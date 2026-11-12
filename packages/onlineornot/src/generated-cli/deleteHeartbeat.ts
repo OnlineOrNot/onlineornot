@@ -16,6 +16,7 @@ export const command = createApiCommand(
 		method: "DELETE",
 		path: "/v1/heartbeats/{heartbeat_id}",
 		hasBody: false,
+		requiresAuth: true,
 		confirmation: true,
 		flags: [
 			{

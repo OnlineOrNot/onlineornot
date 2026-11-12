@@ -31,10 +31,11 @@ const annotationSchema = z.discriminatedUnion("status", [
 	z
 		.object({
 			status: z.literal("generated"),
-			group: z.string().regex(/^[a-z][a-z0-9-]*$/),
+			group: z.string().regex(/^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)*$/),
 			method: z.string().regex(/^[a-z][a-z0-9-]*$/),
 			positionals: z.record(z.string(), z.string()),
 			flags: z.record(z.string(), z.string()),
+			sensitive: z.array(z.string()).default([]),
 		})
 		.strict(),
 	z.object({ status: z.literal("handwritten"), command: z.string() }).strict(),
@@ -46,17 +47,29 @@ const annotationSchema = z.discriminatedUnion("status", [
 		.strict(),
 ]);
 const overlaySchema = z
-	.object({ operations: z.record(z.string(), annotationSchema) })
+	.object({
+		operations: z.record(z.string(), annotationSchema),
+		groupAliases: z
+			.record(
+				z.string().regex(/^[a-z][a-z0-9-]*$/),
+				z.array(z.string().regex(/^[a-z][a-z0-9-]*$/)).min(1),
+			)
+			.default({}),
+	})
 	.strict();
 const operationSchema = z
 	.object({
 		operationId: z.string(),
 		parameters: z.array(z.json()).optional(),
 		requestBody: z.json().optional(),
+		security: z.array(z.record(z.string(), z.array(z.string()))).optional(),
 	})
 	.passthrough();
 const documentSchema = z
-	.object({ paths: z.record(z.string(), z.record(z.string(), z.json())) })
+	.object({
+		paths: z.record(z.string(), z.record(z.string(), z.json())),
+		security: z.array(z.record(z.string(), z.array(z.string()))).optional(),
+	})
 	.passthrough();
 const methods = new Set([
 	"get",
@@ -86,6 +99,34 @@ const overlay = overlaySchema.parse(
 		),
 	),
 );
+const generatedGroups = new Set(
+	Object.values(overlay.operations)
+		.filter((operation) => operation.status === "generated")
+		.map((operation) => operation.group.split(".")[0]),
+);
+const claimedGroups = new Set([
+	...generatedGroups,
+	...Object.values(overlay.operations)
+		.filter((operation) => operation.status === "handwritten")
+		.map((operation) => operation.command.split(" ")[0]),
+	"cli",
+	"docs",
+	"billing",
+	"login",
+	"logout",
+	"update",
+	"uninstall",
+	"version",
+]);
+for (const [group, aliases] of Object.entries(overlay.groupAliases)) {
+	if (!generatedGroups.has(group))
+		throw new Error(`Unknown CLI alias group: ${group}`);
+	for (const alias of aliases) {
+		if (claimedGroups.has(alias))
+			throw new Error(`CLI group alias collision: ${alias}`);
+		claimedGroups.add(alias);
+	}
+}
 const lock = await readLock();
 const schemaPath = await obtainVerifiedSchema(lock);
 const bytes = await readFile(schemaPath);
@@ -138,14 +179,23 @@ for (const [apiPath, item] of Object.entries(document.paths)) {
 				if (prohibited.success) forbidden.push(name);
 			}
 		}
+		const security = operation.security ?? document.security ?? [];
 		const prepared = {
 			...operation,
 			"x-forge-group-name": annotation.group,
 			"x-forge-method-name": annotation.method,
 			"x-onlineornot-operation-id": id,
 			"x-onlineornot-cli": {
+				groupAliases:
+					overlay.groupAliases[annotation.group.split(".")[0]] ?? [],
 				positionals: annotation.positionals,
 				flags: annotation.flags,
+				sensitive: annotation.sensitive,
+				requiresAuth:
+					security.length > 0 &&
+					!security.some(
+						(requirement) => Object.keys(requirement).length === 0,
+					),
 				forbidden,
 			},
 		};
@@ -220,7 +270,7 @@ try {
 	);
 	await writeFile(
 		path.join(generated, "coverage.json"),
-		`${JSON.stringify({ schema, operations: coverage }, null, "\t")}\n`,
+		`${JSON.stringify({ schema, groupAliases: overlay.groupAliases, operations: coverage }, null, "\t")}\n`,
 	);
 	const formatter = path.join(
 		path.dirname(require.resolve("oxfmt/package.json")),

@@ -22,6 +22,7 @@ interface ApiCommandFlag {
 }
 
 interface ApiCommandSpec {
+	aliases?: string[];
 	operationId: string;
 	command: string;
 	words: string[];
@@ -29,6 +30,7 @@ interface ApiCommandSpec {
 	method: string;
 	path: string;
 	hasBody: boolean;
+	requiresAuth: boolean;
 	confirmation: boolean;
 	flags: ApiCommandFlag[];
 }
@@ -36,11 +38,17 @@ interface ApiCommandSpec {
 type CommandJson = z.infer<ReturnType<typeof z.json>>;
 type CommandFields = Record<string, CommandJson | undefined>;
 
+type ApiRequestValue =
+	| CommandJson
+	| undefined
+	| { [key: string]: ApiRequestValue }
+	| ApiRequestValue[];
+
 interface ApiCommandRequest {
 	path?: CommandFields;
 	query?: CommandFields;
 	headers?: CommandFields;
-	body?: CommandFields;
+	body?: Record<string, ApiRequestValue>;
 }
 
 interface ApiCommandInput {
@@ -58,6 +66,19 @@ interface ApiCommandResponse {
 interface PreparedApiCommand {
 	request: ApiCommandRequest;
 	execute: (token: string) => Promise<ApiCommandResponse>;
+}
+
+export function hasCommandInputField(
+	input: CommandFields | undefined,
+	keys: readonly string[],
+): boolean {
+	let value: unknown = input;
+	for (const key of keys) {
+		const object = z.record(z.string(), z.unknown()).safeParse(value);
+		if (!object.success || object.data[key] === undefined) return false;
+		value = object.data[key];
+	}
+	return true;
 }
 
 async function parseCommandBody(value: string) {
@@ -231,7 +252,9 @@ export function createApiCommand(
 				return;
 			}
 			if (spec.confirmation) await confirmCommandMutation(argv);
-			const { apiToken } = await getTokenAsync();
+			const { apiToken } = spec.requiresAuth
+				? await getTokenAsync()
+				: { apiToken: "" };
 			const response = await prepared.execute(apiToken);
 			if (response.result !== null && response.result !== undefined)
 				logger.log(JSON.stringify(response.result, null, 2));

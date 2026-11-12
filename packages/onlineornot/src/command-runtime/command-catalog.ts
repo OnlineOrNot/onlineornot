@@ -2,6 +2,7 @@ import { logger } from "../logger";
 import type { CommonYargsArgv } from "../yargs-types";
 
 interface CatalogCommand {
+	aliases?: string[];
 	command: string;
 	description: string;
 	operationId: string;
@@ -43,7 +44,7 @@ export function registerCommandCatalog(
 							.map((command) => ({
 								command,
 								score: terms.filter((term) =>
-									`${command.command} ${command.description}`
+									`${command.command} ${command.aliases?.join(" ") ?? ""} ${command.description}`
 										.toLowerCase()
 										.includes(term),
 								).length,

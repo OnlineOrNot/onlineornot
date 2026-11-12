@@ -9,6 +9,8 @@ import { build } from "esbuild";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { z } from "zod";
 
+import { resourceCommandCases } from "./fixtures/resource-command-cases";
+
 interface RecordedRequest {
 	method: string;
 	url: string;
@@ -441,4 +443,494 @@ describe("Forge-generated commands through the executable and real HTTP", () => 
 		expect(version.stdout).toBe(`${manifest.version}\n`);
 		expect(requests).toHaveLength(0);
 	});
+});
+
+describe("generated resource management through the executable and real HTTP", () => {
+	it.each(resourceCommandCases)(
+		"sends $operationId to its API endpoint",
+		async (scenario) => {
+			const result = await runCli(scenario.args, "", !scenario.public);
+			expect(result.code).toBe(0);
+			expect(JSON.parse(result.stdout)).toEqual({
+				id: "heartbeat123",
+				name: "Nightly backup",
+			});
+			expect(requests).toHaveLength(1);
+			expect(requests[0].method).toBe(scenario.method);
+			expect(requests[0].url).toBe(scenario.url);
+			expect(requests[0].authorization).toBe(
+				scenario.public ? undefined : "Bearer fixture-token",
+			);
+			expect(requests[0].body ? JSON.parse(requests[0].body) : null).toEqual(
+				scenario.body,
+			);
+		},
+	);
+
+	it.each(
+		resourceCommandCases.filter((scenario) => scenario.method === "DELETE"),
+	)("requires confirmation before $operationId", async (scenario) => {
+		const result = await runCli(
+			scenario.args.filter((arg) => arg !== "--force"),
+		);
+		expect(result.code).toBe(1);
+		expect(result.stdout).toBe("");
+		expect(result.stderr).toContain("--force");
+		expect(requests).toHaveLength(0);
+	});
+
+	it("discovers every new command and nested help without exposing deferred operations", async () => {
+		const catalog = await runCli(["cli", "commands"], "", false);
+		expect(catalog.code).toBe(0);
+		const operations = JSON.parse(catalog.stdout).commands.map(
+			(command: { operationId: string }) => command.operationId,
+		);
+		expect(operations).toHaveLength(69);
+		for (const scenario of resourceCommandCases)
+			expect(operations).toContain(scenario.operationId);
+		for (const operation of [
+			"getWebhookDeliverySummary",
+			"getWebhookDeliveryActivity",
+			"listWebhookDeliveries",
+			"getWebhookDelivery",
+			"createDnsCheck",
+			"moveResources",
+		])
+			expect(operations).not.toContain(operation);
+		for (const args of [
+			["env"],
+			["maintenance"],
+			["status-pages"],
+			["status-pages", "incidents"],
+			["status-pages", "incidents", "updates"],
+			["status-pages", "incidents", "updates", "create"],
+		]) {
+			const help = await runCli([...args, "--help"], "", false);
+			expect(help.code).toBe(0);
+			expect(help.stdout).toContain("create");
+		}
+		const search = await runCli(
+			["cli", "search", "status-pages incidents updates create"],
+			"",
+			false,
+		);
+		expect(JSON.parse(search.stdout)[0].command).toBe(
+			"onlineornot status-pages incidents updates create",
+		);
+		expect(requests).toHaveLength(0);
+	}, 20000);
+
+	it.each(["pages", "status"])(
+		"does not register the unapproved resource group %s",
+		async (resource) => {
+			const result = await runCli([resource, "list"], "", false);
+			expect(result.code).toBe(1);
+			expect(result.stdout).toBe("");
+			expect(result.stderr).toMatch(/Unknown (command|argument)/);
+			expect(result.stderr).toContain(resource);
+			expect(requests).toHaveLength(0);
+		},
+	);
+
+	it("supports flags for nested object arrays, repeated values and camel-case wire fields", async () => {
+		const token = await runCli([
+			"tokens",
+			"create",
+			"--name",
+			"Log sender",
+			"--grants",
+			'[{"scope":"LOGS","permission":"SEND"}]',
+			"--expires-at",
+			"2027-01-01T00:00:00.000Z",
+			"--project-id",
+			"project1234567890",
+		]);
+		expect(token.code).toBe(0);
+		expect(JSON.parse(requests[0].body)).toEqual({
+			name: "Log sender",
+			grants: [{ scope: "LOGS", permission: "SEND" }],
+			expiresAt: "2027-01-01T00:00:00.000Z",
+			project_id: "project1234567890",
+		});
+		const incident = await runCli([
+			"status-pages",
+			"incidents",
+			"create",
+			"status1234",
+			"--title",
+			"API",
+			"--description",
+			"Investigating",
+			"--status",
+			"INVESTIGATING",
+			"--components",
+			'[{"id":"component123","status":"MAJOR_OUTAGE"}]',
+		]);
+		expect(incident.code).toBe(0);
+		expect(JSON.parse(requests[1].body)).toEqual({
+			title: "API",
+			description: "Investigating",
+			status: "INVESTIGATING",
+			components: [{ id: "component123", status: "MAJOR_OUTAGE" }],
+		});
+		const sorted = await runCli([
+			"status-pages",
+			"components",
+			"sort-order",
+			"status1234",
+			"--component-ids",
+			"component123",
+			"--component-ids",
+			"component456",
+		]);
+		expect(sorted.code).toBe(0);
+		expect(JSON.parse(requests[2].body)).toEqual({
+			component_ids: ["component123", "component456"],
+		});
+	});
+
+	it.each(["webhooks", "env", "maintenance"])(
+		"paginates and filters %s without fetching additional pages",
+		async (resource) => {
+			const result = await runCli([
+				resource,
+				"list",
+				"--page",
+				"2",
+				"--per-page",
+				"5",
+				"--project-id",
+				"unassigned",
+				"--project-id",
+				"project1234567890",
+				"--organisation",
+				"organization1234",
+			]);
+			expect(result.code).toBe(0);
+			expect(requests).toHaveLength(1);
+			const query = new URL(requests[0].url, "http://fixture").searchParams;
+			expect(query.get("page")).toBe("2");
+			expect(query.get("per_page")).toBe("5");
+			expect(query.getAll("project_id")).toEqual([
+				"unassigned",
+				"project1234567890",
+			]);
+			expect(requests[0].organisation).toBe("organization1234");
+			expect(result.stderr).toContain('result_info: {"page":2');
+		},
+	);
+
+	it.each(["flags", "file", "stdin"])(
+		"redacts environment values in %s dry-runs without authenticating or sending",
+		async (input) => {
+			const value = "fixture-preview-value";
+			const payload = JSON.stringify({
+				name: "API_TOKEN",
+				type: "secret",
+				value,
+			});
+			const file = path.join(directory, "environment-preview.json");
+			await writeFile(file, payload);
+			const args =
+				input === "flags"
+					? ["--name", "API_TOKEN", "--type", "secret", "--value", value]
+					: ["--body", input === "file" ? `@${file}` : "-"];
+			const result = await runCli(
+				["env", "create", ...args, "--dry-run"],
+				input === "stdin" ? payload : "",
+				false,
+			);
+			expect(result.code).toBe(0);
+			expect(result.stdout).not.toContain(value);
+			expect(result.stderr).not.toContain(value);
+			expect(JSON.parse(result.stdout).body).toEqual({
+				name: "API_TOKEN",
+				type: "secret",
+				value: "<redacted>",
+			});
+			expect(requests).toHaveLength(0);
+		},
+	);
+
+	it("redacts status-page passwords and previews deletions without confirmation", async () => {
+		const preview = await runCli(
+			[
+				"status-pages",
+				"create",
+				"--name",
+				"Private",
+				"--subdomain",
+				"private",
+				"--password",
+				"fixture-password",
+				"--dry-run",
+			],
+			"",
+			false,
+		);
+		expect(preview.code).toBe(0);
+		expect(preview.stdout).not.toContain("fixture-password");
+		expect(JSON.parse(preview.stdout).body.password).toBe("<redacted>");
+		const deletion = await runCli(
+			["tokens", "delete", "token123456", "--dry-run"],
+			"",
+			false,
+		);
+		expect(deletion.code).toBe(0);
+		expect(JSON.parse(deletion.stdout)).toMatchObject({
+			method: "DELETE",
+			path: "/v1/tokens/token123456",
+		});
+		expect(requests).toHaveLength(0);
+	});
+
+	it.each([
+		{
+			args: [
+				"tokens",
+				"create",
+				"--body",
+				'{"name":"Invalid","grants":[{"scope":"PROJECTS","permission":"SEND"}]}',
+			],
+			error: "grants",
+		},
+		{
+			args: [
+				"tokens",
+				"create",
+				"--name",
+				"Invalid",
+				"--grants",
+				"[]",
+				"--expires-at",
+				"tomorrow",
+			],
+			error: "expiresAt",
+		},
+		{
+			args: [
+				"env",
+				"create",
+				"--name",
+				"lowercase",
+				"--type",
+				"secret",
+				"--value",
+				"x",
+			],
+			error: "name",
+		},
+		{
+			args: ["env", "update", "variable123", "--body", '{"type":"config"}'],
+			error: "type",
+		},
+		{
+			args: ["env", "update", "variable123", "--body", '{"project_id":null}'],
+			error: "project_id",
+		},
+		{
+			args: [
+				"webhooks",
+				"update",
+				"webhook123",
+				"--body",
+				'{"project_id":null}',
+			],
+			error: "project_id",
+		},
+		{
+			args: [
+				"maintenance",
+				"update",
+				"window1234",
+				"--body",
+				'{"project_id":null}',
+			],
+			error: "project_id",
+		},
+		{
+			args: [
+				"webhooks",
+				"create",
+				"--url",
+				"https://example.com",
+				"--events",
+				"not-an-event",
+			],
+			error: "events",
+		},
+		{
+			args: [
+				"status-pages",
+				"components",
+				"create",
+				"status1234",
+				"--status",
+				"NOT_A_STATUS",
+				"--name",
+				"API",
+			],
+			error: "status",
+		},
+		{
+			args: [
+				"status-pages",
+				"subscribers",
+				"create",
+				"status1234",
+				"--email-address",
+				"invalid",
+			],
+			error: "email_address",
+		},
+		{
+			args: [
+				"status-pages",
+				"incidents",
+				"updates",
+				"get",
+				"status1234",
+				"incident123",
+			],
+			error: "Not enough non-option arguments",
+		},
+		{
+			args: [
+				"status-pages",
+				"scheduled-maintenance",
+				"create",
+				"status1234",
+				"--body",
+				'{"title":"Maintenance","description":"Test","start_date":"tomorrow","duration_minutes":0}',
+			],
+			error: "start_date",
+		},
+		{ args: ["projects", "create", "--body", '{"name":""}'], error: "name" },
+		{ args: ["webhooks", "deliveries"], error: "deliveries" },
+	])(
+		"rejects invalid resource input before HTTP: $error",
+		async ({ args, error }) => {
+			const result = await runCli([...args, "--dry-run"], "", false);
+			expect(result.code).toBe(1);
+			expect(result.stdout).toBe("");
+			expect(result.stderr).toContain(error);
+			expect(requests).toHaveLength(0);
+		},
+	);
+});
+
+describe("generated resource group aliases through the executable", () => {
+	const aliases = [
+		{ group: "env", alias: "environment-variables" },
+		{ group: "maintenance", alias: "maintenance-windows" },
+	];
+	const cases = aliases.flatMap(({ group, alias }) =>
+		resourceCommandCases
+			.filter((scenario) => scenario.args[0] === group)
+			.map((scenario) => ({
+				...scenario,
+				args: [alias, ...scenario.args.slice(1)],
+			})),
+	);
+
+	it.each(cases)(
+		"sends $operationId through its long-form alias",
+		async (scenario) => {
+			const result = await runCli(scenario.args);
+			expect(result.code).toBe(0);
+			expect(JSON.parse(result.stdout)).toEqual({
+				id: "heartbeat123",
+				name: "Nightly backup",
+			});
+			expect(requests).toHaveLength(1);
+			expect(requests[0].method).toBe(scenario.method);
+			expect(requests[0].url).toBe(scenario.url);
+			expect(requests[0].authorization).toBe("Bearer fixture-token");
+			expect(requests[0].body ? JSON.parse(requests[0].body) : null).toEqual(
+				scenario.body,
+			);
+		},
+	);
+
+	it.each(cases.filter((scenario) => scenario.method === "DELETE"))(
+		"retains deletion confirmation for alias $operationId",
+		async (scenario) => {
+			const result = await runCli(
+				scenario.args.filter((arg) => arg !== "--force"),
+			);
+			expect(result.code).toBe(1);
+			expect(result.stdout).toBe("");
+			expect(result.stderr).toContain("--force");
+			expect(requests).toHaveLength(0);
+		},
+	);
+
+	it.each(aliases)(
+		"discovers $alias while keeping $group canonical and previews without HTTP",
+		async ({ group, alias }) => {
+			const help = await runCli([alias, "--help"], "", false);
+			expect(help.code).toBe(0);
+			expect(help.stdout).toContain("create");
+			const catalog = await runCli(["cli", "commands"], "", false);
+			const commands = JSON.parse(catalog.stdout).commands;
+			expect(commands).toHaveLength(69);
+			const create = commands.find(
+				(command: { command: string }) =>
+					command.command === `onlineornot ${group} create`,
+			);
+			expect(create.aliases).toEqual([`onlineornot ${alias} create`]);
+			const search = await runCli(
+				["cli", "search", `${alias} create`],
+				"",
+				false,
+			);
+			expect(JSON.parse(search.stdout)[0].command).toBe(
+				`onlineornot ${group} create`,
+			);
+			const scenario = cases.find(
+				(entry) => entry.args[0] === alias && entry.args[1] === "create",
+			);
+			if (!scenario) throw new Error("Missing alias create scenario");
+			const preview = await runCli([...scenario.args, "--dry-run"], "", false);
+			expect(preview.code).toBe(0);
+			const request = JSON.parse(preview.stdout);
+			expect(request.path).toBe(scenario.url);
+			if (group === "env") expect(request.body.value).toBe("<redacted>");
+			else expect(request.body).toEqual(scenario.body);
+			expect(requests).toHaveLength(0);
+		},
+		20000,
+	);
+
+	it.each([
+		{
+			args: [
+				"environment-variables",
+				"update",
+				"variable123",
+				"--body",
+				'{"type":"config"}',
+			],
+			error: "type",
+		},
+		{
+			args: [
+				"maintenance-windows",
+				"update",
+				"window1234",
+				"--body",
+				'{"project_id":null}',
+			],
+			error: "project_id",
+		},
+	])(
+		"rejects invalid alias input before HTTP: $error",
+		async ({ args, error }) => {
+			const result = await runCli([...args, "--dry-run"], "", false);
+			expect(result.code).toBe(1);
+			expect(result.stdout).toBe("");
+			expect(result.stderr).toContain(error);
+			expect(requests).toHaveLength(0);
+		},
+	);
 });
