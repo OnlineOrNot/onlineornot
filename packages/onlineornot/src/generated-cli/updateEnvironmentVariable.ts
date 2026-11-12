@@ -11,8 +11,8 @@ import { createApiCommand } from "../command-runtime/api-command";
 export const command = createApiCommand(
 	{
 		operationId: "updateEnvironmentVariable",
-		command: "onlineornot environment-variables update",
-		words: ["environment-variables", "update"],
+		command: "onlineornot env update",
+		words: ["env", "update"],
 		description: "Update an environment variable",
 		method: "PATCH",
 		path: "/v1/env/{environment_variable_id}",

@@ -11,8 +11,8 @@ import { createApiCommand } from "../command-runtime/api-command";
 export const command = createApiCommand(
 	{
 		operationId: "moveMaintenanceWindow",
-		command: "onlineornot maintenance-windows move",
-		words: ["maintenance-windows", "move"],
+		command: "onlineornot maintenance move",
+		words: ["maintenance", "move"],
 		description: "Assign or unassign a maintenance window",
 		method: "POST",
 		path: "/v1/maintenance-windows/{maintenance_window_id}/move",

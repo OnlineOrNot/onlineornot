@@ -108,7 +108,7 @@ export const resourceCommandCases: ResourceCommandCase[] = [
 	},
 	{
 		operationId: "listEnvironmentVariables",
-		args: ["environment-variables", "list"],
+		args: ["env", "list"],
 		method: "GET",
 		url: "/v1/env",
 		body: null,
@@ -117,7 +117,7 @@ export const resourceCommandCases: ResourceCommandCase[] = [
 	{
 		operationId: "createEnvironmentVariable",
 		args: [
-			"environment-variables",
+			"env",
 			"create",
 			"--body",
 			'{"name":"API_TOKEN","type":"secret","value":"fixture-value-not-secret"}',
@@ -133,7 +133,7 @@ export const resourceCommandCases: ResourceCommandCase[] = [
 	},
 	{
 		operationId: "getEnvironmentVariable",
-		args: ["environment-variables", "get", "variable123"],
+		args: ["env", "get", "variable123"],
 		method: "GET",
 		url: "/v1/env/variable123",
 		body: null,
@@ -141,13 +141,7 @@ export const resourceCommandCases: ResourceCommandCase[] = [
 	},
 	{
 		operationId: "updateEnvironmentVariable",
-		args: [
-			"environment-variables",
-			"update",
-			"variable123",
-			"--body",
-			'{"value":""}',
-		],
+		args: ["env", "update", "variable123", "--body", '{"value":""}'],
 		method: "PATCH",
 		url: "/v1/env/variable123",
 		body: {
@@ -157,7 +151,7 @@ export const resourceCommandCases: ResourceCommandCase[] = [
 	},
 	{
 		operationId: "deleteEnvironmentVariable",
-		args: ["environment-variables", "delete", "variable123", "--force"],
+		args: ["env", "delete", "variable123", "--force"],
 		method: "DELETE",
 		url: "/v1/env/variable123",
 		body: null,
@@ -165,13 +159,7 @@ export const resourceCommandCases: ResourceCommandCase[] = [
 	},
 	{
 		operationId: "moveEnvironmentVariable",
-		args: [
-			"environment-variables",
-			"move",
-			"variable123",
-			"--body",
-			'{"project_id":null}',
-		],
+		args: ["env", "move", "variable123", "--body", '{"project_id":null}'],
 		method: "POST",
 		url: "/v1/env/variable123/move",
 		body: {
@@ -181,7 +169,7 @@ export const resourceCommandCases: ResourceCommandCase[] = [
 	},
 	{
 		operationId: "listMaintenanceWindows",
-		args: ["maintenance-windows", "list"],
+		args: ["maintenance", "list"],
 		method: "GET",
 		url: "/v1/maintenance-windows",
 		body: null,
@@ -190,7 +178,7 @@ export const resourceCommandCases: ResourceCommandCase[] = [
 	{
 		operationId: "createMaintenanceWindow",
 		args: [
-			"maintenance-windows",
+			"maintenance",
 			"create",
 			"--body",
 			'{"name":"Weekly","start_date":"2026-12-01T01:00:00.000Z","duration_minutes":60,"timezone":"UTC","days_of_week":["MONDAY"]}',
@@ -208,7 +196,7 @@ export const resourceCommandCases: ResourceCommandCase[] = [
 	},
 	{
 		operationId: "getMaintenanceWindow",
-		args: ["maintenance-windows", "get", "window1234"],
+		args: ["maintenance", "get", "window1234"],
 		method: "GET",
 		url: "/v1/maintenance-windows/window1234",
 		body: null,
@@ -217,7 +205,7 @@ export const resourceCommandCases: ResourceCommandCase[] = [
 	{
 		operationId: "updateMaintenanceWindow",
 		args: [
-			"maintenance-windows",
+			"maintenance",
 			"update",
 			"window1234",
 			"--body",
@@ -234,7 +222,7 @@ export const resourceCommandCases: ResourceCommandCase[] = [
 	},
 	{
 		operationId: "deleteMaintenanceWindow",
-		args: ["maintenance-windows", "delete", "window1234", "--force"],
+		args: ["maintenance", "delete", "window1234", "--force"],
 		method: "DELETE",
 		url: "/v1/maintenance-windows/window1234",
 		body: null,
@@ -243,7 +231,7 @@ export const resourceCommandCases: ResourceCommandCase[] = [
 	{
 		operationId: "moveMaintenanceWindow",
 		args: [
-			"maintenance-windows",
+			"maintenance",
 			"move",
 			"window1234",
 			"--body",

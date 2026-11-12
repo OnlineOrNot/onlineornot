@@ -73,8 +73,8 @@ import { command as updateWebhook } from "./updateWebhook";
 
 export function registerGeneratedCommands(parser: CommonYargsArgv) {
 	parser.command(
-		"environment-variables",
-		"Manage environment-variables",
+		"env",
+		"Manage env",
 		(group1) => {
 			group1.command(createEnvironmentVariable);
 			group1.command(deleteEnvironmentVariable);
@@ -101,8 +101,8 @@ export function registerGeneratedCommands(parser: CommonYargsArgv) {
 		() => {},
 	);
 	parser.command(
-		"maintenance-windows",
-		"Manage maintenance-windows",
+		"maintenance",
+		"Manage maintenance",
 		(group1) => {
 			group1.command(createMaintenanceWindow);
 			group1.command(deleteMaintenanceWindow);

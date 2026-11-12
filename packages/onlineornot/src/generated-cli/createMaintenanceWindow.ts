@@ -10,8 +10,8 @@ import { createApiCommand } from "../command-runtime/api-command";
 export const command = createApiCommand(
 	{
 		operationId: "createMaintenanceWindow",
-		command: "onlineornot maintenance-windows create",
-		words: ["maintenance-windows", "create"],
+		command: "onlineornot maintenance create",
+		words: ["maintenance", "create"],
 		description: "Create a new maintenance window",
 		method: "POST",
 		path: "/v1/maintenance-windows",

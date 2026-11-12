@@ -198,7 +198,7 @@
 		},
 		"listEnvironmentVariables": {
 			"status": "generated",
-			"group": "environment-variables",
+			"group": "env",
 			"method": "list",
 			"positionals": {},
 			"flags": {
@@ -207,7 +207,7 @@
 		},
 		"createEnvironmentVariable": {
 			"status": "generated",
-			"group": "environment-variables",
+			"group": "env",
 			"method": "create",
 			"positionals": {},
 			"flags": {
@@ -217,7 +217,7 @@
 		},
 		"getEnvironmentVariable": {
 			"status": "generated",
-			"group": "environment-variables",
+			"group": "env",
 			"method": "get",
 			"positionals": {
 				"environment_variable_id": "id"
@@ -228,7 +228,7 @@
 		},
 		"updateEnvironmentVariable": {
 			"status": "generated",
-			"group": "environment-variables",
+			"group": "env",
 			"method": "update",
 			"positionals": {
 				"environment_variable_id": "id"
@@ -240,7 +240,7 @@
 		},
 		"deleteEnvironmentVariable": {
 			"status": "generated",
-			"group": "environment-variables",
+			"group": "env",
 			"method": "delete",
 			"positionals": {
 				"environment_variable_id": "id"
@@ -317,7 +317,7 @@
 		},
 		"listMaintenanceWindows": {
 			"status": "generated",
-			"group": "maintenance-windows",
+			"group": "maintenance",
 			"method": "list",
 			"positionals": {},
 			"flags": {
@@ -326,7 +326,7 @@
 		},
 		"createMaintenanceWindow": {
 			"status": "generated",
-			"group": "maintenance-windows",
+			"group": "maintenance",
 			"method": "create",
 			"positionals": {},
 			"flags": {
@@ -335,7 +335,7 @@
 		},
 		"getMaintenanceWindow": {
 			"status": "generated",
-			"group": "maintenance-windows",
+			"group": "maintenance",
 			"method": "get",
 			"positionals": {
 				"maintenance_window_id": "id"
@@ -346,7 +346,7 @@
 		},
 		"updateMaintenanceWindow": {
 			"status": "generated",
-			"group": "maintenance-windows",
+			"group": "maintenance",
 			"method": "update",
 			"positionals": {
 				"maintenance_window_id": "id"
@@ -357,7 +357,7 @@
 		},
 		"deleteMaintenanceWindow": {
 			"status": "generated",
-			"group": "maintenance-windows",
+			"group": "maintenance",
 			"method": "delete",
 			"positionals": {
 				"maintenance_window_id": "id"
@@ -395,7 +395,7 @@
 		},
 		"moveEnvironmentVariable": {
 			"status": "generated",
-			"group": "environment-variables",
+			"group": "env",
 			"method": "move",
 			"positionals": {
 				"environment_variable_id": "id"
@@ -410,7 +410,7 @@
 		},
 		"moveMaintenanceWindow": {
 			"status": "generated",
-			"group": "maintenance-windows",
+			"group": "maintenance",
 			"method": "move",
 			"positionals": {
 				"maintenance_window_id": "id"

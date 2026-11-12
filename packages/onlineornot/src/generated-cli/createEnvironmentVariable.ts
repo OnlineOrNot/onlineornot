@@ -10,8 +10,8 @@ import { createApiCommand } from "../command-runtime/api-command";
 export const command = createApiCommand(
 	{
 		operationId: "createEnvironmentVariable",
-		command: "onlineornot environment-variables create",
-		words: ["environment-variables", "create"],
+		command: "onlineornot env create",
+		words: ["env", "create"],
 		description: "Create an environment variable",
 		method: "POST",
 		path: "/v1/env",

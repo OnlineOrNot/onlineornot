@@ -11,8 +11,8 @@ import { createApiCommand } from "../command-runtime/api-command";
 export const command = createApiCommand(
 	{
 		operationId: "moveEnvironmentVariable",
-		command: "onlineornot environment-variables move",
-		words: ["environment-variables", "move"],
+		command: "onlineornot env move",
+		words: ["env", "move"],
 		description: "Assign or unassign an environment variable",
 		method: "POST",
 		path: "/v1/env/{environment_variable_id}/move",

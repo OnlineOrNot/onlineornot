@@ -10,8 +10,8 @@ import { createApiCommand } from "../command-runtime/api-command";
 export const command = createApiCommand(
 	{
 		operationId: "deleteEnvironmentVariable",
-		command: "onlineornot environment-variables delete",
-		words: ["environment-variables", "delete"],
+		command: "onlineornot env delete",
+		words: ["env", "delete"],
 		description: "Delete an environment variable",
 		method: "DELETE",
 		path: "/v1/env/{environment_variable_id}",

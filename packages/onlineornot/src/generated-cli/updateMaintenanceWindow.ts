@@ -11,8 +11,8 @@ import { createApiCommand } from "../command-runtime/api-command";
 export const command = createApiCommand(
 	{
 		operationId: "updateMaintenanceWindow",
-		command: "onlineornot maintenance-windows update",
-		words: ["maintenance-windows", "update"],
+		command: "onlineornot maintenance update",
+		words: ["maintenance", "update"],
 		description: "Update a maintenance window",
 		method: "PATCH",
 		path: "/v1/maintenance-windows/{maintenance_window_id}",

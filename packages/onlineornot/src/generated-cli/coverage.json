@@ -30,7 +30,7 @@
 			"method": "create",
 			"path": "/v1/env",
 			"status": "generated",
-			"group": "environment-variables",
+			"group": "env",
 			"positionals": {},
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
@@ -63,7 +63,7 @@
 			"method": "create",
 			"path": "/v1/maintenance-windows",
 			"status": "generated",
-			"group": "maintenance-windows",
+			"group": "maintenance",
 			"positionals": {},
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
@@ -243,7 +243,7 @@
 			"method": "delete",
 			"path": "/v1/env/{environment_variable_id}",
 			"status": "generated",
-			"group": "environment-variables",
+			"group": "env",
 			"positionals": {
 				"environment_variable_id": "id"
 			},
@@ -271,7 +271,7 @@
 			"method": "delete",
 			"path": "/v1/maintenance-windows/{maintenance_window_id}",
 			"status": "generated",
-			"group": "maintenance-windows",
+			"group": "maintenance",
 			"positionals": {
 				"maintenance_window_id": "id"
 			},
@@ -474,7 +474,7 @@
 			"method": "get",
 			"path": "/v1/env/{environment_variable_id}",
 			"status": "generated",
-			"group": "environment-variables",
+			"group": "env",
 			"positionals": {
 				"environment_variable_id": "id"
 			},
@@ -509,7 +509,7 @@
 			"method": "get",
 			"path": "/v1/maintenance-windows/{maintenance_window_id}",
 			"status": "generated",
-			"group": "maintenance-windows",
+			"group": "maintenance",
 			"positionals": {
 				"maintenance_window_id": "id"
 			},
@@ -753,7 +753,7 @@
 			"method": "list",
 			"path": "/v1/env",
 			"status": "generated",
-			"group": "environment-variables",
+			"group": "env",
 			"positionals": {},
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
@@ -786,7 +786,7 @@
 			"method": "list",
 			"path": "/v1/maintenance-windows",
 			"status": "generated",
-			"group": "maintenance-windows",
+			"group": "maintenance",
 			"positionals": {},
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
@@ -966,7 +966,7 @@
 			"method": "move",
 			"path": "/v1/env/{environment_variable_id}/move",
 			"status": "generated",
-			"group": "environment-variables",
+			"group": "env",
 			"positionals": {
 				"environment_variable_id": "id"
 			},
@@ -994,7 +994,7 @@
 			"method": "move",
 			"path": "/v1/maintenance-windows/{maintenance_window_id}/move",
 			"status": "generated",
-			"group": "maintenance-windows",
+			"group": "maintenance",
 			"positionals": {
 				"maintenance_window_id": "id"
 			},
@@ -1085,7 +1085,7 @@
 			"method": "update",
 			"path": "/v1/env/{environment_variable_id}",
 			"status": "generated",
-			"group": "environment-variables",
+			"group": "env",
 			"positionals": {
 				"environment_variable_id": "id"
 			},
@@ -1113,7 +1113,7 @@
 			"method": "update",
 			"path": "/v1/maintenance-windows/{maintenance_window_id}",
 			"status": "generated",
-			"group": "maintenance-windows",
+			"group": "maintenance",
 			"positionals": {
 				"maintenance_window_id": "id"
 			},

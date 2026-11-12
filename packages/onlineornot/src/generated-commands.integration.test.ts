@@ -498,6 +498,8 @@ describe("generated resource management through the executable and real HTTP", (
 		])
 			expect(operations).not.toContain(operation);
 		for (const args of [
+			["env"],
+			["maintenance"],
 			["status-pages"],
 			["status-pages", "incidents"],
 			["status-pages", "incidents", "updates"],
@@ -517,6 +519,18 @@ describe("generated resource management through the executable and real HTTP", (
 		);
 		expect(requests).toHaveLength(0);
 	}, 20000);
+
+	it.each(["environment-variables", "maintenance-windows", "pages", "status"])(
+		"does not register the unapproved resource group %s",
+		async (resource) => {
+			const result = await runCli([resource, "list"], "", false);
+			expect(result.code).toBe(1);
+			expect(result.stdout).toBe("");
+			expect(result.stderr).toMatch(/Unknown (command|argument)/);
+			expect(result.stderr).toContain(resource);
+			expect(requests).toHaveLength(0);
+		},
+	);
 
 	it("supports flags for nested object arrays, repeated values and camel-case wire fields", async () => {
 		const token = await runCli([
@@ -575,7 +589,7 @@ describe("generated resource management through the executable and real HTTP", (
 		});
 	});
 
-	it.each(["webhooks", "environment-variables", "maintenance-windows"])(
+	it.each(["webhooks", "env", "maintenance"])(
 		"paginates and filters %s without fetching additional pages",
 		async (resource) => {
 			const result = await runCli([
@@ -622,7 +636,7 @@ describe("generated resource management through the executable and real HTTP", (
 					? ["--name", "API_TOKEN", "--type", "secret", "--value", value]
 					: ["--body", input === "file" ? `@${file}` : "-"];
 			const result = await runCli(
-				["environment-variables", "create", ...args, "--dry-run"],
+				["env", "create", ...args, "--dry-run"],
 				input === "stdin" ? payload : "",
 				false,
 			);
@@ -695,7 +709,7 @@ describe("generated resource management through the executable and real HTTP", (
 		},
 		{
 			args: [
-				"environment-variables",
+				"env",
 				"create",
 				"--name",
 				"lowercase",
@@ -707,23 +721,11 @@ describe("generated resource management through the executable and real HTTP", (
 			error: "name",
 		},
 		{
-			args: [
-				"environment-variables",
-				"update",
-				"variable123",
-				"--body",
-				'{"type":"config"}',
-			],
+			args: ["env", "update", "variable123", "--body", '{"type":"config"}'],
 			error: "type",
 		},
 		{
-			args: [
-				"environment-variables",
-				"update",
-				"variable123",
-				"--body",
-				'{"project_id":null}',
-			],
+			args: ["env", "update", "variable123", "--body", '{"project_id":null}'],
 			error: "project_id",
 		},
 		{
@@ -738,7 +740,7 @@ describe("generated resource management through the executable and real HTTP", (
 		},
 		{
 			args: [
-				"maintenance-windows",
+				"maintenance",
 				"update",
 				"window1234",
 				"--body",
