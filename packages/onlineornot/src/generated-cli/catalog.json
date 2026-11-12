@@ -1,0 +1,632 @@
+{
+	"schema": {
+		"commit": "b8377486de2c78047600846380c5d9f794826953",
+		"sha256": "dbfb47aef541ff8832b9760fc0f9ab7c3e2294f2137d7359b91cddaf2c96dc71"
+	},
+	"commands": [
+		{
+			"operationId": "createHeartbeat",
+			"command": "onlineornot heartbeats create",
+			"words": ["heartbeats", "create"],
+			"description": "Create a heartbeat.",
+			"method": "POST",
+			"path": "/v1/heartbeats",
+			"hasBody": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "project-id",
+					"wireName": "project_id",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Project ID. Omit or use null to leave the resource unassigned.",
+					"sensitive": false
+				},
+				{
+					"name": "name",
+					"wireName": "name",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "name",
+					"sensitive": false
+				},
+				{
+					"name": "report-period",
+					"wireName": "report_period",
+					"location": "body",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Expected interval in seconds between heartbeat pings (for simple schedule)",
+					"sensitive": false
+				},
+				{
+					"name": "report-period-cron",
+					"wireName": "report_period_cron",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Cron expression for expected heartbeat schedule",
+					"sensitive": false
+				},
+				{
+					"name": "timezone",
+					"wireName": "timezone",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Timezone for cron schedule",
+					"sensitive": false
+				},
+				{
+					"name": "grace-period",
+					"wireName": "grace_period",
+					"location": "body",
+					"type": "number",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Grace period in seconds to wait after missed heartbeat before alerting",
+					"sensitive": false
+				},
+				{
+					"name": "reminder-alert-interval-minutes",
+					"wireName": "reminder_alert_interval_minutes",
+					"location": "body",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Interval in minutes between reminder alerts (-1 for never)",
+					"sensitive": false
+				},
+				{
+					"name": "user-alerts",
+					"wireName": "user_alerts",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "User IDs to notify",
+					"sensitive": false
+				},
+				{
+					"name": "slack-alerts",
+					"wireName": "slack_alerts",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Slack integration IDs to notify",
+					"sensitive": false
+				},
+				{
+					"name": "discord-alerts",
+					"wireName": "discord_alerts",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Discord integration IDs to notify",
+					"sensitive": false
+				},
+				{
+					"name": "webhook-alerts",
+					"wireName": "webhook_alerts",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "IDs of webhooks to associate with this heartbeat",
+					"sensitive": false
+				},
+				{
+					"name": "oncall-alerts",
+					"wireName": "oncall_alerts",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)",
+					"sensitive": false
+				},
+				{
+					"name": "incident-io-alerts",
+					"wireName": "incident_io_alerts",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "incident.io integration IDs to notify",
+					"sensitive": false
+				},
+				{
+					"name": "microsoft-teams-alerts",
+					"wireName": "microsoft_teams_alerts",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Microsoft Teams integration IDs to notify",
+					"sensitive": false
+				},
+				{
+					"name": "telegram-alerts",
+					"wireName": "telegram_alerts",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Telegram integration IDs to notify",
+					"sensitive": false
+				},
+				{
+					"name": "pushover-alerts",
+					"wireName": "pushover_alerts",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Pushover integration IDs to notify",
+					"sensitive": false
+				},
+				{
+					"name": "alert-priority",
+					"wireName": "alert_priority",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"choices": ["LOW", "HIGH"],
+					"required": false,
+					"positional": false,
+					"description": "[Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "deleteHeartbeat",
+			"command": "onlineornot heartbeats delete",
+			"words": ["heartbeats", "delete"],
+			"description": "Delete a heartbeat",
+			"method": "DELETE",
+			"path": "/v1/heartbeats/{heartbeat_id}",
+			"hasBody": false,
+			"confirmation": true,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "heartbeat_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Heartbeat ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "getHeartbeat",
+			"command": "onlineornot heartbeats get",
+			"words": ["heartbeats", "get"],
+			"description": "Retrieve a heartbeat",
+			"method": "GET",
+			"path": "/v1/heartbeats/{heartbeat_id}",
+			"hasBody": false,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "heartbeat_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Heartbeat ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "listHeartbeats",
+			"command": "onlineornot heartbeats list",
+			"words": ["heartbeats", "list"],
+			"description": "List all heartbeats",
+			"method": "GET",
+			"path": "/v1/heartbeats",
+			"hasBody": false,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "page",
+					"wireName": "page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Page number of paginated results, starting at 1.",
+					"sensitive": false
+				},
+				{
+					"name": "per-page",
+					"wireName": "per_page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.",
+					"sensitive": false
+				},
+				{
+					"name": "search",
+					"wireName": "search",
+					"location": "query",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Search term to filter results.",
+					"sensitive": false
+				},
+				{
+					"name": "project-id",
+					"wireName": "project_id",
+					"location": "query",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Project IDs, or unassigned for resources without a project. Repeat the parameter to include several, for example project_id=a1b2c3d4e5f6g7h8&project_id=unassigned. Omit to list all resources.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "moveHeartbeat",
+			"command": "onlineornot heartbeats move",
+			"words": ["heartbeats", "move"],
+			"description": "Assign or unassign a heartbeat",
+			"method": "POST",
+			"path": "/v1/heartbeats/{heartbeat_id}/move",
+			"hasBody": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "heartbeat_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Heartbeat ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "project-id",
+					"wireName": "project_id",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Project ID, or null for unassigned.",
+					"sensitive": false
+				}
+			]
+		},
+		{
+			"operationId": "updateHeartbeat",
+			"command": "onlineornot heartbeats update",
+			"words": ["heartbeats", "update"],
+			"description": "Update a heartbeat.",
+			"method": "PATCH",
+			"path": "/v1/heartbeats/{heartbeat_id}",
+			"hasBody": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "id",
+					"wireName": "heartbeat_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Heartbeat ID",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "name",
+					"wireName": "name",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "name",
+					"sensitive": false
+				},
+				{
+					"name": "report-period",
+					"wireName": "report_period",
+					"location": "body",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Expected interval in seconds between heartbeat pings (for simple schedule)",
+					"sensitive": false
+				},
+				{
+					"name": "report-period-cron",
+					"wireName": "report_period_cron",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Cron expression for expected heartbeat schedule",
+					"sensitive": false
+				},
+				{
+					"name": "timezone",
+					"wireName": "timezone",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Timezone for cron schedule",
+					"sensitive": false
+				},
+				{
+					"name": "grace-period",
+					"wireName": "grace_period",
+					"location": "body",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Grace period in seconds to wait after missed heartbeat before alerting",
+					"sensitive": false
+				},
+				{
+					"name": "reminder-alert-interval-minutes",
+					"wireName": "reminder_alert_interval_minutes",
+					"location": "body",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Interval in minutes between reminder alerts (-1 for never)",
+					"sensitive": false
+				},
+				{
+					"name": "user-alerts",
+					"wireName": "user_alerts",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "User IDs to notify",
+					"sensitive": false
+				},
+				{
+					"name": "slack-alerts",
+					"wireName": "slack_alerts",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Slack integration IDs to notify",
+					"sensitive": false
+				},
+				{
+					"name": "discord-alerts",
+					"wireName": "discord_alerts",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Discord integration IDs to notify",
+					"sensitive": false
+				},
+				{
+					"name": "webhook-alerts",
+					"wireName": "webhook_alerts",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "IDs of webhooks to associate with this heartbeat",
+					"sensitive": false
+				},
+				{
+					"name": "oncall-alerts",
+					"wireName": "oncall_alerts",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "IDs of on-call integrations (Grafana, PagerDuty, Opsgenie, Spike)",
+					"sensitive": false
+				},
+				{
+					"name": "incident-io-alerts",
+					"wireName": "incident_io_alerts",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "incident.io integration IDs to notify",
+					"sensitive": false
+				},
+				{
+					"name": "microsoft-teams-alerts",
+					"wireName": "microsoft_teams_alerts",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Microsoft Teams integration IDs to notify",
+					"sensitive": false
+				},
+				{
+					"name": "telegram-alerts",
+					"wireName": "telegram_alerts",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Telegram integration IDs to notify",
+					"sensitive": false
+				},
+				{
+					"name": "pushover-alerts",
+					"wireName": "pushover_alerts",
+					"location": "body",
+					"type": "string",
+					"array": true,
+					"required": false,
+					"positional": false,
+					"description": "Pushover integration IDs to notify",
+					"sensitive": false
+				},
+				{
+					"name": "alert-priority",
+					"wireName": "alert_priority",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"choices": ["LOW", "HIGH"],
+					"required": false,
+					"positional": false,
+					"description": "[Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).",
+					"sensitive": false
+				},
+				{
+					"name": "paused",
+					"wireName": "paused",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Whether the heartbeat is paused",
+					"sensitive": false
+				},
+				{
+					"name": "muted",
+					"wireName": "muted",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Suppresses alerts without stopping heartbeat monitoring.",
+					"sensitive": false
+				}
+			]
+		}
+	]
+}
