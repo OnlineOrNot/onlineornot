@@ -1,0 +1,514 @@
+{
+	"operations": {
+		"pingHeartbeatGet": {
+			"status": "excluded",
+			"reason": "Heartbeat ping is not part of the CLI."
+		},
+		"pingHeartbeat": {
+			"status": "excluded",
+			"reason": "Heartbeat ping is not part of the CLI."
+		},
+		"exportOtlpLogs": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"sendLogs": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"searchLogs": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getLogUsage": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listAuditLogs": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"verifyToken": {
+			"status": "handwritten",
+			"command": "whoami"
+		},
+		"getTokenPermissions": {
+			"status": "handwritten",
+			"command": "setup"
+		},
+		"listTokens": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"createToken": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getToken": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"deleteToken": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"createDnsCheck": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getDnsCheck": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"updateDnsCheck": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"deleteDnsCheck": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"createTcpCheck": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getTcpCheck": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"updateTcpCheck": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"deleteTcpCheck": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"createUptimeCheck": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getUptimeCheck": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"updateUptimeCheck": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"deleteUptimeCheck": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"createBrowserCheck": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getBrowserCheck": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"updateBrowserCheck": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"deleteBrowserCheck": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"moveCheck": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listUptimeCheckIncidents": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listBrowserCheckIncidents": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listDnsCheckIncidents": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listTcpCheckIncidents": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listUptimeCheckResults": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listBrowserCheckResults": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listDnsCheckResults": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listTcpCheckResults": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listChecks": {
+			"status": "handwritten",
+			"command": "checks list"
+		},
+		"createCheck": {
+			"status": "handwritten",
+			"command": "checks create"
+		},
+		"getCheck": {
+			"status": "handwritten",
+			"command": "checks view"
+		},
+		"deleteCheck": {
+			"status": "handwritten",
+			"command": "checks delete"
+		},
+		"updateCheck": {
+			"status": "handwritten",
+			"command": "checks update"
+		},
+		"listEnvironmentVariables": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"createEnvironmentVariable": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getEnvironmentVariable": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"updateEnvironmentVariable": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"deleteEnvironmentVariable": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"moveHeartbeat": {
+			"status": "generated",
+			"group": "heartbeats",
+			"method": "move",
+			"positionals": {
+				"heartbeat_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
+		},
+		"listHeartbeats": {
+			"status": "generated",
+			"group": "heartbeats",
+			"method": "list",
+			"positionals": {
+				"heartbeat_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
+		},
+		"createHeartbeat": {
+			"status": "generated",
+			"group": "heartbeats",
+			"method": "create",
+			"positionals": {
+				"heartbeat_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
+		},
+		"getHeartbeat": {
+			"status": "generated",
+			"group": "heartbeats",
+			"method": "get",
+			"positionals": {
+				"heartbeat_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
+		},
+		"updateHeartbeat": {
+			"status": "generated",
+			"group": "heartbeats",
+			"method": "update",
+			"positionals": {
+				"heartbeat_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
+		},
+		"deleteHeartbeat": {
+			"status": "generated",
+			"group": "heartbeats",
+			"method": "delete",
+			"positionals": {
+				"heartbeat_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
+		},
+		"listMaintenanceWindows": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"createMaintenanceWindow": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getMaintenanceWindow": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"updateMaintenanceWindow": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"deleteMaintenanceWindow": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listUsers": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"removeUser": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listInvitations": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"createInvitation": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"moveWebhook": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"moveEnvironmentVariable": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"moveResources": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"moveMaintenanceWindow": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"createProject": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listProjects": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getProject": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"updateProject": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"deleteProject": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getStatusPage": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"updateStatusPage": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"deleteStatusPage": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getStatusPageSummary": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"createStatusPage": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listStatusPages": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"createStatusPageComponent": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listStatusPageComponents": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getStatusPageComponent": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"updateStatusPageComponent": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"deleteStatusPageComponent": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"updateStatusPageComponentSortOrder": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listStatusPageComponentGroups": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"createStatusPageComponentGroup": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getStatusPageComponentGroup": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"updateStatusPageComponentGroup": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"deleteStatusPageComponentGroup": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"updateStatusPageComponentGroupSortOrder": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"updateStatusPageGroupComponentSortOrder": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listStatusPageSubscribers": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"createStatusPageSubscriber": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"deleteStatusPageSubscriber": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listStatusPageIncidents": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"createStatusPageIncident": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getStatusPageIncident": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"updateStatusPageIncident": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"deleteStatusPageIncident": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listStatusPageIncidentUpdates": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"createStatusPageIncidentUpdate": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getStatusPageIncidentUpdate": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"updateStatusPageIncidentUpdate": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"deleteStatusPageIncidentUpdate": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"createStatusPageScheduledMaintenance": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getStatusPageScheduledMaintenance": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"updateStatusPageScheduledMaintenance": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"deleteStatusPageScheduledMaintenance": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getWebhookDeliverySummary": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getWebhookDeliveryActivity": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listWebhookDeliveries": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getWebhookDelivery": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listWebhooks": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"createWebhook": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getWebhook": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"updateWebhook": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"deleteWebhook": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		}
+	}
+}

@@ -1,14 +1,16 @@
 import makeCLI from "yargs";
-import type { CommandModule } from "yargs";
+import type { ArgumentsCamelCase, CommandModule } from "yargs";
 
 import { version as onlineornotVersion } from "../package.json";
 import { printBanner } from "./banner";
 import { billingHandler, billingOptions } from "./billing";
 import { checks } from "./checks";
 import { docsHandler, docsOptions } from "./docs";
+import { registerGeneratedCommands } from "./generated-cli";
 import { logger } from "./logger";
 import { loginHandler, loginOptions } from "./login";
 import { logoutHandler, logoutOptions } from "./logout";
+import { ParseError } from "./parse";
 import { setupHandler, setupOptions } from "./setup";
 import { uninstallHandler, uninstallOptions } from "./uninstall";
 import { updateHandler, updateOptions } from "./update";
@@ -101,6 +103,8 @@ export function createCLIParser(argv: string[]) {
 		return checks(d1Yargs.command(subHelp));
 	});
 
+	registerGeneratedCommands(onlineornot);
+
 	// billing
 	onlineornot.command(
 		"billing",
@@ -187,16 +191,32 @@ export async function main(argv: string[]): Promise<void> {
 	try {
 		await onlineornot.parse();
 	} catch (e) {
-		logger.log(""); // Just adds a bit of space
 		if (e instanceof CommandLineArgsError) {
 			logger.error(e.message);
 			// We are not able to ask the `onlineornot` CLI parser to show help for a subcommand programmatically.
 			// The workaround is to re-run the parsing with an additional `--help` flag, which will result in the correct help message being displayed.
 			// The `onlineornot` object is "frozen"; we cannot reuse that with different args, so we must create a new CLI parser to generate the help message.
-			await createCLIParser([...argv, "--help"]).parse();
+			const helpParser = createCLIParser([...argv, "--help"]);
+			await helpParser.parseAsync(
+				[...argv, "--help"],
+				{},
+				(
+					_error: Error | undefined,
+					_args: ArgumentsCamelCase<CommonYargsOptions>,
+					output: string,
+				) => {
+					process.stderr.write(output);
+				},
+			);
 		} else {
-			logger.error(e instanceof Error ? e.message : e);
-			logger.log(
+			logger.error(
+				e instanceof ParseError
+					? [e.message, ...e.notes.map((note) => note.text)].join("\n")
+					: e instanceof Error
+						? e.message
+						: e,
+			);
+			logger.error(
 				`${fgGreenColor}%s${resetColor}`,
 				"If you think this is a bug then please create an issue at https://github.com/OnlineOrNot/onlineornot/issues/new/choose",
 			);

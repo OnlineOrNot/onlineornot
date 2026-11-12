@@ -29,15 +29,18 @@
 	},
 	"scripts": {
 		"build": "pnpm run clean && pnpm run bundle",
-		"build:sea": "bash scripts/build-sea.sh",
-		"bundle": "node -r esbuild-register scripts/bundle.ts",
+		"build:sea": "pnpm run generate:cli && bash scripts/build-sea.sh",
+		"bundle": "pnpm run generate:cli && node -r esbuild-register scripts/bundle.ts",
 		"clean": "rimraf dist sea",
 		"prepublishOnly": "SOURCEMAPS=false pnpm run build",
 		"start": "pnpm run bundle && cross-env NODE_OPTIONS=--enable-source-maps ./bin/onlineornot.js",
-		"check:type": "tsc --noEmit",
+		"check:type": "tsc --noEmit && pnpm run check:generator",
 		"test": "vitest",
 		"test:ci": "vitest run",
-		"verify:release-patches": "tsx scripts/verify-release-patches.mts"
+		"verify:release-patches": "tsx scripts/verify-release-patches.mts",
+		"generate:cli": "node scripts/generate-cli.mjs",
+		"check:cli": "node scripts/generate-cli.mjs --check",
+		"check:generator": "tsc --project generator/tsconfig.json --noEmit"
 	},
 	"dependencies": {
 		"@onlineornot/api": "workspace:^",
@@ -48,9 +51,12 @@
 		"open": "^11.0.2",
 		"supports-color": "^11.0.0",
 		"update-check": "^1.5.4",
-		"yargs": "^17.7.3"
+		"yargs": "^17.7.3",
+		"zod": "4.6.5"
 	},
 	"devDependencies": {
+		"@bytecodealliance/jco": "1.37.0",
+		"@cloudflare/forge": "https://pkg.pr.new/cloudflare/forge/@cloudflare/forge@45c005a259a5507763d866e12d1e907af6ce745d",
 		"@types/node": "^22.19.15",
 		"@types/yargs": "^17.0.35",
 		"binpatch": "0.4.2",
