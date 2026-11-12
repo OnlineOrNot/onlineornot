@@ -1,4 +1,5 @@
 import { execFile } from "node:child_process";
+import { existsSync } from "node:fs";
 import {
 	cp,
 	mkdir,
@@ -72,6 +73,40 @@ describe("pinned Forge binary and compiled CLI plugin", () => {
 		);
 		expect(await readFile(file, "utf8")).toBe("{}\n");
 	}, 180000);
+
+	it("preserves generated output through a CRLF-configured Git checkout", async () => {
+		const checkout = path.join(directory, "autocrlf");
+		const output = path.join(
+			checkout,
+			"packages/onlineornot/src/generated-cli",
+		);
+		await cp("src/generated-cli", output, { recursive: true });
+		if (existsSync("../../.gitattributes"))
+			await cp("../../.gitattributes", path.join(checkout, ".gitattributes"));
+		await execute("git", ["init", "--quiet", checkout]);
+		await execute("git", [
+			"-C",
+			checkout,
+			"-c",
+			"core.autocrlf=true",
+			"add",
+			".",
+		]);
+		await rm(output, { recursive: true });
+		await execute("git", [
+			"-C",
+			checkout,
+			"-c",
+			"core.autocrlf=true",
+			"checkout-index",
+			"--all",
+			"--force",
+		]);
+		await generateCli(["--output", output, "--check"]);
+		expect(await generatedTree(output)).toEqual(
+			await generatedTree("src/generated-cli"),
+		);
+	}, 90000);
 
 	it.each(["bundle", "build:sea"])(
 		"rejects stale committed output before %s and leaves it unchanged",
