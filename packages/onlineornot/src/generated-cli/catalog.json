@@ -7,6 +7,7 @@
 		{
 			"operationId": "createEnvironmentVariable",
 			"command": "onlineornot env create",
+			"aliases": ["onlineornot environment-variables create"],
 			"words": ["env", "create"],
 			"description": "Create an environment variable",
 			"method": "POST",
@@ -76,6 +77,7 @@
 		{
 			"operationId": "deleteEnvironmentVariable",
 			"command": "onlineornot env delete",
+			"aliases": ["onlineornot environment-variables delete"],
 			"words": ["env", "delete"],
 			"description": "Delete an environment variable",
 			"method": "DELETE",
@@ -111,6 +113,7 @@
 		{
 			"operationId": "getEnvironmentVariable",
 			"command": "onlineornot env get",
+			"aliases": ["onlineornot environment-variables get"],
 			"words": ["env", "get"],
 			"description": "Get an environment variable",
 			"method": "GET",
@@ -146,6 +149,7 @@
 		{
 			"operationId": "listEnvironmentVariables",
 			"command": "onlineornot env list",
+			"aliases": ["onlineornot environment-variables list"],
 			"words": ["env", "list"],
 			"description": "List environment variables",
 			"method": "GET",
@@ -214,6 +218,7 @@
 		{
 			"operationId": "moveEnvironmentVariable",
 			"command": "onlineornot env move",
+			"aliases": ["onlineornot environment-variables move"],
 			"words": ["env", "move"],
 			"description": "Assign or unassign an environment variable",
 			"method": "POST",
@@ -260,6 +265,7 @@
 		{
 			"operationId": "updateEnvironmentVariable",
 			"command": "onlineornot env update",
+			"aliases": ["onlineornot environment-variables update"],
 			"words": ["env", "update"],
 			"description": "Update an environment variable",
 			"method": "PATCH",
@@ -947,6 +953,7 @@
 		{
 			"operationId": "createMaintenanceWindow",
 			"command": "onlineornot maintenance create",
+			"aliases": ["onlineornot maintenance-windows create"],
 			"words": ["maintenance", "create"],
 			"description": "Create a new maintenance window",
 			"method": "POST",
@@ -1068,6 +1075,7 @@
 		{
 			"operationId": "deleteMaintenanceWindow",
 			"command": "onlineornot maintenance delete",
+			"aliases": ["onlineornot maintenance-windows delete"],
 			"words": ["maintenance", "delete"],
 			"description": "Delete a maintenance window",
 			"method": "DELETE",
@@ -1103,6 +1111,7 @@
 		{
 			"operationId": "getMaintenanceWindow",
 			"command": "onlineornot maintenance get",
+			"aliases": ["onlineornot maintenance-windows get"],
 			"words": ["maintenance", "get"],
 			"description": "Get a maintenance window by ID",
 			"method": "GET",
@@ -1138,6 +1147,7 @@
 		{
 			"operationId": "listMaintenanceWindows",
 			"command": "onlineornot maintenance list",
+			"aliases": ["onlineornot maintenance-windows list"],
 			"words": ["maintenance", "list"],
 			"description": "List all maintenance windows",
 			"method": "GET",
@@ -1206,6 +1216,7 @@
 		{
 			"operationId": "moveMaintenanceWindow",
 			"command": "onlineornot maintenance move",
+			"aliases": ["onlineornot maintenance-windows move"],
 			"words": ["maintenance", "move"],
 			"description": "Assign or unassign a maintenance window",
 			"method": "POST",
@@ -1252,6 +1263,7 @@
 		{
 			"operationId": "updateMaintenanceWindow",
 			"command": "onlineornot maintenance update",
+			"aliases": ["onlineornot maintenance-windows update"],
 			"words": ["maintenance", "update"],
 			"description": "Update a maintenance window",
 			"method": "PATCH",

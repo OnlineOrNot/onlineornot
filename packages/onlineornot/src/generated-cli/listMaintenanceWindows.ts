@@ -11,6 +11,7 @@ export const command = createApiCommand(
 	{
 		operationId: "listMaintenanceWindows",
 		command: "onlineornot maintenance list",
+		aliases: ["onlineornot maintenance-windows list"],
 		words: ["maintenance", "list"],
 		description: "List all maintenance windows",
 		method: "GET",

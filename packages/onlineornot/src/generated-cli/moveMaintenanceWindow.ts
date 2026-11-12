@@ -12,6 +12,7 @@ export const command = createApiCommand(
 	{
 		operationId: "moveMaintenanceWindow",
 		command: "onlineornot maintenance move",
+		aliases: ["onlineornot maintenance-windows move"],
 		words: ["maintenance", "move"],
 		description: "Assign or unassign a maintenance window",
 		method: "POST",

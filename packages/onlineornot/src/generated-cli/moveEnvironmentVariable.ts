@@ -12,6 +12,7 @@ export const command = createApiCommand(
 	{
 		operationId: "moveEnvironmentVariable",
 		command: "onlineornot env move",
+		aliases: ["onlineornot environment-variables move"],
 		words: ["env", "move"],
 		description: "Assign or unassign an environment variable",
 		method: "POST",

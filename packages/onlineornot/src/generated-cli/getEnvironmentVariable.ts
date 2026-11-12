@@ -11,6 +11,7 @@ export const command = createApiCommand(
 	{
 		operationId: "getEnvironmentVariable",
 		command: "onlineornot env get",
+		aliases: ["onlineornot environment-variables get"],
 		words: ["env", "get"],
 		description: "Get an environment variable",
 		method: "GET",

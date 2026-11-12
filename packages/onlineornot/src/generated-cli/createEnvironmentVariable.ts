@@ -11,6 +11,7 @@ export const command = createApiCommand(
 	{
 		operationId: "createEnvironmentVariable",
 		command: "onlineornot env create",
+		aliases: ["onlineornot environment-variables create"],
 		words: ["env", "create"],
 		description: "Create an environment variable",
 		method: "POST",

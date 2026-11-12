@@ -1,4 +1,8 @@
 {
+	"groupAliases": {
+		"env": ["environment-variables"],
+		"maintenance": ["maintenance-windows"]
+	},
 	"operations": {
 		"pingHeartbeatGet": {
 			"status": "excluded",

@@ -11,6 +11,7 @@ export const command = createApiCommand(
 	{
 		operationId: "deleteMaintenanceWindow",
 		command: "onlineornot maintenance delete",
+		aliases: ["onlineornot maintenance-windows delete"],
 		words: ["maintenance", "delete"],
 		description: "Delete a maintenance window",
 		method: "DELETE",

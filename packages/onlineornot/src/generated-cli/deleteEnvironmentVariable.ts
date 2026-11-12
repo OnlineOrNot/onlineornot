@@ -11,6 +11,7 @@ export const command = createApiCommand(
 	{
 		operationId: "deleteEnvironmentVariable",
 		command: "onlineornot env delete",
+		aliases: ["onlineornot environment-variables delete"],
 		words: ["env", "delete"],
 		description: "Delete an environment variable",
 		method: "DELETE",

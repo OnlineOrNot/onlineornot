@@ -22,6 +22,7 @@ interface ApiCommandFlag {
 }
 
 interface ApiCommandSpec {
+	aliases?: string[];
 	operationId: string;
 	command: string;
 	words: string[];

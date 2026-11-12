@@ -3,6 +3,7 @@ import type { Field, File, Method, Type } from "@cloudflare/forge/plugin";
 import { z } from "zod";
 
 const commandMetadataSchema = z.object({
+	groupAliases: z.array(z.string()),
 	positionals: z.record(z.string(), z.string()),
 	flags: z.record(z.string(), z.string()),
 	forbidden: z.array(z.string()),
@@ -143,6 +144,7 @@ function commandArguments(method: Method) {
 		flags,
 		forbidden: metadata.forbidden,
 		requiresAuth: metadata.requiresAuth,
+		groupAliases: metadata.groupAliases,
 	};
 }
 
@@ -227,6 +229,7 @@ return { request, execute: async (token) => unwrapApiEnvelope(await ${id}({ ...g
 }
 
 interface CommandGroup {
+	aliases: string[];
 	methods: string[];
 	children: Map<string, CommandGroup>;
 }
@@ -240,7 +243,7 @@ function registerCommandGroups(
 	return [...groups]
 		.map(
 			([name, group]) =>
-				`${parent}.command(${JSON.stringify(name)}, ${JSON.stringify(`Manage ${name}`)}, (${parser}) => { ${group.methods.map((method) => `${parser}.command(${method});`).join(" ")} ${registerCommandGroups(group.children, parser, depth + 1)} return ${parser}.demandCommand(1); }, () => {});`,
+				`${parent}.command(${JSON.stringify(group.aliases.length ? [name, ...group.aliases] : name)}, ${JSON.stringify(`Manage ${name}`)}, (${parser}) => { ${group.methods.map((method) => `${parser}.command(${method});`).join(" ")} ${registerCommandGroups(group.children, parser, depth + 1)} return ${parser}.demandCommand(1); }, () => {});`,
 		)
 		.join("\n");
 }
@@ -269,10 +272,17 @@ export const { generate } = definePlugin({
 				if (addresses.has(address))
 					throw new Error(`Duplicate CLI command: ${address}`);
 				addresses.add(address);
-				const { flags, forbidden, requiresAuth } = commandArguments(method);
+				const { flags, forbidden, requiresAuth, groupAliases } =
+					commandArguments(method);
 				const spec = {
 					operationId: id,
 					command: `onlineornot ${address}`,
+					aliases: groupAliases.length
+						? groupAliases.map(
+								(alias) =>
+									`onlineornot ${[alias, ...words.slice(1)].join(" ")}`,
+							)
+						: undefined,
 					words,
 					description: method.summary || method.description,
 					method: method.httpMethod,
@@ -296,7 +306,11 @@ export const { generate } = definePlugin({
 				for (const [index, word] of words.slice(0, -1).entries()) {
 					let current = groups.get(word);
 					if (!current) {
-						current = { methods: [], children: new Map() };
+						current = {
+							aliases: index === 0 ? groupAliases : [],
+							methods: [],
+							children: new Map(),
+						};
 						groups.set(word, current);
 					}
 					if (index === words.length - 2) current.methods.push(id);

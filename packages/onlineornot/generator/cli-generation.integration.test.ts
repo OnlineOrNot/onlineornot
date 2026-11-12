@@ -180,4 +180,49 @@ describe("pinned Forge binary and compiled CLI plugin", () => {
 		},
 		90000,
 	);
+
+	it.each([
+		{
+			name: "canonical collision",
+			aliases: { env: ["maintenance"] },
+			error: "CLI group alias collision: maintenance",
+		},
+		{
+			name: "duplicate alias",
+			aliases: { env: ["shared"], maintenance: ["shared"] },
+			error: "CLI group alias collision: shared",
+		},
+		{
+			name: "unknown group",
+			aliases: { missing: ["extra"] },
+			error: "Unknown CLI alias group: missing",
+		},
+		{
+			name: "handwritten collision",
+			aliases: { env: ["checks"] },
+			error: "CLI group alias collision: checks",
+		},
+	])(
+		"rejects $name before publishing alias output",
+		async ({ name, aliases, error }) => {
+			const overlay = JSON.parse(
+				await readFile("generator/cli-overlay.json", "utf8"),
+			);
+			overlay.groupAliases = aliases;
+			const overlayFile = path.join(
+				directory,
+				`${name.replaceAll(" ", "-")}.json`,
+			);
+			const output = path.join(
+				directory,
+				`${name.replaceAll(" ", "-")}-output`,
+			);
+			await writeFile(overlayFile, JSON.stringify(overlay));
+			await expect(
+				generateCli(["--overlay", overlayFile, "--output", output]),
+			).rejects.toThrow(error);
+			expect(existsSync(output)).toBe(false);
+		},
+		90000,
+	);
 });

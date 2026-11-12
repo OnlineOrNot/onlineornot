@@ -11,6 +11,7 @@ export const command = createApiCommand(
 	{
 		operationId: "getMaintenanceWindow",
 		command: "onlineornot maintenance get",
+		aliases: ["onlineornot maintenance-windows get"],
 		words: ["maintenance", "get"],
 		description: "Get a maintenance window by ID",
 		method: "GET",

@@ -12,6 +12,7 @@ export const command = createApiCommand(
 	{
 		operationId: "updateEnvironmentVariable",
 		command: "onlineornot env update",
+		aliases: ["onlineornot environment-variables update"],
 		words: ["env", "update"],
 		description: "Update an environment variable",
 		method: "PATCH",

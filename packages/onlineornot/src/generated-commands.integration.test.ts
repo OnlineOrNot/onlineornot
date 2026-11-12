@@ -520,7 +520,7 @@ describe("generated resource management through the executable and real HTTP", (
 		expect(requests).toHaveLength(0);
 	}, 20000);
 
-	it.each(["environment-variables", "maintenance-windows", "pages", "status"])(
+	it.each(["pages", "status"])(
 		"does not register the unapproved resource group %s",
 		async (resource) => {
 			const result = await runCli([resource, "list"], "", false);
@@ -809,6 +809,122 @@ describe("generated resource management through the executable and real HTTP", (
 		{ args: ["webhooks", "deliveries"], error: "deliveries" },
 	])(
 		"rejects invalid resource input before HTTP: $error",
+		async ({ args, error }) => {
+			const result = await runCli([...args, "--dry-run"], "", false);
+			expect(result.code).toBe(1);
+			expect(result.stdout).toBe("");
+			expect(result.stderr).toContain(error);
+			expect(requests).toHaveLength(0);
+		},
+	);
+});
+
+describe("generated resource group aliases through the executable", () => {
+	const aliases = [
+		{ group: "env", alias: "environment-variables" },
+		{ group: "maintenance", alias: "maintenance-windows" },
+	];
+	const cases = aliases.flatMap(({ group, alias }) =>
+		resourceCommandCases
+			.filter((scenario) => scenario.args[0] === group)
+			.map((scenario) => ({
+				...scenario,
+				args: [alias, ...scenario.args.slice(1)],
+			})),
+	);
+
+	it.each(cases)(
+		"sends $operationId through its long-form alias",
+		async (scenario) => {
+			const result = await runCli(scenario.args);
+			expect(result.code).toBe(0);
+			expect(JSON.parse(result.stdout)).toEqual({
+				id: "heartbeat123",
+				name: "Nightly backup",
+			});
+			expect(requests).toHaveLength(1);
+			expect(requests[0].method).toBe(scenario.method);
+			expect(requests[0].url).toBe(scenario.url);
+			expect(requests[0].authorization).toBe("Bearer fixture-token");
+			expect(requests[0].body ? JSON.parse(requests[0].body) : null).toEqual(
+				scenario.body,
+			);
+		},
+	);
+
+	it.each(cases.filter((scenario) => scenario.method === "DELETE"))(
+		"retains deletion confirmation for alias $operationId",
+		async (scenario) => {
+			const result = await runCli(
+				scenario.args.filter((arg) => arg !== "--force"),
+			);
+			expect(result.code).toBe(1);
+			expect(result.stdout).toBe("");
+			expect(result.stderr).toContain("--force");
+			expect(requests).toHaveLength(0);
+		},
+	);
+
+	it.each(aliases)(
+		"discovers $alias while keeping $group canonical and previews without HTTP",
+		async ({ group, alias }) => {
+			const help = await runCli([alias, "--help"], "", false);
+			expect(help.code).toBe(0);
+			expect(help.stdout).toContain("create");
+			const catalog = await runCli(["cli", "commands"], "", false);
+			const commands = JSON.parse(catalog.stdout).commands;
+			expect(commands).toHaveLength(69);
+			const create = commands.find(
+				(command: { command: string }) =>
+					command.command === `onlineornot ${group} create`,
+			);
+			expect(create.aliases).toEqual([`onlineornot ${alias} create`]);
+			const search = await runCli(
+				["cli", "search", `${alias} create`],
+				"",
+				false,
+			);
+			expect(JSON.parse(search.stdout)[0].command).toBe(
+				`onlineornot ${group} create`,
+			);
+			const scenario = cases.find(
+				(entry) => entry.args[0] === alias && entry.args[1] === "create",
+			);
+			if (!scenario) throw new Error("Missing alias create scenario");
+			const preview = await runCli([...scenario.args, "--dry-run"], "", false);
+			expect(preview.code).toBe(0);
+			const request = JSON.parse(preview.stdout);
+			expect(request.path).toBe(scenario.url);
+			if (group === "env") expect(request.body.value).toBe("<redacted>");
+			else expect(request.body).toEqual(scenario.body);
+			expect(requests).toHaveLength(0);
+		},
+		20000,
+	);
+
+	it.each([
+		{
+			args: [
+				"environment-variables",
+				"update",
+				"variable123",
+				"--body",
+				'{"type":"config"}',
+			],
+			error: "type",
+		},
+		{
+			args: [
+				"maintenance-windows",
+				"update",
+				"window1234",
+				"--body",
+				'{"project_id":null}',
+			],
+			error: "project_id",
+		},
+	])(
+		"rejects invalid alias input before HTTP: $error",
 		async ({ args, error }) => {
 			const result = await runCli([...args, "--dry-run"], "", false);
 			expect(result.code).toBe(1);

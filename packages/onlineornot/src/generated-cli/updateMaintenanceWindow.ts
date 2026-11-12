@@ -12,6 +12,7 @@ export const command = createApiCommand(
 	{
 		operationId: "updateMaintenanceWindow",
 		command: "onlineornot maintenance update",
+		aliases: ["onlineornot maintenance-windows update"],
 		words: ["maintenance", "update"],
 		description: "Update a maintenance window",
 		method: "PATCH",
