@@ -10,6 +10,7 @@ import { registerGeneratedCommands } from "./generated-cli";
 import { logger } from "./logger";
 import { loginHandler, loginOptions } from "./login";
 import { logoutHandler, logoutOptions } from "./logout";
+import { runMcpBridge } from "./mcp/mcp-bridge";
 import { ParseError } from "./parse";
 import { setupHandler, setupOptions } from "./setup";
 import { uninstallHandler, uninstallOptions } from "./uninstall";
@@ -118,6 +119,13 @@ export function createCLIParser(argv: string[]) {
 		"🔓 Login to OnlineOrNot via OAuth",
 		loginOptions,
 		loginHandler,
+	);
+
+	onlineornot.command(
+		"mcp",
+		"Connect an MCP client over stdio using your CLI login",
+		() => {},
+		runMcpBridge,
 	);
 
 	// setup

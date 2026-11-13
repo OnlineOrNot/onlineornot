@@ -36,6 +36,7 @@ export function checkForUpdateInBackground(
 	if (
 		!isStandaloneExecutable() ||
 		process.env.ONLINEORNOT_DISABLE_AUTO_UPDATE === "true" ||
+		argv.includes("mcp") ||
 		argv.includes("update") ||
 		argv.includes("uninstall") ||
 		!isAutomaticUpdateCheckDue()
