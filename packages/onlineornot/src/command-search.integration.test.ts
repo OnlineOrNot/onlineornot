@@ -100,10 +100,10 @@ describe("local command discovery through the executable", () => {
 	it.each([
 		"docs",
 		"billing",
-		"login",
-		"logout",
+		"auth login",
+		"auth logout",
 		"setup",
-		"whoami",
+		"auth whoami",
 		"mcp",
 		"update",
 		"uninstall",
@@ -120,7 +120,9 @@ describe("local command discovery through the executable", () => {
 	);
 
 	it("indexes keyword metadata and utility flags", async () => {
-		expect((await runSearch("signout"))[0].command).toBe("onlineornot logout");
+		expect((await runSearch("signout"))[0].command).toBe(
+			"onlineornot auth logout",
+		);
 		expect(
 			(await runSearch("keep-config")).map((result) => result.command),
 		).toContain("onlineornot uninstall");

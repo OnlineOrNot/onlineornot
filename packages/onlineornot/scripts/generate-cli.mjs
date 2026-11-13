@@ -132,6 +132,7 @@ const claimedGroups = new Set([
 	"billing",
 	"login",
 	"logout",
+	"whoami",
 	"update",
 	"uninstall",
 	"version",

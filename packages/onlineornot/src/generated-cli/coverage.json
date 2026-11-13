@@ -1659,7 +1659,7 @@
 			"method": "GET",
 			"path": "/v1/tokens/verify",
 			"status": "handwritten",
-			"command": "whoami"
+			"command": "auth whoami"
 		}
 	]
 }

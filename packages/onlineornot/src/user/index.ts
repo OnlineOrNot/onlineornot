@@ -8,9 +8,9 @@ import { getValidToken, AuthenticationError } from "../auth/refresh";
 import { getOnlineOrNotAPITokenFromEnv } from "../environment-variables/misc-variables";
 
 export const NOT_LOGGED_IN_MSG =
-	"You are not logged in.\nRun `onlineornot login` to authenticate, or set ONLINEORNOT_API_TOKEN as an environment variable.";
+	"You are not logged in.\nRun `onlineornot auth login` to authenticate, or set ONLINEORNOT_API_TOKEN as an environment variable.";
 export const INVALID_TOKEN_MSG =
-	"Your API token is invalid.\nRun `onlineornot login` to re-authenticate, or set a different ONLINEORNOT_API_TOKEN.";
+	"Your API token is invalid.\nRun `onlineornot auth login` to re-authenticate, or set a different ONLINEORNOT_API_TOKEN.";
 
 export { AuthenticationError };
 

@@ -34,7 +34,7 @@ export async function getValidToken(
 		const creds = getCredentials();
 		if (!creds) {
 			throw new AuthenticationError(
-				"Not logged in. Run `onlineornot login` first.",
+				"Not logged in. Run `onlineornot auth login` first.",
 				"NOT_LOGGED_IN",
 			);
 		}
@@ -83,7 +83,7 @@ async function refreshToken(
 		) {
 			clearCredentials();
 			throw new AuthenticationError(
-				"Session revoked. Run `onlineornot login` again.",
+				"Session revoked. Run `onlineornot auth login` again.",
 				"TOKEN_REVOKED",
 			);
 		}
@@ -92,7 +92,7 @@ async function refreshToken(
 			error.oauthCode === "invalid_target"
 		) {
 			throw new AuthenticationError(
-				"This login has not authorized MCP. Run `onlineornot logout` then `onlineornot login` to authorize it.",
+				"This login has not authorized MCP. Run `onlineornot auth logout` then `onlineornot auth login` to authorize it.",
 				"REFRESH_FAILED",
 			);
 		}

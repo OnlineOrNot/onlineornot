@@ -43,7 +43,7 @@ export async function runMcpBridge(): Promise<void> {
 				) {
 					await response.body?.cancel();
 					throw new Error(
-						`MCP request failed (HTTP ${response.status}).${response.status === 401 ? " Run `onlineornot logout` then `onlineornot login`." : ""}`,
+						`MCP request failed (HTTP ${response.status}).${response.status === 401 ? " Run `onlineornot auth logout` then `onlineornot auth login`." : ""}`,
 					);
 				}
 				return response;

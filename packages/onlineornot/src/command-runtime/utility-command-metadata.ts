@@ -28,10 +28,10 @@ export const utilityCommandMetadata = {
 			search: { keywords: ["subscription", "payment", "invoices"] },
 		},
 	),
-	login: utilityCommand("login", "🔓 Login to OnlineOrNot via OAuth", {
+	login: utilityCommand("auth login", "🔓 Login to OnlineOrNot via OAuth", {
 		search: { keywords: ["signin", "authenticate", "authorization"] },
 	}),
-	logout: utilityCommand("logout", "🔒 Logout from OnlineOrNot", {
+	logout: utilityCommand("auth logout", "🔒 Logout from OnlineOrNot", {
 		search: { keywords: ["signout", "revoke", "credentials"] },
 	}),
 	setup: utilityCommand(
@@ -53,7 +53,7 @@ export const utilityCommandMetadata = {
 		},
 	),
 	whoami: utilityCommand(
-		"whoami",
+		"auth whoami",
 		"🕵️  Retrieve your user info and test your auth config",
 		{
 			search: { keywords: ["identity", "account", "authentication"] },

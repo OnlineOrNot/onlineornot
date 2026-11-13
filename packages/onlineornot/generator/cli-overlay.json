@@ -34,7 +34,7 @@
 		},
 		"verifyToken": {
 			"status": "handwritten",
-			"command": "whoami"
+			"command": "auth whoami"
 		},
 		"getTokenPermissions": {
 			"status": "handwritten",
