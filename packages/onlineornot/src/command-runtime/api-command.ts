@@ -7,6 +7,7 @@ import { z } from "zod";
 import { logger } from "../logger";
 import { getTokenAsync } from "../user";
 import type { CommonYargsOptions } from "../yargs-types";
+import { apiCommandOptions } from "./command-options";
 
 interface ApiCommandFlag {
 	name: string;
@@ -243,24 +244,9 @@ export function createApiCommand(
 						requiresArg: flag.type !== "boolean",
 					});
 			}
-			if (spec.hasBody)
-				parser.option("body", {
-					type: "string",
-					requiresArg: true,
-					description:
-						"JSON object, @file.json, or - for stdin; cannot mix with body flags",
-				});
-			parser.option("dry-run", {
-				type: "boolean",
-				default: false,
-				description: "Validate and preview the request without sending it",
-			});
-			if (spec.confirmation)
-				parser.option("force", {
-					type: "boolean",
-					default: false,
-					description: "Confirm this destructive operation",
-				});
+			if (spec.hasBody) parser.option("body", apiCommandOptions.body);
+			parser.option("dry-run", apiCommandOptions["dry-run"]);
+			if (spec.confirmation) parser.option("force", apiCommandOptions.force);
 			return parser;
 		},
 		handler: async (argv) => {

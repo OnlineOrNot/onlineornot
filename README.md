@@ -51,6 +51,16 @@ Flags:
 
 Resource commands output JSON without `--json`. For existing scripts, see the [major-release migration guide](BREAKING_CHANGES.md).
 
+Find commands by task, partial names or typos:
+
+```sh
+onlineornot cli search "checks dns cre"
+onlineornot cli search "hearbeats delet"
+onlineornot cli search "signout"
+```
+
+Search returns up to five ranked JSON matches, including API commands and utilities. It runs locally without login or network access. Use `onlineornot cli commands` for the full API command catalog and append `--help` to a command for usage.
+
 ## Docs
 
 There are docs for:

@@ -8,7 +8,7 @@
 			"operationId": "createBrowserCheck",
 			"command": "onlineornot checks browser create",
 			"words": ["checks", "browser", "create"],
-			"description": "Create a browser check",
+			"description": "Create a new browser check using Playwright\n\nRequires UPTIME_CHECKS:EDIT.",
 			"method": "POST",
 			"path": "/v1/checks/browser",
 			"hasBody": true,
@@ -360,13 +360,14 @@
 					"description": "Playwright Test script for scripted browser checks. Optional when url is provided.",
 					"sensitive": true
 				}
-			]
+			],
+			"summary": "Create a browser check"
 		},
 		{
 			"operationId": "listBrowserCheckIncidents",
 			"command": "onlineornot checks browser incidents",
 			"words": ["checks", "browser", "incidents"],
-			"description": "Review recent failures and recoveries for a specific browser check",
+			"description": "List incidents for a browser check. Use from and to to include incidents that overlap the time range. Results are sorted by start time, then ID, newest first. Timestamps accept up to three decimal places for seconds. Pagination accepts safe integers, including the calculated offset. The per_page limit is 100.\n\nRequires UPTIME_CHECKS:READ.",
 			"method": "GET",
 			"path": "/v1/checks/browser/{check_id}/incidents",
 			"hasBody": false,
@@ -439,13 +440,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Review recent failures and recoveries for a specific browser check"
 		},
 		{
 			"operationId": "listBrowserCheckResults",
 			"command": "onlineornot checks browser results",
 			"words": ["checks", "browser", "results"],
-			"description": "Review raw browser check results over a bounded time range",
+			"description": "List results for a browser check. Set to later than from. The time range cannot exceed seven days. Timestamps accept up to three decimal places for seconds. Use positive safe integers for page and per_page. The calculated offset must also be a safe integer. The per_page limit is 100.\n\nRequires UPTIME_CHECKS:READ.",
 			"method": "GET",
 			"path": "/v1/checks/browser/{check_id}/results",
 			"hasBody": false,
@@ -518,13 +520,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Review raw browser check results over a bounded time range"
 		},
 		{
 			"operationId": "updateBrowserCheck",
 			"command": "onlineornot checks browser update",
 			"words": ["checks", "browser", "update"],
-			"description": "Modify a browser check",
+			"description": "Modify the configuration of an existing browser check\n\nRequires UPTIME_CHECKS:EDIT.",
 			"method": "PATCH",
 			"path": "/v1/checks/browser/{check_id}",
 			"hasBody": true,
@@ -908,13 +911,14 @@
 					"description": "Playwright Test script to run. Must import from @playwright/test and contain at least one test() block.",
 					"sensitive": true
 				}
-			]
+			],
+			"summary": "Modify a browser check"
 		},
 		{
 			"operationId": "deleteCheck",
 			"command": "onlineornot checks delete",
 			"words": ["checks", "delete"],
-			"description": "Delete a check",
+			"description": "Permanently delete an uptime check\n\nRequires UPTIME_CHECKS:EDIT.",
 			"method": "DELETE",
 			"path": "/v1/checks/{check_id}",
 			"hasBody": false,
@@ -943,13 +947,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Delete a check"
 		},
 		{
 			"operationId": "createDnsCheck",
 			"command": "onlineornot checks dns create",
 			"words": ["checks", "dns", "create"],
-			"description": "Create a DNS check",
+			"description": "Create a new DNS check to monitor DNS records\n\nRequires UPTIME_CHECKS:EDIT.",
 			"method": "POST",
 			"path": "/v1/checks/dns",
 			"hasBody": true,
@@ -1223,13 +1228,14 @@
 					"description": "DNS assertions to run on the response",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Create a DNS check"
 		},
 		{
 			"operationId": "listDnsCheckIncidents",
 			"command": "onlineornot checks dns incidents",
 			"words": ["checks", "dns", "incidents"],
-			"description": "Review recent failures and recoveries for a specific DNS check",
+			"description": "List incidents for a DNS check. Use from and to to include incidents that overlap the time range. Results are sorted by start time, then ID, newest first. Timestamps accept up to three decimal places for seconds. Pagination accepts safe integers, including the calculated offset. The per_page limit is 100.\n\nRequires UPTIME_CHECKS:READ.",
 			"method": "GET",
 			"path": "/v1/checks/dns/{check_id}/incidents",
 			"hasBody": false,
@@ -1302,13 +1308,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Review recent failures and recoveries for a specific DNS check"
 		},
 		{
 			"operationId": "listDnsCheckResults",
 			"command": "onlineornot checks dns results",
 			"words": ["checks", "dns", "results"],
-			"description": "Review raw DNS check results over a bounded time range",
+			"description": "List results for a DNS check. Set to later than from. The time range cannot exceed seven days. Timestamps accept up to three decimal places for seconds. Use positive safe integers for page and per_page. The calculated offset must also be a safe integer. The per_page limit is 100.\n\nRequires UPTIME_CHECKS:READ.",
 			"method": "GET",
 			"path": "/v1/checks/dns/{check_id}/results",
 			"hasBody": false,
@@ -1381,13 +1388,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Review raw DNS check results over a bounded time range"
 		},
 		{
 			"operationId": "updateDnsCheck",
 			"command": "onlineornot checks dns update",
 			"words": ["checks", "dns", "update"],
-			"description": "Modify a DNS check",
+			"description": "Modify the configuration of an existing DNS check\n\nRequires UPTIME_CHECKS:EDIT.",
 			"method": "PATCH",
 			"path": "/v1/checks/dns/{check_id}",
 			"hasBody": true,
@@ -1694,13 +1702,14 @@
 					"description": "assertions",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Modify a DNS check"
 		},
 		{
 			"operationId": "getCheck",
 			"command": "onlineornot checks get",
 			"words": ["checks", "get"],
-			"description": "Retrieve a check",
+			"description": "Look up detailed information about a specific uptime check\n\nRequires UPTIME_CHECKS:READ.",
 			"method": "GET",
 			"path": "/v1/checks/{check_id}",
 			"hasBody": false,
@@ -1729,13 +1738,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Retrieve a check"
 		},
 		{
 			"operationId": "createUptimeCheck",
 			"command": "onlineornot checks http create",
 			"words": ["checks", "http", "create"],
-			"description": "Create an uptime check",
+			"description": "Create a new HTTP uptime check to monitor a URL\n\nRequires UPTIME_CHECKS:EDIT.",
 			"method": "POST",
 			"path": "/v1/checks/uptime",
 			"hasBody": true,
@@ -2063,13 +2073,14 @@
 					"description": "Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.",
 					"sensitive": true
 				}
-			]
+			],
+			"summary": "Create an uptime check"
 		},
 		{
 			"operationId": "listUptimeCheckIncidents",
 			"command": "onlineornot checks http incidents",
 			"words": ["checks", "http", "incidents"],
-			"description": "Review recent failures and recoveries for a specific uptime check",
+			"description": "List incidents for an uptime check. Use from and to to include incidents that overlap the time range. Results are sorted by start time, then ID, newest first. Timestamps accept up to three decimal places for seconds. Pagination accepts safe integers, including the calculated offset. The per_page limit is 100.\n\nRequires UPTIME_CHECKS:READ.",
 			"method": "GET",
 			"path": "/v1/checks/uptime/{check_id}/incidents",
 			"hasBody": false,
@@ -2142,13 +2153,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Review recent failures and recoveries for a specific uptime check"
 		},
 		{
 			"operationId": "listUptimeCheckResults",
 			"command": "onlineornot checks http results",
 			"words": ["checks", "http", "results"],
-			"description": "Review raw uptime check results over a bounded time range",
+			"description": "List results for an uptime check. Set to later than from. The time range cannot exceed seven days. Timestamps accept up to three decimal places for seconds. Use positive safe integers for page and per_page. The calculated offset must also be a safe integer. The per_page limit is 100.\n\nRequires UPTIME_CHECKS:READ.",
 			"method": "GET",
 			"path": "/v1/checks/uptime/{check_id}/results",
 			"hasBody": false,
@@ -2221,13 +2233,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Review raw uptime check results over a bounded time range"
 		},
 		{
 			"operationId": "updateUptimeCheck",
 			"command": "onlineornot checks http update",
 			"words": ["checks", "http", "update"],
-			"description": "Modify an uptime check",
+			"description": "Modify the configuration of an existing uptime check\n\nRequires UPTIME_CHECKS:EDIT.",
 			"method": "PATCH",
 			"path": "/v1/checks/uptime/{check_id}",
 			"hasBody": true,
@@ -2588,13 +2601,14 @@
 					"description": "Password to use for URLs behind HTTP Basic Auth. Uptime checks with environment variables can use {{NAME}} references; empty strings are preserved.",
 					"sensitive": true
 				}
-			]
+			],
+			"summary": "Modify an uptime check"
 		},
 		{
 			"operationId": "listChecks",
 			"command": "onlineornot checks list",
 			"words": ["checks", "list"],
-			"description": "List all checks",
+			"description": "Retrieve a paginated list of all uptime checks\n\nRequires UPTIME_CHECKS:READ.",
 			"method": "GET",
 			"path": "/v1/checks",
 			"hasBody": false,
@@ -2677,13 +2691,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "List all checks"
 		},
 		{
 			"operationId": "moveCheck",
 			"command": "onlineornot checks move",
 			"words": ["checks", "move"],
-			"description": "Assign or unassign a check",
+			"description": "Requires UPTIME_CHECKS:EDIT.",
 			"method": "POST",
 			"path": "/v1/checks/{check_id}/move",
 			"hasBody": true,
@@ -2723,13 +2738,14 @@
 					"description": "Project ID, or null for unassigned.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Assign or unassign a check"
 		},
 		{
 			"operationId": "createTcpCheck",
 			"command": "onlineornot checks tcp create",
 			"words": ["checks", "tcp", "create"],
-			"description": "Create a TCP check",
+			"description": "Create a new TCP check to monitor TCP connectivity\n\nRequires UPTIME_CHECKS:EDIT.",
 			"method": "POST",
 			"path": "/v1/checks/tcp",
 			"hasBody": true,
@@ -3013,13 +3029,14 @@
 					"description": "TCP assertions to run on response time or response data",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Create a TCP check"
 		},
 		{
 			"operationId": "listTcpCheckIncidents",
 			"command": "onlineornot checks tcp incidents",
 			"words": ["checks", "tcp", "incidents"],
-			"description": "Review recent failures and recoveries for a specific TCP check",
+			"description": "List incidents for a TCP check. Use from and to to include incidents that overlap the time range. Results are sorted by start time, then ID, newest first. Timestamps accept up to three decimal places for seconds. Pagination accepts safe integers, including the calculated offset. The per_page limit is 100.\n\nRequires UPTIME_CHECKS:READ.",
 			"method": "GET",
 			"path": "/v1/checks/tcp/{check_id}/incidents",
 			"hasBody": false,
@@ -3092,13 +3109,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Review recent failures and recoveries for a specific TCP check"
 		},
 		{
 			"operationId": "listTcpCheckResults",
 			"command": "onlineornot checks tcp results",
 			"words": ["checks", "tcp", "results"],
-			"description": "Review raw TCP check results over a bounded time range",
+			"description": "List results for a TCP check. Set to later than from. The time range cannot exceed seven days. Timestamps accept up to three decimal places for seconds. Use positive safe integers for page and per_page. The calculated offset must also be a safe integer. The per_page limit is 100.\n\nRequires UPTIME_CHECKS:READ.",
 			"method": "GET",
 			"path": "/v1/checks/tcp/{check_id}/results",
 			"hasBody": false,
@@ -3171,13 +3189,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Review raw TCP check results over a bounded time range"
 		},
 		{
 			"operationId": "updateTcpCheck",
 			"command": "onlineornot checks tcp update",
 			"words": ["checks", "tcp", "update"],
-			"description": "Modify a TCP check",
+			"description": "Modify the configuration of an existing TCP check\n\nRequires UPTIME_CHECKS:EDIT.",
 			"method": "PATCH",
 			"path": "/v1/checks/tcp/{check_id}",
 			"hasBody": true,
@@ -3494,14 +3513,15 @@
 					"description": "assertions",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Modify a TCP check"
 		},
 		{
 			"operationId": "createEnvironmentVariable",
 			"command": "onlineornot env create",
 			"aliases": ["onlineornot environment-variables create"],
 			"words": ["env", "create"],
-			"description": "Create an environment variable",
+			"description": "Create a reusable config or secret for uptime check request headers, HTTP Basic Auth usernames and passwords, and webhook URL templates. Reference variables using {{NAME}}. Each uptime check supports at most 32 distinct variable references across its headers and HTTP Basic Auth combined. Browser checks do not support environment variable references. See [variable-backed webhook URL examples](https://developers.onlineornot.com/api/webhooks#create-a-webhook). Config values are readable; secrets are write-only. A variable's type cannot be changed after creation. Anyone who can edit uptime checks can use variables from the same organization and project, without inheritance or cross-project fallback. Exact secret values are automatically redacted from results; encoded or transformed values may remain visible.\n\nRequires ENVIRONMENT_VARIABLES:EDIT.",
 			"method": "POST",
 			"path": "/v1/env",
 			"hasBody": true,
@@ -3564,14 +3584,15 @@
 					"description": "Value of the variable, limited to 8 KiB of UTF-8. Secret values are write-only and never appear in API responses.",
 					"sensitive": true
 				}
-			]
+			],
+			"summary": "Create an environment variable"
 		},
 		{
 			"operationId": "deleteEnvironmentVariable",
 			"command": "onlineornot env delete",
 			"aliases": ["onlineornot environment-variables delete"],
 			"words": ["env", "delete"],
-			"description": "Delete an environment variable",
+			"description": "Delete an environment variable that is not referenced by a saved uptime check or webhook. References in uptime check headers, HTTP Basic Auth usernames and passwords, or webhook URL templates block deletion. References from paused checks also block deletion.\n\nRequires ENVIRONMENT_VARIABLES:EDIT.",
 			"method": "DELETE",
 			"path": "/v1/env/{environment_variable_id}",
 			"hasBody": false,
@@ -3600,14 +3621,15 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Delete an environment variable"
 		},
 		{
 			"operationId": "getEnvironmentVariable",
 			"command": "onlineornot env get",
 			"aliases": ["onlineornot environment-variables get"],
 			"words": ["env", "get"],
-			"description": "Get an environment variable",
+			"description": "Get an environment variable. Config responses include the value; secret responses do not.\n\nRequires ENVIRONMENT_VARIABLES:READ.",
 			"method": "GET",
 			"path": "/v1/env/{environment_variable_id}",
 			"hasBody": false,
@@ -3636,14 +3658,15 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Get an environment variable"
 		},
 		{
 			"operationId": "listEnvironmentVariables",
 			"command": "onlineornot env list",
 			"aliases": ["onlineornot environment-variables list"],
 			"words": ["env", "list"],
-			"description": "List environment variables",
+			"description": "List environment variables. Values are omitted for both config and secret variables.\n\nRequires ENVIRONMENT_VARIABLES:READ.",
 			"method": "GET",
 			"path": "/v1/env",
 			"hasBody": false,
@@ -3705,14 +3728,15 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "List environment variables"
 		},
 		{
 			"operationId": "moveEnvironmentVariable",
 			"command": "onlineornot env move",
 			"aliases": ["onlineornot environment-variables move"],
 			"words": ["env", "move"],
-			"description": "Assign or unassign an environment variable",
+			"description": "Requires ENVIRONMENT_VARIABLES:EDIT.",
 			"method": "POST",
 			"path": "/v1/env/{environment_variable_id}/move",
 			"hasBody": true,
@@ -3752,14 +3776,15 @@
 					"description": "Project ID, or null for unassigned.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Assign or unassign an environment variable"
 		},
 		{
 			"operationId": "updateEnvironmentVariable",
 			"command": "onlineornot env update",
 			"aliases": ["onlineornot environment-variables update"],
 			"words": ["env", "update"],
-			"description": "Update an environment variable",
+			"description": "Rename a variable, replace its value, or both. Renaming updates saved uptime check headers, HTTP Basic Auth usernames and passwords, and webhook URL templates. Type cannot be changed; secret values are never returned.\n\nRequires ENVIRONMENT_VARIABLES:EDIT.",
 			"method": "PATCH",
 			"path": "/v1/env/{environment_variable_id}",
 			"hasBody": true,
@@ -3810,13 +3835,14 @@
 					"description": "Value of the variable, limited to 8 KiB of UTF-8. Secret values are write-only and never appear in API responses.",
 					"sensitive": true
 				}
-			]
+			],
+			"summary": "Update an environment variable"
 		},
 		{
 			"operationId": "createHeartbeat",
 			"command": "onlineornot heartbeats create",
 			"words": ["heartbeats", "create"],
-			"description": "Create a heartbeat.",
+			"description": "Create a new heartbeat monitor for cron jobs or scheduled tasks\n\nRequires HEARTBEAT_CHECKS:EDIT.",
 			"method": "POST",
 			"path": "/v1/heartbeats",
 			"hasBody": true,
@@ -4022,13 +4048,14 @@
 					"description": "[Alert priority](https://onlineornot.com/docs/how-to/alerts/configure-priority).",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Create a heartbeat."
 		},
 		{
 			"operationId": "deleteHeartbeat",
 			"command": "onlineornot heartbeats delete",
 			"words": ["heartbeats", "delete"],
-			"description": "Delete a heartbeat",
+			"description": "Permanently delete a heartbeat monitor\n\nRequires HEARTBEAT_CHECKS:EDIT.",
 			"method": "DELETE",
 			"path": "/v1/heartbeats/{heartbeat_id}",
 			"hasBody": false,
@@ -4057,13 +4084,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Delete a heartbeat"
 		},
 		{
 			"operationId": "getHeartbeat",
 			"command": "onlineornot heartbeats get",
 			"words": ["heartbeats", "get"],
-			"description": "Retrieve a heartbeat",
+			"description": "Look up detailed information about a specific heartbeat monitor\n\nRequires HEARTBEAT_CHECKS:READ.",
 			"method": "GET",
 			"path": "/v1/heartbeats/{heartbeat_id}",
 			"hasBody": false,
@@ -4092,13 +4120,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Retrieve a heartbeat"
 		},
 		{
 			"operationId": "listHeartbeats",
 			"command": "onlineornot heartbeats list",
 			"words": ["heartbeats", "list"],
-			"description": "List all heartbeats",
+			"description": "Retrieve a paginated list of all heartbeat monitors\n\nRequires HEARTBEAT_CHECKS:READ.",
 			"method": "GET",
 			"path": "/v1/heartbeats",
 			"hasBody": false,
@@ -4160,13 +4189,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "List all heartbeats"
 		},
 		{
 			"operationId": "moveHeartbeat",
 			"command": "onlineornot heartbeats move",
 			"words": ["heartbeats", "move"],
-			"description": "Assign or unassign a heartbeat",
+			"description": "Requires HEARTBEAT_CHECKS:EDIT.",
 			"method": "POST",
 			"path": "/v1/heartbeats/{heartbeat_id}/move",
 			"hasBody": true,
@@ -4206,13 +4236,14 @@
 					"description": "Project ID, or null for unassigned.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Assign or unassign a heartbeat"
 		},
 		{
 			"operationId": "updateHeartbeat",
 			"command": "onlineornot heartbeats update",
 			"words": ["heartbeats", "update"],
-			"description": "Update a heartbeat.",
+			"description": "Modify the configuration of an existing heartbeat monitor\n\nRequires HEARTBEAT_CHECKS:EDIT.",
 			"method": "PATCH",
 			"path": "/v1/heartbeats/{heartbeat_id}",
 			"hasBody": true,
@@ -4440,14 +4471,15 @@
 					"description": "Suppresses alerts without stopping heartbeat monitoring.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Update a heartbeat."
 		},
 		{
 			"operationId": "createMaintenanceWindow",
 			"command": "onlineornot maintenance create",
 			"aliases": ["onlineornot maintenance-windows create"],
 			"words": ["maintenance", "create"],
-			"description": "Create a new maintenance window",
+			"description": "Create a maintenance window. Omitted or null project_id leaves it unassigned. Every selected check and heartbeat must belong to the same organisation and project.\n\nRequires MAINTENANCE_WINDOWS:EDIT.",
 			"method": "POST",
 			"path": "/v1/maintenance-windows",
 			"hasBody": true,
@@ -4562,14 +4594,15 @@
 					"description": "Heartbeat IDs to associate with this maintenance window",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Create a new maintenance window"
 		},
 		{
 			"operationId": "deleteMaintenanceWindow",
 			"command": "onlineornot maintenance delete",
 			"aliases": ["onlineornot maintenance-windows delete"],
 			"words": ["maintenance", "delete"],
-			"description": "Delete a maintenance window",
+			"description": "Delete a maintenance window and all its associations with checks and heartbeats\n\nRequires MAINTENANCE_WINDOWS:EDIT.",
 			"method": "DELETE",
 			"path": "/v1/maintenance-windows/{maintenance_window_id}",
 			"hasBody": false,
@@ -4598,14 +4631,15 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Delete a maintenance window"
 		},
 		{
 			"operationId": "getMaintenanceWindow",
 			"command": "onlineornot maintenance get",
 			"aliases": ["onlineornot maintenance-windows get"],
 			"words": ["maintenance", "get"],
-			"description": "Get a maintenance window by ID",
+			"description": "Retrieve a maintenance window with associated checks and heartbeats\n\nRequires MAINTENANCE_WINDOWS:READ.",
 			"method": "GET",
 			"path": "/v1/maintenance-windows/{maintenance_window_id}",
 			"hasBody": false,
@@ -4634,14 +4668,15 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Get a maintenance window by ID"
 		},
 		{
 			"operationId": "listMaintenanceWindows",
 			"command": "onlineornot maintenance list",
 			"aliases": ["onlineornot maintenance-windows list"],
 			"words": ["maintenance", "list"],
-			"description": "List all maintenance windows",
+			"description": "Retrieve maintenance windows across all projects, or filter by project_id. Use unassigned for windows without a project.\n\nRequires MAINTENANCE_WINDOWS:READ.",
 			"method": "GET",
 			"path": "/v1/maintenance-windows",
 			"hasBody": false,
@@ -4703,14 +4738,15 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "List all maintenance windows"
 		},
 		{
 			"operationId": "moveMaintenanceWindow",
 			"command": "onlineornot maintenance move",
 			"aliases": ["onlineornot maintenance-windows move"],
 			"words": ["maintenance", "move"],
-			"description": "Assign or unassign a maintenance window",
+			"description": "The window and all its checks and heartbeats must retain the same assignment. Use the atomic resources move to select linked resources together.\n\nRequires MAINTENANCE_WINDOWS:EDIT.",
 			"method": "POST",
 			"path": "/v1/maintenance-windows/{maintenance_window_id}/move",
 			"hasBody": true,
@@ -4750,14 +4786,15 @@
 					"description": "Project ID, or null for unassigned.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Assign or unassign a maintenance window"
 		},
 		{
 			"operationId": "updateMaintenanceWindow",
 			"command": "onlineornot maintenance update",
 			"aliases": ["onlineornot maintenance-windows update"],
 			"words": ["maintenance", "update"],
-			"description": "Update a maintenance window",
+			"description": "Update a maintenance window. All fields are optional - only provided fields will be updated. Updating checks or heartbeats replaces existing associations and requires the same project assignment. Assignment changes use the move operation.\n\nRequires MAINTENANCE_WINDOWS:EDIT.",
 			"method": "PATCH",
 			"path": "/v1/maintenance-windows/{maintenance_window_id}",
 			"hasBody": true,
@@ -4884,13 +4921,14 @@
 					"description": "Heartbeat IDs. Replaces existing associations.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Update a maintenance window"
 		},
 		{
 			"operationId": "createProject",
 			"command": "onlineornot projects create",
 			"words": ["projects", "create"],
-			"description": "Create a project",
+			"description": "Requires PROJECTS:EDIT.",
 			"method": "POST",
 			"path": "/v1/projects",
 			"hasBody": true,
@@ -4919,13 +4957,14 @@
 					"description": "Project name. Unique within the organisation, ignoring case and surrounding spaces.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Create a project"
 		},
 		{
 			"operationId": "deleteProject",
 			"command": "onlineornot projects delete",
 			"words": ["projects", "delete"],
-			"description": "Delete an empty project",
+			"description": "Requires PROJECTS:EDIT.",
 			"method": "DELETE",
 			"path": "/v1/projects/{project_id}",
 			"hasBody": false,
@@ -4954,13 +4993,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Delete an empty project"
 		},
 		{
 			"operationId": "getProject",
 			"command": "onlineornot projects get",
 			"words": ["projects", "get"],
-			"description": "Get a project",
+			"description": "Requires PROJECTS:READ.",
 			"method": "GET",
 			"path": "/v1/projects/{project_id}",
 			"hasBody": false,
@@ -4989,13 +5029,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Get a project"
 		},
 		{
 			"operationId": "listProjects",
 			"command": "onlineornot projects list",
 			"words": ["projects", "list"],
-			"description": "List projects",
+			"description": "Requires PROJECTS:READ.",
 			"method": "GET",
 			"path": "/v1/projects",
 			"hasBody": false,
@@ -5035,13 +5076,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "List projects"
 		},
 		{
 			"operationId": "updateProject",
 			"command": "onlineornot projects update",
 			"words": ["projects", "update"],
-			"description": "Rename a project",
+			"description": "Requires PROJECTS:EDIT.",
 			"method": "PATCH",
 			"path": "/v1/projects/{project_id}",
 			"hasBody": true,
@@ -5081,13 +5123,14 @@
 					"description": "Project name. Unique within the organisation, ignoring case and surrounding spaces.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Rename a project"
 		},
 		{
 			"operationId": "createStatusPageComponent",
 			"command": "onlineornot status-pages components create",
 			"words": ["status-pages", "components", "create"],
-			"description": "Create a component",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "POST",
 			"path": "/v1/status_pages/{status_page_id}/components",
 			"hasBody": true,
@@ -5168,13 +5211,14 @@
 					"description": "Show this component's response time metrics on the status page.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Create a component"
 		},
 		{
 			"operationId": "deleteStatusPageComponent",
 			"command": "onlineornot status-pages components delete",
 			"words": ["status-pages", "components", "delete"],
-			"description": "Delete a component",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "DELETE",
 			"path": "/v1/status_pages/{status_page_id}/components/{status_page_component_id}",
 			"hasBody": false,
@@ -5214,13 +5258,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Delete a component"
 		},
 		{
 			"operationId": "getStatusPageComponent",
 			"command": "onlineornot status-pages components get",
 			"words": ["status-pages", "components", "get"],
-			"description": "Retrieve a component",
+			"description": "Requires STATUS_PAGES:READ.",
 			"method": "GET",
 			"path": "/v1/status_pages/{status_page_id}/components/{status_page_component_id}",
 			"hasBody": false,
@@ -5260,13 +5305,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Retrieve a component"
 		},
 		{
 			"operationId": "listStatusPageComponents",
 			"command": "onlineornot status-pages components list",
 			"words": ["status-pages", "components", "list"],
-			"description": "List all components",
+			"description": "Requires STATUS_PAGES:READ.",
 			"method": "GET",
 			"path": "/v1/status_pages/{status_page_id}/components",
 			"hasBody": false,
@@ -5317,13 +5363,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "List all components"
 		},
 		{
 			"operationId": "updateStatusPageComponentSortOrder",
 			"command": "onlineornot status-pages components sort-order",
 			"words": ["status-pages", "components", "sort-order"],
-			"description": "Update the sort order of ungrouped components",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "PUT",
 			"path": "/v1/status_pages/{status_page_id}/components/sort-order",
 			"hasBody": true,
@@ -5363,13 +5410,14 @@
 					"description": "Ordered list of ungrouped component IDs",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Update the sort order of ungrouped components"
 		},
 		{
 			"operationId": "updateStatusPageComponent",
 			"command": "onlineornot status-pages components update",
 			"words": ["status-pages", "components", "update"],
-			"description": "Update a component",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "PATCH",
 			"path": "/v1/status_pages/{status_page_id}/components/{status_page_component_id}",
 			"hasBody": true,
@@ -5505,13 +5553,14 @@
 					"description": "Override the automatic status from external status page. When true, status can be manually set.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Update a component"
 		},
 		{
 			"operationId": "createStatusPage",
 			"command": "onlineornot status-pages create",
 			"words": ["status-pages", "create"],
-			"description": "Create a status page",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "POST",
 			"path": "/v1/status_pages",
 			"hasBody": true,
@@ -5639,13 +5688,14 @@
 					"description": "List of IP addresses or CIDR ranges allowed to access this status page",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Create a status page"
 		},
 		{
 			"operationId": "deleteStatusPage",
 			"command": "onlineornot status-pages delete",
 			"words": ["status-pages", "delete"],
-			"description": "Delete a status page",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "DELETE",
 			"path": "/v1/status_pages/{status_page_id}",
 			"hasBody": false,
@@ -5674,13 +5724,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Delete a status page"
 		},
 		{
 			"operationId": "getStatusPage",
 			"command": "onlineornot status-pages get",
 			"words": ["status-pages", "get"],
-			"description": "Retrieve a status page",
+			"description": "Requires STATUS_PAGES:READ.",
 			"method": "GET",
 			"path": "/v1/status_pages/{status_page_id}",
 			"hasBody": false,
@@ -5709,13 +5760,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Retrieve a status page"
 		},
 		{
 			"operationId": "createStatusPageComponentGroup",
 			"command": "onlineornot status-pages groups create",
 			"words": ["status-pages", "groups", "create"],
-			"description": "Create a component group",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "POST",
 			"path": "/v1/status_pages/{status_page_id}/groups",
 			"hasBody": true,
@@ -5766,13 +5818,14 @@
 					"description": "Description of the component group",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Create a component group"
 		},
 		{
 			"operationId": "deleteStatusPageComponentGroup",
 			"command": "onlineornot status-pages groups delete",
 			"words": ["status-pages", "groups", "delete"],
-			"description": "Delete a component group",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "DELETE",
 			"path": "/v1/status_pages/{status_page_id}/groups/{group_id}",
 			"hasBody": false,
@@ -5812,13 +5865,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Delete a component group"
 		},
 		{
 			"operationId": "getStatusPageComponentGroup",
 			"command": "onlineornot status-pages groups get",
 			"words": ["status-pages", "groups", "get"],
-			"description": "Retrieve a component group",
+			"description": "Requires STATUS_PAGES:READ.",
 			"method": "GET",
 			"path": "/v1/status_pages/{status_page_id}/groups/{group_id}",
 			"hasBody": false,
@@ -5858,13 +5912,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Retrieve a component group"
 		},
 		{
 			"operationId": "listStatusPageComponentGroups",
 			"command": "onlineornot status-pages groups list",
 			"words": ["status-pages", "groups", "list"],
-			"description": "List all component groups",
+			"description": "Requires STATUS_PAGES:READ.",
 			"method": "GET",
 			"path": "/v1/status_pages/{status_page_id}/groups",
 			"hasBody": false,
@@ -5915,13 +5970,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "List all component groups"
 		},
 		{
 			"operationId": "updateStatusPageGroupComponentSortOrder",
 			"command": "onlineornot status-pages groups sort-components",
 			"words": ["status-pages", "groups", "sort-components"],
-			"description": "Update the sort order of components within a group",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "PUT",
 			"path": "/v1/status_pages/{status_page_id}/groups/{group_id}/sort-order",
 			"hasBody": true,
@@ -5972,13 +6028,14 @@
 					"description": "Ordered list of component IDs within the group",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Update the sort order of components within a group"
 		},
 		{
 			"operationId": "updateStatusPageComponentGroupSortOrder",
 			"command": "onlineornot status-pages groups sort-order",
 			"words": ["status-pages", "groups", "sort-order"],
-			"description": "Update the sort order of component groups",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "PUT",
 			"path": "/v1/status_pages/{status_page_id}/groups/sort-order",
 			"hasBody": true,
@@ -6018,13 +6075,14 @@
 					"description": "Ordered list of component group IDs",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Update the sort order of component groups"
 		},
 		{
 			"operationId": "updateStatusPageComponentGroup",
 			"command": "onlineornot status-pages groups update",
 			"words": ["status-pages", "groups", "update"],
-			"description": "Update a component group",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "PATCH",
 			"path": "/v1/status_pages/{status_page_id}/groups/{group_id}",
 			"hasBody": true,
@@ -6086,13 +6144,14 @@
 					"description": "Description of the component group",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Update a component group"
 		},
 		{
 			"operationId": "createStatusPageIncident",
 			"command": "onlineornot status-pages incidents create",
 			"words": ["status-pages", "incidents", "create"],
-			"description": "Create an incident",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "POST",
 			"path": "/v1/status_pages/{status_page_id}/incidents",
 			"hasBody": true,
@@ -6183,13 +6242,14 @@
 					"description": "Whether to notify status page subscribers",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Create an incident"
 		},
 		{
 			"operationId": "deleteStatusPageIncident",
 			"command": "onlineornot status-pages incidents delete",
 			"words": ["status-pages", "incidents", "delete"],
-			"description": "Delete an incident",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "DELETE",
 			"path": "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}",
 			"hasBody": false,
@@ -6229,13 +6289,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Delete an incident"
 		},
 		{
 			"operationId": "getStatusPageIncident",
 			"command": "onlineornot status-pages incidents get",
 			"words": ["status-pages", "incidents", "get"],
-			"description": "Retrieve an incident",
+			"description": "Requires STATUS_PAGES:READ.",
 			"method": "GET",
 			"path": "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}",
 			"hasBody": false,
@@ -6275,13 +6336,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Retrieve an incident"
 		},
 		{
 			"operationId": "listStatusPageIncidents",
 			"command": "onlineornot status-pages incidents list",
 			"words": ["status-pages", "incidents", "list"],
-			"description": "List all incidents",
+			"description": "Requires STATUS_PAGES:READ.",
 			"method": "GET",
 			"path": "/v1/status_pages/{status_page_id}/incidents",
 			"hasBody": false,
@@ -6332,13 +6394,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "List all incidents"
 		},
 		{
 			"operationId": "updateStatusPageIncident",
 			"command": "onlineornot status-pages incidents update",
 			"words": ["status-pages", "incidents", "update"],
-			"description": "Update an incident",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "PATCH",
 			"path": "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}",
 			"hasBody": true,
@@ -6407,13 +6470,14 @@
 					"description": "Impact of the incident",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Update an incident"
 		},
 		{
 			"operationId": "createStatusPageIncidentUpdate",
 			"command": "onlineornot status-pages incidents updates create",
 			"words": ["status-pages", "incidents", "updates", "create"],
-			"description": "Create a new update for an incident",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "POST",
 			"path": "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates",
 			"hasBody": true,
@@ -6519,13 +6583,14 @@
 					"description": "When this update occurred (defaults to now)",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Create a new update for an incident"
 		},
 		{
 			"operationId": "deleteStatusPageIncidentUpdate",
 			"command": "onlineornot status-pages incidents updates delete",
 			"words": ["status-pages", "incidents", "updates", "delete"],
-			"description": "Delete an incident update",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "DELETE",
 			"path": "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates/{incident_update_id}",
 			"hasBody": false,
@@ -6576,13 +6641,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Delete an incident update"
 		},
 		{
 			"operationId": "getStatusPageIncidentUpdate",
 			"command": "onlineornot status-pages incidents updates get",
 			"words": ["status-pages", "incidents", "updates", "get"],
-			"description": "Retrieve a single incident update",
+			"description": "Requires STATUS_PAGES:READ.",
 			"method": "GET",
 			"path": "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates/{incident_update_id}",
 			"hasBody": false,
@@ -6633,13 +6699,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Retrieve a single incident update"
 		},
 		{
 			"operationId": "listStatusPageIncidentUpdates",
 			"command": "onlineornot status-pages incidents updates list",
 			"words": ["status-pages", "incidents", "updates", "list"],
-			"description": "List all updates for an incident",
+			"description": "Requires STATUS_PAGES:READ.",
 			"method": "GET",
 			"path": "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates",
 			"hasBody": false,
@@ -6701,13 +6768,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "List all updates for an incident"
 		},
 		{
 			"operationId": "updateStatusPageIncidentUpdate",
 			"command": "onlineornot status-pages incidents updates update",
 			"words": ["status-pages", "incidents", "updates", "update"],
-			"description": "Update an existing incident update",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "PATCH",
 			"path": "/v1/status_pages/{status_page_id}/incidents/{status_page_incident_id}/updates/{incident_update_id}",
 			"hasBody": true,
@@ -6802,13 +6870,14 @@
 					"description": "Updated timestamp",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Update an existing incident update"
 		},
 		{
 			"operationId": "listStatusPages",
 			"command": "onlineornot status-pages list",
 			"words": ["status-pages", "list"],
-			"description": "List all status pages",
+			"description": "Requires STATUS_PAGES:READ.",
 			"method": "GET",
 			"path": "/v1/status_pages",
 			"hasBody": false,
@@ -6859,13 +6928,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "List all status pages"
 		},
 		{
 			"operationId": "createStatusPageScheduledMaintenance",
 			"command": "onlineornot status-pages scheduled-maintenance create",
 			"words": ["status-pages", "scheduled-maintenance", "create"],
-			"description": "Schedule maintenance for a status page",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "POST",
 			"path": "/v1/status_pages/{status_page_id}/scheduled_maintenance",
 			"hasBody": true,
@@ -6960,13 +7030,14 @@
 					"description": "Notification settings for subscribers",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Schedule maintenance for a status page"
 		},
 		{
 			"operationId": "deleteStatusPageScheduledMaintenance",
 			"command": "onlineornot status-pages scheduled-maintenance delete",
 			"words": ["status-pages", "scheduled-maintenance", "delete"],
-			"description": "Delete a scheduled maintenance",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "DELETE",
 			"path": "/v1/status_pages/{status_page_id}/scheduled_maintenance/{scheduled_maintenance_id}",
 			"hasBody": false,
@@ -7006,13 +7077,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Delete a scheduled maintenance"
 		},
 		{
 			"operationId": "getStatusPageScheduledMaintenance",
 			"command": "onlineornot status-pages scheduled-maintenance get",
 			"words": ["status-pages", "scheduled-maintenance", "get"],
-			"description": "Retrieve a scheduled maintenance",
+			"description": "Requires STATUS_PAGES:READ.",
 			"method": "GET",
 			"path": "/v1/status_pages/{status_page_id}/scheduled_maintenance/{scheduled_maintenance_id}",
 			"hasBody": false,
@@ -7052,13 +7124,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Retrieve a scheduled maintenance"
 		},
 		{
 			"operationId": "updateStatusPageScheduledMaintenance",
 			"command": "onlineornot status-pages scheduled-maintenance update",
 			"words": ["status-pages", "scheduled-maintenance", "update"],
-			"description": "Update a scheduled maintenance (only before it has started)",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "PATCH",
 			"path": "/v1/status_pages/{status_page_id}/scheduled_maintenance/{scheduled_maintenance_id}",
 			"hasBody": true,
@@ -7131,13 +7204,14 @@
 					"description": "Updated duration in minutes",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Update a scheduled maintenance (only before it has started)"
 		},
 		{
 			"operationId": "createStatusPageSubscriber",
 			"command": "onlineornot status-pages subscribers create",
 			"words": ["status-pages", "subscribers", "create"],
-			"description": "Create a subscriber",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "POST",
 			"path": "/v1/status_pages/{status_page_id}/subscribers",
 			"hasBody": true,
@@ -7200,13 +7274,14 @@
 					"description": "Selected component IDs when component_subscription_mode is SELECTED_COMPONENTS",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Create a subscriber"
 		},
 		{
 			"operationId": "deleteStatusPageSubscriber",
 			"command": "onlineornot status-pages subscribers delete",
 			"words": ["status-pages", "subscribers", "delete"],
-			"description": "Delete a subscriber",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "DELETE",
 			"path": "/v1/status_pages/{status_page_id}/subscribers/{subscriber_id}",
 			"hasBody": false,
@@ -7246,13 +7321,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Delete a subscriber"
 		},
 		{
 			"operationId": "listStatusPageSubscribers",
 			"command": "onlineornot status-pages subscribers list",
 			"words": ["status-pages", "subscribers", "list"],
-			"description": "List all subscribers",
+			"description": "Requires STATUS_PAGES:READ.",
 			"method": "GET",
 			"path": "/v1/status_pages/{status_page_id}/subscribers",
 			"hasBody": false,
@@ -7303,7 +7379,8 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "List all subscribers"
 		},
 		{
 			"operationId": "getStatusPageSummary",
@@ -7327,13 +7404,14 @@
 					"description": "The subdomain part of a status page's URL",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Get a status page's overview."
 		},
 		{
 			"operationId": "updateStatusPage",
 			"command": "onlineornot status-pages update",
 			"words": ["status-pages", "update"],
-			"description": "Update a status page",
+			"description": "Requires STATUS_PAGES:EDIT.",
 			"method": "POST",
 			"path": "/v1/status_pages/{status_page_id}",
 			"hasBody": true,
@@ -7472,13 +7550,14 @@
 					"description": "List of IP addresses or CIDR ranges allowed to access this status page",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Update a status page"
 		},
 		{
 			"operationId": "createToken",
 			"command": "onlineornot tokens create",
 			"words": ["tokens", "create"],
-			"description": "Create an API token",
+			"description": "Create a new API token for the organization.\n\nYour API token grants or OAuth access token scopes must permit each requested permission.\n- EDIT permits READ or EDIT for the same scope.\n- READ permits only READ for the same scope.\n- The API returns HTTP 403 if your token does not have a required permission.\n- This limit does not apply when you use session cookies. LOGS:EDIT and LOGS:SEND still require current ADMIN membership.\n- OAuth callers also require current ADMIN membership to issue LOGS:EDIT or LOGS:SEND.\n- LOGS:SEND can be combined with other explicitly granted permissions. Tokens with LOGS:SEND may specify project_id; omit it or use null for unassigned.\n- Project scope applies only to sending; other grants remain organisation-wide.\n- Issuing LOGS:SEND requires LOGS:EDIT or explicit LOGS:SEND delegation authority in addition to API_TOKENS:EDIT for bearer callers. LOGS:EDIT itself does not authorize sending logs.\n- Project scope is fixed at creation. Revoke and replace the token to change it. A sending credential with API_TOKENS:EDIT may delegate sending only to its own project unless it also holds organisation-wide LOGS:EDIT.\n- Logs grants are available to authorized callers in every organisation. Ingestion and search are not available yet.\n\nExample requirements:\n- Read permissions: API_TOKENS:EDIT and UPTIME_CHECKS:READ (or UPTIME_CHECKS:EDIT).\n- Multiple permissions: API_TOKENS:EDIT, UPTIME_CHECKS:EDIT, and STATUS_PAGES:EDIT.\n\nRequires API_TOKENS:EDIT.",
 			"method": "POST",
 			"path": "/v1/tokens",
 			"hasBody": true,
@@ -7540,13 +7619,14 @@
 					"description": "Project receiving logs. Omit or use null for unassigned. Requires LOGS:SEND and applies only to sending; other grants remain organisation-wide. Scope cannot be changed after issuance.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Create an API token"
 		},
 		{
 			"operationId": "deleteToken",
 			"command": "onlineornot tokens delete",
 			"words": ["tokens", "delete"],
-			"description": "Delete an API token",
+			"description": "Permanently delete an API token\n\nRequires API_TOKENS:EDIT.",
 			"method": "DELETE",
 			"path": "/v1/tokens/{token_id}",
 			"hasBody": false,
@@ -7575,13 +7655,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Delete an API token"
 		},
 		{
 			"operationId": "getToken",
 			"command": "onlineornot tokens get",
 			"words": ["tokens", "get"],
-			"description": "Retrieve an API token",
+			"description": "Look up detailed information about a specific API token\n\nRequires API_TOKENS:READ.",
 			"method": "GET",
 			"path": "/v1/tokens/{token_id}",
 			"hasBody": false,
@@ -7610,13 +7691,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Retrieve an API token"
 		},
 		{
 			"operationId": "listTokens",
 			"command": "onlineornot tokens list",
 			"words": ["tokens", "list"],
-			"description": "List all API tokens",
+			"description": "Retrieve a paginated list of all API tokens for the organization\n\nRequires API_TOKENS:READ.",
 			"method": "GET",
 			"path": "/v1/tokens",
 			"hasBody": false,
@@ -7667,13 +7749,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "List all API tokens"
 		},
 		{
 			"operationId": "createWebhook",
 			"command": "onlineornot webhooks create",
 			"words": ["webhooks", "create"],
-			"description": "Create a webhook",
+			"description": "Create a new webhook to receive event notifications\n\nRequires WEBHOOKS:EDIT.",
 			"method": "POST",
 			"path": "/v1/webhooks",
 			"hasBody": true,
@@ -7788,13 +7871,14 @@
 					"description": "IDs of heartbeats to associate with this webhook",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Create a webhook"
 		},
 		{
 			"operationId": "deleteWebhook",
 			"command": "onlineornot webhooks delete",
 			"words": ["webhooks", "delete"],
-			"description": "Delete a webhook",
+			"description": "Permanently delete a webhook\n\nRequires WEBHOOKS:EDIT.",
 			"method": "DELETE",
 			"path": "/v1/webhooks/{webhook_id}",
 			"hasBody": false,
@@ -7823,13 +7907,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Delete a webhook"
 		},
 		{
 			"operationId": "getWebhook",
 			"command": "onlineornot webhooks get",
 			"words": ["webhooks", "get"],
-			"description": "Retrieve a webhook",
+			"description": "Look up detailed information about a specific webhook\n\nRequires WEBHOOKS:READ.",
 			"method": "GET",
 			"path": "/v1/webhooks/{webhook_id}",
 			"hasBody": false,
@@ -7858,13 +7943,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Retrieve a webhook"
 		},
 		{
 			"operationId": "listWebhooks",
 			"command": "onlineornot webhooks list",
 			"words": ["webhooks", "list"],
-			"description": "List all webhooks",
+			"description": "Retrieve a paginated list of all webhooks for your organization\n\nRequires WEBHOOKS:READ.",
 			"method": "GET",
 			"path": "/v1/webhooks",
 			"hasBody": false,
@@ -7926,13 +8012,14 @@
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "List all webhooks"
 		},
 		{
 			"operationId": "moveWebhook",
 			"command": "onlineornot webhooks move",
 			"words": ["webhooks", "move"],
-			"description": "Assign or unassign a webhook",
+			"description": "Requires WEBHOOKS:EDIT.",
 			"method": "POST",
 			"path": "/v1/webhooks/{webhook_id}/move",
 			"hasBody": true,
@@ -7972,13 +8059,14 @@
 					"description": "Project ID, or null for unassigned.",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Assign or unassign a webhook"
 		},
 		{
 			"operationId": "updateWebhook",
 			"command": "onlineornot webhooks update",
 			"words": ["webhooks", "update"],
-			"description": "Modify a webhook",
+			"description": "Update the configuration of an existing webhook\n\nRequires WEBHOOKS:EDIT.",
 			"method": "PATCH",
 			"path": "/v1/webhooks/{webhook_id}",
 			"hasBody": true,
@@ -8093,7 +8181,28 @@
 					"description": "IDs of heartbeats to associate with this webhook",
 					"sensitive": false
 				}
-			]
+			],
+			"summary": "Modify a webhook"
 		}
-	]
+	],
+	"descriptions": {
+		"checks": "Manage checks",
+		"checks browser": "Manage browser",
+		"checks dns": "Manage dns",
+		"checks http": "Manage http",
+		"checks tcp": "Manage tcp",
+		"env": "Manage env",
+		"heartbeats": "Manage heartbeats",
+		"maintenance": "Manage maintenance",
+		"projects": "Manage projects",
+		"status-pages": "Manage status-pages",
+		"status-pages components": "Manage components",
+		"status-pages groups": "Manage groups",
+		"status-pages incidents": "Manage incidents",
+		"status-pages incidents updates": "Manage updates",
+		"status-pages scheduled-maintenance": "Manage scheduled-maintenance",
+		"status-pages subscribers": "Manage subscribers",
+		"tokens": "Manage tokens",
+		"webhooks": "Manage webhooks"
+	}
 }

@@ -4,6 +4,7 @@ import type { ArgumentsCamelCase } from "yargs";
 import { version as onlineornotVersion } from "../package.json";
 import { printBanner } from "./banner";
 import { billingHandler, billingOptions } from "./billing";
+import { utilityCommandMetadata } from "./command-runtime/utility-command-metadata";
 import { docsHandler, docsOptions } from "./docs";
 import { registerGeneratedCommands } from "./generated-cli";
 import { logger } from "./logger";
@@ -80,7 +81,7 @@ export function createCLIParser(argv: string[]) {
 	// docs
 	onlineornot.command(
 		"docs",
-		"📚 Open OnlineOrNot's docs in your browser",
+		utilityCommandMetadata.docs.description,
 		docsOptions,
 		docsHandler,
 	);
@@ -90,7 +91,7 @@ export function createCLIParser(argv: string[]) {
 	// billing
 	onlineornot.command(
 		"billing",
-		"🧾 Open OnlineOrNot's billing in your browser",
+		utilityCommandMetadata.billing.description,
 		billingOptions,
 		billingHandler,
 	);
@@ -98,14 +99,14 @@ export function createCLIParser(argv: string[]) {
 	// login
 	onlineornot.command(
 		"login",
-		"🔓 Login to OnlineOrNot via OAuth",
+		utilityCommandMetadata.login.description,
 		loginOptions,
 		loginHandler,
 	);
 
 	onlineornot.command(
 		"mcp",
-		"Connect an MCP client over stdio using your CLI login",
+		utilityCommandMetadata.mcp.description,
 		() => {},
 		runMcpBridge,
 	);
@@ -113,7 +114,7 @@ export function createCLIParser(argv: string[]) {
 	// setup
 	onlineornot.command(
 		"setup",
-		"🚀 Sign in or sign up and create your first uptime check",
+		utilityCommandMetadata.setup.description,
 		setupOptions,
 		setupHandler,
 	);
@@ -121,7 +122,7 @@ export function createCLIParser(argv: string[]) {
 	// logout
 	onlineornot.command(
 		"logout",
-		"🔒 Logout from OnlineOrNot",
+		utilityCommandMetadata.logout.description,
 		logoutOptions,
 		logoutHandler,
 	);
@@ -129,7 +130,7 @@ export function createCLIParser(argv: string[]) {
 	// whoami
 	onlineornot.command(
 		"whoami",
-		"🕵️  Retrieve your user info and test your auth config",
+		utilityCommandMetadata.whoami.description,
 		() => {},
 		async () => {
 			await printBanner();
@@ -157,7 +158,7 @@ export function createCLIParser(argv: string[]) {
 	// update
 	onlineornot.command(
 		"update",
-		"⬆️  Update OnlineOrNot CLI to the latest version",
+		utilityCommandMetadata.update.description,
 		updateOptions,
 		updateHandler,
 	);
@@ -165,7 +166,7 @@ export function createCLIParser(argv: string[]) {
 	// uninstall
 	onlineornot.command(
 		"uninstall",
-		"🗑️  Uninstall OnlineOrNot CLI and remove all related files",
+		utilityCommandMetadata.uninstall.description,
 		uninstallOptions,
 		uninstallHandler,
 	);
