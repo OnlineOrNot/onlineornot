@@ -10,24 +10,50 @@
 	"operations": [
 		{
 			"operationId": "createBrowserCheck",
-			"method": "POST",
+			"method": "create",
 			"path": "/v1/checks/browser",
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.browser",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"body": "http-body",
+				"version": "runtime"
+			},
+			"sensitive": [
+				"headers",
+				"body",
+				"auth_username",
+				"auth_password",
+				"script"
+			],
+			"omitFlags": ["type"],
+			"requireBodyAnyOf": ["url", "script"]
 		},
 		{
 			"operationId": "createCheck",
 			"method": "POST",
 			"path": "/v1/checks",
 			"status": "handwritten",
-			"command": "checks create"
+			"command": "setup"
 		},
 		{
 			"operationId": "createDnsCheck",
-			"method": "POST",
+			"method": "create",
 			"path": "/v1/checks/dns",
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.dns",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"dns_domain": "domain",
+				"dns_record_type": "record-type",
+				"dns_resolver": "resolver",
+				"dns_protocol": "protocol"
+			},
+			"sensitive": [],
+			"omitFlags": ["type"],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "createEnvironmentVariable",
@@ -39,7 +65,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": ["value"]
+			"sensitive": ["value"],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "createHeartbeat",
@@ -53,7 +81,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "createInvitation",
@@ -72,7 +102,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "createProject",
@@ -84,7 +116,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "createStatusPage",
@@ -96,7 +130,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": ["password"]
+			"sensitive": ["password"],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "createStatusPageComponent",
@@ -110,7 +146,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "createStatusPageComponentGroup",
@@ -124,7 +162,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "createStatusPageIncident",
@@ -138,7 +178,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "createStatusPageIncidentUpdate",
@@ -153,7 +195,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "createStatusPageScheduledMaintenance",
@@ -167,7 +211,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "createStatusPageSubscriber",
@@ -181,14 +227,28 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "createTcpCheck",
-			"method": "POST",
+			"method": "create",
 			"path": "/v1/checks/tcp",
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.tcp",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"tcp_hostname": "hostname",
+				"tcp_port": "port",
+				"tcp_ip_family": "ip-family",
+				"tcp_data": "data",
+				"tcp_should_fail": "should-fail"
+			},
+			"sensitive": ["tcp_data"],
+			"omitFlags": ["type"],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "createToken",
@@ -200,14 +260,24 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "createUptimeCheck",
-			"method": "POST",
+			"method": "create",
 			"path": "/v1/checks/uptime",
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.http",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"body": "http-body"
+			},
+			"sensitive": ["headers", "body", "auth_username", "auth_password"],
+			"omitFlags": ["type"],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "createWebhook",
@@ -219,28 +289,39 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "deleteBrowserCheck",
 			"method": "DELETE",
 			"path": "/v1/checks/browser/{check_id}",
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Use the shared checks delete command; a type-specific duplicate is not exposed."
 		},
 		{
 			"operationId": "deleteCheck",
-			"method": "DELETE",
+			"method": "delete",
 			"path": "/v1/checks/{check_id}",
-			"status": "handwritten",
-			"command": "checks delete"
+			"status": "generated",
+			"group": "checks",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			},
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "deleteDnsCheck",
 			"method": "DELETE",
 			"path": "/v1/checks/dns/{check_id}",
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Use the shared checks delete command; a type-specific duplicate is not exposed."
 		},
 		{
 			"operationId": "deleteEnvironmentVariable",
@@ -254,7 +335,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "deleteHeartbeat",
@@ -268,7 +351,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "deleteMaintenanceWindow",
@@ -282,7 +367,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "deleteProject",
@@ -296,7 +383,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "deleteStatusPage",
@@ -310,7 +399,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "deleteStatusPageComponent",
@@ -325,7 +416,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "deleteStatusPageComponentGroup",
@@ -340,7 +433,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "deleteStatusPageIncident",
@@ -355,7 +450,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "deleteStatusPageIncidentUpdate",
@@ -371,7 +468,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "deleteStatusPageScheduledMaintenance",
@@ -386,7 +485,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "deleteStatusPageSubscriber",
@@ -401,14 +502,16 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "deleteTcpCheck",
 			"method": "DELETE",
 			"path": "/v1/checks/tcp/{check_id}",
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Use the shared checks delete command; a type-specific duplicate is not exposed."
 		},
 		{
 			"operationId": "deleteToken",
@@ -422,14 +525,16 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "deleteUptimeCheck",
 			"method": "DELETE",
 			"path": "/v1/checks/uptime/{check_id}",
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Use the shared checks delete command; a type-specific duplicate is not exposed."
 		},
 		{
 			"operationId": "deleteWebhook",
@@ -443,7 +548,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "exportOtlpLogs",
@@ -457,21 +564,30 @@
 			"method": "GET",
 			"path": "/v1/checks/browser/{check_id}",
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Use the shared checks get command; a type-specific duplicate is not exposed."
 		},
 		{
 			"operationId": "getCheck",
-			"method": "GET",
+			"method": "get",
 			"path": "/v1/checks/{check_id}",
-			"status": "handwritten",
-			"command": "checks view"
+			"status": "generated",
+			"group": "checks",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			},
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "getDnsCheck",
 			"method": "GET",
 			"path": "/v1/checks/dns/{check_id}",
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Use the shared checks get command; a type-specific duplicate is not exposed."
 		},
 		{
 			"operationId": "getEnvironmentVariable",
@@ -485,7 +601,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "getHeartbeat",
@@ -499,7 +617,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "getLogUsage",
@@ -520,7 +640,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "getProject",
@@ -534,7 +656,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "getStatusPage",
@@ -548,7 +672,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "getStatusPageComponent",
@@ -563,7 +689,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "getStatusPageComponentGroup",
@@ -578,7 +706,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "getStatusPageIncident",
@@ -593,7 +723,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "getStatusPageIncidentUpdate",
@@ -609,7 +741,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "getStatusPageScheduledMaintenance",
@@ -624,7 +758,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "getStatusPageSummary",
@@ -638,14 +774,16 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "getTcpCheck",
 			"method": "GET",
 			"path": "/v1/checks/tcp/{check_id}",
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Use the shared checks get command; a type-specific duplicate is not exposed."
 		},
 		{
 			"operationId": "getToken",
@@ -659,7 +797,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "getTokenPermissions",
@@ -673,7 +813,7 @@
 			"method": "GET",
 			"path": "/v1/checks/uptime/{check_id}",
 			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"reason": "Use the shared checks get command; a type-specific duplicate is not exposed."
 		},
 		{
 			"operationId": "getWebhook",
@@ -687,7 +827,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "getWebhookDelivery",
@@ -719,38 +861,86 @@
 		},
 		{
 			"operationId": "listBrowserCheckIncidents",
-			"method": "GET",
+			"method": "incidents",
 			"path": "/v1/checks/browser/{check_id}/incidents",
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.browser",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"per_page": "per-page"
+			},
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listBrowserCheckResults",
-			"method": "GET",
+			"method": "results",
 			"path": "/v1/checks/browser/{check_id}/results",
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.browser",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"per_page": "per-page"
+			},
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listChecks",
-			"method": "GET",
+			"method": "list",
 			"path": "/v1/checks",
-			"status": "handwritten",
-			"command": "checks list"
+			"status": "generated",
+			"group": "checks",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"per_page": "per-page"
+			},
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listDnsCheckIncidents",
-			"method": "GET",
+			"method": "incidents",
 			"path": "/v1/checks/dns/{check_id}/incidents",
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.dns",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"per_page": "per-page"
+			},
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listDnsCheckResults",
-			"method": "GET",
+			"method": "results",
 			"path": "/v1/checks/dns/{check_id}/results",
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.dns",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"per_page": "per-page"
+			},
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listEnvironmentVariables",
@@ -762,7 +952,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listHeartbeats",
@@ -776,7 +968,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listInvitations",
@@ -795,7 +989,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listProjects",
@@ -807,7 +1003,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listStatusPageComponentGroups",
@@ -821,7 +1019,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listStatusPageComponents",
@@ -835,7 +1035,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listStatusPageIncidents",
@@ -849,7 +1051,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listStatusPageIncidentUpdates",
@@ -864,7 +1068,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listStatusPages",
@@ -876,7 +1082,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listStatusPageSubscribers",
@@ -890,21 +1098,43 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listTcpCheckIncidents",
-			"method": "GET",
+			"method": "incidents",
 			"path": "/v1/checks/tcp/{check_id}/incidents",
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.tcp",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"per_page": "per-page"
+			},
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listTcpCheckResults",
-			"method": "GET",
+			"method": "results",
 			"path": "/v1/checks/tcp/{check_id}/results",
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.tcp",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"per_page": "per-page"
+			},
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listTokens",
@@ -916,21 +1146,43 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listUptimeCheckIncidents",
-			"method": "GET",
+			"method": "incidents",
 			"path": "/v1/checks/uptime/{check_id}/incidents",
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.http",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"per_page": "per-page"
+			},
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listUptimeCheckResults",
-			"method": "GET",
+			"method": "results",
 			"path": "/v1/checks/uptime/{check_id}/results",
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.http",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"per_page": "per-page"
+			},
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listUsers",
@@ -956,14 +1208,25 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "moveCheck",
-			"method": "POST",
+			"method": "move",
 			"path": "/v1/checks/{check_id}/move",
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			},
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "moveEnvironmentVariable",
@@ -977,7 +1240,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "moveHeartbeat",
@@ -991,7 +1256,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "moveMaintenanceWindow",
@@ -1005,7 +1272,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "moveResources",
@@ -1026,7 +1295,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "pingHeartbeat",
@@ -1065,24 +1336,54 @@
 		},
 		{
 			"operationId": "updateBrowserCheck",
-			"method": "PATCH",
+			"method": "update",
 			"path": "/v1/checks/browser/{check_id}",
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.browser",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"body": "http-body",
+				"version": "runtime"
+			},
+			"sensitive": [
+				"headers",
+				"body",
+				"auth_username",
+				"auth_password",
+				"script"
+			],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "updateCheck",
 			"method": "PATCH",
 			"path": "/v1/checks/{check_id}",
-			"status": "handwritten",
-			"command": "checks update"
+			"status": "excluded",
+			"reason": "Use the type-specific checks http, browser, dns or tcp update commands."
 		},
 		{
 			"operationId": "updateDnsCheck",
-			"method": "PATCH",
+			"method": "update",
 			"path": "/v1/checks/dns/{check_id}",
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.dns",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"dns_domain": "domain",
+				"dns_record_type": "record-type",
+				"dns_resolver": "resolver",
+				"dns_protocol": "protocol"
+			},
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "updateEnvironmentVariable",
@@ -1096,7 +1397,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": ["value"]
+			"sensitive": ["value"],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "updateHeartbeat",
@@ -1110,7 +1413,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "updateMaintenanceWindow",
@@ -1124,7 +1429,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "updateProject",
@@ -1138,7 +1445,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "updateStatusPage",
@@ -1152,7 +1461,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": ["password"]
+			"sensitive": ["password"],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "updateStatusPageComponent",
@@ -1167,7 +1478,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "updateStatusPageComponentGroup",
@@ -1182,7 +1495,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "updateStatusPageComponentGroupSortOrder",
@@ -1196,7 +1511,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "updateStatusPageComponentSortOrder",
@@ -1210,7 +1527,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "updateStatusPageGroupComponentSortOrder",
@@ -1225,7 +1544,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "updateStatusPageIncident",
@@ -1240,7 +1561,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "updateStatusPageIncidentUpdate",
@@ -1256,7 +1579,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "updateStatusPageScheduledMaintenance",
@@ -1271,21 +1596,47 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "updateTcpCheck",
-			"method": "PATCH",
+			"method": "update",
 			"path": "/v1/checks/tcp/{check_id}",
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.tcp",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"tcp_hostname": "hostname",
+				"tcp_port": "port",
+				"tcp_ip_family": "ip-family",
+				"tcp_data": "data",
+				"tcp_should_fail": "should-fail"
+			},
+			"sensitive": ["tcp_data"],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "updateUptimeCheck",
-			"method": "PATCH",
+			"method": "update",
 			"path": "/v1/checks/uptime/{check_id}",
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "checks.http",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"body": "http-body"
+			},
+			"sensitive": ["headers", "body", "auth_username", "auth_password"],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "updateWebhook",
@@ -1299,7 +1650,9 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			},
-			"sensitive": []
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "verifyToken",

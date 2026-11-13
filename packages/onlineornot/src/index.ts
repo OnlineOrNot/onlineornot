@@ -1,10 +1,9 @@
 import makeCLI from "yargs";
-import type { ArgumentsCamelCase, CommandModule } from "yargs";
+import type { ArgumentsCamelCase } from "yargs";
 
 import { version as onlineornotVersion } from "../package.json";
 import { printBanner } from "./banner";
 import { billingHandler, billingOptions } from "./billing";
-import { checks } from "./checks";
 import { docsHandler, docsOptions } from "./docs";
 import { registerGeneratedCommands } from "./generated-cli";
 import { logger } from "./logger";
@@ -54,19 +53,6 @@ export function createCLIParser(argv: string[]) {
 	onlineornot.group(["help", "version"], "Flags:");
 	onlineornot.help().alias("h", "help");
 
-	// Default help command that supports the subcommands
-	const subHelp: CommandModule<CommonYargsOptions, CommonYargsOptions> = {
-		command: ["*"],
-		handler: async (args) => {
-			setImmediate(() =>
-				onlineornot.parse([
-					...args._.map((a: string | number) => `${a}`),
-					"--help",
-				]),
-			);
-		},
-	};
-
 	onlineornot.command(
 		["*"],
 		false,
@@ -98,11 +84,6 @@ export function createCLIParser(argv: string[]) {
 		docsOptions,
 		docsHandler,
 	);
-
-	// checks
-	onlineornot.command("checks", "✅ Manage your uptime checks", (d1Yargs) => {
-		return checks(d1Yargs.command(subHelp));
-	});
 
 	registerGeneratedCommands(onlineornot);
 

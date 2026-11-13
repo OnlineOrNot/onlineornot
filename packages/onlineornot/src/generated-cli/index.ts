@@ -1,6 +1,8 @@
 import { registerCommandCatalog } from "../command-runtime/command-catalog";
 import type { CommonYargsArgv } from "../yargs-types";
 import catalog from "./catalog.json";
+import { command as createBrowserCheck } from "./createBrowserCheck";
+import { command as createDnsCheck } from "./createDnsCheck";
 import { command as createEnvironmentVariable } from "./createEnvironmentVariable";
 import { command as createHeartbeat } from "./createHeartbeat";
 import { command as createMaintenanceWindow } from "./createMaintenanceWindow";
@@ -12,8 +14,11 @@ import { command as createStatusPageIncident } from "./createStatusPageIncident"
 import { command as createStatusPageIncidentUpdate } from "./createStatusPageIncidentUpdate";
 import { command as createStatusPageScheduledMaintenance } from "./createStatusPageScheduledMaintenance";
 import { command as createStatusPageSubscriber } from "./createStatusPageSubscriber";
+import { command as createTcpCheck } from "./createTcpCheck";
 import { command as createToken } from "./createToken";
+import { command as createUptimeCheck } from "./createUptimeCheck";
 import { command as createWebhook } from "./createWebhook";
+import { command as deleteCheck } from "./deleteCheck";
 import { command as deleteEnvironmentVariable } from "./deleteEnvironmentVariable";
 import { command as deleteHeartbeat } from "./deleteHeartbeat";
 import { command as deleteMaintenanceWindow } from "./deleteMaintenanceWindow";
@@ -27,6 +32,7 @@ import { command as deleteStatusPageScheduledMaintenance } from "./deleteStatusP
 import { command as deleteStatusPageSubscriber } from "./deleteStatusPageSubscriber";
 import { command as deleteToken } from "./deleteToken";
 import { command as deleteWebhook } from "./deleteWebhook";
+import { command as getCheck } from "./getCheck";
 import { command as getEnvironmentVariable } from "./getEnvironmentVariable";
 import { command as getHeartbeat } from "./getHeartbeat";
 import { command as getMaintenanceWindow } from "./getMaintenanceWindow";
@@ -40,6 +46,11 @@ import { command as getStatusPageScheduledMaintenance } from "./getStatusPageSch
 import { command as getStatusPageSummary } from "./getStatusPageSummary";
 import { command as getToken } from "./getToken";
 import { command as getWebhook } from "./getWebhook";
+import { command as listBrowserCheckIncidents } from "./listBrowserCheckIncidents";
+import { command as listBrowserCheckResults } from "./listBrowserCheckResults";
+import { command as listChecks } from "./listChecks";
+import { command as listDnsCheckIncidents } from "./listDnsCheckIncidents";
+import { command as listDnsCheckResults } from "./listDnsCheckResults";
 import { command as listEnvironmentVariables } from "./listEnvironmentVariables";
 import { command as listHeartbeats } from "./listHeartbeats";
 import { command as listMaintenanceWindows } from "./listMaintenanceWindows";
@@ -50,12 +61,19 @@ import { command as listStatusPageIncidents } from "./listStatusPageIncidents";
 import { command as listStatusPageIncidentUpdates } from "./listStatusPageIncidentUpdates";
 import { command as listStatusPages } from "./listStatusPages";
 import { command as listStatusPageSubscribers } from "./listStatusPageSubscribers";
+import { command as listTcpCheckIncidents } from "./listTcpCheckIncidents";
+import { command as listTcpCheckResults } from "./listTcpCheckResults";
 import { command as listTokens } from "./listTokens";
+import { command as listUptimeCheckIncidents } from "./listUptimeCheckIncidents";
+import { command as listUptimeCheckResults } from "./listUptimeCheckResults";
 import { command as listWebhooks } from "./listWebhooks";
+import { command as moveCheck } from "./moveCheck";
 import { command as moveEnvironmentVariable } from "./moveEnvironmentVariable";
 import { command as moveHeartbeat } from "./moveHeartbeat";
 import { command as moveMaintenanceWindow } from "./moveMaintenanceWindow";
 import { command as moveWebhook } from "./moveWebhook";
+import { command as updateBrowserCheck } from "./updateBrowserCheck";
+import { command as updateDnsCheck } from "./updateDnsCheck";
 import { command as updateEnvironmentVariable } from "./updateEnvironmentVariable";
 import { command as updateHeartbeat } from "./updateHeartbeat";
 import { command as updateMaintenanceWindow } from "./updateMaintenanceWindow";
@@ -69,9 +87,71 @@ import { command as updateStatusPageGroupComponentSortOrder } from "./updateStat
 import { command as updateStatusPageIncident } from "./updateStatusPageIncident";
 import { command as updateStatusPageIncidentUpdate } from "./updateStatusPageIncidentUpdate";
 import { command as updateStatusPageScheduledMaintenance } from "./updateStatusPageScheduledMaintenance";
+import { command as updateTcpCheck } from "./updateTcpCheck";
+import { command as updateUptimeCheck } from "./updateUptimeCheck";
 import { command as updateWebhook } from "./updateWebhook";
 
 export function registerGeneratedCommands(parser: CommonYargsArgv) {
+	parser.command(
+		"checks",
+		"Manage checks",
+		(group1) => {
+			group1.command(deleteCheck);
+			group1.command(getCheck);
+			group1.command(listChecks);
+			group1.command(moveCheck);
+			group1.command(
+				"browser",
+				"Manage browser",
+				(group2) => {
+					group2.command(createBrowserCheck);
+					group2.command(listBrowserCheckIncidents);
+					group2.command(listBrowserCheckResults);
+					group2.command(updateBrowserCheck);
+					return group2.demandCommand(1);
+				},
+				() => {},
+			);
+			group1.command(
+				"dns",
+				"Manage dns",
+				(group2) => {
+					group2.command(createDnsCheck);
+					group2.command(listDnsCheckIncidents);
+					group2.command(listDnsCheckResults);
+					group2.command(updateDnsCheck);
+					return group2.demandCommand(1);
+				},
+				() => {},
+			);
+			group1.command(
+				"http",
+				"Manage http",
+				(group2) => {
+					group2.command(createUptimeCheck);
+					group2.command(listUptimeCheckIncidents);
+					group2.command(listUptimeCheckResults);
+					group2.command(updateUptimeCheck);
+					return group2.demandCommand(1);
+				},
+				() => {},
+			);
+			group1.command(
+				"tcp",
+				"Manage tcp",
+				(group2) => {
+					group2.command(createTcpCheck);
+					group2.command(listTcpCheckIncidents);
+					group2.command(listTcpCheckResults);
+					group2.command(updateTcpCheck);
+					return group2.demandCommand(1);
+				},
+				() => {},
+			);
+			return group1.demandCommand(1);
+		},
+		() => {},
+	);
 	parser.command(
 		["env", "environment-variables"],
 		"Manage env",

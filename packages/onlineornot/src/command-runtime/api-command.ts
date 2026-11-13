@@ -30,6 +30,7 @@ interface ApiCommandSpec {
 	method: string;
 	path: string;
 	hasBody: boolean;
+	requireBodyAnyOf?: string[];
 	requiresAuth: boolean;
 	confirmation: boolean;
 	flags: ApiCommandFlag[];
@@ -136,6 +137,22 @@ async function collectCommandInput(
 				break;
 		}
 	}
+	if (
+		(spec.method === "PATCH" || spec.method === "PUT") &&
+		spec.hasBody &&
+		Object.keys(input.body ?? {}).length === 0
+	)
+		throw new Error("Update requires at least one body field");
+	if (
+		spec.requireBodyAnyOf?.length &&
+		!spec.requireBodyAnyOf.some((field) => {
+			const value = input.body?.[field];
+			return value !== undefined && value !== null && value !== "";
+		})
+	)
+		throw new Error(
+			`Command body requires at least one of: ${spec.requireBodyAnyOf.join(", ")}`,
+		);
 	return input;
 }
 
@@ -151,12 +168,19 @@ async function confirmCommandMutation(
 		input: process.stdin,
 		output: process.stderr,
 	});
+	const cancellation = new AbortController();
+	prompt.once("close", () => cancellation.abort());
 	try {
 		const answer = await prompt.question(
 			"Permanently delete this resource? [y/N] ",
+			{ signal: cancellation.signal },
 		);
 		if (!/^y(es)?$/i.test(answer.trim()))
 			throw new Error("Destructive command cancelled");
+	} catch (error) {
+		if (cancellation.signal.aborted)
+			throw new Error("Destructive command cancelled");
+		throw error;
 	} finally {
 		prompt.close();
 	}

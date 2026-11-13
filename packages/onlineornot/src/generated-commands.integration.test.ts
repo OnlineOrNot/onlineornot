@@ -5,10 +5,12 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
+import type { PublicCheckResultsResultInfo } from "@onlineornot/api";
 import { build } from "esbuild";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { z } from "zod";
 
+import { checkCommandCases } from "./fixtures/check-command-cases";
 import { resourceCommandCases } from "./fixtures/resource-command-cases";
 
 interface RecordedRequest {
@@ -23,6 +25,9 @@ const requests: RecordedRequest[] = [];
 let status = 200;
 let apiSuccess = true;
 let malformedResponse = false;
+type FixtureApiResult = z.infer<ReturnType<typeof z.json>>;
+let fixtureResult: FixtureApiResult | undefined;
+let fixturePagination: PublicCheckResultsResultInfo | null | undefined;
 let directory: string;
 let cliPath: string;
 let preloadPath: string;
@@ -45,13 +50,23 @@ const server = createServer(async (request, response) => {
 		JSON.stringify({
 			success: apiSuccess,
 			result: apiSuccess
-				? { id: "heartbeat123", name: "Nightly backup" }
+				? request.url === "/v1/tokens/verify"
+					? { id: "token1234", status: "active" }
+					: (fixtureResult ?? { id: "heartbeat123", name: "Nightly backup" })
 				: null,
 			errors: apiSuccess
 				? []
 				: [{ code: 1001, message: "Heartbeat access denied" }],
 			messages: [],
-			result_info: { page: 2, per_page: 5, count: 1, total_count: 12 },
+			result_info:
+				fixturePagination === null
+					? undefined
+					: (fixturePagination ?? {
+							page: 2,
+							per_page: 5,
+							count: 1,
+							total_count: 12,
+						}),
 		}),
 	);
 });
@@ -65,7 +80,11 @@ beforeAll(async () => {
 	const bound = z.object({ port: z.number() }).parse(address);
 	await writeFile(
 		preloadPath,
-		`const send = globalThis.fetch;
+		`if (process.env.CLI_FIXTURE_TTY === "1") {
+	Object.defineProperty(process.stdin, "isTTY", { value: true });
+	Object.defineProperty(process.stderr, "isTTY", { value: true });
+	}
+	const send = globalThis.fetch;
 	globalThis.fetch = (input, init) => {
 		const request = new Request(input, init);
 		const url = new URL(request.url);
@@ -95,6 +114,8 @@ beforeEach(() => {
 	status = 200;
 	apiSuccess = true;
 	malformedResponse = false;
+	fixtureResult = undefined;
+	fixturePagination = undefined;
 });
 
 afterAll(async () => {
@@ -102,7 +123,12 @@ afterAll(async () => {
 	await rm(directory, { recursive: true, force: true });
 });
 
-function runCli(args: string[], input = "", authenticated = true) {
+function runCli(
+	args: string[],
+	input = "",
+	authenticated = true,
+	options: { interactive?: boolean; ci?: boolean; logLevel?: string } = {},
+) {
 	return new Promise<{ code: number | null; stdout: string; stderr: string }>(
 		(resolve, reject) => {
 			const child = spawn(
@@ -113,6 +139,10 @@ function runCli(args: string[], input = "", authenticated = true) {
 					env: {
 						PATH: process.env.PATH,
 						HOME: directory,
+						USERPROFILE: directory,
+						CLI_FIXTURE_TTY: options.interactive ? "1" : "0",
+						CI: options.ci ? "1" : "",
+						ONLINEORNOT_LOG: options.logLevel ?? "log",
 						XDG_CONFIG_HOME: directory,
 						FORCE_COLOR: "0",
 						ONLINEORNOT_API_TOKEN: authenticated ? "fixture-token" : "",
@@ -433,11 +463,14 @@ describe("Forge-generated commands through the executable and real HTTP", () => 
 		expect(requests).toHaveLength(0);
 	});
 
-	it("keeps existing checks help and machine-readable version working", async () => {
+	it("shows generated checks help and machine-readable version", async () => {
 		const help = await runCli(["checks", "--help"], "", false);
 		expect(help.code).toBe(0);
-		expect(help.stdout).toContain("create <name> <url>");
-		expect(help.stdout).toContain("view <id>");
+		expect(help.stdout).toContain("checks http");
+		expect(help.stdout).not.toContain("create <name> <url>");
+		expect(help.stdout).toContain("get <id>");
+		expect(help.stdout).not.toContain("view <id>");
+		expect(help.stdout).not.toContain("update <id>");
 		const version = await runCli(["--version"], "", false);
 		const manifest = JSON.parse(await readFile("package.json", "utf8"));
 		expect(version.stdout).toBe(`${manifest.version}\n`);
@@ -485,7 +518,7 @@ describe("generated resource management through the executable and real HTTP", (
 		const operations = JSON.parse(catalog.stdout).commands.map(
 			(command: { operationId: string }) => command.operationId,
 		);
-		expect(operations).toHaveLength(69);
+		expect(operations).toHaveLength(89);
 		for (const scenario of resourceCommandCases)
 			expect(operations).toContain(scenario.operationId);
 		for (const operation of [
@@ -493,7 +526,7 @@ describe("generated resource management through the executable and real HTTP", (
 			"getWebhookDeliveryActivity",
 			"listWebhookDeliveries",
 			"getWebhookDelivery",
-			"createDnsCheck",
+			"getDnsCheck",
 			"moveResources",
 		])
 			expect(operations).not.toContain(operation);
@@ -873,7 +906,7 @@ describe("generated resource group aliases through the executable", () => {
 			expect(help.stdout).toContain("create");
 			const catalog = await runCli(["cli", "commands"], "", false);
 			const commands = JSON.parse(catalog.stdout).commands;
-			expect(commands).toHaveLength(69);
+			expect(commands).toHaveLength(89);
 			const create = commands.find(
 				(command: { command: string }) =>
 					command.command === `onlineornot ${group} create`,
@@ -933,4 +966,784 @@ describe("generated resource group aliases through the executable", () => {
 			expect(requests).toHaveLength(0);
 		},
 	);
+});
+
+describe("generated type-specific check commands through the executable", () => {
+	it.each(checkCommandCases)(
+		"sends $operationId to its existing API operation",
+		async (scenario) => {
+			fixtureResult = scenario.result;
+			if (scenario.operationId.endsWith("Results")) fixturePagination = null;
+			const result = await runCli(scenario.args);
+			expect(result.code).toBe(0);
+			expect(JSON.parse(result.stdout)).toEqual(scenario.result);
+			expect(requests).toHaveLength(1);
+			expect(requests[0].method).toBe(scenario.method);
+			expect(requests[0].url).toBe(scenario.url);
+			expect(requests[0].authorization).toBe("Bearer fixture-token");
+			expect(requests[0].body ? JSON.parse(requests[0].body) : null).toEqual(
+				scenario.body,
+			);
+			if (scenario.operationId.endsWith("Results")) {
+				expect(result.stderr).not.toContain("result_info:");
+				expect(JSON.parse(result.stdout).result_info).toEqual({
+					page: 2,
+					per_page: 5,
+					count: 0,
+					total_count: 0,
+				});
+			} else
+				expect(result.stderr).toContain(
+					'result_info: {"page":2,"per_page":5,"count":1,"total_count":12}',
+				);
+		},
+	);
+
+	it("discovers every typed command without restoring untyped creation", async () => {
+		const catalog = await runCli(["cli", "commands"], "", false);
+		const commands = JSON.parse(catalog.stdout).commands;
+		expect(commands).toHaveLength(89);
+		for (const scenario of checkCommandCases)
+			expect(
+				commands.map((command: { operationId: string }) => command.operationId),
+			).toContain(scenario.operationId);
+		expect(
+			commands.map((command: { command: string }) => command.command),
+		).not.toContain("onlineornot checks create");
+		const root = await runCli(["checks", "--help"], "", false);
+		for (const word of [
+			"http",
+			"browser",
+			"dns",
+			"tcp",
+			"list",
+			"delete",
+			"get",
+			"move",
+		])
+			expect(root.stdout).toContain(`checks ${word}`);
+		expect(root.stdout).not.toContain("checks create");
+		for (const group of ["http", "browser", "dns", "tcp"]) {
+			const help = await runCli(
+				["checks", group, "create", "--help"],
+				"",
+				false,
+			);
+			expect(help.code).toBe(0);
+			expect(help.stdout).toContain("--name");
+			expect(help.stdout).not.toContain("--type");
+		}
+		const search = await runCli(
+			["cli", "search", "checks dns create"],
+			"",
+			false,
+		);
+		expect(JSON.parse(search.stdout)[0].command).toBe(
+			"onlineornot checks dns create",
+		);
+		expect(requests).toHaveLength(0);
+	}, 20000);
+
+	it("removes checks create name url rather than silently keeping an HTTP fallback", async () => {
+		const result = await runCli([
+			"checks",
+			"create",
+			"Legacy",
+			"https://example.com",
+			"--json",
+		]);
+		expect(result.code).toBe(1);
+		expect(result.stderr).toContain("Unknown");
+		expect(requests).toHaveLength(0);
+	});
+
+	it.each([
+		["checks", "view", "check1234"],
+		["checks", "update", "check1234", "--name", "Renamed"],
+		["checks", "list", "--json"],
+		["checks", "get", "check1234", "--json"],
+		["checks", "delete", "check1234", "--force", "--json"],
+	])("rejects removed command or flags %j before HTTP", async (...args) => {
+		const result = await runCli(args);
+		expect(result.code).toBe(1);
+		expect(result.stdout).toBe("");
+		expect(result.stderr).toContain("Unknown");
+		expect(requests).toHaveLength(0);
+	});
+
+	it("lists one filtered page as JSON without a token verification request", async () => {
+		fixtureResult = [
+			{ id: "dns12345", name: "DNS", check_type: "DNS" },
+			{ id: "tcp12345", name: "TCP", check_type: "TCP" },
+		];
+		fixturePagination = { page: 2, per_page: 2, count: 2, total_count: 9 };
+		const result = await runCli([
+			"checks",
+			"list",
+			"--page",
+			"2",
+			"--per-page",
+			"2",
+			"--search",
+			"prod & api",
+			"--project-id",
+			"project1234567890",
+			"--project-id",
+			"project0987654321",
+			"--filter",
+			"DOWN",
+			"--organisation",
+			"org1234567890123",
+		]);
+		expect(result.code).toBe(0);
+		expect(JSON.parse(result.stdout)).toEqual(fixtureResult);
+		expect(result.stderr).toBe(
+			`result_info: ${JSON.stringify(fixturePagination)}\n`,
+		);
+		expect(requests).toHaveLength(1);
+		expect(requests[0].method).toBe("GET");
+		expect(requests[0].url).toBe(
+			"/v1/checks?page=2&per_page=2&search=prod%20%26%20api&project_id=project1234567890&project_id=project0987654321&filter=DOWN",
+		);
+		expect(requests[0].organisation).toBe("org1234567890123");
+		expect(requests[0].authorization).toBe("Bearer fixture-token");
+	});
+
+	it.each([[], [{ id: "check1234", check_type: "UPTIME" }]])(
+		"leaves omitted pagination to the API and returns only its page %j",
+		async (...checks) => {
+			fixtureResult = checks;
+			fixturePagination = {
+				page: 1,
+				per_page: 20,
+				count: checks.length,
+				total_count: 41,
+			};
+			const result = await runCli(["checks", "list"]);
+			expect(result.code).toBe(0);
+			expect(JSON.parse(result.stdout)).toEqual(checks);
+			expect(result.stderr).toBe(
+				`result_info: ${JSON.stringify(fixturePagination)}\n`,
+			);
+			expect(requests).toHaveLength(1);
+			expect(requests[0].url).toBe("/v1/checks");
+		},
+	);
+
+	it("keeps debug diagnostics on stderr and resource JSON on stdout", async () => {
+		fixtureResult = [{ id: "check1234", check_type: "DNS" }];
+		const result = await runCli(["checks", "list"], "", true, {
+			logLevel: "debug",
+		});
+		expect(result.code).toBe(0);
+		expect(JSON.parse(result.stdout)).toEqual(fixtureResult);
+		expect(result.stderr).toContain(
+			"-- START API REQUEST: GET https://api.onlineornot.com/v1/checks",
+		);
+		expect(result.stderr).toContain("-- START API RESPONSE:");
+		expect(result.stderr).toContain("[REDACTED]");
+		expect(result.stderr).not.toContain("fixture-token");
+		expect(result.stderr).toContain("result_info:");
+		expect(requests).toHaveLength(1);
+	});
+
+	it("requires --force for unattended check deletion before authentication or HTTP", async () => {
+		const result = await runCli(["checks", "delete", "check1234"], "", false);
+		expect(result.code).toBe(1);
+		expect(result.stdout).toBe("");
+		expect(result.stderr).toContain("requires --force");
+		expect(requests).toHaveLength(0);
+	});
+
+	it("previews deletion without credentials, confirmation or HTTP", async () => {
+		const result = await runCli(
+			["checks", "delete", "check1234", "--dry-run"],
+			"",
+			false,
+		);
+		expect(result.code).toBe(0);
+		expect(JSON.parse(result.stdout)).toEqual({
+			operationId: "deleteCheck",
+			method: "DELETE",
+			path: "/v1/checks/check1234",
+			headers: {},
+		});
+		expect(requests).toHaveLength(0);
+	});
+
+	it.each([
+		{ answer: "yes\n", code: 0 },
+		{ answer: "n\n", code: 1 },
+		{ answer: "\n", code: 1 },
+		{ answer: "", code: 1 },
+	])(
+		"confirms check deletion interactively with $answer",
+		async ({ answer, code }) => {
+			fixtureResult = { id: "check1234" };
+			fixturePagination = null;
+			const result = await runCli(
+				["checks", "delete", "check1234"],
+				answer,
+				true,
+				{ interactive: true },
+			);
+			expect(result.code).toBe(code);
+			expect(result.stderr).toContain("Permanently delete this resource?");
+			if (code === 0) {
+				expect(JSON.parse(result.stdout)).toEqual({ id: "check1234" });
+				expect(requests).toHaveLength(1);
+				expect(requests[0].method).toBe("DELETE");
+				expect(requests[0].url).toBe("/v1/checks/check1234");
+			} else {
+				expect(result.stdout).toBe("");
+				expect(result.stderr).toContain("cancelled");
+				expect(requests).toHaveLength(0);
+			}
+		},
+	);
+
+	it("requires --force in CI even with terminal input and accepts explicit force", async () => {
+		const blocked = await runCli(
+			["checks", "delete", "check1234"],
+			"yes\n",
+			true,
+			{ interactive: true, ci: true },
+		);
+		expect(blocked.code).toBe(1);
+		expect(blocked.stdout).toBe("");
+		expect(blocked.stderr).toContain("requires --force");
+		expect(blocked.stderr).not.toContain("Permanently delete");
+		expect(requests).toHaveLength(0);
+		fixtureResult = { id: "check1234" };
+		fixturePagination = null;
+		const forced = await runCli(
+			["checks", "delete", "check1234", "--force"],
+			"",
+			true,
+			{ interactive: true, ci: true },
+		);
+		expect(forced.code).toBe(0);
+		expect(JSON.parse(forced.stdout)).toEqual({ id: "check1234" });
+		expect(requests).toHaveLength(1);
+		expect(requests[0].method).toBe("DELETE");
+	}, 15000);
+
+	it.each([
+		["--page", "0"],
+		["--page", "1.5"],
+		["--per-page", "0"],
+		["--per-page", "1.5"],
+		["--filter", "UNKNOWN"],
+	])(
+		"rejects invalid check pagination or filters %j before HTTP",
+		async (...flags) => {
+			const result = await runCli(["checks", "list", ...flags]);
+			expect(result.code).toBe(1);
+			expect(result.stdout).toBe("");
+			expect(requests).toHaveLength(0);
+		},
+	);
+
+	it.each([
+		["checks", "list"],
+		["checks", "get", "check1234"],
+		["checks", "delete", "check1234", "--force"],
+	])("fails without credentials for %j before HTTP", async (...args) => {
+		const result = await runCli(args, "", false);
+		expect(result.code).toBe(1);
+		expect(result.stdout).toBe("");
+		expect(result.stderr).toContain("Not logged in");
+		expect(requests).toHaveLength(0);
+	});
+
+	it.each([
+		{ args: ["checks", "list"], status: 401 },
+		{ args: ["checks", "list"], status: 200 },
+		{ args: ["checks", "get", "check1234"], status: 404 },
+		{ args: ["checks", "delete", "check1234", "--force"], status: 403 },
+		{
+			args: ["checks", "http", "update", "check1234", "--name", "Renamed"],
+			status: 500,
+		},
+	])("exits nonzero for HTTP $status on $args", async (scenario) => {
+		status = scenario.status;
+		apiSuccess = false;
+		const result = await runCli(scenario.args);
+		expect(result.code).toBe(1);
+		expect(result.stdout).toBe("");
+		expect(result.stderr).toContain("Heartbeat access denied");
+		expect(requests).toHaveLength(1);
+	});
+
+	it.each([
+		["heartbeats", "update", "heartbeat123"],
+		...["http", "browser", "dns", "tcp"].map((type) => [
+			"checks",
+			type,
+			"update",
+			"check1234",
+		]),
+		...resourceCommandCases
+			.filter(
+				(scenario) => scenario.method === "PATCH" || scenario.method === "PUT",
+			)
+			.map((scenario) =>
+				scenario.args.slice(
+					0,
+					scenario.args.findIndex((word) => word.startsWith("--")),
+				),
+			),
+	])(
+		"rejects empty updates for %j before credentials or HTTP",
+		async (...args) => {
+			for (const flags of [
+				[],
+				["--body", "{}"],
+				["--organisation", "org1234567890123"],
+			]) {
+				const result = await runCli([...args, ...flags], "", false);
+				expect(result.code).toBe(1);
+				expect(result.stdout).toBe("");
+				expect(result.stderr).toContain(
+					"Update requires at least one body field",
+				);
+			}
+			expect(requests).toHaveLength(0);
+		},
+		15000,
+	);
+
+	it("rejects empty updates from files and stdin before HTTP", async () => {
+		const file = path.join(directory, "empty-update.json");
+		await writeFile(file, "{}");
+		for (const body of [`@${file}`, "-"]) {
+			const result = await runCli(
+				["checks", "http", "update", "check1234", "--body", body],
+				"{}",
+				false,
+			);
+			expect(result.code).toBe(1);
+			expect(result.stdout).toBe("");
+			expect(result.stderr).toContain(
+				"Update requires at least one body field",
+			);
+		}
+		expect(requests).toHaveLength(0);
+	});
+
+	it.each(["http", "browser", "dns", "tcp"])(
+		"preserves explicit false, zero and empty arrays when updating %s checks",
+		async (type) => {
+			const body = {
+				muted: false,
+				paused: false,
+				confirmation_period_seconds: 0,
+				recovery_period_seconds: 0,
+				reminder_alert_interval_minutes: 0,
+				assertions: [],
+			};
+			const result = await runCli([
+				"checks",
+				type,
+				"update",
+				"check1234",
+				"--body",
+				JSON.stringify(body),
+			]);
+			expect(result.code).toBe(0);
+			expect(requests).toHaveLength(1);
+			expect(requests[0].method).toBe("PATCH");
+			expect(JSON.parse(requests[0].body)).toEqual(body);
+		},
+	);
+
+	it.each([
+		{ type: "http", flags: ["--http-body", ""], body: { body: "" } },
+		{ type: "http", flags: ["--no-muted"], body: { muted: false } },
+		{
+			type: "http",
+			flags: ["--confirmation-period-seconds", "0"],
+			body: { confirmation_period_seconds: 0 },
+		},
+		{
+			type: "http",
+			flags: [
+				"--body",
+				'{"headers":{},"auth_username":"","auth_password":"","text_to_search_for":""}',
+			],
+			body: {
+				headers: {},
+				auth_username: "",
+				auth_password: "",
+				text_to_search_for: "",
+			},
+		},
+		{
+			type: "dns",
+			flags: ["--body", '{"dns_resolver":null}'],
+			body: { dns_resolver: null },
+		},
+		{
+			type: "tcp",
+			flags: ["--body", '{"tcp_data":null}'],
+			body: { tcp_data: null },
+		},
+		{ type: "tcp", flags: ["--data", ""], body: { tcp_data: "" } },
+		{ type: "browser", flags: ["--body", '{"url":null}'], body: { url: null } },
+	])(
+		"accepts a supplied falsy update instead of treating it as empty: $type $flags",
+		async ({ type, flags, body }) => {
+			const result = await runCli([
+				"checks",
+				type,
+				"update",
+				"check1234",
+				...flags,
+			]);
+			expect(result.code).toBe(0);
+			expect(requests).toHaveLength(1);
+			expect(JSON.parse(requests[0].body)).toEqual(body);
+		},
+	);
+
+	it.each(["UPTIME", "BROWSER", "DNS", "TCP"])(
+		"retrieves %s checks without requiring type-specific routing",
+		async (type) => {
+			fixtureResult = { id: "check1234", check_type: type };
+			const result = await runCli(["checks", "get", "check1234"]);
+			expect(result.code).toBe(0);
+			expect(JSON.parse(result.stdout)).toEqual(fixtureResult);
+			expect(requests).toHaveLength(1);
+			expect(requests[0].url).toBe("/v1/checks/check1234");
+		},
+	);
+
+	it.each([
+		{
+			args: [
+				"checks",
+				"http",
+				"create",
+				"--name",
+				"HTTP",
+				"--url",
+				"https://example.com",
+				"--method",
+				"POST",
+				"--http-body",
+				"payload",
+				"--headers",
+				'{"Authorization":"Bearer fixture-secret"}',
+				"--auth-password",
+				"fixture-password",
+				"--no-verify-ssl",
+			],
+			path: "/v1/checks/uptime",
+			expected: {
+				name: "HTTP",
+				url: "https://example.com",
+				method: "POST",
+				body: "payload",
+				headers: { Authorization: "Bearer fixture-secret" },
+				auth_password: "fixture-password",
+				verify_ssl: false,
+			},
+		},
+		{
+			args: [
+				"checks",
+				"browser",
+				"create",
+				"--name",
+				"Browser",
+				"--url",
+				"https://example.com",
+				"--runtime",
+				"NODE24_PLAYWRIGHT",
+			],
+			path: "/v1/checks/browser",
+			expected: {
+				name: "Browser",
+				url: "https://example.com",
+				version: "NODE24_PLAYWRIGHT",
+			},
+		},
+		{
+			args: [
+				"checks",
+				"dns",
+				"create",
+				"--name",
+				"DNS",
+				"--domain",
+				"example.com",
+				"--record-type",
+				"A",
+				"--protocol",
+				"TCP",
+			],
+			path: "/v1/checks/dns",
+			expected: {
+				name: "DNS",
+				dns_domain: "example.com",
+				dns_record_type: "A",
+				dns_protocol: "TCP",
+			},
+		},
+		{
+			args: [
+				"checks",
+				"tcp",
+				"create",
+				"--name",
+				"TCP",
+				"--hostname",
+				"example.com",
+				"--port",
+				"443",
+				"--ip-family",
+				"IPv6",
+				"--data",
+				"probe",
+				"--should-fail",
+				"false",
+			],
+			path: "/v1/checks/tcp",
+			expected: {
+				name: "TCP",
+				tcp_hostname: "example.com",
+				tcp_port: 443,
+				tcp_ip_family: "IPv6",
+				tcp_data: "probe",
+				tcp_should_fail: false,
+			},
+		},
+	])(
+		"maps type-specific flags without injecting omitted API defaults: $path",
+		async ({ args, path: apiPath, expected }) => {
+			const result = await runCli([
+				...args,
+				"--organisation",
+				"org1234567890123",
+			]);
+			expect(result.code).toBe(0);
+			expect(requests).toHaveLength(1);
+			expect(requests[0].url).toBe(apiPath);
+			expect(requests[0].organisation).toBe("org1234567890123");
+			expect(JSON.parse(requests[0].body)).toEqual(expected);
+		},
+	);
+
+	it("supports JSON file and stdin bodies while keeping HTTP payload separate", async () => {
+		const scenario = checkCommandCases.find(
+			(entry) => entry.operationId === "createBrowserCheck",
+		);
+		if (!scenario) throw new Error("Missing browser create fixture");
+		const file = path.join(directory, "browser-check.json");
+		await writeFile(file, JSON.stringify(scenario.body));
+		const browser = await runCli([
+			"checks",
+			"browser",
+			"create",
+			"--body",
+			`@${file}`,
+		]);
+		expect(browser.code).toBe(0);
+		expect(JSON.parse(requests[0].body)).toEqual(scenario.body);
+		const body = {
+			name: "HTTP",
+			url: "https://example.com",
+			method: "POST",
+			body: "monitored payload",
+		};
+		const http = await runCli(
+			["checks", "http", "create", "--body", "-"],
+			JSON.stringify(body),
+		);
+		expect(http.code).toBe(0);
+		expect(JSON.parse(requests[1].body)).toEqual(body);
+	});
+
+	it.each(checkCommandCases.filter((scenario) => scenario.body !== null))(
+		"previews $operationId without credentials or HTTP and redacts sensitive input",
+		async (scenario) => {
+			const result = await runCli([...scenario.args, "--dry-run"], "", false);
+			expect(result.code).toBe(0);
+			const preview = JSON.parse(result.stdout);
+			expect(preview.path).toBe(scenario.url);
+			const body = z.record(z.string(), z.json()).parse(scenario.body);
+			for (const name of [
+				"headers",
+				"body",
+				"auth_username",
+				"auth_password",
+				"script",
+				"tcp_data",
+			]) {
+				if (body[name] !== undefined)
+					expect(preview.body[name]).toBe("<redacted>");
+			}
+			expect(requests).toHaveLength(0);
+		},
+	);
+
+	it.each([
+		{
+			args: ["checks", "http", "create", "--name", "Missing URL"],
+			error: "url",
+		},
+		{
+			args: ["checks", "browser", "create", "--name", "Missing target"],
+			error: "url, script",
+		},
+		{
+			args: [
+				"checks",
+				"http",
+				"create",
+				"--body",
+				'{"name":"Wrong type","url":"https://example.com","type":"BROWSER_CHECK"}',
+			],
+			error: "type",
+		},
+		{
+			args: [
+				"checks",
+				"dns",
+				"create",
+				"--name",
+				"DNS",
+				"--domain",
+				"example.com",
+				"--record-type",
+				"INVALID",
+			],
+			error: "record-type",
+		},
+		{
+			args: [
+				"checks",
+				"tcp",
+				"create",
+				"--name",
+				"TCP",
+				"--hostname",
+				"example.com",
+				"--port",
+				"65536",
+			],
+			error: "tcp_port",
+		},
+		{
+			args: [
+				"checks",
+				"http",
+				"create",
+				"--body",
+				'{"name":"HTTP","url":"https://example.com"}',
+				"--http-body",
+				"conflict",
+			],
+			error: "conflicts",
+		},
+		{
+			args: [
+				"checks",
+				"dns",
+				"update",
+				"check1234",
+				"--body",
+				'{"project_id":null}',
+			],
+			error: "project_id",
+		},
+		{
+			args: [
+				"checks",
+				"tcp",
+				"update",
+				"check1234",
+				"--body",
+				'{"url":"https://example.com"}',
+			],
+			error: "url",
+		},
+		{ args: ["checks", "dns", "results", "check1234"], error: "from" },
+		{
+			args: [
+				"checks",
+				"tcp",
+				"results",
+				"check1234",
+				"--from",
+				"not-a-date",
+				"--to",
+				"2026-11-01T01:00:00Z",
+			],
+			error: "from",
+		},
+		{
+			args: [
+				"checks",
+				"browser",
+				"incidents",
+				"check1234",
+				"--per-page",
+				"101",
+			],
+			error: "per_page",
+		},
+		{
+			args: [
+				"checks",
+				"http",
+				"create",
+				"--name",
+				"HTTP",
+				"--url",
+				"https://example.com",
+				"--type",
+				"UPTIME_CHECK",
+			],
+			error: "type",
+		},
+		{
+			args: ["checks", "move", "check1234", "--body", '{"project_id":"short"}'],
+			error: "project_id",
+		},
+	])(
+		"rejects invalid check input before auth or HTTP: $error",
+		async ({ args, error }) => {
+			const result = await runCli([...args, "--dry-run"], "", false);
+			expect(result.code).toBe(1);
+			expect(result.stdout).toBe("");
+			expect(result.stderr).toContain(error);
+			expect(requests).toHaveLength(0);
+		},
+	);
+
+	it("fails without credentials and reports API errors with a nonzero exit", async () => {
+		const args = [
+			"checks",
+			"dns",
+			"create",
+			"--name",
+			"DNS",
+			"--domain",
+			"example.com",
+			"--record-type",
+			"A",
+		];
+		const unauthenticated = await runCli(args, "", false);
+		expect(unauthenticated.code).toBe(1);
+		expect(unauthenticated.stderr).toContain("Not logged in");
+		expect(requests).toHaveLength(0);
+		status = 403;
+		apiSuccess = false;
+		const denied = await runCli(args);
+		expect(denied.code).toBe(1);
+		expect(denied.stdout).toBe("");
+		expect(denied.stderr).toContain("Heartbeat access denied");
+		expect(requests).toHaveLength(1);
+	});
 });

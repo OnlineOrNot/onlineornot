@@ -30,11 +30,15 @@ onlineornot
 
 Commands:
   onlineornot docs     📚 Open OnlineOrNot's docs in your browser
-  onlineornot checks   ✅ Manage your uptime checks
-    onlineornot checks list                 List uptime checks
-    onlineornot checks view <id>            View a specific uptime check
-    onlineornot checks create <name> <url>  Create a new uptime check
-    onlineornot checks delete <id>          Delete a specific uptime check
+  onlineornot checks   Manage checks
+    onlineornot checks list         List one page of checks
+    onlineornot checks get <id>     Retrieve any check as JSON
+    onlineornot checks delete <id>  Delete a check with confirmation or --force
+    onlineornot checks move <id>    Assign or unassign a check
+    onlineornot checks http         Create, update, or inspect HTTP checks
+    onlineornot checks browser      Create, update, or inspect browser checks
+    onlineornot checks dns          Create, update, or inspect DNS checks
+    onlineornot checks tcp          Create, update, or inspect TCP checks
   onlineornot billing  🧾 Open OnlineOrNot's billing in your browser
   onlineornot login    🔓 Login to OnlineOrNot via OAuth
   onlineornot setup    🚀 Sign in or sign up and create your first uptime check
@@ -44,6 +48,8 @@ Flags:
   -h, --help     Show help  [boolean]
   -v, --version  Show version number  [boolean]
 ```
+
+Resource commands output JSON without `--json`. For existing scripts, see the [major-release migration guide](https://github.com/OnlineOrNot/onlineornot/blob/main/BREAKING_CHANGES.md).
 
 ## Docs
 

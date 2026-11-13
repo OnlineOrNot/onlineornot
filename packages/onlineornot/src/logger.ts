@@ -80,7 +80,9 @@ class Logger {
 
 	private doLog(messageLevel: Exclude<LoggerLevel, "none">, args: unknown[]) {
 		if (LOGGER_LEVELS[this.loggerLevel] >= LOGGER_LEVELS[messageLevel]) {
-			console[messageLevel](this.formatMessage(messageLevel, format(...args)));
+			console[messageLevel === "debug" ? "error" : messageLevel](
+				this.formatMessage(messageLevel, format(...args)),
+			);
 		}
 	}
 

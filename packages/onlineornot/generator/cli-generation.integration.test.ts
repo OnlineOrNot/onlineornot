@@ -261,8 +261,8 @@ describe("pinned Forge binary and compiled CLI plugin", () => {
 		},
 		{
 			name: "handwritten collision",
-			aliases: { env: ["checks"] },
-			error: "CLI group alias collision: checks",
+			aliases: { env: ["setup"] },
+			error: "CLI group alias collision: setup",
 		},
 	])(
 		"rejects $name before publishing alias output",
@@ -287,6 +287,25 @@ describe("pinned Forge binary and compiled CLI plugin", () => {
 		},
 		90000,
 	);
+
+	it("refuses to generate a command that would shadow a handwritten command", async () => {
+		const overlay = JSON.parse(
+			await readFile("generator/cli-overlay.json", "utf8"),
+		);
+		overlay.operations.createCheck = {
+			status: "handwritten",
+			command: "checks get",
+		};
+		const file = path.join(directory, "handwritten-command-collision.json");
+		const output = path.join(directory, "handwritten-command-collision");
+		await writeFile(file, JSON.stringify(overlay));
+		await expect(
+			generateCli(["--overlay", file, "--output", output]),
+		).rejects.toThrow(
+			"CLI command conflicts with handwritten command: checks get",
+		);
+		expect(existsSync(output)).toBe(false);
+	}, 90000);
 });
 
 describe("generation subprocess supervision", () => {

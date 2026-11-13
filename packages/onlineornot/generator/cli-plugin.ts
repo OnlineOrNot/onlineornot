@@ -8,6 +8,8 @@ const commandMetadataSchema = z.object({
 	flags: z.record(z.string(), z.string()),
 	forbidden: z.array(z.string()),
 	sensitive: z.array(z.string()),
+	omitFlags: z.array(z.string()),
+	requireBodyAnyOf: z.array(z.string()),
 	requiresAuth: z.boolean(),
 });
 
@@ -110,6 +112,7 @@ function commandArguments(method: Method) {
 	function add(field: Field, location: CommandFlag["location"]) {
 		if (
 			field.readOnly ||
+			metadata.omitFlags.includes(field.wireName) ||
 			(location === "body" && metadata.forbidden.includes(field.wireName))
 		)
 			return;
@@ -145,6 +148,7 @@ function commandArguments(method: Method) {
 		forbidden: metadata.forbidden,
 		requiresAuth: metadata.requiresAuth,
 		groupAliases: metadata.groupAliases,
+		requireBodyAnyOf: metadata.requireBodyAnyOf,
 	};
 }
 
@@ -157,7 +161,7 @@ function sdkRequestField(
 	const current = unwrappedType(field.type);
 	const value =
 		current.kind === "object"
-			? `{ ${current.fields
+			? `{ ${current.extra ? `...${parsed}, ` : ""}${current.fields
 					.filter((child) => !child.readOnly)
 					.map((child) => {
 						const key = JSON.stringify(child.wireName);
@@ -272,8 +276,13 @@ export const { generate } = definePlugin({
 				if (addresses.has(address))
 					throw new Error(`Duplicate CLI command: ${address}`);
 				addresses.add(address);
-				const { flags, forbidden, requiresAuth, groupAliases } =
-					commandArguments(method);
+				const {
+					flags,
+					forbidden,
+					requiresAuth,
+					groupAliases,
+					requireBodyAnyOf,
+				} = commandArguments(method);
 				const spec = {
 					operationId: id,
 					command: `onlineornot ${address}`,
@@ -288,6 +297,9 @@ export const { generate } = definePlugin({
 					method: method.httpMethod,
 					path: method.path,
 					hasBody: method.body !== undefined,
+					requireBodyAnyOf: requireBodyAnyOf.length
+						? requireBodyAnyOf
+						: undefined,
 					requiresAuth,
 					confirmation:
 						method.httpMethod === "DELETE" || method.confirmation !== undefined,

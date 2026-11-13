@@ -14,7 +14,9 @@ interface ApiResponse {
 	errors: ApiError[];
 }
 
-interface ApiEnvelope<TResult = unknown> extends ApiResponse {
+interface ApiEnvelope<TResult = unknown> {
+	success: boolean;
+	errors: readonly unknown[];
 	result: TResult;
 }
 
