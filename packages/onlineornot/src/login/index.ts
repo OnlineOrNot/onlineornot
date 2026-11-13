@@ -155,7 +155,7 @@ export async function loginHandler() {
 			);
 		} else if (result.status === "existing") {
 			logger.log(
-				`Already logged in as ${result.email}. Run \`onlineornot logout\` first to log in as a different user.`,
+				`Already logged in as ${result.email}. Run \`onlineornot auth logout\` first to log in as a different user.`,
 			);
 		} else {
 			logger.log("Successfully logged in.");

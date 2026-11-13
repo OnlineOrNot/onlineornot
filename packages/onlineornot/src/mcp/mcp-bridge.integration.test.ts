@@ -380,7 +380,7 @@ describe("onlineornot mcp stdio bridge", () => {
 			expect(result.code).toBe(1);
 			expect(result.stdout).toBe("");
 			expect(result.stderr).toContain(
-				"Not logged in. Run `onlineornot login` first.",
+				"Not logged in. Run `onlineornot auth login` first.",
 			);
 			expect(harness.resources).toEqual([]);
 		} finally {

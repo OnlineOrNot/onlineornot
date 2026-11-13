@@ -260,6 +260,16 @@ describe("pinned Forge binary and compiled CLI plugin", () => {
 			error: "Unknown CLI alias group: missing",
 		},
 		{
+			name: "authentication group collision",
+			aliases: { env: ["auth"] },
+			error: "CLI group alias collision: auth",
+		},
+		{
+			name: "hidden authentication alias collision",
+			aliases: { env: ["whoami"] },
+			error: "CLI group alias collision: whoami",
+		},
+		{
 			name: "handwritten collision",
 			aliases: { env: ["setup"] },
 			error: "CLI group alias collision: setup",

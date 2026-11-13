@@ -2,20 +2,18 @@ import makeCLI from "yargs";
 import type { ArgumentsCamelCase } from "yargs";
 
 import { version as onlineornotVersion } from "../package.json";
+import { registerAuthCommands } from "./auth/auth-commands";
 import { printBanner } from "./banner";
 import { billingHandler, billingOptions } from "./billing";
 import { utilityCommandMetadata } from "./command-runtime/utility-command-metadata";
 import { docsHandler, docsOptions } from "./docs";
 import { registerGeneratedCommands } from "./generated-cli";
 import { logger } from "./logger";
-import { loginHandler, loginOptions } from "./login";
-import { logoutHandler, logoutOptions } from "./logout";
 import { runMcpBridge } from "./mcp/mcp-bridge";
 import { ParseError } from "./parse";
 import { setupHandler, setupOptions } from "./setup";
 import { uninstallHandler, uninstallOptions } from "./uninstall";
 import { updateHandler, updateOptions } from "./update";
-import { whoami } from "./whoami";
 import type { CommonYargsArgv, CommonYargsOptions } from "./yargs-types";
 
 const resetColor = "\x1b[0m";
@@ -96,13 +94,7 @@ export function createCLIParser(argv: string[]) {
 		billingHandler,
 	);
 
-	// login
-	onlineornot.command(
-		"login",
-		utilityCommandMetadata.login.description,
-		loginOptions,
-		loginHandler,
-	);
+	registerAuthCommands(onlineornot);
 
 	onlineornot.command(
 		"mcp",
@@ -117,25 +109,6 @@ export function createCLIParser(argv: string[]) {
 		utilityCommandMetadata.setup.description,
 		setupOptions,
 		setupHandler,
-	);
-
-	// logout
-	onlineornot.command(
-		"logout",
-		utilityCommandMetadata.logout.description,
-		logoutOptions,
-		logoutHandler,
-	);
-
-	// whoami
-	onlineornot.command(
-		"whoami",
-		utilityCommandMetadata.whoami.description,
-		() => {},
-		async () => {
-			await printBanner();
-			await whoami();
-		},
 	);
 
 	// This set to false to allow overwrite of default behaviour

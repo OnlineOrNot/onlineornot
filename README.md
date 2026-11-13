@@ -40,14 +40,18 @@ Commands:
     onlineornot checks dns          Create, update, or inspect DNS checks
     onlineornot checks tcp          Create, update, or inspect TCP checks
   onlineornot billing  🧾 Open OnlineOrNot's billing in your browser
-  onlineornot login    🔓 Login to OnlineOrNot via OAuth
+  onlineornot auth     Manage authentication
+    onlineornot auth login   🔓 Login to OnlineOrNot via OAuth
+    onlineornot auth logout  🔒 Logout from OnlineOrNot
+    onlineornot auth whoami  🕵️  Retrieve your user info and test your auth config
   onlineornot setup    🚀 Sign in or sign up and create your first uptime check
-  onlineornot whoami   🕵️  Retrieve your user info and test your auth config
 
 Flags:
   -h, --help     Show help  [boolean]
   -v, --version  Show version number  [boolean]
 ```
+
+Use `onlineornot auth login`, `onlineornot auth logout` and `onlineornot auth whoami` for authentication. The previous top-level `login`, `logout` and `whoami` commands remain available as hidden compatibility aliases. `onlineornot setup` remains the first-check onboarding command.
 
 Resource commands output JSON without `--json`. For existing scripts, see the [major-release migration guide](BREAKING_CHANGES.md).
 
