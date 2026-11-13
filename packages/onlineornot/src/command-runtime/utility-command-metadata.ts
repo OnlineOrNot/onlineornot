@@ -61,7 +61,7 @@ export const utilityCommandMetadata = {
 	),
 	mcp: utilityCommand(
 		"mcp",
-		"Connect an MCP client over stdio using your CLI login",
+		"Start a stdio MCP server using your CLI authentication",
 		{
 			search: { keywords: ["model context protocol", "AI", "agent", "bridge"] },
 		},

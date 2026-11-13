@@ -10,6 +10,7 @@ import { docsHandler, docsOptions } from "./docs";
 import { registerGeneratedCommands } from "./generated-cli";
 import { logger } from "./logger";
 import { runMcpBridge } from "./mcp/mcp-bridge";
+import { mcpOptions } from "./mcp/options";
 import { ParseError } from "./parse";
 import { setupHandler, setupOptions } from "./setup";
 import { uninstallHandler, uninstallOptions } from "./uninstall";
@@ -99,7 +100,7 @@ export function createCLIParser(argv: string[]) {
 	onlineornot.command(
 		"mcp",
 		utilityCommandMetadata.mcp.description,
-		() => {},
+		mcpOptions,
 		runMcpBridge,
 	);
 

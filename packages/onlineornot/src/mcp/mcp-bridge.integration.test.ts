@@ -58,6 +58,7 @@ async function createHarness(
 		tokenFailure?: string;
 		mcpStatus?: number;
 		environmentToken?: string;
+		fetchFailure?: "oauth" | "mcp";
 		redirect?: boolean;
 	} = {},
 ) {
@@ -208,6 +209,7 @@ async function createHarness(
 		USERPROFILE: home,
 		XDG_CONFIG_HOME: home,
 		OON_MCP_TEST_ORIGIN: `http://127.0.0.1:${address.port}`,
+		OON_MCP_TEST_FETCH_FAILURE: options.fetchFailure ?? "",
 	};
 	const transports: StdioClientTransport[] = [];
 	const processes: ChildProcessWithoutNullStreams[] = [];
@@ -279,7 +281,131 @@ async function collectProcess(child: ChildProcessWithoutNullStreams) {
 	return { code, signal, stdout, stderr };
 }
 
+const initializeMessage = `${JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2025-03-26", capabilities: {}, clientInfo: { name: "startup", version: "1" } } })}\n`;
+
 describe("onlineornot mcp stdio bridge", () => {
+	it("explains authentication, client configuration, tools and silent stdio behavior without authentication or HTTP", async () => {
+		const harness = await createHarness({
+			loggedIn: false,
+			fetchFailure: "mcp",
+		});
+		try {
+			const result = await collectProcess(harness.spawnCLI(["mcp", "--help"]));
+
+			expect(result.code).toBe(0);
+			expect(result.stderr).toBe("");
+			for (const text of [
+				"not an interactive CLI",
+				"MCP client must launch",
+				"tools/list",
+				"onlineornot auth login",
+				"onlineornot auth logout",
+				"ONLINEORNOT_API_TOKEN",
+				"takes precedence",
+				"same OS user and home directory",
+				"npx -y onlineornot@latest auth login",
+				"npx -y onlineornot@latest mcp",
+				"no output",
+				"Ctrl+C",
+				"stderr",
+				"nonzero",
+				"search",
+				"execute",
+				"https://onlineornot.com/docs/reference/mcp",
+			])
+				expect(result.stdout).toContain(text);
+			const configStart = result.stdout.indexOf('{\n  "mcpServers"');
+			const configEnd = result.stdout.indexOf("\n}", configStart) + 2;
+			expect(JSON.parse(result.stdout.slice(configStart, configEnd))).toEqual({
+				mcpServers: {
+					onlineornot: {
+						command: "npx",
+						args: ["-y", "onlineornot@latest", "mcp"],
+					},
+				},
+			});
+			expect(harness.resources).toEqual([]);
+			expect(harness.authorization).toEqual([]);
+		} finally {
+			await harness.close();
+		}
+	});
+
+	it("stays silent when launched directly and exits successfully on stdin EOF", async () => {
+		const harness = await createHarness();
+		try {
+			const child = harness.spawnCLI(["mcp"]);
+			const collected = collectProcess(child);
+			// Leave stdin open briefly, just as a terminal does without an MCP client.
+			let runningAtEOF = false;
+			const eof = setTimeout(() => {
+				runningAtEOF = child.exitCode === null;
+				child.stdin.end();
+			}, 500);
+			const result = await collected;
+			clearTimeout(eof);
+
+			expect(runningAtEOF).toBe(true);
+			expect(result.code).toBe(0);
+			expect(result.stdout).toBe("");
+			expect(result.stderr).toBe("");
+			expect(harness.resources).toEqual([mcpResource]);
+			expect(harness.messages).toEqual([]);
+		} finally {
+			await harness.close();
+		}
+	});
+
+	it.each(["oauth", "mcp"] as const)(
+		"makes %s network failures actionable on stderr",
+		async (fetchFailure) => {
+			const harness = await createHarness({ fetchFailure });
+			try {
+				const child = harness.spawnCLI(["mcp"]);
+				const collected = collectProcess(child);
+				if (fetchFailure === "mcp") child.stdin.write(initializeMessage);
+				const result = await collected;
+
+				expect(result.code).toBe(1);
+				expect(result.stdout).toBe("");
+				expect(result.stderr).toContain("network");
+				expect(result.stderr).toContain("retry");
+				expect(result.stderr).not.toContain("refresh-0");
+				expect(result.stderr).not.toContain("mcp-access-refreshed");
+			} finally {
+				await harness.close();
+			}
+		},
+	);
+
+	it.each([
+		[401, undefined, "onlineornot auth logout"],
+		[401, "environment-api-token", "replace ONLINEORNOT_API_TOKEN"],
+		[403, undefined, "permissions"],
+		[503, undefined, "retry"],
+	])(
+		"makes hosted HTTP %s errors actionable with token %s",
+		async (mcpStatus, environmentToken, expected) => {
+			const harness = await createHarness({ mcpStatus, environmentToken });
+			try {
+				const child = harness.spawnCLI(["mcp"]);
+				const collected = collectProcess(child);
+				child.stdin.write(initializeMessage);
+				const result = await collected;
+
+				expect(result.code).toBe(1);
+				expect(result.stdout).toBe("");
+				expect(result.stderr).toContain(`HTTP ${mcpStatus}`);
+				expect(result.stderr).toContain(expected);
+				expect(result.stderr).not.toContain("private upstream details");
+				expect(result.stderr).not.toContain("mcp-access-refreshed");
+				expect(result.stderr).not.toContain("environment-api-token");
+			} finally {
+				await harness.close();
+			}
+		},
+	);
+
 	it("forwards initialization, discovery, SSE progress, tool results and errors using CLI OAuth", async () => {
 		const harness = await createHarness();
 		try {
@@ -379,9 +505,8 @@ describe("onlineornot mcp stdio bridge", () => {
 
 			expect(result.code).toBe(1);
 			expect(result.stdout).toBe("");
-			expect(result.stderr).toContain(
-				"Not logged in. Run `onlineornot auth login` first.",
-			);
+			expect(result.stderr).toContain("Run `onlineornot auth login`");
+			expect(result.stderr).toContain("ONLINEORNOT_API_TOKEN");
 			expect(harness.resources).toEqual([]);
 		} finally {
 			await harness.close();

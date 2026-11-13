@@ -4,10 +4,28 @@ import { InitializeResultSchema } from "@modelcontextprotocol/sdk/types.js";
 import type { RequestId } from "@modelcontextprotocol/sdk/types.js";
 
 import { MCP_OAUTH_RESOURCE } from "../auth/oauth-resources";
-import { getTokenAsync } from "../user";
+import { AuthenticationError, getTokenAsync } from "../user";
 
 export async function runMcpBridge(): Promise<void> {
-	await getTokenAsync(MCP_OAUTH_RESOURCE);
+	try {
+		await getTokenAsync(MCP_OAUTH_RESOURCE);
+	} catch (error) {
+		if (error instanceof AuthenticationError) {
+			if (error.code === "NOT_LOGGED_IN") {
+				throw new AuthenticationError(
+					"MCP authentication is required. Run `onlineornot auth login` in a terminal first, using the same OS user and home directory as your MCP client, or set ONLINEORNOT_API_TOKEN in the MCP server process environment. See `onlineornot mcp --help` for client configuration.",
+					error.code,
+				);
+			}
+			if (error.code === "REFRESH_FAILED") {
+				throw new AuthenticationError(
+					`${error.message} If this is a connection problem, check network access to onlineornot.com and retry. See \`onlineornot mcp --help\` for authentication setup.`,
+					error.code,
+				);
+			}
+		}
+		throw error;
+	}
 	const stdio = new StdioServerTransport();
 	const remote = new StreamableHTTPClientTransport(
 		new URL(MCP_OAUTH_RESOURCE),
@@ -15,7 +33,7 @@ export async function runMcpBridge(): Promise<void> {
 			fetch: async (url, init) => {
 				if (url.toString() !== MCP_OAUTH_RESOURCE)
 					throw new Error("MCP bridge refused an unexpected request URL.");
-				const { apiToken } = await getTokenAsync(MCP_OAUTH_RESOURCE);
+				const { apiToken, source } = await getTokenAsync(MCP_OAUTH_RESOURCE);
 				const headers = new Headers(init?.headers);
 				headers.set("Authorization", `Bearer ${apiToken}`);
 				const timeout = new AbortController();
@@ -33,6 +51,10 @@ export async function runMcpBridge(): Promise<void> {
 							? AbortSignal.any([init.signal, timeout.signal])
 							: timeout.signal,
 					});
+				} catch {
+					throw new Error(
+						"Could not reach the OnlineOrNot MCP server at https://mcp.onlineornot.com/mcp. Check your network/proxy settings and retry. HTTP redirects are not followed.",
+					);
 				} finally {
 					clearTimeout(timer);
 				}
@@ -42,8 +64,16 @@ export async function runMcpBridge(): Promise<void> {
 					!(init?.method === "DELETE" && response.status === 405)
 				) {
 					await response.body?.cancel();
+					const recovery =
+						response.status === 401
+							? source === "environment"
+								? "Unset or replace ONLINEORNOT_API_TOKEN in the MCP server process environment; it overrides CLI login."
+								: "Run `onlineornot auth logout` then `onlineornot auth login` in a terminal, then restart your MCP client."
+							: response.status === 403
+								? "Check your credential's permissions, organization access and plan for the requested operation."
+								: "Check the MCP service availability and retry. See `onlineornot mcp --help` for setup.";
 					throw new Error(
-						`MCP request failed (HTTP ${response.status}).${response.status === 401 ? " Run `onlineornot auth logout` then `onlineornot auth login`." : ""}`,
+						`MCP request failed (HTTP ${response.status}). ${recovery}`,
 					);
 				}
 				return response;
