@@ -259,7 +259,13 @@ export const { generate } = definePlugin({
 		const addresses = new Set<string>();
 		const imports: string[] = [];
 		const grouped = new Map<string, CommandGroup>();
+		const descriptions: Record<string, string> = {};
 		for (const group of forge.groups) {
+			if (group.path.length > 0) {
+				const words = group.path.map((name) => name.kebab());
+				descriptions[words.join(" ")] =
+					group.description || `Manage ${words.at(-1)}`;
+			}
 			for (const method of group.methods) {
 				const id = z
 					.string()
@@ -305,7 +311,11 @@ export const { generate } = definePlugin({
 						method.httpMethod === "DELETE" || method.confirmation !== undefined,
 					flags,
 				};
-				commands.push(spec);
+				commands.push({
+					...spec,
+					summary: method.summary || method.description.split("\n")[0] || "",
+					description: method.description || method.summary,
+				});
 				files.push({
 					path: `${id}.ts`,
 					content: sdkAdapter(method, id, forbidden).replace(
@@ -331,7 +341,10 @@ export const { generate } = definePlugin({
 			}
 		}
 		commands.sort((left, right) => left.command.localeCompare(right.command));
-		files.push({ path: "catalog.json", content: JSON.stringify({ commands }) });
+		files.push({
+			path: "catalog.json",
+			content: JSON.stringify({ commands, descriptions }),
+		});
 		files.push({
 			path: "index.ts",
 			content: `import type { CommonYargsArgv } from "../yargs-types";

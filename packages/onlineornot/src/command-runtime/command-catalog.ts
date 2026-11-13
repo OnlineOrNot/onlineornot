@@ -1,15 +1,12 @@
 import { logger } from "../logger";
 import type { CommonYargsArgv } from "../yargs-types";
+import {
+	searchCommandCatalog,
+	type SearchCommandCatalog,
+} from "./command-search";
+import { utilityCommandMetadata } from "./utility-command-metadata";
 
-interface CatalogCommand {
-	aliases?: string[];
-	command: string;
-	description: string;
-	operationId: string;
-}
-
-interface CommandCatalog {
-	commands: CatalogCommand[];
+interface CommandCatalog extends SearchCommandCatalog {
 	schema: { commit: string; sha256: string };
 }
 
@@ -19,12 +16,12 @@ export function registerCommandCatalog(
 ) {
 	parser.command(
 		"cli",
-		"Discover generated API commands",
+		"Discover CLI commands",
 		(group) =>
 			group
 				.command(
 					"commands",
-					"Print the generated command catalog as JSON",
+					utilityCommandMetadata.cliCommands.description,
 					() => {},
 					() => {
 						logger.log(JSON.stringify(catalog, null, 2));
@@ -32,32 +29,36 @@ export function registerCommandCatalog(
 				)
 				.command(
 					"search <query>",
-					"Find generated API commands",
+					utilityCommandMetadata.cliSearch.description,
 					(search) =>
-						search.positional("query", { type: "string", demandOption: true }),
+						search.positional("query", {
+							type: "string",
+							demandOption: true,
+							description:
+								"Search terms or a description of what you want to do",
+						}),
 					(argv) => {
-						const terms = String(argv.query)
-							.toLowerCase()
-							.split(/\s+/)
-							.filter(Boolean);
-						const matches = catalog.commands
-							.map((command) => ({
-								command,
-								score: terms.filter((term) =>
-									`${command.command} ${command.aliases?.join(" ") ?? ""} ${command.description}`
-										.toLowerCase()
-										.includes(term),
-								).length,
-							}))
-							.filter((match) => match.score > 0)
-							.sort(
-								(left, right) =>
-									right.score - left.score ||
-									left.command.command.localeCompare(right.command.command),
-							)
-							.slice(0, 5)
-							.map((match) => match.command);
-						logger.log(JSON.stringify(matches, null, 2));
+						const commands = [
+							...catalog.commands,
+							...Object.values(utilityCommandMetadata),
+						];
+						const metadata = new Map(
+							commands.map((command) => [command.command, command]),
+						);
+						const matches = searchCommandCatalog(
+							{ ...catalog, commands },
+							String(argv.query),
+						);
+						logger.log(
+							JSON.stringify(
+								matches.map((match) => ({
+									...metadata.get(match.command),
+									summary: match.summary,
+								})),
+								null,
+								2,
+							),
+						);
 					},
 				)
 				.demandCommand(1),
