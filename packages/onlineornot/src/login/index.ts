@@ -5,6 +5,7 @@ import {
 	getCredentials,
 	type OAuthProvider,
 } from "../auth";
+import { withCredentialsLock } from "../auth/credentials-lock";
 import { getOnlineOrNotAPITokenFromEnv } from "../environment-variables/misc-variables";
 import { logger } from "../logger";
 import openInBrowser from "../open-in-browser";
@@ -129,12 +130,14 @@ export async function authenticateWithBrowser(
 		}
 
 		// Save credentials
-		dependencies.saveCredentials({
-			accessToken: tokens.access_token,
-			refreshToken: tokens.refresh_token,
-			expiresAt: dependencies.now() + tokens.expires_in * 1000,
-			scopes: tokens.scope.split(" "),
-			user: { email },
+		await withCredentialsLock(async () => {
+			dependencies.saveCredentials({
+				accessToken: tokens.access_token,
+				refreshToken: tokens.refresh_token,
+				expiresAt: dependencies.now() + tokens.expires_in * 1000,
+				scopes: tokens.scope.split(" "),
+				user: { email },
+			});
 		});
 
 		return { status: "authenticated", email };

@@ -1,5 +1,9 @@
 import { verifyApiToken } from "../api/tokens";
 import { getCredentials, isTokenExpired } from "../auth/credentials";
+import {
+	API_OAUTH_RESOURCE,
+	type OAuthResource,
+} from "../auth/oauth-resources";
 import { getValidToken, AuthenticationError } from "../auth/refresh";
 import { getOnlineOrNotAPITokenFromEnv } from "../environment-variables/misc-variables";
 
@@ -26,7 +30,9 @@ export interface TokenInfo {
  *
  * @throws {AuthenticationError} if not logged in or token refresh fails
  */
-export async function getTokenAsync(): Promise<TokenInfo> {
+export async function getTokenAsync(
+	resource: OAuthResource = API_OAUTH_RESOURCE,
+): Promise<TokenInfo> {
 	// First check env var (takes precedence)
 	const envToken = getOnlineOrNotAPITokenFromEnv();
 	if (envToken) {
@@ -34,7 +40,7 @@ export async function getTokenAsync(): Promise<TokenInfo> {
 	}
 
 	// Then try OAuth with refresh
-	const token = await getValidToken();
+	const token = await getValidToken(resource);
 	return { apiToken: token, source: "oauth" };
 }
 

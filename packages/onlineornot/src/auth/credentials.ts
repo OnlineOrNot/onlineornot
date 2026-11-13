@@ -10,6 +10,8 @@ export interface StoredUser {
 
 export interface Credentials {
 	accessToken: string;
+	mcpAccessToken?: string;
+	mcpExpiresAt?: number;
 	refreshToken: string;
 	expiresAt: number;
 	scopes: string[];
@@ -20,6 +22,7 @@ const config = new Conf<Credentials>({
 	projectName: "onlineornot",
 	cwd: path.join(os.homedir(), ".config", "onlineornot"),
 	configName: "credentials",
+	configFileMode: 0o600,
 });
 
 function isString(value: string): value is string {
@@ -35,6 +38,13 @@ function isValidCredentials(data: Partial<Credentials>): data is Credentials {
 		typeof data.accessToken !== "string" ||
 		typeof data.refreshToken !== "string" ||
 		typeof data.expiresAt !== "number" ||
+		!Number.isFinite(data.expiresAt) ||
+		!(
+			(data.mcpAccessToken === undefined && data.mcpExpiresAt === undefined) ||
+			(typeof data.mcpAccessToken === "string" &&
+				typeof data.mcpExpiresAt === "number" &&
+				Number.isFinite(data.mcpExpiresAt))
+		) ||
 		!Array.isArray(data.scopes) ||
 		!data.scopes.every(isString) ||
 		typeof data.user !== "object" ||
@@ -50,11 +60,7 @@ export function saveCredentials(creds: Credentials): void {
 		throw new Error("Invalid credentials format");
 	}
 
-	config.set("accessToken", creds.accessToken);
-	config.set("refreshToken", creds.refreshToken);
-	config.set("expiresAt", creds.expiresAt);
-	config.set("scopes", creds.scopes);
-	config.set("user", creds.user);
+	config.store = creds;
 }
 
 /**
@@ -62,17 +68,8 @@ export function saveCredentials(creds: Credentials): void {
  * Returns null if not logged in or credentials are corrupted.
  */
 export function getCredentials(): Credentials | null {
-	if (!config.has("accessToken")) {
-		return null;
-	}
-
-	const data: Partial<Credentials> = {
-		accessToken: config.get("accessToken"),
-		refreshToken: config.get("refreshToken"),
-		expiresAt: config.get("expiresAt"),
-		scopes: config.get("scopes"),
-		user: config.get("user"),
-	};
+	const data: Partial<Credentials> = config.store;
+	if (data.accessToken === undefined) return null;
 
 	if (!isValidCredentials(data)) {
 		// Corrupted credentials - clear them

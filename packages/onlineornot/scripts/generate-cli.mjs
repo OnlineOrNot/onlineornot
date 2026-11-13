@@ -1,4 +1,3 @@
-import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import {
@@ -19,7 +18,10 @@ import { parseArgs } from "node:util";
 import { z } from "zod";
 
 import { obtainVerifiedSchema, readLock } from "../../api/scripts/lib.mjs";
+import { obtainCompiledCliPlugin } from "./compiled-cli-plugin.mjs";
+import { runGenerationCommand } from "./generation-command.mjs";
 
+const generationDeadline = Date.now() + 75_000;
 const packageRoot = fileURLToPath(new URL("..", import.meta.url));
 const require = createRequire(import.meta.url);
 const forgePackage = path.dirname(
@@ -86,6 +88,7 @@ const { values } = parseArgs({
 		check: { type: "boolean", default: false },
 		output: { type: "string" },
 		overlay: { type: "string" },
+		"plugin-cache": { type: "string" },
 	},
 });
 const output = path.resolve(
@@ -211,21 +214,17 @@ coverage.sort((left, right) =>
 	left.operationId.localeCompare(right.operationId),
 );
 const temporary = await mkdtemp(path.join(tmpdir(), "onlineornot-forge-"));
-function execute(command, args, input) {
-	const result = spawnSync(command, args, {
-		cwd: packageRoot,
-		encoding: "utf8",
+function execute(stage, command, args, input) {
+	return runGenerationCommand(
+		stage,
+		command,
+		args,
 		input,
-		maxBuffer: 8_000_000,
-		timeout: 90000,
-	});
-	if (result.error) throw result.error;
-	if (result.status !== 0)
-		throw new Error(
-			`CLI generation failed: ${result.stderr || result.stdout || result.signal}`,
-		);
-	return result.stdout;
+		Math.min(60_000, generationDeadline - Date.now()),
+		packageRoot,
+	);
 }
+
 async function filesIn(directory) {
 	if (!existsSync(directory)) return [];
 	return (await readdir(directory, { recursive: true, withFileTypes: true }))
@@ -236,15 +235,22 @@ async function filesIn(directory) {
 		.sort();
 }
 try {
-	const plugin = path.join(temporary, "cli.wasm");
-	execute(process.execPath, [
-		pluginBin,
-		"build",
-		path.join(packageRoot, "generator/cli-plugin.ts"),
-		"-o",
-		plugin,
-	]);
-	const normalized = execute(
+	const plugin = await obtainCompiledCliPlugin(
+		packageRoot,
+		path.resolve(
+			values["plugin-cache"] ?? path.join(packageRoot, ".cache/forge-cli"),
+		),
+		(pending) =>
+			execute("compile WASM plugin", process.execPath, [
+				pluginBin,
+				"build",
+				path.join(packageRoot, "generator/cli-plugin.ts"),
+				"-o",
+				pending,
+			]),
+	);
+	const normalized = await execute(
+		"normalize OpenAPI",
 		process.execPath,
 		[forgeBin, "normalize", "-"],
 		JSON.stringify({ ...document, paths: selectedPaths }),
@@ -252,7 +258,7 @@ try {
 	const input = path.join(temporary, "openapi.json");
 	await writeFile(input, normalized);
 	const generated = path.join(temporary, "generated");
-	execute(process.execPath, [
+	await execute("generate commands", process.execPath, [
 		forgeBin,
 		input,
 		"--target",
@@ -276,7 +282,7 @@ try {
 		path.dirname(require.resolve("oxfmt/package.json")),
 		"bin/oxfmt",
 	);
-	execute(process.execPath, [
+	await execute("format generated commands", process.execPath, [
 		formatter,
 		"--write",
 		"--config",
