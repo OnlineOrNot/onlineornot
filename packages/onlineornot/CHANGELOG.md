@@ -1,5 +1,39 @@
 # onlineornot
 
+## 2.0.0
+
+### Major Changes
+
+- [#136](https://github.com/OnlineOrNot/onlineornot/pull/136) [`2495df3`](https://github.com/OnlineOrNot/onlineornot/commit/2495df35993bc492a4e634563c555f1de31fc13d) Thanks [@open-session-jcjv](https://github.com/apps/open-session-jcjv)! - BREAKING: Replace legacy check commands with generated, type-specific commands and consistent resource behavior.
+
+  Remove `checks create <name> <url>`, `checks update <id>` and `checks view <id>` without compatibility aliases. Use `checks http|browser|dns|tcp create` and `update`, and shared `checks get <id>`. Each type also supports results and incidents; shared `checks move` handles project assignment.
+
+  Generate `checks list` and `checks delete`. Check resource commands output JSON without `--json`, banners or tables. Lists return one page with `--page` and `--per-page`; pagination metadata is on stderr. Check deletion requires interactive confirmation or `--force` in unattended scripts. Validation, authentication and API errors exit nonzero.
+
+  Use `--body` for inline/file/stdin API JSON, `--http-body` for the monitored HTTP payload, `--headers` JSON instead of repeated `--header`, and `--runtime` for the browser runtime. Omitted creation fields use API defaults, including HIGH alert priority and enabled HTTP TLS verification. Reject empty resource updates while preserving explicit false/null/zero/empty values and omitted fields. Support validated, redacted previews and organization selection.
+
+  See `BREAKING_CHANGES.md` for migration examples. Authentication flows, first-check setup, the SDK and the public API remain unchanged.
+
+### Minor Changes
+
+- [#139](https://github.com/OnlineOrNot/onlineornot/pull/139) [`4d69ff2`](https://github.com/OnlineOrNot/onlineornot/commit/4d69ff2e4130b523006d4f14cba1c191ba5054a7) Thanks [@open-session-jcjv](https://github.com/apps/open-session-jcjv)! - FEATURE: Group authentication commands under `onlineornot auth`.
+
+  Use `auth login`, `auth logout` and `auth whoami`. Keep the previous top-level names as hidden compatibility aliases, show only the canonical names in command search, and use them in authentication recovery messages. Keep `setup` top-level and preserve existing OAuth, API token and credential behavior.
+
+- [#140](https://github.com/OnlineOrNot/onlineornot/pull/140) [`832f396`](https://github.com/OnlineOrNot/onlineornot/commit/832f39658934a285e420a984d944709c83d35343) Thanks [@open-session-jcjv](https://github.com/apps/open-session-jcjv)! - FEATURE: Generate webhook diagnostics, audit history and atomic project moves.
+
+  Add `webhooks deliveries list|get|activity|summary`, `audit-logs list` and `resources move` through Forge and the existing SDK. Preserve cursor and numbered pagination, organization selection, JSON stdout and nonzero API failures.
+
+  Require confirmation or `--force` for bulk moves, with a move-specific prompt and credential-free previews. Keep webhook delivery-detail payloads out of debug diagnostics while returning the API result to the command caller.
+
+- [#135](https://github.com/OnlineOrNot/onlineornot/pull/135) [`04c1dcd`](https://github.com/OnlineOrNot/onlineornot/commit/04c1dcdb2e529f68c8d8450b9a54f60c769e84e7) Thanks [@rozenmd](https://github.com/rozenmd)! - FEAT: Connect MCP clients with `onlineornot mcp` using the existing CLI OAuth login.
+
+- [#138](https://github.com/OnlineOrNot/onlineornot/pull/138) [`df44dc1`](https://github.com/OnlineOrNot/onlineornot/commit/df44dc1a59a28550093e50a9d151b93669962c99) Thanks [@open-session-jcjv](https://github.com/apps/open-session-jcjv)! - FEATURE: Match Cloudflare-style local command search with MiniSearch.
+
+  Add prefix matching, fuzzy matching at 0.2, and weighted ranking for command names (8), summaries (5), descriptions (2), keywords (5), and parent/argument/flag context (0.5). Search visible utility commands alongside generated API commands, retain group aliases, exclude hidden or opted-out entries, and return at most five matches.
+
+  Preserve the existing JSON command metadata in search results and add summaries. Keep the full API catalog available through `cli commands`. Discovery runs locally without login, API requests, AI services, or search telemetry.
+
 ## 1.9.0
 
 ### Minor Changes
