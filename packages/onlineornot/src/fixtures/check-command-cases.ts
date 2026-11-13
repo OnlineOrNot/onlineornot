@@ -504,4 +504,20 @@ export const checkCommandCases: CheckCommandCase[] = [
 			project_id: null,
 		},
 	},
+	{
+		operationId: "listChecks",
+		args: ["checks", "list", "--page", "2", "--per-page", "5"],
+		method: "GET",
+		url: "/v1/checks?page=2&per_page=5",
+		body: null,
+		result: [{ id: "check1234", name: "DNS", check_type: "DNS" }],
+	},
+	{
+		operationId: "deleteCheck",
+		args: ["checks", "delete", "check1234", "--force"],
+		method: "DELETE",
+		url: "/v1/checks/check1234",
+		body: null,
+		result: { id: "check1234" },
+	},
 ];

@@ -247,7 +247,7 @@ function registerCommandGroups(
 	return [...groups]
 		.map(
 			([name, group]) =>
-				`${parent}.command(${JSON.stringify(group.aliases.length ? [name, ...group.aliases] : name)}, ${JSON.stringify(`Manage ${name}`)}, (${parser}) => { ${group.methods.map((method) => `${parser}.command(${method});`).join(" ")} ${registerCommandGroups(group.children, parser, depth + 1)} return ${depth === 1 ? `(extendGroups[${JSON.stringify(name)}]?.(${parser}) ?? ${parser})` : parser}.demandCommand(1); }, () => {});`,
+				`${parent}.command(${JSON.stringify(group.aliases.length ? [name, ...group.aliases] : name)}, ${JSON.stringify(`Manage ${name}`)}, (${parser}) => { ${group.methods.map((method) => `${parser}.command(${method});`).join(" ")} ${registerCommandGroups(group.children, parser, depth + 1)} return ${parser}.demandCommand(1); }, () => {});`,
 		)
 		.join("\n");
 }
@@ -339,7 +339,7 @@ import { registerCommandCatalog } from "../command-runtime/command-catalog";
 import catalog from "./catalog.json";
 ${imports.join("\n")}
 
-export function registerGeneratedCommands(parser: CommonYargsArgv, extendGroups: Partial<Record<${[...grouped.keys()].map((name) => JSON.stringify(name)).join(" | ")}, (parser: CommonYargsArgv) => CommonYargsArgv>> = {}) {
+export function registerGeneratedCommands(parser: CommonYargsArgv) {
 ${registerCommandGroups(grouped, "parser", 1)}
 registerCommandCatalog(parser, catalog);
 }

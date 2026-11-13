@@ -302,10 +302,19 @@
 		},
 		{
 			"operationId": "deleteCheck",
-			"method": "DELETE",
+			"method": "delete",
 			"path": "/v1/checks/{check_id}",
-			"status": "handwritten",
-			"command": "checks delete"
+			"status": "generated",
+			"group": "checks",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			},
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "deleteDnsCheck",
@@ -886,10 +895,18 @@
 		},
 		{
 			"operationId": "listChecks",
-			"method": "GET",
+			"method": "list",
 			"path": "/v1/checks",
-			"status": "handwritten",
-			"command": "checks list"
+			"status": "generated",
+			"group": "checks",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"per_page": "per-page"
+			},
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listDnsCheckIncidents",
@@ -1345,8 +1362,8 @@
 			"operationId": "updateCheck",
 			"method": "PATCH",
 			"path": "/v1/checks/{check_id}",
-			"status": "handwritten",
-			"command": "checks update"
+			"status": "excluded",
+			"reason": "Use the type-specific checks http, browser, dns or tcp update commands."
 		},
 		{
 			"operationId": "updateDnsCheck",

@@ -80,7 +80,11 @@ beforeAll(async () => {
 	const bound = z.object({ port: z.number() }).parse(address);
 	await writeFile(
 		preloadPath,
-		`const send = globalThis.fetch;
+		`if (process.env.CLI_FIXTURE_TTY === "1") {
+	Object.defineProperty(process.stdin, "isTTY", { value: true });
+	Object.defineProperty(process.stderr, "isTTY", { value: true });
+	}
+	const send = globalThis.fetch;
 	globalThis.fetch = (input, init) => {
 		const request = new Request(input, init);
 		const url = new URL(request.url);
@@ -119,7 +123,12 @@ afterAll(async () => {
 	await rm(directory, { recursive: true, force: true });
 });
 
-function runCli(args: string[], input = "", authenticated = true) {
+function runCli(
+	args: string[],
+	input = "",
+	authenticated = true,
+	options: { interactive?: boolean; ci?: boolean; logLevel?: string } = {},
+) {
 	return new Promise<{ code: number | null; stdout: string; stderr: string }>(
 		(resolve, reject) => {
 			const child = spawn(
@@ -130,6 +139,10 @@ function runCli(args: string[], input = "", authenticated = true) {
 					env: {
 						PATH: process.env.PATH,
 						HOME: directory,
+						USERPROFILE: directory,
+						CLI_FIXTURE_TTY: options.interactive ? "1" : "0",
+						CI: options.ci ? "1" : "",
+						ONLINEORNOT_LOG: options.logLevel ?? "log",
 						XDG_CONFIG_HOME: directory,
 						FORCE_COLOR: "0",
 						ONLINEORNOT_API_TOKEN: authenticated ? "fixture-token" : "",
@@ -450,12 +463,14 @@ describe("Forge-generated commands through the executable and real HTTP", () => 
 		expect(requests).toHaveLength(0);
 	});
 
-	it("shows typed checks help and retains view and machine-readable version", async () => {
+	it("shows generated checks help and machine-readable version", async () => {
 		const help = await runCli(["checks", "--help"], "", false);
 		expect(help.code).toBe(0);
 		expect(help.stdout).toContain("checks http");
 		expect(help.stdout).not.toContain("create <name> <url>");
-		expect(help.stdout).toContain("view <id>");
+		expect(help.stdout).toContain("get <id>");
+		expect(help.stdout).not.toContain("view <id>");
+		expect(help.stdout).not.toContain("update <id>");
 		const version = await runCli(["--version"], "", false);
 		const manifest = JSON.parse(await readFile("package.json", "utf8"));
 		expect(version.stdout).toBe(`${manifest.version}\n`);
@@ -503,7 +518,7 @@ describe("generated resource management through the executable and real HTTP", (
 		const operations = JSON.parse(catalog.stdout).commands.map(
 			(command: { operationId: string }) => command.operationId,
 		);
-		expect(operations).toHaveLength(87);
+		expect(operations).toHaveLength(89);
 		for (const scenario of resourceCommandCases)
 			expect(operations).toContain(scenario.operationId);
 		for (const operation of [
@@ -891,7 +906,7 @@ describe("generated resource group aliases through the executable", () => {
 			expect(help.stdout).toContain("create");
 			const catalog = await runCli(["cli", "commands"], "", false);
 			const commands = JSON.parse(catalog.stdout).commands;
-			expect(commands).toHaveLength(87);
+			expect(commands).toHaveLength(89);
 			const create = commands.find(
 				(command: { command: string }) =>
 					command.command === `onlineornot ${group} create`,
@@ -987,7 +1002,7 @@ describe("generated type-specific check commands through the executable", () => 
 	it("discovers every typed command without restoring untyped creation", async () => {
 		const catalog = await runCli(["cli", "commands"], "", false);
 		const commands = JSON.parse(catalog.stdout).commands;
-		expect(commands).toHaveLength(87);
+		expect(commands).toHaveLength(89);
 		for (const scenario of checkCommandCases)
 			expect(
 				commands.map((command: { operationId: string }) => command.operationId),
@@ -1002,8 +1017,6 @@ describe("generated type-specific check commands through the executable", () => 
 			"dns",
 			"tcp",
 			"list",
-			"view",
-			"update",
 			"delete",
 			"get",
 			"move",
@@ -1044,47 +1057,354 @@ describe("generated type-specific check commands through the executable", () => 
 		expect(requests).toHaveLength(0);
 	});
 
-	it("preserves the existing list, view, update and delete commands", async () => {
-		const check = {
-			id: "check1234",
-			name: "Legacy",
-			check_type: "UPTIME",
-			url: "https://example.com",
-		};
-		fixtureResult = [check];
-		fixturePagination = { page: 1, per_page: 100, count: 1, total_count: 1 };
-		const list = await runCli(["checks", "list", "--json"]);
-		expect(list.code).toBe(0);
-		expect(JSON.parse(list.stdout)).toEqual([check]);
-		expect(requests[1].url).toBe("/v1/checks?page=1&per_page=100");
-		requests.length = 0;
-		fixtureResult = check;
-		const view = await runCli(["checks", "view", "check1234", "--json"]);
-		expect(view.code).toBe(0);
-		expect(JSON.parse(view.stdout)).toEqual(check);
-		expect(requests[1].url).toBe("/v1/checks/check1234");
-		requests.length = 0;
-		const update = await runCli([
+	it.each([
+		["checks", "view", "check1234"],
+		["checks", "update", "check1234", "--name", "Renamed"],
+		["checks", "list", "--json"],
+		["checks", "get", "check1234", "--json"],
+		["checks", "delete", "check1234", "--force", "--json"],
+	])("rejects removed command or flags %j before HTTP", async (...args) => {
+		const result = await runCli(args);
+		expect(result.code).toBe(1);
+		expect(result.stdout).toBe("");
+		expect(result.stderr).toContain("Unknown");
+		expect(requests).toHaveLength(0);
+	});
+
+	it("lists one filtered page as JSON without a token verification request", async () => {
+		fixtureResult = [
+			{ id: "dns12345", name: "DNS", check_type: "DNS" },
+			{ id: "tcp12345", name: "TCP", check_type: "TCP" },
+		];
+		fixturePagination = { page: 2, per_page: 2, count: 2, total_count: 9 };
+		const result = await runCli([
 			"checks",
+			"list",
+			"--page",
+			"2",
+			"--per-page",
+			"2",
+			"--search",
+			"prod & api",
+			"--project-id",
+			"project1234567890",
+			"--project-id",
+			"project0987654321",
+			"--filter",
+			"DOWN",
+			"--organisation",
+			"org1234567890123",
+		]);
+		expect(result.code).toBe(0);
+		expect(JSON.parse(result.stdout)).toEqual(fixtureResult);
+		expect(result.stderr).toBe(
+			`result_info: ${JSON.stringify(fixturePagination)}\n`,
+		);
+		expect(requests).toHaveLength(1);
+		expect(requests[0].method).toBe("GET");
+		expect(requests[0].url).toBe(
+			"/v1/checks?page=2&per_page=2&search=prod%20%26%20api&project_id=project1234567890&project_id=project0987654321&filter=DOWN",
+		);
+		expect(requests[0].organisation).toBe("org1234567890123");
+		expect(requests[0].authorization).toBe("Bearer fixture-token");
+	});
+
+	it.each([[], [{ id: "check1234", check_type: "UPTIME" }]])(
+		"leaves omitted pagination to the API and returns only its page %j",
+		async (...checks) => {
+			fixtureResult = checks;
+			fixturePagination = {
+				page: 1,
+				per_page: 20,
+				count: checks.length,
+				total_count: 41,
+			};
+			const result = await runCli(["checks", "list"]);
+			expect(result.code).toBe(0);
+			expect(JSON.parse(result.stdout)).toEqual(checks);
+			expect(result.stderr).toBe(
+				`result_info: ${JSON.stringify(fixturePagination)}\n`,
+			);
+			expect(requests).toHaveLength(1);
+			expect(requests[0].url).toBe("/v1/checks");
+		},
+	);
+
+	it("keeps debug diagnostics on stderr and resource JSON on stdout", async () => {
+		fixtureResult = [{ id: "check1234", check_type: "DNS" }];
+		const result = await runCli(["checks", "list"], "", true, {
+			logLevel: "debug",
+		});
+		expect(result.code).toBe(0);
+		expect(JSON.parse(result.stdout)).toEqual(fixtureResult);
+		expect(result.stderr).toContain(
+			"-- START API REQUEST: GET https://api.onlineornot.com/v1/checks",
+		);
+		expect(result.stderr).toContain("-- START API RESPONSE:");
+		expect(result.stderr).toContain("[REDACTED]");
+		expect(result.stderr).not.toContain("fixture-token");
+		expect(result.stderr).toContain("result_info:");
+		expect(requests).toHaveLength(1);
+	});
+
+	it("requires --force for unattended check deletion before authentication or HTTP", async () => {
+		const result = await runCli(["checks", "delete", "check1234"], "", false);
+		expect(result.code).toBe(1);
+		expect(result.stdout).toBe("");
+		expect(result.stderr).toContain("requires --force");
+		expect(requests).toHaveLength(0);
+	});
+
+	it("previews deletion without credentials, confirmation or HTTP", async () => {
+		const result = await runCli(
+			["checks", "delete", "check1234", "--dry-run"],
+			"",
+			false,
+		);
+		expect(result.code).toBe(0);
+		expect(JSON.parse(result.stdout)).toEqual({
+			operationId: "deleteCheck",
+			method: "DELETE",
+			path: "/v1/checks/check1234",
+			headers: {},
+		});
+		expect(requests).toHaveLength(0);
+	});
+
+	it.each([
+		{ answer: "yes\n", code: 0 },
+		{ answer: "n\n", code: 1 },
+		{ answer: "\n", code: 1 },
+		{ answer: "", code: 1 },
+	])(
+		"confirms check deletion interactively with $answer",
+		async ({ answer, code }) => {
+			fixtureResult = { id: "check1234" };
+			fixturePagination = null;
+			const result = await runCli(
+				["checks", "delete", "check1234"],
+				answer,
+				true,
+				{ interactive: true },
+			);
+			expect(result.code).toBe(code);
+			expect(result.stderr).toContain("Permanently delete this resource?");
+			if (code === 0) {
+				expect(JSON.parse(result.stdout)).toEqual({ id: "check1234" });
+				expect(requests).toHaveLength(1);
+				expect(requests[0].method).toBe("DELETE");
+				expect(requests[0].url).toBe("/v1/checks/check1234");
+			} else {
+				expect(result.stdout).toBe("");
+				expect(result.stderr).toContain("cancelled");
+				expect(requests).toHaveLength(0);
+			}
+		},
+	);
+
+	it("requires --force in CI even with terminal input and accepts explicit force", async () => {
+		const blocked = await runCli(
+			["checks", "delete", "check1234"],
+			"yes\n",
+			true,
+			{ interactive: true, ci: true },
+		);
+		expect(blocked.code).toBe(1);
+		expect(blocked.stdout).toBe("");
+		expect(blocked.stderr).toContain("requires --force");
+		expect(blocked.stderr).not.toContain("Permanently delete");
+		expect(requests).toHaveLength(0);
+		fixtureResult = { id: "check1234" };
+		fixturePagination = null;
+		const forced = await runCli(
+			["checks", "delete", "check1234", "--force"],
+			"",
+			true,
+			{ interactive: true, ci: true },
+		);
+		expect(forced.code).toBe(0);
+		expect(JSON.parse(forced.stdout)).toEqual({ id: "check1234" });
+		expect(requests).toHaveLength(1);
+		expect(requests[0].method).toBe("DELETE");
+	}, 15000);
+
+	it.each([
+		["--page", "0"],
+		["--page", "1.5"],
+		["--per-page", "0"],
+		["--per-page", "1.5"],
+		["--filter", "UNKNOWN"],
+	])(
+		"rejects invalid check pagination or filters %j before HTTP",
+		async (...flags) => {
+			const result = await runCli(["checks", "list", ...flags]);
+			expect(result.code).toBe(1);
+			expect(result.stdout).toBe("");
+			expect(requests).toHaveLength(0);
+		},
+	);
+
+	it.each([
+		["checks", "list"],
+		["checks", "get", "check1234"],
+		["checks", "delete", "check1234", "--force"],
+	])("fails without credentials for %j before HTTP", async (...args) => {
+		const result = await runCli(args, "", false);
+		expect(result.code).toBe(1);
+		expect(result.stdout).toBe("");
+		expect(result.stderr).toContain("Not logged in");
+		expect(requests).toHaveLength(0);
+	});
+
+	it.each([
+		{ args: ["checks", "list"], status: 401 },
+		{ args: ["checks", "list"], status: 200 },
+		{ args: ["checks", "get", "check1234"], status: 404 },
+		{ args: ["checks", "delete", "check1234", "--force"], status: 403 },
+		{
+			args: ["checks", "http", "update", "check1234", "--name", "Renamed"],
+			status: 500,
+		},
+	])("exits nonzero for HTTP $status on $args", async (scenario) => {
+		status = scenario.status;
+		apiSuccess = false;
+		const result = await runCli(scenario.args);
+		expect(result.code).toBe(1);
+		expect(result.stdout).toBe("");
+		expect(result.stderr).toContain("Heartbeat access denied");
+		expect(requests).toHaveLength(1);
+	});
+
+	it.each([
+		["heartbeats", "update", "heartbeat123"],
+		...["http", "browser", "dns", "tcp"].map((type) => [
+			"checks",
+			type,
 			"update",
 			"check1234",
-			"--name",
-			"Renamed",
-			"--body",
-			"legacy HTTP payload",
-			"--json",
-		]);
-		expect(update.code).toBe(0);
-		expect(JSON.parse(update.stdout)).toEqual(check);
-		expect(requests[1].method).toBe("PATCH");
-		expect(JSON.parse(requests[1].body).body).toBe("legacy HTTP payload");
-		requests.length = 0;
-		fixtureResult = { id: "check1234" };
-		const deletion = await runCli(["checks", "delete", "check1234", "--json"]);
-		expect(deletion.code).toBe(0);
-		expect(JSON.parse(deletion.stdout)).toEqual({ id: "check1234" });
-		expect(requests[1].method).toBe("DELETE");
-	}, 15000);
+		]),
+		...resourceCommandCases
+			.filter(
+				(scenario) => scenario.method === "PATCH" || scenario.method === "PUT",
+			)
+			.map((scenario) =>
+				scenario.args.slice(
+					0,
+					scenario.args.findIndex((word) => word.startsWith("--")),
+				),
+			),
+	])(
+		"rejects empty updates for %j before credentials or HTTP",
+		async (...args) => {
+			for (const flags of [
+				[],
+				["--body", "{}"],
+				["--organisation", "org1234567890123"],
+			]) {
+				const result = await runCli([...args, ...flags], "", false);
+				expect(result.code).toBe(1);
+				expect(result.stdout).toBe("");
+				expect(result.stderr).toContain(
+					"Update requires at least one body field",
+				);
+			}
+			expect(requests).toHaveLength(0);
+		},
+		15000,
+	);
+
+	it("rejects empty updates from files and stdin before HTTP", async () => {
+		const file = path.join(directory, "empty-update.json");
+		await writeFile(file, "{}");
+		for (const body of [`@${file}`, "-"]) {
+			const result = await runCli(
+				["checks", "http", "update", "check1234", "--body", body],
+				"{}",
+				false,
+			);
+			expect(result.code).toBe(1);
+			expect(result.stdout).toBe("");
+			expect(result.stderr).toContain(
+				"Update requires at least one body field",
+			);
+		}
+		expect(requests).toHaveLength(0);
+	});
+
+	it.each(["http", "browser", "dns", "tcp"])(
+		"preserves explicit false, zero and empty arrays when updating %s checks",
+		async (type) => {
+			const body = {
+				muted: false,
+				paused: false,
+				confirmation_period_seconds: 0,
+				recovery_period_seconds: 0,
+				reminder_alert_interval_minutes: 0,
+				assertions: [],
+			};
+			const result = await runCli([
+				"checks",
+				type,
+				"update",
+				"check1234",
+				"--body",
+				JSON.stringify(body),
+			]);
+			expect(result.code).toBe(0);
+			expect(requests).toHaveLength(1);
+			expect(requests[0].method).toBe("PATCH");
+			expect(JSON.parse(requests[0].body)).toEqual(body);
+		},
+	);
+
+	it.each([
+		{ type: "http", flags: ["--http-body", ""], body: { body: "" } },
+		{ type: "http", flags: ["--no-muted"], body: { muted: false } },
+		{
+			type: "http",
+			flags: ["--confirmation-period-seconds", "0"],
+			body: { confirmation_period_seconds: 0 },
+		},
+		{
+			type: "http",
+			flags: [
+				"--body",
+				'{"headers":{},"auth_username":"","auth_password":"","text_to_search_for":""}',
+			],
+			body: {
+				headers: {},
+				auth_username: "",
+				auth_password: "",
+				text_to_search_for: "",
+			},
+		},
+		{
+			type: "dns",
+			flags: ["--body", '{"dns_resolver":null}'],
+			body: { dns_resolver: null },
+		},
+		{
+			type: "tcp",
+			flags: ["--body", '{"tcp_data":null}'],
+			body: { tcp_data: null },
+		},
+		{ type: "tcp", flags: ["--data", ""], body: { tcp_data: "" } },
+		{ type: "browser", flags: ["--body", '{"url":null}'], body: { url: null } },
+	])(
+		"accepts a supplied falsy update instead of treating it as empty: $type $flags",
+		async ({ type, flags, body }) => {
+			const result = await runCli([
+				"checks",
+				type,
+				"update",
+				"check1234",
+				...flags,
+			]);
+			expect(result.code).toBe(0);
+			expect(requests).toHaveLength(1);
+			expect(JSON.parse(requests[0].body)).toEqual(body);
+		},
+	);
 
 	it.each(["UPTIME", "BROWSER", "DNS", "TCP"])(
 		"retrieves %s checks without requiring type-specific routing",
@@ -1244,7 +1564,7 @@ describe("generated type-specific check commands through the executable", () => 
 		expect(JSON.parse(requests[1].body)).toEqual(body);
 	});
 
-	it.each(checkCommandCases.filter((scenario) => scenario.method !== "GET"))(
+	it.each(checkCommandCases.filter((scenario) => scenario.body !== null))(
 		"previews $operationId without credentials or HTTP and redacts sensitive input",
 		async (scenario) => {
 			const result = await runCli([...scenario.args, "--dry-run"], "", false);

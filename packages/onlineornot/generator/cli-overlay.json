@@ -347,8 +347,14 @@
 			}
 		},
 		"listChecks": {
-			"status": "handwritten",
-			"command": "checks list"
+			"status": "generated",
+			"group": "checks",
+			"method": "list",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation",
+				"per_page": "per-page"
+			}
 		},
 		"createCheck": {
 			"status": "handwritten",
@@ -366,12 +372,19 @@
 			}
 		},
 		"deleteCheck": {
-			"status": "handwritten",
-			"command": "checks delete"
+			"status": "generated",
+			"group": "checks",
+			"method": "delete",
+			"positionals": {
+				"check_id": "id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"updateCheck": {
-			"status": "handwritten",
-			"command": "checks update"
+			"status": "excluded",
+			"reason": "Use the type-specific checks http, browser, dns or tcp update commands."
 		},
 		"listEnvironmentVariables": {
 			"status": "generated",

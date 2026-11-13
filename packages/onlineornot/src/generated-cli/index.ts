@@ -18,6 +18,7 @@ import { command as createTcpCheck } from "./createTcpCheck";
 import { command as createToken } from "./createToken";
 import { command as createUptimeCheck } from "./createUptimeCheck";
 import { command as createWebhook } from "./createWebhook";
+import { command as deleteCheck } from "./deleteCheck";
 import { command as deleteEnvironmentVariable } from "./deleteEnvironmentVariable";
 import { command as deleteHeartbeat } from "./deleteHeartbeat";
 import { command as deleteMaintenanceWindow } from "./deleteMaintenanceWindow";
@@ -47,6 +48,7 @@ import { command as getToken } from "./getToken";
 import { command as getWebhook } from "./getWebhook";
 import { command as listBrowserCheckIncidents } from "./listBrowserCheckIncidents";
 import { command as listBrowserCheckResults } from "./listBrowserCheckResults";
+import { command as listChecks } from "./listChecks";
 import { command as listDnsCheckIncidents } from "./listDnsCheckIncidents";
 import { command as listDnsCheckResults } from "./listDnsCheckResults";
 import { command as listEnvironmentVariables } from "./listEnvironmentVariables";
@@ -89,27 +91,14 @@ import { command as updateTcpCheck } from "./updateTcpCheck";
 import { command as updateUptimeCheck } from "./updateUptimeCheck";
 import { command as updateWebhook } from "./updateWebhook";
 
-export function registerGeneratedCommands(
-	parser: CommonYargsArgv,
-	extendGroups: Partial<
-		Record<
-			| "checks"
-			| "env"
-			| "heartbeats"
-			| "maintenance"
-			| "projects"
-			| "status-pages"
-			| "tokens"
-			| "webhooks",
-			(parser: CommonYargsArgv) => CommonYargsArgv
-		>
-	> = {},
-) {
+export function registerGeneratedCommands(parser: CommonYargsArgv) {
 	parser.command(
 		"checks",
 		"Manage checks",
 		(group1) => {
+			group1.command(deleteCheck);
 			group1.command(getCheck);
+			group1.command(listChecks);
 			group1.command(moveCheck);
 			group1.command(
 				"browser",
@@ -159,7 +148,7 @@ export function registerGeneratedCommands(
 				},
 				() => {},
 			);
-			return (extendGroups["checks"]?.(group1) ?? group1).demandCommand(1);
+			return group1.demandCommand(1);
 		},
 		() => {},
 	);
@@ -173,7 +162,7 @@ export function registerGeneratedCommands(
 			group1.command(listEnvironmentVariables);
 			group1.command(moveEnvironmentVariable);
 			group1.command(updateEnvironmentVariable);
-			return (extendGroups["env"]?.(group1) ?? group1).demandCommand(1);
+			return group1.demandCommand(1);
 		},
 		() => {},
 	);
@@ -187,7 +176,7 @@ export function registerGeneratedCommands(
 			group1.command(listHeartbeats);
 			group1.command(moveHeartbeat);
 			group1.command(updateHeartbeat);
-			return (extendGroups["heartbeats"]?.(group1) ?? group1).demandCommand(1);
+			return group1.demandCommand(1);
 		},
 		() => {},
 	);
@@ -201,7 +190,7 @@ export function registerGeneratedCommands(
 			group1.command(listMaintenanceWindows);
 			group1.command(moveMaintenanceWindow);
 			group1.command(updateMaintenanceWindow);
-			return (extendGroups["maintenance"]?.(group1) ?? group1).demandCommand(1);
+			return group1.demandCommand(1);
 		},
 		() => {},
 	);
@@ -214,7 +203,7 @@ export function registerGeneratedCommands(
 			group1.command(getProject);
 			group1.command(listProjects);
 			group1.command(updateProject);
-			return (extendGroups["projects"]?.(group1) ?? group1).demandCommand(1);
+			return group1.demandCommand(1);
 		},
 		() => {},
 	);
@@ -306,9 +295,7 @@ export function registerGeneratedCommands(
 				},
 				() => {},
 			);
-			return (extendGroups["status-pages"]?.(group1) ?? group1).demandCommand(
-				1,
-			);
+			return group1.demandCommand(1);
 		},
 		() => {},
 	);
@@ -320,7 +307,7 @@ export function registerGeneratedCommands(
 			group1.command(deleteToken);
 			group1.command(getToken);
 			group1.command(listTokens);
-			return (extendGroups["tokens"]?.(group1) ?? group1).demandCommand(1);
+			return group1.demandCommand(1);
 		},
 		() => {},
 	);
@@ -334,7 +321,7 @@ export function registerGeneratedCommands(
 			group1.command(listWebhooks);
 			group1.command(moveWebhook);
 			group1.command(updateWebhook);
-			return (extendGroups["webhooks"]?.(group1) ?? group1).demandCommand(1);
+			return group1.demandCommand(1);
 		},
 		() => {},
 	);

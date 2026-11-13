@@ -2,8 +2,12 @@
 "onlineornot": major
 ---
 
-BREAKING: Replace untyped check creation with generated HTTP, browser, DNS and TCP commands.
+BREAKING: Replace legacy check commands with generated, type-specific commands and consistent resource behavior.
 
-Remove `checks create <name> <url>`. Use `checks http create --name <name> --url <url>`, or the browser, DNS and TCP groups. Each type supports create, update, results and incidents. Add shared `checks get` and `checks move` commands; retain existing list, view, update and delete behavior.
+Remove `checks create <name> <url>`, `checks update <id>` and `checks view <id>` without compatibility aliases. Use `checks http|browser|dns|tcp create` and `update`, and shared `checks get <id>`. Each type also supports results and incidents; shared `checks move` handles project assignment.
 
-New commands output JSON, support inline/file/stdin API request bodies, validated previews and organization selection. Use `--http-body` for the monitored HTTP request payload and `--body` for API request JSON. Redact sensitive preview fields. Track migration details and unapproved future candidates in `BREAKING_CHANGES.md`.
+Generate `checks list` and `checks delete`. Check resource commands output JSON without `--json`, banners or tables. Lists return one page with `--page` and `--per-page`; pagination metadata is on stderr. Check deletion requires interactive confirmation or `--force` in unattended scripts. Validation, authentication and API errors exit nonzero.
+
+Use `--body` for inline/file/stdin API JSON, `--http-body` for the monitored HTTP payload, `--headers` JSON instead of repeated `--header`, and `--runtime` for the browser runtime. Omitted creation fields use API defaults, including HIGH alert priority and enabled HTTP TLS verification. Reject empty resource updates while preserving explicit false/null/zero/empty values and omitted fields. Support validated, redacted previews and organization selection.
+
+See `BREAKING_CHANGES.md` for migration examples. Authentication flows, first-check setup, the SDK and the public API remain unchanged.
