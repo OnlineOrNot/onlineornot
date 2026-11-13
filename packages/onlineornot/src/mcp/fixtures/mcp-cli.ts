@@ -13,6 +13,13 @@ globalThis.fetch = (input, init) => {
 	) {
 		throw new Error("Unexpected MCP test request origin");
 	}
+	if (
+		(process.env.OON_MCP_TEST_FETCH_FAILURE === "oauth" &&
+			url.pathname.endsWith("/token")) ||
+		(process.env.OON_MCP_TEST_FETCH_FAILURE === "mcp" &&
+			url.hostname === "mcp.onlineornot.com")
+	)
+		throw new TypeError("fetch failed");
 	return nativeFetch(new URL(`${url.pathname}${url.search}`, origin), init);
 };
 

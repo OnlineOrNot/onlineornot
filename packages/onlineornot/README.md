@@ -194,24 +194,93 @@ Bulk moves use one atomic request: the server rejects conflicts or invalid depen
 
 ## MCP clients
 
-The CLI can bridge an MCP client's stdio connection to OnlineOrNot's hosted MCP
-server using your CLI authentication. Sign in first with `onlineornot auth login`,
-then add the following to your client's MCP server configuration (the exact file
-location depends on the client):
+`onlineornot mcp` starts a stdio MCP server that bridges your MCP client to
+OnlineOrNot's hosted server at `https://mcp.onlineornot.com/mcp`. It is **not an
+interactive CLI**: an MCP client must launch it, initialize the connection and
+request the tool list (`tools/list`). Run `onlineornot mcp --help` for setup and
+troubleshooting without authentication or network requests.
+
+### Authenticate first
+
+Sign in from a terminal before configuring your MCP client:
+
+```sh
+npx -y onlineornot@latest auth login
+```
+
+With an installed CLI, use `onlineornot auth login`. The MCP client must run as the
+same OS user with the same home directory so it can read the saved credentials.
+OAuth credentials refresh automatically; `mcp` never opens a login browser. If an
+older login has not authorized MCP, run `onlineornot auth logout` followed by
+`onlineornot auth login` to authorize it again.
+
+Alternatively, supply an OnlineOrNot API token through `ONLINEORNOT_API_TOKEN` in
+the MCP server process environment. This is the only authentication environment
+variable supported by the bridge, and it takes precedence over saved OAuth login.
+Unset it before using browser login or switching back to OAuth. GUI clients may not
+inherit your terminal's environment; use the client's environment/secret settings.
+Never put tokens in prompts, logs or source control.
+
+### Configure and launch
+
+Add this generic configuration to your MCP client (file location and format vary
+by client):
 
 ```json
 {
 	"mcpServers": {
 		"onlineornot": {
-			"command": "onlineornot",
-			"args": ["mcp"]
+			"command": "npx",
+			"args": ["-y", "onlineornot@latest", "mcp"]
 		}
 	}
 }
 ```
 
-Make sure `onlineornot` is on the MCP client's `PATH`. No token needs to be embedded
-in this configuration.
+Node.js 22+ and `npx` must be on the MCP client's `PATH`. No token needs to be
+embedded in this configuration when using saved CLI login. For an installed CLI,
+use `"command": "onlineornot"` and `"args": ["mcp"]` instead.
+
+The corresponding launch commands are:
+
+```sh
+# Launch through an MCP client, not an interactive terminal session:
+npx -y onlineornot@latest mcp
+# Or, with the CLI installed:
+onlineornot mcp
+```
+
+Restart/reload your MCP client and discover the server's tools. The hosted server
+currently exposes **search** (find endpoints and schemas in the OpenAPI description)
+and **execute** (run JavaScript making authenticated API requests). These support
+monitoring checks, heartbeats, status pages, incidents, maintenance windows and
+other supported API workflows. Mutations require matching edit permissions; MCP
+does not bypass organization, grant or plan restrictions. Tool names are not CLI
+subcommands.
+
+### Recognize normal stdio behavior and failures
+
+- With authentication ready, starting `mcp` directly may produce **no output** and
+  wait while stdin remains open. It is waiting for MCP protocol messages, not
+  terminal commands. Silence does not verify the hosted connection: that happens
+  when a client sends a request. Use `Ctrl+C` to stop, or close stdin to exit.
+- During a session, stdout is reserved for MCP protocol messages. Diagnostics go
+  to stderr, and failures exit nonzero. Do not merge stderr into stdout in a client
+  launcher.
+- Missing login: run `onlineornot auth login` as the MCP client's OS user, or supply
+  `ONLINEORNOT_API_TOKEN` to the launched process.
+- HTTP 401: if using an environment token, unset or replace it; CLI login cannot
+  override it. With OAuth, run `onlineornot auth logout` then `onlineornot auth login`
+  and restart the client.
+- HTTP 403: check the credential's permissions, organization access and plan.
+- Connection/refresh failures: check network/proxy access to `onlineornot.com` and
+  `mcp.onlineornot.com`, then retry. The bridge does not follow HTTP redirects.
+
+See the [MCP reference](https://onlineornot.com/docs/reference/mcp) for capabilities,
+permissions and API documentation, the [client connection guide](https://onlineornot.com/docs/how-to/mcp/connect)
+for client-specific hosted HTTP setup, and the [machine-readable MCP guide](https://mcp.onlineornot.com/llms.txt).
+The CLI bridge uses the hosted server's default tool mode; it adds no tool/scope
+controls or endpoint override flags.
 
 ## Updating
 
