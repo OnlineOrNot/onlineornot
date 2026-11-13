@@ -43,11 +43,14 @@ type EnvelopeResult<TData> =
  * Authentication remains owned by the CLI so OAuth tokens can be refreshed
  * before the generated client sends a request.
  */
-export function getApiConfig(apiToken: string) {
+export function getApiConfig(
+	apiToken: string,
+	options: { sensitiveResponse?: boolean } = {},
+) {
 	return {
 		auth: apiToken,
 		baseUrl: API_BASE_URL.replace(/\/v1\/?$/, ""),
-		fetch: fetchApi,
+		fetch: createApiFetch(options.sensitiveResponse),
 		headers: {
 			"User-Agent": `onlineornot/${onlineornotVersion}`,
 		},
@@ -103,36 +106,41 @@ export function unwrapApiResult<
 	>;
 }
 
-const fetchApi: typeof globalThis.fetch = async (input, init) => {
-	const request = input instanceof Request ? input : new Request(input, init);
+function createApiFetch(sensitiveResponse = false): typeof globalThis.fetch {
+	return async (input, init) => {
+		const request = input instanceof Request ? input : new Request(input, init);
 
-	if (logger.loggerLevel === "debug") {
-		logger.debug(`-- START API REQUEST: ${request.method} ${request.url}`);
-		logger.debug(
-			"HEADERS:",
-			JSON.stringify(redactedHeaders(request.headers), null, 2),
-		);
-		logger.debug("-- END API REQUEST");
-	}
+		if (logger.loggerLevel === "debug") {
+			logger.debug(`-- START API REQUEST: ${request.method} ${request.url}`);
+			logger.debug(
+				"HEADERS:",
+				JSON.stringify(redactedHeaders(request.headers), null, 2),
+			);
+			logger.debug("-- END API REQUEST");
+		}
 
-	const response = await globalThis.fetch(request);
+		const response = await globalThis.fetch(request);
 
-	if (logger.loggerLevel === "debug") {
-		logger.debug(
-			"-- START API RESPONSE:",
-			response.statusText,
-			response.status,
-		);
-		logger.debug(
-			"HEADERS:",
-			JSON.stringify(Object.fromEntries(response.headers.entries()), null, 2),
-		);
-		logger.debug("RESPONSE:", await response.clone().text());
-		logger.debug("-- END API RESPONSE");
-	}
+		if (logger.loggerLevel === "debug") {
+			logger.debug(
+				"-- START API RESPONSE:",
+				response.statusText,
+				response.status,
+			);
+			logger.debug(
+				"HEADERS:",
+				JSON.stringify(Object.fromEntries(response.headers.entries()), null, 2),
+			);
+			logger.debug(
+				"RESPONSE:",
+				sensitiveResponse ? "<redacted>" : await response.clone().text(),
+			);
+			logger.debug("-- END API RESPONSE");
+		}
 
-	return response;
-};
+		return response;
+	};
+}
 
 function redactedHeaders(headers: Headers): Record<string, string> {
 	const values = Object.fromEntries(headers.entries());

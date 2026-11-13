@@ -29,8 +29,13 @@
 			"reason": "Not exposed by the current CLI."
 		},
 		"listAuditLogs": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "audit-logs",
+			"method": "list",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"verifyToken": {
 			"status": "handwritten",
@@ -595,8 +600,14 @@
 			}
 		},
 		"moveResources": {
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "resources",
+			"method": "move",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			},
+			"confirmation": "Move these selected resources?"
 		},
 		"moveMaintenanceWindow": {
 			"status": "generated",
@@ -1077,20 +1088,48 @@
 			}
 		},
 		"getWebhookDeliverySummary": {
-			"status": "deferred",
-			"reason": "Webhook delivery diagnostics are not part of the current CLI rollout."
+			"status": "generated",
+			"group": "webhooks.deliveries",
+			"method": "summary",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"getWebhookDeliveryActivity": {
-			"status": "deferred",
-			"reason": "Webhook delivery diagnostics are not part of the current CLI rollout."
+			"status": "generated",
+			"group": "webhooks.deliveries",
+			"method": "activity",
+			"positionals": {
+				"webhook_id": "webhook-id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"listWebhookDeliveries": {
-			"status": "deferred",
-			"reason": "Webhook delivery diagnostics are not part of the current CLI rollout."
+			"status": "generated",
+			"group": "webhooks.deliveries",
+			"method": "list",
+			"positionals": {
+				"webhook_id": "webhook-id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			}
 		},
 		"getWebhookDelivery": {
-			"status": "deferred",
-			"reason": "Webhook delivery diagnostics are not part of the current CLI rollout."
+			"status": "generated",
+			"group": "webhooks.deliveries",
+			"method": "get",
+			"positionals": {
+				"webhook_id": "webhook-id",
+				"attempt_id": "attempt-id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			},
+			"sensitiveResponse": true
 		},
 		"listWebhooks": {
 			"status": "generated",

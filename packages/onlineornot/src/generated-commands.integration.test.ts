@@ -11,6 +11,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { z } from "zod";
 
 import { checkCommandCases } from "./fixtures/check-command-cases";
+import { diagnosticCommandCases } from "./fixtures/diagnostic-command-cases";
 import { resourceCommandCases } from "./fixtures/resource-command-cases";
 
 interface RecordedRequest {
@@ -518,16 +519,19 @@ describe("generated resource management through the executable and real HTTP", (
 		const operations = JSON.parse(catalog.stdout).commands.map(
 			(command: { operationId: string }) => command.operationId,
 		);
-		expect(operations).toHaveLength(89);
+		expect(operations).toHaveLength(95);
 		for (const scenario of resourceCommandCases)
 			expect(operations).toContain(scenario.operationId);
 		for (const operation of [
-			"getWebhookDeliverySummary",
-			"getWebhookDeliveryActivity",
-			"listWebhookDeliveries",
-			"getWebhookDelivery",
 			"getDnsCheck",
-			"moveResources",
+			"listUsers",
+			"listInvitations",
+			"createInvitation",
+			"removeUser",
+			"searchLogs",
+			"sendLogs",
+			"exportOtlpLogs",
+			"getLogUsage",
 		])
 			expect(operations).not.toContain(operation);
 		for (const args of [
@@ -906,7 +910,7 @@ describe("generated resource group aliases through the executable", () => {
 			expect(help.stdout).toContain("create");
 			const catalog = await runCli(["cli", "commands"], "", false);
 			const commands = JSON.parse(catalog.stdout).commands;
-			expect(commands).toHaveLength(89);
+			expect(commands).toHaveLength(95);
 			const create = commands.find(
 				(command: { command: string }) =>
 					command.command === `onlineornot ${group} create`,
@@ -1002,7 +1006,7 @@ describe("generated type-specific check commands through the executable", () => 
 	it("discovers every typed command without restoring untyped creation", async () => {
 		const catalog = await runCli(["cli", "commands"], "", false);
 		const commands = JSON.parse(catalog.stdout).commands;
-		expect(commands).toHaveLength(89);
+		expect(commands).toHaveLength(95);
 		for (const scenario of checkCommandCases)
 			expect(
 				commands.map((command: { operationId: string }) => command.operationId),
@@ -1745,5 +1749,393 @@ describe("generated type-specific check commands through the executable", () => 
 		expect(denied.stdout).toBe("");
 		expect(denied.stderr).toContain("Heartbeat access denied");
 		expect(requests).toHaveLength(1);
+	});
+});
+
+describe("generated webhook diagnostics, audit history and bulk project moves", () => {
+	it.each(diagnosticCommandCases)(
+		"executes $operationId with one authenticated SDK request",
+		async (scenario) => {
+			fixturePagination = null;
+			fixtureResult = scenario.body ?? { diagnostic: "fixture" };
+			const result = await runCli([
+				...scenario.args,
+				"--organisation",
+				"organization1234",
+			]);
+
+			expect(result.code).toBe(0);
+			expect(JSON.parse(result.stdout)).toEqual(fixtureResult);
+			expect(result.stderr).toBe("");
+			expect(requests).toHaveLength(1);
+			expect(requests[0].method).toBe(scenario.method);
+			expect(requests[0].url).toBe(scenario.url);
+			expect(requests[0].authorization).toBe("Bearer fixture-token");
+			expect(requests[0].organisation).toBe("organization1234");
+			expect(requests[0].body ? JSON.parse(requests[0].body) : null).toEqual(
+				scenario.body,
+			);
+		},
+	);
+
+	it.each(diagnosticCommandCases)(
+		"previews $operationId without credentials, confirmation or HTTP",
+		async (scenario) => {
+			const result = await runCli(
+				[...scenario.args.filter((arg) => arg !== "--force"), "--dry-run"],
+				"",
+				false,
+			);
+
+			expect(result.code).toBe(0);
+			const preview = JSON.parse(result.stdout);
+			expect(preview.operationId).toBe(scenario.operationId);
+			expect(preview.method).toBe(scenario.method);
+			expect(preview.body ?? null).toEqual(scenario.body);
+			expect(result.stderr).toBe("");
+			expect(requests).toHaveLength(0);
+		},
+	);
+
+	it.each(diagnosticCommandCases)(
+		"requires authentication for $operationId",
+		async (scenario) => {
+			const result = await runCli(scenario.args, "", false);
+
+			expect(result.code).toBe(1);
+			expect(result.stdout).toBe("");
+			expect(result.stderr).toContain("onlineornot auth login");
+			expect(requests).toHaveLength(0);
+		},
+	);
+
+	it.each(
+		diagnosticCommandCases.flatMap((scenario) =>
+			[200, 403].map((httpStatus) => ({ ...scenario, httpStatus })),
+		),
+	)(
+		"fails $operationId on an API rejection at HTTP $httpStatus without partial requests",
+		async (scenario) => {
+			status = scenario.httpStatus;
+			apiSuccess = false;
+			const result = await runCli(scenario.args);
+
+			expect(result.code).toBe(1);
+			expect(result.stdout).toBe("");
+			expect(result.stderr).toContain("Heartbeat access denied");
+			expect(requests).toHaveLength(1);
+		},
+	);
+
+	it.each(diagnosticCommandCases)(
+		"discovers $operationId and provides nested help locally",
+		async (scenario) => {
+			const command = scenario.args.slice(
+				0,
+				scenario.operationId.startsWith("getWebhookDelivery") ||
+					scenario.operationId === "listWebhookDeliveries"
+					? 3
+					: 2,
+			);
+			const help = await runCli([...command, "--help"], "", false);
+			const search = await runCli(
+				["cli", "search", command.join(" ")],
+				"",
+				false,
+			);
+
+			expect(help.code).toBe(0);
+			expect(help.stdout).toContain(`onlineornot ${command.join(" ")}`);
+			expect(search.code).toBe(0);
+			expect(
+				JSON.parse(search.stdout).map(
+					(item: { operationId?: string }) => item.operationId,
+				),
+			).toContain(scenario.operationId);
+			expect(requests).toHaveLength(0);
+		},
+	);
+
+	it("keeps webhook cursors in JSON and forwards filters without automatic pagination", async () => {
+		fixturePagination = null;
+		fixtureResult = {
+			deliveries: [{ attempt_id: "attempt1234", outcome: "timeout" }],
+			next_cursor: "next-page",
+		};
+		const result = await runCli([
+			"webhooks",
+			"deliveries",
+			"list",
+			"webhook1234",
+			"--period",
+			"14d",
+			"--event-type",
+			"uptime.down",
+			"--outcome",
+			"timeout",
+			"--limit",
+			"100",
+			"--cursor",
+			"opaque+/cursor=",
+		]);
+
+		expect(result.code).toBe(0);
+		expect(JSON.parse(result.stdout)).toEqual(fixtureResult);
+		expect(result.stderr).toBe("");
+		expect(requests).toHaveLength(1);
+		expect(
+			Object.fromEntries(
+				new URL(requests[0].url, "http://fixture").searchParams,
+			),
+		).toEqual({
+			period: "14d",
+			event_type: "uptime.down",
+			outcome: "timeout",
+			limit: "100",
+			cursor: "opaque+/cursor=",
+		});
+	});
+
+	it("forwards a webhook activity period and comma-separated summary IDs", async () => {
+		const activity = await runCli([
+			"webhooks",
+			"deliveries",
+			"activity",
+			"webhook1234",
+			"--period",
+			"7d",
+		]);
+		const summary = await runCli([
+			"webhooks",
+			"deliveries",
+			"summary",
+			"--webhook-ids",
+			"webhook1234,webhook5678",
+		]);
+
+		expect(activity.code).toBe(0);
+		expect(summary.code).toBe(0);
+		expect(requests).toHaveLength(2);
+		expect(
+			new URL(requests[0].url, "http://fixture").searchParams.get("period"),
+		).toBe("7d");
+		expect(
+			new URL(requests[1].url, "http://fixture").searchParams.get(
+				"webhook_ids",
+			),
+		).toBe("webhook1234,webhook5678");
+	});
+
+	it("preserves captured webhook details without copying payloads into debug diagnostics", async () => {
+		fixturePagination = null;
+		fixtureResult = {
+			request_headers: "private-request-header",
+			request_body: "private-request-payload",
+			request_body_state: "truncated",
+			response_headers: "private-response-header",
+			response_body: "private-response-payload",
+			response_body_state: "captured",
+			failure_reason: "timeout",
+		};
+		const result = await runCli(
+			["webhooks", "deliveries", "get", "webhook1234", "attempt1234"],
+			"",
+			true,
+			{ logLevel: "debug" },
+		);
+
+		expect(result.code).toBe(0);
+		expect(JSON.parse(result.stdout)).toEqual(fixtureResult);
+		expect(result.stderr).toContain("<redacted>");
+		for (const value of [
+			"private-request-header",
+			"private-request-payload",
+			"private-response-header",
+			"private-response-payload",
+			"fixture-token",
+		])
+			expect(result.stderr).not.toContain(value);
+	});
+
+	it("lists one audit page as JSON with pagination only on stderr", async () => {
+		fixtureResult = [
+			{
+				id: "audit1234",
+				audit_action: "check.created",
+				actor_display_name: "fixture@example.test",
+			},
+		];
+		const result = await runCli([
+			"audit-logs",
+			"list",
+			"--page",
+			"2",
+			"--per-page",
+			"5",
+		]);
+
+		expect(result.code).toBe(0);
+		expect(JSON.parse(result.stdout)).toEqual(fixtureResult);
+		expect(result.stderr).toContain('result_info: {"page":2');
+		expect(requests).toHaveLength(1);
+		expect(
+			Object.fromEntries(
+				new URL(requests[0].url, "http://fixture").searchParams,
+			),
+		).toEqual({ page: "2", per_page: "5" });
+	});
+
+	[
+		["webhooks", "deliveries", "list", "short"],
+		["webhooks", "deliveries", "list", "webhook1234", "--limit", "0"],
+		["webhooks", "deliveries", "list", "webhook1234", "--limit", "101"],
+		["webhooks", "deliveries", "list", "webhook1234", "--outcome", "invalid"],
+		["webhooks", "deliveries", "activity", "webhook1234", "--period", "30d"],
+		["webhooks", "deliveries", "summary"],
+		["webhooks", "deliveries", "get", "webhook1234"],
+		["audit-logs", "list", "--page", "0"],
+		["audit-logs", "list", "--per-page", "1.5"],
+	].forEach((args) => {
+		it(`rejects invalid diagnostics input ${args.join(" ")} before authentication or HTTP`, async () => {
+			const result = await runCli(args, "", false);
+
+			expect(result.code).toBe(1);
+			expect(result.stdout).toBe("");
+			expect(requests).toHaveLength(0);
+		});
+	});
+
+	it.each(["inline", "file", "stdin"])(
+		"unassigns every supported resource kind with a single atomic %s body request",
+		async (form) => {
+			const body = {
+				project_id: null,
+				resources: [
+					"check",
+					"heartbeat",
+					"webhook",
+					"environment_variable",
+					"maintenance_window",
+				].map((kind) => ({ kind, id: `${kind}-1234` })),
+			};
+			const text = JSON.stringify(body);
+			const file = path.join(directory, "bulk-move.json");
+			await writeFile(file, text);
+			fixtureResult = body;
+			fixturePagination = null;
+			const result = await runCli(
+				[
+					"resources",
+					"move",
+					"--body",
+					form === "file" ? `@${file}` : form === "stdin" ? "-" : text,
+					"--force",
+				],
+				form === "stdin" ? text : "",
+			);
+
+			expect(result.code).toBe(0);
+			expect(JSON.parse(result.stdout)).toEqual(body);
+			expect(requests).toHaveLength(1);
+			expect(requests[0].url).toBe("/v1/resources/move");
+			expect(JSON.parse(requests[0].body)).toEqual(body);
+		},
+	);
+
+	it("supports generated bulk-move flags without changing the resource selection", async () => {
+		const resources = [
+			{ kind: "check", id: "check1234" },
+			{ kind: "environment_variable", id: "variable1234" },
+		];
+		const result = await runCli([
+			"resources",
+			"move",
+			"--project-id",
+			"project1234567890",
+			"--resources",
+			JSON.stringify(resources),
+			"--force",
+		]);
+
+		expect(result.code).toBe(0);
+		expect(requests).toHaveLength(1);
+		expect(JSON.parse(requests[0].body)).toEqual({
+			project_id: "project1234567890",
+			resources,
+		});
+	});
+
+	it.each([
+		{ project_id: null, resources: [] },
+		{
+			project_id: null,
+			resources: Array.from({ length: 101 }, (_, index) => ({
+				kind: "check",
+				id: `check${index}`,
+			})),
+		},
+		{ project_id: "short", resources: [{ kind: "check", id: "check1234" }] },
+		{ resources: [{ kind: "check", id: "check1234" }] },
+		{ project_id: null, resources: [{ kind: "user", id: "user1234" }] },
+		{ project_id: null, resources: [{ kind: "check" }] },
+	])(
+		"rejects invalid bulk selection %j before confirmation, authentication or HTTP",
+		async (body) => {
+			const result = await runCli(
+				["resources", "move", "--body", JSON.stringify(body)],
+				"",
+				false,
+			);
+
+			expect(result.code).toBe(1);
+			expect(result.stdout).toBe("");
+			expect(result.stderr).not.toContain("requires --force");
+			expect(requests).toHaveLength(0);
+		},
+	);
+
+	it.each([
+		{ answer: "yes\n", code: 0 },
+		{ answer: "n\n", code: 1 },
+		{ answer: "\n", code: 1 },
+		{ answer: "", code: 1 },
+	])(
+		"confirms bulk moves with $answer without deletion wording",
+		async ({ answer, code }) => {
+			const scenario = diagnosticCommandCases.find(
+				(item) => item.operationId === "moveResources",
+			);
+			if (!scenario) throw new Error("Missing bulk-move fixture");
+			const result = await runCli(
+				scenario.args.filter((arg) => arg !== "--force"),
+				answer,
+				true,
+				{ interactive: true },
+			);
+
+			expect(result.code).toBe(code);
+			expect(result.stderr).toContain("Move these selected resources?");
+			expect(result.stderr).not.toContain("Permanently delete");
+			expect(requests).toHaveLength(code === 0 ? 1 : 0);
+		},
+	);
+
+	it("requires force for bulk moves in scripts and CI, even with an affirmative stdin answer", async () => {
+		const scenario = diagnosticCommandCases.find(
+			(item) => item.operationId === "moveResources",
+		);
+		if (!scenario) throw new Error("Missing bulk-move fixture");
+		for (const options of [{}, { interactive: true, ci: true }]) {
+			const result = await runCli(
+				scenario.args.filter((arg) => arg !== "--force"),
+				"yes\n",
+				true,
+				options,
+			);
+			expect(result.code).toBe(1);
+			expect(result.stdout).toBe("");
+			expect(result.stderr).toContain("requires --force");
+		}
+		expect(requests).toHaveLength(0);
 	});
 });

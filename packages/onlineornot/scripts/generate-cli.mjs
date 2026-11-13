@@ -38,6 +38,8 @@ const annotationSchema = z.discriminatedUnion("status", [
 			positionals: z.record(z.string(), z.string()),
 			flags: z.record(z.string(), z.string()),
 			sensitive: z.array(z.string()).default([]),
+			confirmation: z.string().min(1).optional(),
+			sensitiveResponse: z.boolean().optional(),
 			omitFlags: z.array(z.string()).default([]),
 			requireBodyAnyOf: z.array(z.string()).default([]),
 		})
@@ -210,6 +212,7 @@ for (const [apiPath, item] of Object.entries(document.paths)) {
 				positionals: annotation.positionals,
 				flags: annotation.flags,
 				sensitive: annotation.sensitive,
+				sensitiveResponse: annotation.sensitiveResponse ?? false,
 				omitFlags: annotation.omitFlags,
 				requireBodyAnyOf: annotation.requireBodyAnyOf,
 				requiresAuth:
@@ -220,6 +223,8 @@ for (const [apiPath, item] of Object.entries(document.paths)) {
 				forbidden,
 			},
 		};
+		if (annotation.confirmation)
+			prepared["x-forge-require-confirmation"] = annotation.confirmation;
 		selectedPaths[apiPath] ??= {};
 		if (item.parameters) selectedPaths[apiPath].parameters = item.parameters;
 		selectedPaths[apiPath][method] = prepared;

@@ -8,6 +8,7 @@ const commandMetadataSchema = z.object({
 	flags: z.record(z.string(), z.string()),
 	forbidden: z.array(z.string()),
 	sensitive: z.array(z.string()),
+	sensitiveResponse: z.boolean(),
 	omitFlags: z.array(z.string()),
 	requireBodyAnyOf: z.array(z.string()),
 	requiresAuth: z.boolean(),
@@ -146,6 +147,7 @@ function commandArguments(method: Method) {
 	return {
 		flags,
 		forbidden: metadata.forbidden,
+		sensitiveResponse: metadata.sensitiveResponse,
 		requiresAuth: metadata.requiresAuth,
 		groupAliases: metadata.groupAliases,
 		requireBodyAnyOf: metadata.requireBodyAnyOf,
@@ -177,7 +179,12 @@ function sdkRequestField(
 	return `${absent} ? undefined : ${value}`;
 }
 
-function sdkAdapter(method: Method, id: string, forbidden: string[]): string {
+function sdkAdapter(
+	method: Method,
+	id: string,
+	forbidden: string[],
+	sensitiveResponse: boolean,
+): string {
 	const pascal = id[0].toUpperCase() + id.slice(1);
 	const validators: string[] = [];
 	const declarations: string[] = [];
@@ -227,7 +234,7 @@ import { createApiCommand${request.some((part) => part.includes("hasCommandInput
 export const command = createApiCommand(SPEC, (input) => {
 ${declarations.join("\n")}
 const request = { ${request.join(",")} };
-return { request, execute: async (token) => unwrapApiEnvelope(await ${id}({ ...getApiConfig(token), ...request }), ${JSON.stringify(method.path)}) };
+return { request, execute: async (token) => unwrapApiEnvelope(await ${id}({ ...getApiConfig(token${sensitiveResponse ? ", { sensitiveResponse: true }" : ""}), ...request }), ${JSON.stringify(method.path)}) };
 });
 `;
 }
@@ -285,6 +292,7 @@ export const { generate } = definePlugin({
 				const {
 					flags,
 					forbidden,
+					sensitiveResponse,
 					requiresAuth,
 					groupAliases,
 					requireBodyAnyOf,
@@ -309,6 +317,7 @@ export const { generate } = definePlugin({
 					requiresAuth,
 					confirmation:
 						method.httpMethod === "DELETE" || method.confirmation !== undefined,
+					confirmationMessage: method.confirmation || undefined,
 					flags,
 				};
 				commands.push({
@@ -318,7 +327,7 @@ export const { generate } = definePlugin({
 				});
 				files.push({
 					path: `${id}.ts`,
-					content: sdkAdapter(method, id, forbidden).replace(
+					content: sdkAdapter(method, id, forbidden, sensitiveResponse).replace(
 						"SPEC",
 						JSON.stringify(spec),
 					),

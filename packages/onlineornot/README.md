@@ -65,6 +65,38 @@ onlineornot cli search "signout"
 
 Search returns up to five ranked JSON matches, including API commands and utilities. It runs locally without login or network access. Use `onlineornot cli commands` for the full API command catalog and append `--help` to a command for usage.
 
+## Webhook diagnostics, audit history and project moves
+
+```sh
+onlineornot webhooks deliveries list <webhook-id> --period 7d --outcome timeout --limit 25
+onlineornot webhooks deliveries get <webhook-id> <attempt-id>
+onlineornot webhooks deliveries activity <webhook-id> --period 14d
+onlineornot webhooks deliveries summary --webhook-ids <id1,id2>
+onlineornot audit-logs list --page 1 --per-page 20
+onlineornot resources move --body @move.json --dry-run
+onlineornot resources move --body @move.json --force
+```
+
+Webhook diagnostics require `WEBHOOKS:READ`. Delivery lists accept `--period 24h|7d|14d` (default `24h`), `--event-type`, `--outcome`, `--limit` (1–100, default 25) and `--cursor`. Request the next page explicitly using `next_cursor` from the JSON result. Activity supports the same periods; summaries cover the last 24 hours for comma-separated webhook IDs. Delivery detail includes captured headers and payloads with their capture/truncation markers; keep this output private. Debug logs do not include the delivery-detail response body.
+
+Audit history requires `PEOPLE:READ` and returns one page per request, with pagination metadata on stderr. All six commands accept `--organisation` where an OAuth grant authorizes multiple organizations.
+
+A bulk-move body selects the destination and exact resources:
+
+```json
+{
+	"project_id": "<destination-project-id>",
+	"resources": [
+		{ "kind": "check", "id": "<check-id>" },
+		{ "kind": "environment_variable", "id": "<variable-id>" }
+	]
+}
+```
+
+Set `project_id` to `null` to unassign. Select 1–100 checks, heartbeats, webhooks, environment variables or maintenance windows using the API kinds `check`, `heartbeat`, `webhook`, `environment_variable` and `maintenance_window`. JSON can be inline, `@file.json` or stdin (`--body -`); alternatively use `--project-id` and a JSON array in `--resources`.
+
+Bulk moves use one atomic request: the server rejects conflicts or invalid dependencies without partial changes. They require `PROJECTS:EDIT` and edit permission for every selected resource type. Interactive execution asks for confirmation; scripts and CI must use `--force`. `--force` only skips confirmation, not server checks. `--dry-run` validates and previews the request without credentials or HTTP; it does not check server-side conflicts or permissions.
+
 ## Docs
 
 There are docs for:

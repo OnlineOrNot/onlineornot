@@ -151,7 +151,7 @@ describe("local command discovery through the executable", () => {
 
 	it("keeps generated API metadata available in the full catalog", async () => {
 		const catalog = await runDiscovery(["cli", "commands"]);
-		expect(catalog.commands).toHaveLength(89);
+		expect(catalog.commands).toHaveLength(95);
 		expect(
 			catalog.commands.find(
 				(command: { operationId: string }) =>

@@ -34,6 +34,7 @@ interface ApiCommandSpec {
 	requireBodyAnyOf?: string[];
 	requiresAuth: boolean;
 	confirmation: boolean;
+	confirmationMessage?: string;
 	flags: ApiCommandFlag[];
 }
 
@@ -159,6 +160,7 @@ async function collectCommandInput(
 
 async function confirmCommandMutation(
 	argv: ArgumentsCamelCase<CommonYargsOptions>,
+	message = "Permanently delete this resource?",
 ) {
 	if (argv.force === true) return;
 	if (!process.stdin.isTTY || !process.stderr.isTTY || process.env.CI)
@@ -172,10 +174,9 @@ async function confirmCommandMutation(
 	const cancellation = new AbortController();
 	prompt.once("close", () => cancellation.abort());
 	try {
-		const answer = await prompt.question(
-			"Permanently delete this resource? [y/N] ",
-			{ signal: cancellation.signal },
-		);
+		const answer = await prompt.question(`${message} [y/N] `, {
+			signal: cancellation.signal,
+		});
 		if (!/^y(es)?$/i.test(answer.trim()))
 			throw new Error("Destructive command cancelled");
 	} catch (error) {
@@ -261,7 +262,8 @@ export function createApiCommand(
 				);
 				return;
 			}
-			if (spec.confirmation) await confirmCommandMutation(argv);
+			if (spec.confirmation)
+				await confirmCommandMutation(argv, spec.confirmationMessage);
 			const { apiToken } = spec.requiresAuth
 				? await getTokenAsync()
 				: { apiToken: "" };
