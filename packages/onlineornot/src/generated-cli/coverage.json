@@ -833,31 +833,65 @@
 		},
 		{
 			"operationId": "getWebhookDelivery",
-			"method": "GET",
+			"method": "get",
 			"path": "/v1/webhooks/{webhook_id}/deliveries/{attempt_id}",
-			"status": "deferred",
-			"reason": "Webhook delivery diagnostics are not part of the current CLI rollout."
+			"status": "generated",
+			"group": "webhooks.deliveries",
+			"positionals": {
+				"webhook_id": "webhook-id",
+				"attempt_id": "attempt-id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			},
+			"sensitive": [],
+			"sensitiveResponse": true,
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "getWebhookDeliveryActivity",
-			"method": "GET",
+			"method": "activity",
 			"path": "/v1/webhooks/{webhook_id}/delivery-activity",
-			"status": "deferred",
-			"reason": "Webhook delivery diagnostics are not part of the current CLI rollout."
+			"status": "generated",
+			"group": "webhooks.deliveries",
+			"positionals": {
+				"webhook_id": "webhook-id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			},
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "getWebhookDeliverySummary",
-			"method": "GET",
+			"method": "summary",
 			"path": "/v1/webhooks/delivery-summary",
-			"status": "deferred",
-			"reason": "Webhook delivery diagnostics are not part of the current CLI rollout."
+			"status": "generated",
+			"group": "webhooks.deliveries",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			},
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listAuditLogs",
-			"method": "GET",
+			"method": "list",
 			"path": "/v1/audit_logs",
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "audit-logs",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			},
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listBrowserCheckIncidents",
@@ -1193,10 +1227,19 @@
 		},
 		{
 			"operationId": "listWebhookDeliveries",
-			"method": "GET",
+			"method": "list",
 			"path": "/v1/webhooks/{webhook_id}/deliveries",
-			"status": "deferred",
-			"reason": "Webhook delivery diagnostics are not part of the current CLI rollout."
+			"status": "generated",
+			"group": "webhooks.deliveries",
+			"positionals": {
+				"webhook_id": "webhook-id"
+			},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			},
+			"sensitive": [],
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "listWebhooks",
@@ -1278,10 +1321,18 @@
 		},
 		{
 			"operationId": "moveResources",
-			"method": "POST",
+			"method": "move",
 			"path": "/v1/resources/move",
-			"status": "deferred",
-			"reason": "Not exposed by the current CLI."
+			"status": "generated",
+			"group": "resources",
+			"positionals": {},
+			"flags": {
+				"X-OnlineOrNot-Organisation": "organisation"
+			},
+			"sensitive": [],
+			"confirmation": "Move these selected resources?",
+			"omitFlags": [],
+			"requireBodyAnyOf": []
 		},
 		{
 			"operationId": "moveWebhook",

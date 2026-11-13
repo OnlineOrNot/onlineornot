@@ -46,6 +46,10 @@ import { command as getStatusPageScheduledMaintenance } from "./getStatusPageSch
 import { command as getStatusPageSummary } from "./getStatusPageSummary";
 import { command as getToken } from "./getToken";
 import { command as getWebhook } from "./getWebhook";
+import { command as getWebhookDelivery } from "./getWebhookDelivery";
+import { command as getWebhookDeliveryActivity } from "./getWebhookDeliveryActivity";
+import { command as getWebhookDeliverySummary } from "./getWebhookDeliverySummary";
+import { command as listAuditLogs } from "./listAuditLogs";
 import { command as listBrowserCheckIncidents } from "./listBrowserCheckIncidents";
 import { command as listBrowserCheckResults } from "./listBrowserCheckResults";
 import { command as listChecks } from "./listChecks";
@@ -66,11 +70,13 @@ import { command as listTcpCheckResults } from "./listTcpCheckResults";
 import { command as listTokens } from "./listTokens";
 import { command as listUptimeCheckIncidents } from "./listUptimeCheckIncidents";
 import { command as listUptimeCheckResults } from "./listUptimeCheckResults";
+import { command as listWebhookDeliveries } from "./listWebhookDeliveries";
 import { command as listWebhooks } from "./listWebhooks";
 import { command as moveCheck } from "./moveCheck";
 import { command as moveEnvironmentVariable } from "./moveEnvironmentVariable";
 import { command as moveHeartbeat } from "./moveHeartbeat";
 import { command as moveMaintenanceWindow } from "./moveMaintenanceWindow";
+import { command as moveResources } from "./moveResources";
 import { command as moveWebhook } from "./moveWebhook";
 import { command as updateBrowserCheck } from "./updateBrowserCheck";
 import { command as updateDnsCheck } from "./updateDnsCheck";
@@ -92,6 +98,15 @@ import { command as updateUptimeCheck } from "./updateUptimeCheck";
 import { command as updateWebhook } from "./updateWebhook";
 
 export function registerGeneratedCommands(parser: CommonYargsArgv) {
+	parser.command(
+		"audit-logs",
+		"Manage audit-logs",
+		(group1) => {
+			group1.command(listAuditLogs);
+			return group1.demandCommand(1);
+		},
+		() => {},
+	);
 	parser.command(
 		"checks",
 		"Manage checks",
@@ -203,6 +218,15 @@ export function registerGeneratedCommands(parser: CommonYargsArgv) {
 			group1.command(getProject);
 			group1.command(listProjects);
 			group1.command(updateProject);
+			return group1.demandCommand(1);
+		},
+		() => {},
+	);
+	parser.command(
+		"resources",
+		"Manage resources",
+		(group1) => {
+			group1.command(moveResources);
 			return group1.demandCommand(1);
 		},
 		() => {},
@@ -321,6 +345,18 @@ export function registerGeneratedCommands(parser: CommonYargsArgv) {
 			group1.command(listWebhooks);
 			group1.command(moveWebhook);
 			group1.command(updateWebhook);
+			group1.command(
+				"deliveries",
+				"Manage deliveries",
+				(group2) => {
+					group2.command(getWebhookDeliveryActivity);
+					group2.command(getWebhookDelivery);
+					group2.command(listWebhookDeliveries);
+					group2.command(getWebhookDeliverySummary);
+					return group2.demandCommand(1);
+				},
+				() => {},
+			);
 			return group1.demandCommand(1);
 		},
 		() => {},

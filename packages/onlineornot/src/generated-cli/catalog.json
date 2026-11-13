@@ -5,6 +5,53 @@
 	},
 	"commands": [
 		{
+			"operationId": "listAuditLogs",
+			"command": "onlineornot audit-logs list",
+			"words": ["audit-logs", "list"],
+			"description": "Retrieve a paginated list of audit log events for your organisation\n\nRequires PEOPLE:READ.",
+			"method": "GET",
+			"path": "/v1/audit_logs",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "page",
+					"wireName": "page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Page number of paginated results, starting at 1.",
+					"sensitive": false
+				},
+				{
+					"name": "per-page",
+					"wireName": "per_page",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			],
+			"summary": "List audit log events"
+		},
+		{
 			"operationId": "createBrowserCheck",
 			"command": "onlineornot checks browser create",
 			"words": ["checks", "browser", "create"],
@@ -5127,6 +5174,54 @@
 			"summary": "Rename a project"
 		},
 		{
+			"operationId": "moveResources",
+			"command": "onlineornot resources move",
+			"words": ["resources", "move"],
+			"description": "Requires EDIT permission for every selected resource type. Moves only the selected resources; rejects broken variable references, name conflicts and cross-project maintenance targets without partial changes.\n\nRequires PROJECTS:EDIT.",
+			"method": "POST",
+			"path": "/v1/resources/move",
+			"hasBody": true,
+			"requiresAuth": true,
+			"confirmation": true,
+			"confirmationMessage": "Move these selected resources?",
+			"flags": [
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				},
+				{
+					"name": "project-id",
+					"wireName": "project_id",
+					"location": "body",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "Project ID, or null for unassigned.",
+					"sensitive": false
+				},
+				{
+					"name": "resources",
+					"wireName": "resources",
+					"location": "body",
+					"type": "json",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "resources",
+					"sensitive": false
+				}
+			],
+			"summary": "Assign or unassign explicitly selected resources atomically"
+		},
+		{
 			"operationId": "createStatusPageComponent",
 			"command": "onlineornot status-pages components create",
 			"words": ["status-pages", "components", "create"],
@@ -7911,6 +8006,246 @@
 			"summary": "Delete a webhook"
 		},
 		{
+			"operationId": "getWebhookDeliveryActivity",
+			"command": "onlineornot webhooks deliveries activity",
+			"words": ["webhooks", "deliveries", "activity"],
+			"description": "Requires WEBHOOKS:READ.",
+			"method": "GET",
+			"path": "/v1/webhooks/{webhook_id}/delivery-activity",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "webhook-id",
+					"wireName": "webhook_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Webhook ID",
+					"sensitive": false
+				},
+				{
+					"name": "period",
+					"wireName": "period",
+					"location": "query",
+					"type": "string",
+					"array": false,
+					"choices": ["24h", "7d", "14d"],
+					"required": false,
+					"positional": false,
+					"description": "period",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			],
+			"summary": "Read webhook delivery activity"
+		},
+		{
+			"operationId": "getWebhookDelivery",
+			"command": "onlineornot webhooks deliveries get",
+			"words": ["webhooks", "deliveries", "get"],
+			"description": "Requires WEBHOOKS:READ.",
+			"method": "GET",
+			"path": "/v1/webhooks/{webhook_id}/deliveries/{attempt_id}",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "webhook-id",
+					"wireName": "webhook_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Webhook ID",
+					"sensitive": false
+				},
+				{
+					"name": "attempt-id",
+					"wireName": "attempt_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "attempt_id",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			],
+			"summary": "Inspect a webhook delivery attempt"
+		},
+		{
+			"operationId": "listWebhookDeliveries",
+			"command": "onlineornot webhooks deliveries list",
+			"words": ["webhooks", "deliveries", "list"],
+			"description": "Requires WEBHOOKS:READ.",
+			"method": "GET",
+			"path": "/v1/webhooks/{webhook_id}/deliveries",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "webhook-id",
+					"wireName": "webhook_id",
+					"location": "path",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": true,
+					"description": "Webhook ID",
+					"sensitive": false
+				},
+				{
+					"name": "period",
+					"wireName": "period",
+					"location": "query",
+					"type": "string",
+					"array": false,
+					"choices": ["24h", "7d", "14d"],
+					"required": false,
+					"positional": false,
+					"description": "period",
+					"sensitive": false
+				},
+				{
+					"name": "event-type",
+					"wireName": "event_type",
+					"location": "query",
+					"type": "string",
+					"array": false,
+					"choices": [
+						"status_page.incident.started",
+						"status_page.incident.updated",
+						"status_page.incident.resolved",
+						"uptime.down",
+						"uptime.up",
+						"heartbeat.down",
+						"heartbeat.up"
+					],
+					"required": false,
+					"positional": false,
+					"description": "Webhook event type",
+					"sensitive": false
+				},
+				{
+					"name": "outcome",
+					"wireName": "outcome",
+					"location": "query",
+					"type": "string",
+					"array": false,
+					"choices": [
+						"success",
+						"http_error",
+						"timeout",
+						"network_error",
+						"resolution_error",
+						"skipped"
+					],
+					"required": false,
+					"positional": false,
+					"description": "outcome",
+					"sensitive": false
+				},
+				{
+					"name": "limit",
+					"wireName": "limit",
+					"location": "query",
+					"type": "number",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "limit",
+					"sensitive": false
+				},
+				{
+					"name": "cursor",
+					"wireName": "cursor",
+					"location": "query",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "cursor",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			],
+			"summary": "List webhook delivery attempts"
+		},
+		{
+			"operationId": "getWebhookDeliverySummary",
+			"command": "onlineornot webhooks deliveries summary",
+			"words": ["webhooks", "deliveries", "summary"],
+			"description": "Requires WEBHOOKS:READ.",
+			"method": "GET",
+			"path": "/v1/webhooks/delivery-summary",
+			"hasBody": false,
+			"requiresAuth": true,
+			"confirmation": false,
+			"flags": [
+				{
+					"name": "webhook-ids",
+					"wireName": "webhook_ids",
+					"location": "query",
+					"type": "string",
+					"array": false,
+					"required": true,
+					"positional": false,
+					"description": "webhook_ids",
+					"sensitive": false
+				},
+				{
+					"name": "organisation",
+					"wireName": "X-OnlineOrNot-Organisation",
+					"location": "header",
+					"type": "string",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
+					"sensitive": false
+				}
+			],
+			"summary": "Read last-24-hour webhook summaries"
+		},
+		{
 			"operationId": "getWebhook",
 			"command": "onlineornot webhooks get",
 			"words": ["webhooks", "get"],
@@ -8186,6 +8521,7 @@
 		}
 	],
 	"descriptions": {
+		"audit-logs": "Manage audit-logs",
 		"checks": "Manage checks",
 		"checks browser": "Manage browser",
 		"checks dns": "Manage dns",
@@ -8195,6 +8531,7 @@
 		"heartbeats": "Manage heartbeats",
 		"maintenance": "Manage maintenance",
 		"projects": "Manage projects",
+		"resources": "Manage resources",
 		"status-pages": "Manage status-pages",
 		"status-pages components": "Manage components",
 		"status-pages groups": "Manage groups",
@@ -8203,6 +8540,7 @@
 		"status-pages scheduled-maintenance": "Manage scheduled-maintenance",
 		"status-pages subscribers": "Manage subscribers",
 		"tokens": "Manage tokens",
-		"webhooks": "Manage webhooks"
+		"webhooks": "Manage webhooks",
+		"webhooks deliveries": "Manage deliveries"
 	}
 }
