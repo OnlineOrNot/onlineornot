@@ -1,8 +1,8 @@
 # Breaking changes
 
-## Next major release
+## v2.0.0
 
-All changes below are included in the next major CLI release. Existing scripts must migrate before upgrading.
+All changes below are included in CLI v2.0.0. Existing scripts must migrate before upgrading.
 
 ### Choose a type when creating or updating checks
 
