@@ -170,9 +170,6 @@ export async function runSetup(
 
 	const checks = await deps.listChecks();
 	if (checks.length > 0 && !args.url) {
-		deps.log(
-			`Your account already has ${checks.length} uptime check${checks.length === 1 ? "" : "s"}. Setup complete.`,
-		);
 		deps.log("Run `onlineornot checks list` to view your checks.");
 		return;
 	}

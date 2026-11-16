@@ -137,7 +137,7 @@ describe("setup", () => {
 		expect(deps.createCheck).not.toHaveBeenCalled();
 		expect(deps.saveState).not.toHaveBeenCalled();
 		expect(deps.log).toHaveBeenCalledWith(
-			"Your account already has 1 uptime check. Setup complete.",
+			"Run `onlineornot checks list` to view your checks.",
 		);
 	});
 

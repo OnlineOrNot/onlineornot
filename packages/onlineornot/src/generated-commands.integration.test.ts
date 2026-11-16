@@ -2163,9 +2163,7 @@ describe("first-check setup for returning accounts", () => {
 			const result = await runCli(["setup"]);
 
 			expect(result.code).toBe(0);
-			expect(result.stdout).toContain(
-				"Your account already has 51 uptime checks. Setup complete.",
-			);
+			expect(result.stdout).not.toContain("Your account already has");
 			expect(result.stdout).toContain("onlineornot checks list");
 			expect(result.stdout).not.toContain("first uptime check");
 			expect(requests.map(({ method, url }) => `${method} ${url}`)).toEqual([
