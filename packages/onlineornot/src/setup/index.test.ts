@@ -12,7 +12,7 @@ const createdCheck = {
 
 function dependencies(options: {
 	state?: SetupCheckState | null;
-	checks?: Array<typeof createdCheck>;
+	checks?: Array<{ id: string; name: string; url: string | null }>;
 }) {
 	let state = options.state ?? null;
 	return {
@@ -135,10 +135,10 @@ describe("setup", () => {
 		await runSetup({}, deps);
 
 		expect(deps.createCheck).not.toHaveBeenCalled();
-		expect(deps.saveState).toHaveBeenLastCalledWith({
-			...pending,
-			checkId: "public-check-id",
-		});
+		expect(deps.saveState).not.toHaveBeenCalled();
+		expect(deps.log).toHaveBeenCalledWith(
+			"Your account already has 1 uptime check. Setup complete.",
+		);
 	});
 
 	it("does not create a duplicate check on a completed rerun", async () => {
@@ -155,6 +155,41 @@ describe("setup", () => {
 		await runSetup({}, deps);
 
 		expect(deps.createCheck).not.toHaveBeenCalled();
+	});
+
+	it.each([false, true])(
+		"skips prompts and stale setup state for a returning user (interactive: %s)",
+		async (interactive) => {
+			const deps = dependencies({
+				state: {
+					url: "https://example.com/",
+					name: "Example",
+					checkId: "deleted",
+				},
+				checks: [{ id: "dns-check", name: "DNS", url: null }],
+			});
+			deps.isInteractive = interactive;
+
+			await runSetup({}, deps);
+
+			expect(deps.prompt).not.toHaveBeenCalled();
+			expect(deps.createCheck).not.toHaveBeenCalled();
+			expect(deps.saveState).not.toHaveBeenCalled();
+		},
+	);
+
+	it("allows an explicitly requested check without calling it the first", async () => {
+		const deps = dependencies({
+			checks: [{ id: "other", name: "Other", url: null }],
+		});
+
+		await runSetup({ url: "https://example.com", name: "Example" }, deps);
+
+		expect(deps.createCheck).toHaveBeenCalledOnce();
+		expect(deps.log).toHaveBeenCalledWith("Created uptime check.");
+		expect(deps.log).not.toHaveBeenCalledWith(
+			"Created your first uptime check.",
+		);
 	});
 
 	it("requires --url without a TTY or resumable state", async () => {

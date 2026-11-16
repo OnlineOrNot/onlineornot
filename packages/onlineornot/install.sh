@@ -278,13 +278,13 @@ main() {
 	echo ""
 	echo ""
 	if [[ "$no_setup" == "false" ]] && can_run_setup; then
-		echo -e "${DIM}Let's create your first uptime check.${NC}"
+		echo -e "${DIM}Let's set up OnlineOrNot.${NC}"
 		echo ""
 		"$BIN_DIR/onlineornot" setup < /dev/tty
 	else
 		echo -e "${DIM}To get started:${NC}"
 		echo ""
-		echo -e "onlineornot setup  ${DIM}# Sign in or sign up and create your first check${NC}"
+		echo -e "onlineornot setup  ${DIM}# Sign in or sign up and set up your account${NC}"
 		echo -e "onlineornot checks  ${DIM}# Manage checks${NC}"
 	fi
 	echo ""

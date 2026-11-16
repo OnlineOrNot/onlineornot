@@ -30,9 +30,10 @@ curl -fsSL https://onlineornot.com/install | bash
 ```
 
 When run from a terminal, the installer asks you to choose Google or GitHub,
-opens browser-based sign in or signup, and then asks for the URL of your first
-uptime check. Passwords and social-provider credentials are entered only in the
-browser.
+opens browser-based sign in or signup, and checks your account for existing
+uptime checks. If you already have checks, setup finishes without creating
+another one. Otherwise, it asks for the URL of your first check. Passwords and
+social-provider credentials are entered only in the browser.
 
 Or install from npm with **Node.js 22 or later**, then run first-check setup:
 

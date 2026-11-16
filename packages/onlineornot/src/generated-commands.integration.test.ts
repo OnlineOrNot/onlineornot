@@ -2139,3 +2139,48 @@ describe("generated webhook diagnostics, audit history and bulk project moves", 
 		expect(requests).toHaveLength(0);
 	});
 });
+
+describe("first-check setup for returning accounts", () => {
+	it.each(["HTTP", "DNS", "TCP"])(
+		"skips creation when the account has 51 existing %s checks",
+		async (checkType) => {
+			fixtureResult = Array.from({ length: 51 }, (_, index) => ({
+				id: `existing-${index}`,
+				name: `Existing ${index}`,
+				url:
+					checkType === "HTTP"
+						? `https://existing${index}.example.test/`
+						: null,
+				check_type: checkType,
+			}));
+			fixturePagination = {
+				page: 1,
+				per_page: 100,
+				count: 51,
+				total_count: 51,
+			};
+
+			const result = await runCli(["setup"]);
+
+			expect(result.code).toBe(0);
+			expect(result.stdout).toContain(
+				"Your account already has 51 uptime checks. Setup complete.",
+			);
+			expect(result.stdout).toContain("onlineornot checks list");
+			expect(result.stdout).not.toContain("first uptime check");
+			expect(requests.map(({ method, url }) => `${method} ${url}`)).toEqual([
+				"GET /v1/checks?page=1&per_page=100",
+			]);
+		},
+	);
+
+	it("fails without creating a check when the account lookup fails", async () => {
+		status = 403;
+		apiSuccess = false;
+
+		const result = await runCli(["setup", "--url", "https://example.test"]);
+
+		expect(result.code).not.toBe(0);
+		expect(requests.map(({ method }) => method)).toEqual(["GET"]);
+	});
+});

@@ -64,7 +64,7 @@ export function validateCheckUrl(value: string): string {
 interface SetupCheck {
 	id: string;
 	name: string;
-	url: string;
+	url: string | null;
 }
 
 interface SetupDependencies {
@@ -76,12 +76,6 @@ interface SetupDependencies {
 	prompt: (question: string) => Promise<string>;
 	isInteractive: boolean;
 	log: (...values: unknown[]) => void;
-}
-
-async function listSetupChecks(): Promise<SetupCheck[]> {
-	return (await listApiChecks()).flatMap(({ id, name, url }) =>
-		url === null ? [] : [{ id, name, url }],
-	);
 }
 
 async function createSetupCheck(
@@ -97,7 +91,7 @@ async function createSetupCheck(
 
 const defaultDependencies: SetupDependencies = {
 	authenticate: authenticateWithBrowser,
-	listChecks: listSetupChecks,
+	listChecks: listApiChecks,
 	createCheck: createSetupCheck,
 	getState: getSetupCheckState,
 	saveState: saveSetupCheckState,
@@ -108,7 +102,8 @@ const defaultDependencies: SetupDependencies = {
 	log: (...values) => logger.log(...values),
 };
 
-function normalizedUrl(value: string): string | null {
+function normalizedUrl(value: string | null): string | null {
+	if (value === null) return null;
 	try {
 		return new URL(value).toString();
 	} catch {
@@ -154,7 +149,7 @@ async function selectAuthProvider(
 export async function runSetup(
 	args: { url?: string; name?: string; provider?: OAuthProvider },
 	dependencies: Partial<SetupDependencies> = {},
-): Promise<SetupCheck> {
+): Promise<SetupCheck | void> {
 	const deps = { ...defaultDependencies, ...dependencies };
 	const authenticationOptions: BrowserAuthenticationOptions = {
 		prompt: "create",
@@ -171,6 +166,15 @@ export async function runSetup(
 		deps.log(`Using the existing login for ${login.email}.`);
 	} else {
 		deps.log("Using ONLINEORNOT_API_TOKEN for authentication.");
+	}
+
+	const checks = await deps.listChecks();
+	if (checks.length > 0 && !args.url) {
+		deps.log(
+			`Your account already has ${checks.length} uptime check${checks.length === 1 ? "" : "s"}. Setup complete.`,
+		);
+		deps.log("Run `onlineornot checks list` to view your checks.");
+		return;
 	}
 
 	const savedState = deps.getState();
@@ -211,7 +215,6 @@ export async function runSetup(
 
 	const pendingState = { url: validatedUrl, name };
 	deps.saveState(pendingState);
-	const checks = await deps.listChecks();
 	const existing = matchingCheck(checks, {
 		...pendingState,
 		checkId:
@@ -222,14 +225,18 @@ export async function runSetup(
 
 	if (existing) {
 		deps.saveState({ ...pendingState, checkId: existing.id });
-		deps.log("Your first uptime check already exists.");
+		deps.log("This uptime check already exists.");
 		printCheck(existing, deps.log);
 		return existing;
 	}
 
 	const created = await deps.createCheck(name, validatedUrl);
 	deps.saveState({ ...pendingState, checkId: created.id });
-	deps.log("Created your first uptime check.");
+	deps.log(
+		checks.length === 0
+			? "Created your first uptime check."
+			: "Created uptime check.",
+	);
 	printCheck(created, deps.log);
 	return created;
 }
