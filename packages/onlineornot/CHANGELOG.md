@@ -1,5 +1,13 @@
 # onlineornot
 
+## 2.0.2
+
+### Patch Changes
+
+- [#144](https://github.com/OnlineOrNot/onlineornot/pull/144) [`129df6e`](https://github.com/OnlineOrNot/onlineornot/commit/129df6ed1b49a0fc85e8a52b01b5dc65a44ed4e3) Thanks [@open-session-jcjv](https://github.com/apps/open-session-jcjv)! - FIX: Skip first-check creation for accounts that already have uptime checks
+
+  Check the authenticated account before prompting for a URL or resuming saved setup state, including accounts with only DNS or TCP checks. Returning users see the command to list checks instead of creating an unwanted check. Explicit `setup --url` requests still work, without incorrectly describing an additional check as the first.
+
 ## 2.0.1
 
 ### Patch Changes
