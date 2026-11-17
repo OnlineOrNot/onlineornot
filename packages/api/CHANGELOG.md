@@ -1,5 +1,15 @@
 # @onlineornot/api
 
+## 0.12.0
+
+### Minor Changes
+
+- [#146](https://github.com/OnlineOrNot/onlineornot/pull/146) [`976ecf7`](https://github.com/OnlineOrNot/onlineornot/commit/976ecf7fb173cfaea2e2aa8efe1c15976704c094) Thanks [@rozenmd](https://github.com/rozenmd)! - feature: Regenerate the SDK and treat resource IDs as opaque strings
+
+  Update the pinned API schema and generated operations. Remove resource-ID length, pattern and encoding checks from optional Zod and Valibot validators while retaining string types, declared nullability and collection limits. Leave resource-ID validation to the API. Protocol-specific trace and span ID validation is unchanged.
+
+  Preserve trace attribute, resource and scope maps, including nested arrays and null values, when using the optional Valibot validators.
+
 ## 0.11.0
 
 ### Minor Changes

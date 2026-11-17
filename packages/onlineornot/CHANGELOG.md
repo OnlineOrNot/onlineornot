@@ -1,5 +1,12 @@
 # onlineornot
 
+## 2.0.3
+
+### Patch Changes
+
+- Updated dependencies [[`976ecf7`](https://github.com/OnlineOrNot/onlineornot/commit/976ecf7fb173cfaea2e2aa8efe1c15976704c094)]:
+  - @onlineornot/api@0.12.0
+
 ## 2.0.2
 
 ### Patch Changes
