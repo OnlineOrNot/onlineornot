@@ -28,14 +28,21 @@ const removeRequiredPropertyDefaults = (schema: Schema): void => {
 
 const acceptStoredProjectIds = (schema: Schema): void => {
 	if (
-		schema.minLength !== 16 ||
-		schema.maxLength !== 128 ||
-		schema.pattern !== "^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$"
-	)
-		return;
-	schema.minLength = 12;
-	schema.pattern =
-		"^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$";
+		schema.minLength === 16 &&
+		schema.maxLength === 128 &&
+		schema.pattern === "^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$"
+	) {
+		schema.minLength = 12;
+		schema.pattern =
+			"^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$";
+	}
+	for (const child of [
+		...(schema.allOf ?? []),
+		...(schema.anyOf ?? []),
+		...(schema.oneOf ?? []),
+	]) {
+		if (!("$ref" in child)) acceptStoredProjectIds(child);
+	}
 };
 
 const visitProjectIds = (schema: Schema, project = false): void => {
@@ -139,6 +146,50 @@ export default defineConfig({
 			name: "valibot",
 			includeInEntry: false,
 			$resolvers: {
+				object: (ctx) => {
+					const additionalProperties = ctx.schema.additionalProperties;
+					if (!additionalProperties || additionalProperties.type === "never")
+						return;
+					const value = ctx.walk(additionalProperties, ctx);
+					ctx._childResults.push(value);
+					const validator = ctx.pipes.toNode(
+						ctx.applyModifiers(value).pipes,
+						ctx.plugin,
+					);
+					const properties = ctx.nodes.shape(ctx);
+					const object = properties.isEmpty
+						? ctx
+								.$(ctx.plugin.imports.v)
+								.attr("record")
+								.call(
+									ctx.$(ctx.plugin.imports.v).attr("string").call(),
+									validator,
+								)
+						: ctx
+								.$(ctx.plugin.imports.v)
+								.attr("objectWithRest")
+								.call(properties, validator);
+					return ctx
+						.$(ctx.plugin.imports.v)
+						.attr("pipe")
+						.call(
+							ctx
+								.$(ctx.plugin.imports.v)
+								.attr("custom")
+								.call(
+									ctx.$.func()
+										.param("value")
+										.do(
+											ctx.$.return(
+												ctx.$.not(
+													ctx.$("Array").attr("isArray").call(ctx.$("value")),
+												),
+											),
+										),
+								),
+							object,
+						);
+				},
 				array: (ctx) => {
 					if (!ctx.schema.items || ctx.schema.items.length < 2) return;
 					const element = ctx.walk(

@@ -75,7 +75,12 @@ export const vExpandedUptimeCheck = v.object({
 		"RECOVERING",
 		"VERIFYING",
 	]),
-	headers: v.nullable(v.record(v.string(), v.string())),
+	headers: v.nullable(
+		v.pipe(
+			v.custom((value) => !Array.isArray(value)),
+			v.record(v.string(), v.string()),
+		),
+	),
 	text_to_search_for: v.nullable(v.string()),
 	reminder_alert_interval_minutes: v.nullable(v.number()),
 	confirmation_period_seconds: v.number(),
@@ -171,7 +176,12 @@ export const vExpandedBrowserCheck = v.object({
 		"RECOVERING",
 		"VERIFYING",
 	]),
-	headers: v.nullable(v.record(v.string(), v.string())),
+	headers: v.nullable(
+		v.pipe(
+			v.custom((value) => !Array.isArray(value)),
+			v.record(v.string(), v.string()),
+		),
+	),
 	text_to_search_for: v.nullable(v.string()),
 	reminder_alert_interval_minutes: v.nullable(v.number()),
 	confirmation_period_seconds: v.number(),
@@ -703,7 +713,12 @@ export const vLogBatch = v.strictObject({
 				environment: v.optional(
 					v.pipe(v.string(), v.minLength(1), v.maxLength(128)),
 				),
-				attributes: v.optional(v.record(v.string(), v.unknown())),
+				attributes: v.optional(
+					v.pipe(
+						v.custom((value) => !Array.isArray(value)),
+						v.record(v.string(), v.unknown()),
+					),
+				),
 				trace_id: v.optional(v.pipe(v.string(), v.regex(/^[a-fA-F0-9]{32}$/))),
 				span_id: v.optional(v.pipe(v.string(), v.regex(/^[a-fA-F0-9]{16}$/))),
 			}),
@@ -981,13 +996,67 @@ export const vTraceSpan = v.strictObject({
 	status_message: v.nullable(v.string()),
 	trace_state: v.nullable(v.string()),
 	flags: v.pipe(v.number(), v.integer()),
-	attributes: v.object({}),
-	resource: v.object({}),
-	scope: v.object({}),
+	attributes: v.pipe(
+		v.custom((value) => !Array.isArray(value)),
+		v.record(
+			v.string(),
+			v.nullable(
+				v.union([
+					v.pipe(
+						v.custom((value) => !Array.isArray(value)),
+						v.record(v.string(), v.unknown()),
+					),
+					v.array(v.unknown()),
+					v.string(),
+					v.number(),
+					v.boolean(),
+				]),
+			),
+		),
+	),
+	resource: v.pipe(
+		v.custom((value) => !Array.isArray(value)),
+		v.record(
+			v.string(),
+			v.nullable(
+				v.union([
+					v.pipe(
+						v.custom((value) => !Array.isArray(value)),
+						v.record(v.string(), v.unknown()),
+					),
+					v.array(v.unknown()),
+					v.string(),
+					v.number(),
+					v.boolean(),
+				]),
+			),
+		),
+	),
+	scope: v.pipe(
+		v.custom((value) => !Array.isArray(value)),
+		v.record(
+			v.string(),
+			v.nullable(
+				v.union([
+					v.pipe(
+						v.custom((value) => !Array.isArray(value)),
+						v.record(v.string(), v.unknown()),
+					),
+					v.array(v.unknown()),
+					v.string(),
+					v.number(),
+					v.boolean(),
+				]),
+			),
+		),
+	),
 	events: v.array(
 		v.nullable(
 			v.union([
-				v.record(v.string(), v.unknown()),
+				v.pipe(
+					v.custom((value) => !Array.isArray(value)),
+					v.record(v.string(), v.unknown()),
+				),
 				v.array(v.unknown()),
 				v.string(),
 				v.number(),
@@ -998,7 +1067,10 @@ export const vTraceSpan = v.strictObject({
 	links: v.array(
 		v.nullable(
 			v.union([
-				v.record(v.string(), v.unknown()),
+				v.pipe(
+					v.custom((value) => !Array.isArray(value)),
+					v.record(v.string(), v.unknown()),
+				),
 				v.array(v.unknown()),
 				v.string(),
 				v.number(),
@@ -1347,7 +1419,12 @@ export const vUptimeCheckInput = v.strictObject({
 	url: v.pipe(v.string(), v.url()),
 	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
 	type: v.optional(v.picklist(["UPTIME_CHECK"]), "UPTIME_CHECK"),
-	headers: v.optional(v.record(v.string(), v.string())),
+	headers: v.optional(
+		v.pipe(
+			v.custom((value) => !Array.isArray(value)),
+			v.record(v.string(), v.string()),
+		),
+	),
 	method: v.optional(
 		v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
 		"GET",
@@ -1430,7 +1507,12 @@ export const vUptimeCheckPatch = v.strictObject({
 	muted: v.optional(v.boolean()),
 	url: v.optional(v.pipe(v.string(), v.url())),
 	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
-	headers: v.optional(v.record(v.string(), v.string())),
+	headers: v.optional(
+		v.pipe(
+			v.custom((value) => !Array.isArray(value)),
+			v.record(v.string(), v.string()),
+		),
+	),
 	method: v.optional(
 		v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
 	),
@@ -1545,7 +1627,12 @@ export const vBrowserCheckInput = v.strictObject({
 	url: v.nullish(v.pipe(v.string(), v.url())),
 	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
 	type: v.optional(v.picklist(["BROWSER_CHECK"]), "BROWSER_CHECK"),
-	headers: v.optional(v.record(v.string(), v.string())),
+	headers: v.optional(
+		v.pipe(
+			v.custom((value) => !Array.isArray(value)),
+			v.record(v.string(), v.string()),
+		),
+	),
 	method: v.optional(
 		v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
 		"GET",
@@ -1616,7 +1703,12 @@ export const vBrowserCheckPatch = v.strictObject({
 	muted: v.optional(v.boolean()),
 	url: v.nullish(v.pipe(v.string(), v.url())),
 	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
-	headers: v.optional(v.record(v.string(), v.string())),
+	headers: v.optional(
+		v.pipe(
+			v.custom((value) => !Array.isArray(value)),
+			v.record(v.string(), v.string()),
+		),
+	),
 	method: v.optional(
 		v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
 	),
@@ -1869,7 +1961,12 @@ export const vCheck = v.object({
 export const vExpandedCheck = v.intersect([
 	vCheck,
 	v.object({
-		headers: v.nullable(v.record(v.string(), v.string())),
+		headers: v.nullable(
+			v.pipe(
+				v.custom((value) => !Array.isArray(value)),
+				v.record(v.string(), v.string()),
+			),
+		),
 		text_to_search_for: v.nullable(v.string()),
 		reminder_alert_interval_minutes: v.nullable(v.number()),
 		confirmation_period_seconds: v.number(),
@@ -2007,7 +2104,12 @@ export const vCheckInput = v.object({
 		v.picklist(["UPTIME_CHECK", "BROWSER_CHECK"]),
 		"UPTIME_CHECK",
 	),
-	headers: v.optional(v.record(v.string(), v.string())),
+	headers: v.optional(
+		v.pipe(
+			v.custom((value) => !Array.isArray(value)),
+			v.record(v.string(), v.string()),
+		),
+	),
 	method: v.optional(
 		v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
 		"GET",
@@ -2093,7 +2195,12 @@ export const vCheckPatch = v.object({
 	url: v.nullish(v.pipe(v.string(), v.url())),
 	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
 	type: v.optional(v.picklist(["UPTIME_CHECK", "BROWSER_CHECK"])),
-	headers: v.optional(v.record(v.string(), v.string())),
+	headers: v.optional(
+		v.pipe(
+			v.custom((value) => !Array.isArray(value)),
+			v.record(v.string(), v.string()),
+		),
+	),
 	method: v.optional(
 		v.picklist(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]),
 	),
@@ -2550,9 +2657,11 @@ export const vSearchLogsQuery = v.object({
 		v.union([
 			v.pipe(
 				v.string(),
-				v.minLength(16),
+				v.minLength(12),
 				v.maxLength(128),
-				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+				v.regex(
+					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+				),
 			),
 			v.picklist(["unassigned"]),
 		]),
@@ -2597,7 +2706,10 @@ export const vSearchLogsResponse = v.object({
 					message: v.string(),
 					service: v.nullable(v.string()),
 					environment: v.nullable(v.string()),
-					attributes: v.record(v.string(), v.unknown()),
+					attributes: v.pipe(
+						v.custom((value) => !Array.isArray(value)),
+						v.record(v.string(), v.unknown()),
+					),
 					trace_id: v.nullable(v.string()),
 					span_id: v.nullable(v.string()),
 				}),
@@ -2705,9 +2817,11 @@ export const vSearchTracesQuery = v.object({
 		v.union([
 			v.pipe(
 				v.string(),
-				v.minLength(16),
+				v.minLength(12),
 				v.maxLength(128),
-				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+				v.regex(
+					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+				),
 			),
 			v.picklist(["unassigned"]),
 		]),
@@ -2768,7 +2882,12 @@ export const vListAuditLogsResponse = v.object({
 			location: v.nullable(v.string()),
 			remote_ip: v.nullable(v.string()),
 			created_at: v.string(),
-			metadata: v.nullable(v.record(v.string(), v.unknown())),
+			metadata: v.nullable(
+				v.pipe(
+					v.custom((value) => !Array.isArray(value)),
+					v.record(v.string(), v.unknown()),
+				),
+			),
 		}),
 	),
 	result_info: v.object({

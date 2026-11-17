@@ -2198,9 +2198,11 @@ export const zSearchLogsQuery = z.object({
 		.union([
 			z
 				.string()
-				.min(16)
+				.min(12)
 				.max(128)
-				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+				.regex(
+					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+				),
 			z.enum(["unassigned"]),
 		])
 		.optional(),
@@ -2335,9 +2337,11 @@ export const zSearchTracesQuery = z.object({
 		.union([
 			z
 				.string()
-				.min(16)
+				.min(12)
 				.max(128)
-				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+				.regex(
+					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+				),
 			z.enum(["unassigned"]),
 		])
 		.optional(),
