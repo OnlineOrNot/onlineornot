@@ -106,6 +106,11 @@ describe.each(["logs", "traces"] as const)(
 			"projectnano1",
 			"123456789012",
 			"unassigned",
+			"",
+			"1",
+			"opaque/project:💡",
+			"A".repeat(12),
+			"x".repeat(256),
 		])(
 			"sends and validates the project filter %s over HTTP",
 			async (projectId) => {
@@ -151,24 +156,20 @@ describe.each(["logs", "traces"] as const)(
 			},
 		);
 
-		it.each([
-			"1",
-			"1234567890123",
-			"A".repeat(12),
-			"a".repeat(129),
-			"with_underscore",
-			null,
-		])("rejects unsupported project filter %s", (projectId) => {
-			const input = { from: timestamp, to: timestamp, project_id: projectId };
+		it.each([42, true, {}, [], null])(
+			"rejects non-string project filter %s",
+			(projectId) => {
+				const input = { from: timestamp, to: timestamp, project_id: projectId };
 
-			if (resource === "logs") {
-				expect(() => zSearchLogsQuery.parse(input)).toThrow();
-				expect(() => parse(vSearchLogsQuery, input)).toThrow();
-			} else {
-				expect(() => zSearchTracesQuery.parse(input)).toThrow();
-				expect(() => parse(vSearchTracesQuery, input)).toThrow();
-			}
-		});
+				if (resource === "logs") {
+					expect(() => zSearchLogsQuery.parse(input)).toThrow();
+					expect(() => parse(vSearchLogsQuery, input)).toThrow();
+				} else {
+					expect(() => zSearchTracesQuery.parse(input)).toThrow();
+					expect(() => parse(vSearchTracesQuery, input)).toThrow();
+				}
+			},
+		);
 	},
 );
 
@@ -216,6 +217,57 @@ it.each(["attributes", "resource", "scope"] as const)(
 			expect(received.response?.status).toBe(200);
 			expect(() => zSearchTracesResponse.parse(received.data)).toThrow();
 			expect(() => parse(vSearchTracesResponse, received.data)).toThrow();
+		}
+	},
+);
+
+it.each(["logs", "traces"] as const)(
+	"preserves opaque %s record IDs over HTTP",
+	async (resource) => {
+		for (const id of ["", "1", "opaque/resource:💡", "x".repeat(256)]) {
+			const record =
+				resource === "traces"
+					? { ...span, id }
+					: {
+							id,
+							project_id: "opaque-project",
+							timestamp,
+							received_at: timestamp,
+							level: "INFO",
+							message: "Request completed",
+							service: null,
+							environment: null,
+							attributes: {},
+							trace_id: null,
+							span_id: null,
+						};
+			const payload = {
+				success: true,
+				errors: [],
+				messages: [],
+				result: {
+					[resource === "traces" ? "spans" : "logs"]: [record],
+					next_cursor: null,
+					scanned_bytes: 0,
+				},
+			};
+			responseBody = JSON.stringify(payload);
+			const client = createClient({ baseUrl: origin });
+			const query = { from: timestamp, to: timestamp };
+
+			const received =
+				resource === "traces"
+					? await searchTraces({ client, query })
+					: await searchLogs({ client, query });
+
+			expect(received.response?.status).toBe(200);
+			if (resource === "traces") {
+				expect(zSearchTracesResponse.parse(received.data)).toEqual(payload);
+				expect(parse(vSearchTracesResponse, received.data)).toEqual(payload);
+			} else {
+				expect(zSearchLogsResponse.parse(received.data)).toEqual(payload);
+				expect(parse(vSearchLogsResponse, received.data)).toEqual(payload);
+			}
 		}
 	},
 );

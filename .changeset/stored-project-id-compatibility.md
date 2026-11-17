@@ -2,8 +2,8 @@
 "@onlineornot/api": minor
 ---
 
-feature: Regenerate the SDK and accept 12-character project IDs
+feature: Regenerate the SDK and treat resource IDs as opaque strings
 
-Update the pinned API schema and generated operations. Accept stored 12-character project NanoIDs, including numeric-only NanoIDs, in project paths, request bodies and responses while continuing to accept existing project IDs. This SDK can ship before the API begins returning stored IDs.
+Update the pinned API schema and generated operations. Remove resource-ID length, pattern and encoding checks from optional Zod and Valibot validators while retaining string types, declared nullability and collection limits. Leave resource-ID validation to the API. Protocol-specific trace and span ID validation is unchanged.
 
-Accept these project IDs in log and trace search filters. Preserve trace attribute, resource and scope maps, including nested arrays and null values, when using the optional Valibot validators.
+Preserve trace attribute, resource and scope maps, including nested arrays and null values, when using the optional Valibot validators.

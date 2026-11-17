@@ -10,6 +10,7 @@ import {
 	getEnvironmentVariable,
 	getHeartbeat,
 	getProject,
+	getStatusPageComponent,
 	getWebhook,
 	listChecks,
 	type CheckListItem,
@@ -25,6 +26,9 @@ import {
 } from "../src/index";
 import {
 	vGetCheckResponse,
+	vGetCheckPath,
+	vGetEnvironmentVariablePath,
+	vGetStatusPageComponentPath,
 	vGetEnvironmentVariableResponse,
 	vGetHeartbeatResponse,
 	vGetProjectResponse,
@@ -34,6 +38,9 @@ import {
 } from "../src/valibot";
 import {
 	zGetCheckResponse,
+	zGetCheckPath,
+	zGetEnvironmentVariablePath,
+	zGetStatusPageComponentPath,
 	zGetEnvironmentVariableResponse,
 	zGetHeartbeatResponse,
 	zGetProjectResponse,
@@ -189,8 +196,10 @@ const fixtures = [
 	},
 ];
 let responseBody = "{}";
+let requestUrl = "";
 let origin = "";
-const server = createServer((_request, response) => {
+const server = createServer((request, response) => {
+	requestUrl = request.url ?? "";
 	response.setHeader("content-type", "application/json");
 	response.end(responseBody);
 });
@@ -222,6 +231,10 @@ it.each(fixtures)(
 			projectId,
 			"projectnano1",
 			"123456789012",
+			"",
+			"1",
+			"opaque/project:💡",
+			"x".repeat(256),
 			null,
 		]) {
 			const ownership =
@@ -276,32 +289,37 @@ it.each([undefined, projectId, "projectnano1", "123456789012", null])(
 	},
 );
 
-it.each([projectId, "projectnano1", "123456789012"])(
-	"validates project %s over HTTP without legacy metadata",
-	async (id) => {
-		const payload = {
-			success: true,
-			errors: [],
-			messages: [],
-			result: {
-				id,
-				name: "Staging",
-				created_at: timestamp,
-				updated_at: timestamp,
-			},
-		};
-		responseBody = JSON.stringify(payload);
+it.each([
+	projectId,
+	"projectnano1",
+	"123456789012",
+	"",
+	"1",
+	"opaque/project:💡",
+	"x".repeat(256),
+])("validates project %s over HTTP without legacy metadata", async (id) => {
+	const payload = {
+		success: true,
+		errors: [],
+		messages: [],
+		result: {
+			id,
+			name: "Staging",
+			created_at: timestamp,
+			updated_at: timestamp,
+		},
+	};
+	responseBody = JSON.stringify(payload);
 
-		const received = await getProject({
-			client: createClient({ baseUrl: origin }),
-			path: parse(vGetProjectPath, zGetProjectPath.parse({ project_id: id })),
-		});
+	const received = await getProject({
+		client: createClient({ baseUrl: origin }),
+		path: parse(vGetProjectPath, zGetProjectPath.parse({ project_id: id })),
+	});
 
-		expect(received.data).toEqual(payload);
-		expect(zGetProjectResponse.parse(received.data)).toEqual(payload);
-		expect(parse(vGetProjectResponse, received.data)).toEqual(payload);
-	},
-);
+	expect(received.data).toEqual(payload);
+	expect(zGetProjectResponse.parse(received.data)).toEqual(payload);
+	expect(parse(vGetProjectResponse, received.data)).toEqual(payload);
+});
 
 it.each([true, false])(
 	"does not expose the removed project marker %s through validators",
@@ -333,27 +351,20 @@ it.each([true, false])(
 	},
 );
 
-it.each([
-	42,
-	true,
-	{},
-	"short",
-	"1234567890123456",
-	"projectnano",
-	"projectnano12",
-	"PROJECTNANO1",
-	"project-nano",
-])("still rejects malformed assignment %j", (assignment) => {
-	const payload = {
-		success: true,
-		errors: [],
-		messages: [],
-		result: { ...webhook, project_id: assignment },
-	};
+it.each([42, true, {}, []])(
+	"still rejects non-string assignment %j",
+	(assignment) => {
+		const payload = {
+			success: true,
+			errors: [],
+			messages: [],
+			result: { ...webhook, project_id: assignment },
+		};
 
-	expect(zGetWebhookResponse.safeParse(payload).success).toBe(false);
-	expect(safeParse(vGetWebhookResponse, payload).success).toBe(false);
-});
+		expect(zGetWebhookResponse.safeParse(payload).success).toBe(false);
+		expect(safeParse(vGetWebhookResponse, payload).success).toBe(false);
+	},
+);
 
 it("exposes nullable assignments without legacy project metadata in public types", () => {
 	expectTypeOf<ExpandedUptimeCheck["project_id"]>().toEqualTypeOf<
@@ -383,4 +394,62 @@ it("exposes nullable assignments without legacy project metadata in public types
 	expectTypeOf<keyof Project>().toEqualTypeOf<
 		"id" | "name" | "created_at" | "updated_at"
 	>();
+});
+
+it.each([
+	{
+		name: "check",
+		url: (id: string) => `/v1/checks/${encodeURIComponent(id)}`,
+		path: (id: string) => ({ check_id: id }),
+		zod: zGetCheckPath,
+		valibot: vGetCheckPath,
+		read: (client: Client, id: string) =>
+			getCheck({ client, path: { check_id: id } }),
+	},
+	{
+		name: "environment variable",
+		url: (id: string) => `/v1/env/${encodeURIComponent(id)}`,
+		path: (id: string) => ({ environment_variable_id: id }),
+		zod: zGetEnvironmentVariablePath,
+		valibot: vGetEnvironmentVariablePath,
+		read: (client: Client, id: string) =>
+			getEnvironmentVariable({ client, path: { environment_variable_id: id } }),
+	},
+	{
+		name: "status page component",
+		url: (id: string) =>
+			`/v1/status_pages/${encodeURIComponent(id)}/components/${encodeURIComponent(id)}`,
+		path: (id: string) => ({
+			status_page_id: id,
+			status_page_component_id: id,
+		}),
+		zod: zGetStatusPageComponentPath,
+		valibot: vGetStatusPageComponentPath,
+		read: (client: Client, id: string) =>
+			getStatusPageComponent({
+				client,
+				path: { status_page_id: id, status_page_component_id: id },
+			}),
+	},
+])("treats $name path IDs as opaque strings over HTTP", async (fixture) => {
+	for (const id of ["", "1", "opaque/resource:💡", "x".repeat(256)]) {
+		const path = fixture.path(id);
+		const payload = { success: true, errors: [], messages: [], result: {} };
+		responseBody = JSON.stringify(payload);
+
+		expect(fixture.zod.parse(path)).toEqual(path);
+		expect(parse(fixture.valibot, path)).toEqual(path);
+		const received = await fixture.read(createClient({ baseUrl: origin }), id);
+
+		expect(received.response?.status).toBe(200);
+		expect(received.data).toEqual(payload);
+		expect(new URL(requestUrl, origin).pathname).toBe(fixture.url(id));
+	}
+	for (const value of [undefined, null, 42, true, {}, []]) {
+		const path = Object.fromEntries(
+			Object.keys(fixture.path("id")).map((key) => [key, value]),
+		);
+		expect(fixture.zod.safeParse(path).success).toBe(false);
+		expect(safeParse(fixture.valibot, path).success).toBe(false);
+	}
 });

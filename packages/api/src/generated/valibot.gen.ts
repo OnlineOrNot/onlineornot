@@ -51,16 +51,7 @@ export const vPublicApiServerError = v.object({
 });
 
 export const vExpandedUptimeCheck = v.object({
-	project_id: v.nullish(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullish(v.string()),
 	id: v.string(),
 	name: v.string(),
 	url: v.nullable(v.pipe(v.string(), v.url())),
@@ -152,16 +143,7 @@ export const vExpandedUptimeCheck = v.object({
 });
 
 export const vExpandedBrowserCheck = v.object({
-	project_id: v.nullish(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullish(v.string()),
 	id: v.string(),
 	name: v.string(),
 	url: v.nullable(v.pipe(v.string(), v.url())),
@@ -273,16 +255,7 @@ export const vDnsAssertion = v.object({
 });
 
 export const vExpandedDnsCheck = v.object({
-	project_id: v.nullish(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullish(v.string()),
 	id: v.string(),
 	name: v.string(),
 	last_queued: v.nullable(v.string()),
@@ -343,16 +316,7 @@ export const vTcpAssertion = v.object({
 });
 
 export const vExpandedTcpCheck = v.object({
-	project_id: v.nullish(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullish(v.string()),
 	id: v.string(),
 	name: v.string(),
 	last_queued: v.nullable(v.string()),
@@ -440,16 +404,7 @@ export const vAnyCheckResponse = v.object({
 });
 
 export const vCheckListItem = v.object({
-	project_id: v.nullish(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullish(v.string()),
 	id: v.string(),
 	name: v.string(),
 	url: v.nullable(v.pipe(v.string(), v.url())),
@@ -979,7 +934,7 @@ export const vOtlpTraceExport = v.object({
 });
 
 export const vTraceSpan = v.strictObject({
-	id: v.pipe(v.string(), v.uuid()),
+	id: v.string(),
 	project_id: v.nullable(v.string()),
 	received_at: v.pipe(v.string(), v.isoTimestamp()),
 	trace_id: v.pipe(v.string(), v.regex(/^[a-fA-F0-9]{32}$/)),
@@ -1155,16 +1110,7 @@ export const vDnsCheckResponse = v.object({
 });
 
 export const vDnsCheckInput = v.strictObject({
-	project_id: v.nullish(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullish(v.string()),
 	name: v.string(),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -1276,16 +1222,7 @@ export const vTcpCheckResponse = v.object({
 });
 
 export const vTcpCheckInput = v.strictObject({
-	project_id: v.nullish(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullish(v.string()),
 	name: v.string(),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -1380,16 +1317,7 @@ export const vUptimeCheckResponse = v.object({
 });
 
 export const vUptimeCheckInput = v.strictObject({
-	project_id: v.nullish(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullish(v.string()),
 	name: v.string(),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -1588,16 +1516,7 @@ export const vBrowserCheckResponse = v.object({
  * Browser check create payload. Provide either url for a URL-based browser check or script for a scripted Playwright check.
  */
 export const vBrowserCheckInput = v.strictObject({
-	project_id: v.nullish(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullish(v.string()),
 	name: v.string(),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -1784,7 +1703,7 @@ export const vPublicCheckResultBodyAvailability = v.picklist([
 ]);
 
 export const vPublicHttpCheckResult = v.strictObject({
-	id: v.pipe(v.string(), v.minLength(1)),
+	id: v.string(),
 	checked_at: v.pipe(v.string(), v.isoTimestamp()),
 	checked_from: v.nullable(
 		v.picklist([
@@ -1822,7 +1741,7 @@ export const vPublicCheckResultsResultInfo = v.strictObject({
 export const vPublicUptimeCheckResultsResponse = v.strictObject({
 	success: v.literal(true),
 	result: v.strictObject({
-		check_id: v.pipe(v.string(), v.minLength(1)),
+		check_id: v.string(),
 		check_type: v.picklist(["UPTIME"]),
 		window: vPublicCheckResultWindow,
 		results: v.array(vPublicHttpCheckResult),
@@ -1835,7 +1754,7 @@ export const vPublicUptimeCheckResultsResponse = v.strictObject({
 export const vPublicBrowserCheckResultsResponse = v.strictObject({
 	success: v.literal(true),
 	result: v.strictObject({
-		check_id: v.pipe(v.string(), v.minLength(1)),
+		check_id: v.string(),
 		check_type: v.picklist(["BROWSER"]),
 		window: vPublicCheckResultWindow,
 		results: v.array(vPublicHttpCheckResult),
@@ -1846,7 +1765,7 @@ export const vPublicBrowserCheckResultsResponse = v.strictObject({
 });
 
 export const vPublicDnsCheckResult = v.strictObject({
-	id: v.pipe(v.string(), v.minLength(1)),
+	id: v.string(),
 	checked_at: v.pipe(v.string(), v.isoTimestamp()),
 	checked_from: v.nullable(
 		v.picklist([
@@ -1877,7 +1796,7 @@ export const vPublicDnsCheckResult = v.strictObject({
 export const vPublicDnsCheckResultsResponse = v.strictObject({
 	success: v.literal(true),
 	result: v.strictObject({
-		check_id: v.pipe(v.string(), v.minLength(1)),
+		check_id: v.string(),
 		check_type: v.picklist(["DNS"]),
 		window: vPublicCheckResultWindow,
 		results: v.array(vPublicDnsCheckResult),
@@ -1888,7 +1807,7 @@ export const vPublicDnsCheckResultsResponse = v.strictObject({
 });
 
 export const vPublicTcpCheckResult = v.strictObject({
-	id: v.pipe(v.string(), v.minLength(1)),
+	id: v.string(),
 	checked_at: v.pipe(v.string(), v.isoTimestamp()),
 	checked_from: v.nullable(
 		v.picklist([
@@ -1920,7 +1839,7 @@ export const vPublicTcpCheckResult = v.strictObject({
 export const vPublicTcpCheckResultsResponse = v.strictObject({
 	success: v.literal(true),
 	result: v.strictObject({
-		check_id: v.pipe(v.string(), v.minLength(1)),
+		check_id: v.string(),
 		check_type: v.picklist(["TCP"]),
 		window: vPublicCheckResultWindow,
 		results: v.array(vPublicTcpCheckResult),
@@ -1931,16 +1850,7 @@ export const vPublicTcpCheckResultsResponse = v.strictObject({
 });
 
 export const vCheck = v.object({
-	project_id: v.nullish(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullish(v.string()),
 	id: v.string(),
 	name: v.string(),
 	url: v.nullable(v.pipe(v.string(), v.url())),
@@ -2062,16 +1972,7 @@ export const vCheckResponse = v.object({
 });
 
 export const vCheckInput = v.object({
-	project_id: v.nullish(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullish(v.string()),
 	name: v.string(),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -2256,16 +2157,7 @@ export const vCheckPatch = v.object({
 });
 
 export const vEnvironmentVariableMetadata = v.object({
-	project_id: v.nullish(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullish(v.string()),
 	id: v.string(),
 	name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
 	type: v.picklist(["config", "secret"]),
@@ -2275,16 +2167,7 @@ export const vEnvironmentVariableMetadata = v.object({
 });
 
 export const vHeartbeat = v.object({
-	project_id: v.nullish(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullish(v.string()),
 	id: v.string(),
 	name: v.string(),
 	status: v.picklist([
@@ -2322,16 +2205,7 @@ export const vExpandedHeartbeat = v.intersect([
 ]);
 
 export const vMaintenanceWindow = v.object({
-	project_id: v.nullable(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullable(v.string()),
 	id: v.string(),
 	name: v.string(),
 	start_date: v.string(),
@@ -2376,14 +2250,7 @@ export const vInvitation = v.object({
 });
 
 export const vProject = v.strictObject({
-	id: v.pipe(
-		v.string(),
-		v.minLength(12),
-		v.maxLength(128),
-		v.regex(
-			/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-		),
-	),
+	id: v.string(),
 	name: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
 	created_at: v.pipe(v.string(), v.isoTimestamp()),
 	updated_at: v.pipe(v.string(), v.isoTimestamp()),
@@ -2579,16 +2446,7 @@ export const vStatusPageIncidentDetail = v.intersect([
 ]);
 
 export const vWebhook = v.object({
-	project_id: v.nullish(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullish(v.string()),
 	id: v.string(),
 	enabled: v.boolean(),
 	url: v.string(),
@@ -2627,11 +2485,11 @@ export const vWebhook = v.object({
 });
 
 export const vPingHeartbeatGetPath = v.object({
-	heartbeat_id: v.pipe(v.string(), v.minLength(8)),
+	heartbeat_id: v.string(),
 });
 
 export const vPingHeartbeatPath = v.object({
-	heartbeat_id: v.pipe(v.string(), v.minLength(8)),
+	heartbeat_id: v.string(),
 });
 
 export const vExportOtlpLogsBody = vOtlpLogExport;
@@ -2653,19 +2511,7 @@ export const vSearchLogsQuery = v.object({
 		50,
 	),
 	cursor: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(512))),
-	project_id: v.optional(
-		v.union([
-			v.pipe(
-				v.string(),
-				v.minLength(12),
-				v.maxLength(128),
-				v.regex(
-					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-				),
-			),
-			v.picklist(["unassigned"]),
-		]),
-	),
+	project_id: v.optional(v.union([v.string(), v.picklist(["unassigned"])])),
 	service: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(255))),
 	environment: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(128))),
 	level: v.optional(
@@ -2682,17 +2528,8 @@ export const vSearchLogsResponse = v.object({
 		logs: v.pipe(
 			v.array(
 				v.strictObject({
-					id: v.pipe(v.string(), v.uuid()),
-					project_id: v.nullable(
-						v.pipe(
-							v.string(),
-							v.minLength(12),
-							v.maxLength(128),
-							v.regex(
-								/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-							),
-						),
-					),
+					id: v.string(),
+					project_id: v.nullable(v.string()),
 					timestamp: v.pipe(v.string(), v.isoTimestamp()),
 					received_at: v.pipe(v.string(), v.isoTimestamp()),
 					level: v.picklist([
@@ -2813,19 +2650,7 @@ export const vSearchTracesQuery = v.object({
 		50,
 	),
 	cursor: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(512))),
-	project_id: v.optional(
-		v.union([
-			v.pipe(
-				v.string(),
-				v.minLength(12),
-				v.maxLength(128),
-				v.regex(
-					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-				),
-			),
-			v.picklist(["unassigned"]),
-		]),
-	),
+	project_id: v.optional(v.union([v.string(), v.picklist(["unassigned"])])),
 	service: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(255))),
 	environment: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(128))),
 	trace_id: v.optional(v.pipe(v.string(), v.regex(/^[a-fA-F0-9]{32}$/))),
@@ -2921,7 +2746,7 @@ export const vVerifyTokenResponse = v.union([
 		result: v.object({
 			profile: v.optional(
 				v.strictObject({
-					id: v.pipe(v.string(), v.minLength(1)),
+					id: v.string(),
 					name: v.optional(v.string()),
 					email: v.optional(v.string()),
 				}),
@@ -3020,16 +2845,7 @@ export const vListTokensResponse = v.object({
 	result: v.object({
 		result: v.array(
 			v.object({
-				project_id: v.nullish(
-					v.pipe(
-						v.string(),
-						v.minLength(12),
-						v.maxLength(128),
-						v.regex(
-							/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-						),
-					),
-				),
+				project_id: v.nullish(v.string()),
 				id: v.string(),
 				name: v.string(),
 				expiresAfter: v.nullable(v.string()),
@@ -3111,16 +2927,7 @@ export const vCreateTokenBody = v.object({
 		]),
 	),
 	expiresAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
-	project_id: v.nullish(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullish(v.string()),
 });
 
 export const vCreateTokenHeaders = v.object({
@@ -3132,16 +2939,7 @@ export const vCreateTokenHeaders = v.object({
  */
 export const vCreateTokenResponse = v.object({
 	result: v.object({
-		project_id: v.nullish(
-			v.pipe(
-				v.string(),
-				v.minLength(12),
-				v.maxLength(128),
-				v.regex(
-					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-				),
-			),
-		),
+		project_id: v.nullish(v.string()),
 		id: v.string(),
 		name: v.string(),
 		expiresAfter: v.nullable(v.string()),
@@ -3210,16 +3008,7 @@ export const vGetTokenPath = v.object({
  */
 export const vGetTokenResponse = v.object({
 	result: v.object({
-		project_id: v.nullish(
-			v.pipe(
-				v.string(),
-				v.minLength(12),
-				v.maxLength(128),
-				v.regex(
-					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-				),
-			),
-		),
+		project_id: v.nullish(v.string()),
 		id: v.string(),
 		name: v.string(),
 		expiresAfter: v.nullable(v.string()),
@@ -3282,7 +3071,7 @@ export const vDeleteDnsCheckHeaders = v.object({
 });
 
 export const vDeleteDnsCheckPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(8)),
+	check_id: v.string(),
 });
 
 /**
@@ -3295,7 +3084,7 @@ export const vGetDnsCheckHeaders = v.object({
 });
 
 export const vGetDnsCheckPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(8)),
+	check_id: v.string(),
 });
 
 /**
@@ -3344,7 +3133,7 @@ export const vUpdateDnsCheckHeaders = v.object({
 });
 
 export const vUpdateDnsCheckPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(8)),
+	check_id: v.string(),
 });
 
 /**
@@ -3368,7 +3157,7 @@ export const vDeleteTcpCheckHeaders = v.object({
 });
 
 export const vDeleteTcpCheckPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(8)),
+	check_id: v.string(),
 });
 
 /**
@@ -3381,7 +3170,7 @@ export const vGetTcpCheckHeaders = v.object({
 });
 
 export const vGetTcpCheckPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(8)),
+	check_id: v.string(),
 });
 
 /**
@@ -3430,7 +3219,7 @@ export const vUpdateTcpCheckHeaders = v.object({
 });
 
 export const vUpdateTcpCheckPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(8)),
+	check_id: v.string(),
 });
 
 /**
@@ -3454,7 +3243,7 @@ export const vDeleteUptimeCheckHeaders = v.object({
 });
 
 export const vDeleteUptimeCheckPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(8)),
+	check_id: v.string(),
 });
 
 /**
@@ -3467,7 +3256,7 @@ export const vGetUptimeCheckHeaders = v.object({
 });
 
 export const vGetUptimeCheckPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(8)),
+	check_id: v.string(),
 });
 
 /**
@@ -3482,7 +3271,7 @@ export const vUpdateUptimeCheckHeaders = v.object({
 });
 
 export const vUpdateUptimeCheckPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(8)),
+	check_id: v.string(),
 });
 
 /**
@@ -3506,7 +3295,7 @@ export const vDeleteBrowserCheckHeaders = v.object({
 });
 
 export const vDeleteBrowserCheckPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(8)),
+	check_id: v.string(),
 });
 
 /**
@@ -3519,7 +3308,7 @@ export const vGetBrowserCheckHeaders = v.object({
 });
 
 export const vGetBrowserCheckPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(8)),
+	check_id: v.string(),
 });
 
 /**
@@ -3534,7 +3323,7 @@ export const vUpdateBrowserCheckHeaders = v.object({
 });
 
 export const vUpdateBrowserCheckPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(8)),
+	check_id: v.string(),
 });
 
 /**
@@ -3543,16 +3332,7 @@ export const vUpdateBrowserCheckPath = v.object({
 export const vUpdateBrowserCheckResponse = vBrowserCheckResponse;
 
 export const vMoveCheckBody = v.strictObject({
-	project_id: v.nullable(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullable(v.string()),
 });
 
 export const vMoveCheckHeaders = v.object({
@@ -3560,7 +3340,7 @@ export const vMoveCheckHeaders = v.object({
 });
 
 export const vMoveCheckPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(8)),
+	check_id: v.string(),
 });
 
 /**
@@ -3568,17 +3348,8 @@ export const vMoveCheckPath = v.object({
  */
 export const vMoveCheckResponse = v.object({
 	result: v.strictObject({
-		id: v.pipe(v.string(), v.minLength(8)),
-		project_id: v.nullable(
-			v.pipe(
-				v.string(),
-				v.minLength(12),
-				v.maxLength(128),
-				v.regex(
-					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-				),
-			),
-		),
+		id: v.string(),
+		project_id: v.nullable(v.string()),
 	}),
 	success: v.boolean(),
 	errors: v.array(
@@ -3602,7 +3373,7 @@ export const vListUptimeCheckIncidentsHeaders = v.object({
 });
 
 export const vListUptimeCheckIncidentsPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(1)),
+	check_id: v.string(),
 });
 
 export const vListUptimeCheckIncidentsQuery = v.object({
@@ -3626,7 +3397,7 @@ export const vListBrowserCheckIncidentsHeaders = v.object({
 });
 
 export const vListBrowserCheckIncidentsPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(1)),
+	check_id: v.string(),
 });
 
 export const vListBrowserCheckIncidentsQuery = v.object({
@@ -3650,7 +3421,7 @@ export const vListDnsCheckIncidentsHeaders = v.object({
 });
 
 export const vListDnsCheckIncidentsPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(1)),
+	check_id: v.string(),
 });
 
 export const vListDnsCheckIncidentsQuery = v.object({
@@ -3673,7 +3444,7 @@ export const vListTcpCheckIncidentsHeaders = v.object({
 });
 
 export const vListTcpCheckIncidentsPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(1)),
+	check_id: v.string(),
 });
 
 export const vListTcpCheckIncidentsQuery = v.object({
@@ -3696,7 +3467,7 @@ export const vListUptimeCheckResultsHeaders = v.object({
 });
 
 export const vListUptimeCheckResultsPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(1)),
+	check_id: v.string(),
 });
 
 export const vListUptimeCheckResultsQuery = v.object({
@@ -3720,7 +3491,7 @@ export const vListBrowserCheckResultsHeaders = v.object({
 });
 
 export const vListBrowserCheckResultsPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(1)),
+	check_id: v.string(),
 });
 
 export const vListBrowserCheckResultsQuery = v.object({
@@ -3744,7 +3515,7 @@ export const vListDnsCheckResultsHeaders = v.object({
 });
 
 export const vListDnsCheckResultsPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(1)),
+	check_id: v.string(),
 });
 
 export const vListDnsCheckResultsQuery = v.object({
@@ -3767,7 +3538,7 @@ export const vListTcpCheckResultsHeaders = v.object({
 });
 
 export const vListTcpCheckResultsPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(1)),
+	check_id: v.string(),
 });
 
 export const vListTcpCheckResultsQuery = v.object({
@@ -3874,7 +3645,7 @@ export const vDeleteCheckHeaders = v.object({
 });
 
 export const vDeleteCheckPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(8)),
+	check_id: v.string(),
 });
 
 /**
@@ -3887,7 +3658,7 @@ export const vGetCheckHeaders = v.object({
 });
 
 export const vGetCheckPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(8)),
+	check_id: v.string(),
 });
 
 /**
@@ -3936,7 +3707,7 @@ export const vUpdateCheckHeaders = v.object({
 });
 
 export const vUpdateCheckPath = v.object({
-	check_id: v.pipe(v.string(), v.minLength(8)),
+	check_id: v.string(),
 });
 
 /**
@@ -3989,16 +3760,7 @@ export const vListEnvironmentVariablesResponse = v.object({
 });
 
 export const vCreateEnvironmentVariableBody = v.strictObject({
-	project_id: v.nullish(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullish(v.string()),
 	name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
 	type: v.picklist(["config", "secret"]),
 	value: v.string(),
@@ -4014,16 +3776,7 @@ export const vCreateEnvironmentVariableHeaders = v.object({
 export const vCreateEnvironmentVariableResponse = v.object({
 	result: v.union([
 		v.strictObject({
-			project_id: v.nullish(
-				v.pipe(
-					v.string(),
-					v.minLength(12),
-					v.maxLength(128),
-					v.regex(
-						/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-					),
-				),
-			),
+			project_id: v.nullish(v.string()),
 			id: v.string(),
 			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
 			type: v.picklist(["secret"]),
@@ -4032,16 +3785,7 @@ export const vCreateEnvironmentVariableResponse = v.object({
 			updated_at: v.pipe(v.string(), v.isoTimestamp()),
 		}),
 		v.strictObject({
-			project_id: v.nullish(
-				v.pipe(
-					v.string(),
-					v.minLength(12),
-					v.maxLength(128),
-					v.regex(
-						/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-					),
-				),
-			),
+			project_id: v.nullish(v.string()),
 			id: v.string(),
 			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
 			type: v.picklist(["config"]),
@@ -4073,7 +3817,7 @@ export const vDeleteEnvironmentVariableHeaders = v.object({
 });
 
 export const vDeleteEnvironmentVariablePath = v.object({
-	environment_variable_id: v.pipe(v.string(), v.minLength(1)),
+	environment_variable_id: v.string(),
 });
 
 /**
@@ -4105,7 +3849,7 @@ export const vGetEnvironmentVariableHeaders = v.object({
 });
 
 export const vGetEnvironmentVariablePath = v.object({
-	environment_variable_id: v.pipe(v.string(), v.minLength(1)),
+	environment_variable_id: v.string(),
 });
 
 /**
@@ -4114,16 +3858,7 @@ export const vGetEnvironmentVariablePath = v.object({
 export const vGetEnvironmentVariableResponse = v.object({
 	result: v.union([
 		v.strictObject({
-			project_id: v.nullish(
-				v.pipe(
-					v.string(),
-					v.minLength(12),
-					v.maxLength(128),
-					v.regex(
-						/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-					),
-				),
-			),
+			project_id: v.nullish(v.string()),
 			id: v.string(),
 			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
 			type: v.picklist(["secret"]),
@@ -4132,16 +3867,7 @@ export const vGetEnvironmentVariableResponse = v.object({
 			updated_at: v.pipe(v.string(), v.isoTimestamp()),
 		}),
 		v.strictObject({
-			project_id: v.nullish(
-				v.pipe(
-					v.string(),
-					v.minLength(12),
-					v.maxLength(128),
-					v.regex(
-						/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-					),
-				),
-			),
+			project_id: v.nullish(v.string()),
 			id: v.string(),
 			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
 			type: v.picklist(["config"]),
@@ -4179,7 +3905,7 @@ export const vUpdateEnvironmentVariableHeaders = v.object({
 });
 
 export const vUpdateEnvironmentVariablePath = v.object({
-	environment_variable_id: v.pipe(v.string(), v.minLength(1)),
+	environment_variable_id: v.string(),
 });
 
 /**
@@ -4188,16 +3914,7 @@ export const vUpdateEnvironmentVariablePath = v.object({
 export const vUpdateEnvironmentVariableResponse = v.object({
 	result: v.union([
 		v.strictObject({
-			project_id: v.nullish(
-				v.pipe(
-					v.string(),
-					v.minLength(12),
-					v.maxLength(128),
-					v.regex(
-						/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-					),
-				),
-			),
+			project_id: v.nullish(v.string()),
 			id: v.string(),
 			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
 			type: v.picklist(["secret"]),
@@ -4206,16 +3923,7 @@ export const vUpdateEnvironmentVariableResponse = v.object({
 			updated_at: v.pipe(v.string(), v.isoTimestamp()),
 		}),
 		v.strictObject({
-			project_id: v.nullish(
-				v.pipe(
-					v.string(),
-					v.minLength(12),
-					v.maxLength(128),
-					v.regex(
-						/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-					),
-				),
-			),
+			project_id: v.nullish(v.string()),
 			id: v.string(),
 			name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
 			type: v.picklist(["config"]),
@@ -4243,16 +3951,7 @@ export const vUpdateEnvironmentVariableResponse = v.object({
 });
 
 export const vMoveHeartbeatBody = v.strictObject({
-	project_id: v.nullable(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullable(v.string()),
 });
 
 export const vMoveHeartbeatHeaders = v.object({
@@ -4260,7 +3959,7 @@ export const vMoveHeartbeatHeaders = v.object({
 });
 
 export const vMoveHeartbeatPath = v.object({
-	heartbeat_id: v.pipe(v.string(), v.minLength(8)),
+	heartbeat_id: v.string(),
 });
 
 /**
@@ -4268,17 +3967,8 @@ export const vMoveHeartbeatPath = v.object({
  */
 export const vMoveHeartbeatResponse = v.object({
 	result: v.strictObject({
-		id: v.pipe(v.string(), v.minLength(8)),
-		project_id: v.nullable(
-			v.pipe(
-				v.string(),
-				v.minLength(12),
-				v.maxLength(128),
-				v.regex(
-					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-				),
-			),
-		),
+		id: v.string(),
+		project_id: v.nullable(v.string()),
 	}),
 	success: v.boolean(),
 	errors: v.array(
@@ -4359,16 +4049,7 @@ export const vListHeartbeatsResponse = v.union([
 ]);
 
 export const vCreateHeartbeatBody = v.object({
-	project_id: v.nullish(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullish(v.string()),
 	name: v.string(),
 	report_period: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1))),
 	report_period_cron: v.optional(v.string()),
@@ -4421,7 +4102,7 @@ export const vDeleteHeartbeatHeaders = v.object({
 });
 
 export const vDeleteHeartbeatPath = v.object({
-	heartbeat_id: v.pipe(v.string(), v.minLength(8)),
+	heartbeat_id: v.string(),
 });
 
 /**
@@ -4453,7 +4134,7 @@ export const vGetHeartbeatHeaders = v.object({
 });
 
 export const vGetHeartbeatPath = v.object({
-	heartbeat_id: v.pipe(v.string(), v.minLength(8)),
+	heartbeat_id: v.string(),
 });
 
 /**
@@ -4507,7 +4188,7 @@ export const vUpdateHeartbeatHeaders = v.object({
 });
 
 export const vUpdateHeartbeatPath = v.object({
-	heartbeat_id: v.pipe(v.string(), v.minLength(8)),
+	heartbeat_id: v.string(),
 });
 
 /**
@@ -4594,16 +4275,7 @@ export const vListMaintenanceWindowsResponse = v.union([
 ]);
 
 export const vCreateMaintenanceWindowBody = v.object({
-	project_id: v.nullish(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullish(v.string()),
 	name: v.pipe(v.string(), v.minLength(1)),
 	start_date: v.string(),
 	duration_minutes: v.pipe(v.number(), v.integer(), v.gtValue(0)),
@@ -4657,7 +4329,7 @@ export const vDeleteMaintenanceWindowHeaders = v.object({
 });
 
 export const vDeleteMaintenanceWindowPath = v.object({
-	maintenance_window_id: v.pipe(v.string(), v.minLength(8)),
+	maintenance_window_id: v.string(),
 });
 
 /**
@@ -4689,7 +4361,7 @@ export const vGetMaintenanceWindowHeaders = v.object({
 });
 
 export const vGetMaintenanceWindowPath = v.object({
-	maintenance_window_id: v.pipe(v.string(), v.minLength(8)),
+	maintenance_window_id: v.string(),
 });
 
 /**
@@ -4746,7 +4418,7 @@ export const vUpdateMaintenanceWindowHeaders = v.object({
 });
 
 export const vUpdateMaintenanceWindowPath = v.object({
-	maintenance_window_id: v.pipe(v.string(), v.minLength(8)),
+	maintenance_window_id: v.string(),
 });
 
 /**
@@ -5012,16 +4684,7 @@ export const vRevokeInvitationResponse = v.object({
 });
 
 export const vMoveWebhookBody = v.strictObject({
-	project_id: v.nullable(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullable(v.string()),
 });
 
 export const vMoveWebhookHeaders = v.object({
@@ -5029,7 +4692,7 @@ export const vMoveWebhookHeaders = v.object({
 });
 
 export const vMoveWebhookPath = v.object({
-	webhook_id: v.pipe(v.string(), v.minLength(8)),
+	webhook_id: v.string(),
 });
 
 /**
@@ -5038,16 +4701,7 @@ export const vMoveWebhookPath = v.object({
 export const vMoveWebhookResponse = v.object({
 	result: v.strictObject({
 		id: v.string(),
-		project_id: v.nullable(
-			v.pipe(
-				v.string(),
-				v.minLength(12),
-				v.maxLength(128),
-				v.regex(
-					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-				),
-			),
-		),
+		project_id: v.nullable(v.string()),
 	}),
 	success: v.boolean(),
 	errors: v.array(
@@ -5067,16 +4721,7 @@ export const vMoveWebhookResponse = v.object({
 });
 
 export const vMoveEnvironmentVariableBody = v.strictObject({
-	project_id: v.nullable(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullable(v.string()),
 });
 
 export const vMoveEnvironmentVariableHeaders = v.object({
@@ -5084,7 +4729,7 @@ export const vMoveEnvironmentVariableHeaders = v.object({
 });
 
 export const vMoveEnvironmentVariablePath = v.object({
-	environment_variable_id: v.pipe(v.string(), v.minLength(1)),
+	environment_variable_id: v.string(),
 });
 
 /**
@@ -5093,16 +4738,7 @@ export const vMoveEnvironmentVariablePath = v.object({
 export const vMoveEnvironmentVariableResponse = v.object({
 	result: v.strictObject({
 		id: v.string(),
-		project_id: v.nullable(
-			v.pipe(
-				v.string(),
-				v.minLength(12),
-				v.maxLength(128),
-				v.regex(
-					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-				),
-			),
-		),
+		project_id: v.nullable(v.string()),
 	}),
 	success: v.boolean(),
 	errors: v.array(
@@ -5122,16 +4758,7 @@ export const vMoveEnvironmentVariableResponse = v.object({
 });
 
 export const vMoveResourcesBody = v.strictObject({
-	project_id: v.nullable(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullable(v.string()),
 	resources: v.pipe(
 		v.array(
 			v.strictObject({
@@ -5142,7 +4769,7 @@ export const vMoveResourcesBody = v.strictObject({
 					"environment_variable",
 					"maintenance_window",
 				]),
-				id: v.pipe(v.string(), v.minLength(1), v.maxLength(128)),
+				id: v.string(),
 			}),
 		),
 		v.minLength(1),
@@ -5159,16 +4786,7 @@ export const vMoveResourcesHeaders = v.object({
  */
 export const vMoveResourcesResponse = v.object({
 	result: v.strictObject({
-		project_id: v.nullable(
-			v.pipe(
-				v.string(),
-				v.minLength(12),
-				v.maxLength(128),
-				v.regex(
-					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-				),
-			),
-		),
+		project_id: v.nullable(v.string()),
 		resources: v.array(
 			v.strictObject({
 				kind: v.picklist([
@@ -5178,7 +4796,7 @@ export const vMoveResourcesResponse = v.object({
 					"environment_variable",
 					"maintenance_window",
 				]),
-				id: v.pipe(v.string(), v.minLength(1), v.maxLength(128)),
+				id: v.string(),
 			}),
 		),
 	}),
@@ -5200,16 +4818,7 @@ export const vMoveResourcesResponse = v.object({
 });
 
 export const vMoveMaintenanceWindowBody = v.strictObject({
-	project_id: v.nullable(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullable(v.string()),
 });
 
 export const vMoveMaintenanceWindowHeaders = v.object({
@@ -5217,7 +4826,7 @@ export const vMoveMaintenanceWindowHeaders = v.object({
 });
 
 export const vMoveMaintenanceWindowPath = v.object({
-	maintenance_window_id: v.pipe(v.string(), v.minLength(8)),
+	maintenance_window_id: v.string(),
 });
 
 /**
@@ -5226,16 +4835,7 @@ export const vMoveMaintenanceWindowPath = v.object({
 export const vMoveMaintenanceWindowResponse = v.object({
 	result: v.strictObject({
 		id: v.string(),
-		project_id: v.nullable(
-			v.pipe(
-				v.string(),
-				v.minLength(12),
-				v.maxLength(128),
-				v.regex(
-					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-				),
-			),
-		),
+		project_id: v.nullable(v.string()),
 	}),
 	success: v.boolean(),
 	errors: v.array(
@@ -5326,14 +4926,7 @@ export const vDeleteProjectHeaders = v.object({
 });
 
 export const vDeleteProjectPath = v.object({
-	project_id: v.pipe(
-		v.string(),
-		v.minLength(12),
-		v.maxLength(128),
-		v.regex(
-			/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-		),
-	),
+	project_id: v.string(),
 });
 
 /**
@@ -5341,14 +4934,7 @@ export const vDeleteProjectPath = v.object({
  */
 export const vDeleteProjectResponse = v.object({
 	result: v.strictObject({
-		id: v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
+		id: v.string(),
 	}),
 	success: v.boolean(),
 	errors: v.array(
@@ -5372,14 +4958,7 @@ export const vGetProjectHeaders = v.object({
 });
 
 export const vGetProjectPath = v.object({
-	project_id: v.pipe(
-		v.string(),
-		v.minLength(12),
-		v.maxLength(128),
-		v.regex(
-			/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-		),
-	),
+	project_id: v.string(),
 });
 
 /**
@@ -5413,14 +4992,7 @@ export const vUpdateProjectHeaders = v.object({
 });
 
 export const vUpdateProjectPath = v.object({
-	project_id: v.pipe(
-		v.string(),
-		v.minLength(12),
-		v.maxLength(128),
-		v.regex(
-			/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-		),
-	),
+	project_id: v.string(),
 });
 
 /**
@@ -5450,7 +5022,7 @@ export const vDeleteStatusPageHeaders = v.object({
 });
 
 export const vDeleteStatusPagePath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
 });
 
 /**
@@ -5482,7 +5054,7 @@ export const vGetStatusPageHeaders = v.object({
 });
 
 export const vGetStatusPagePath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
 });
 
 /**
@@ -5525,7 +5097,7 @@ export const vUpdateStatusPageHeaders = v.object({
 });
 
 export const vUpdateStatusPagePath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
 });
 
 /**
@@ -5718,7 +5290,7 @@ export const vListStatusPageComponentsHeaders = v.object({
 });
 
 export const vListStatusPageComponentsPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
 });
 
 export const vListStatusPageComponentsQuery = v.object({
@@ -5793,7 +5365,7 @@ export const vCreateStatusPageComponentHeaders = v.object({
 });
 
 export const vCreateStatusPageComponentPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
 });
 
 /**
@@ -5823,8 +5395,8 @@ export const vDeleteStatusPageComponentHeaders = v.object({
 });
 
 export const vDeleteStatusPageComponentPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
-	status_page_component_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
+	status_page_component_id: v.string(),
 });
 
 /**
@@ -5856,8 +5428,8 @@ export const vGetStatusPageComponentHeaders = v.object({
 });
 
 export const vGetStatusPageComponentPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
-	status_page_component_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
+	status_page_component_id: v.string(),
 });
 
 /**
@@ -5907,8 +5479,8 @@ export const vUpdateStatusPageComponentHeaders = v.object({
 });
 
 export const vUpdateStatusPageComponentPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
-	status_page_component_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
+	status_page_component_id: v.string(),
 });
 
 /**
@@ -5942,7 +5514,7 @@ export const vUpdateStatusPageComponentSortOrderHeaders = v.object({
 });
 
 export const vUpdateStatusPageComponentSortOrderPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
 });
 
 /**
@@ -5974,7 +5546,7 @@ export const vListStatusPageComponentGroupsHeaders = v.object({
 });
 
 export const vListStatusPageComponentGroupsPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
 });
 
 export const vListStatusPageComponentGroupsQuery = v.object({
@@ -6037,7 +5609,7 @@ export const vCreateStatusPageComponentGroupHeaders = v.object({
 });
 
 export const vCreateStatusPageComponentGroupPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
 });
 
 /**
@@ -6067,8 +5639,8 @@ export const vDeleteStatusPageComponentGroupHeaders = v.object({
 });
 
 export const vDeleteStatusPageComponentGroupPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
-	group_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
+	group_id: v.string(),
 });
 
 /**
@@ -6100,8 +5672,8 @@ export const vGetStatusPageComponentGroupHeaders = v.object({
 });
 
 export const vGetStatusPageComponentGroupPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
-	group_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
+	group_id: v.string(),
 });
 
 /**
@@ -6136,8 +5708,8 @@ export const vUpdateStatusPageComponentGroupHeaders = v.object({
 });
 
 export const vUpdateStatusPageComponentGroupPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
-	group_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
+	group_id: v.string(),
 });
 
 /**
@@ -6171,7 +5743,7 @@ export const vUpdateStatusPageComponentGroupSortOrderHeaders = v.object({
 });
 
 export const vUpdateStatusPageComponentGroupSortOrderPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
 });
 
 /**
@@ -6207,8 +5779,8 @@ export const vUpdateStatusPageGroupComponentSortOrderHeaders = v.object({
 });
 
 export const vUpdateStatusPageGroupComponentSortOrderPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
-	group_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
+	group_id: v.string(),
 });
 
 /**
@@ -6240,7 +5812,7 @@ export const vListStatusPageSubscribersHeaders = v.object({
 });
 
 export const vListStatusPageSubscribersPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
 });
 
 export const vListStatusPageSubscribersQuery = v.object({
@@ -6290,7 +5862,7 @@ export const vCreateStatusPageSubscriberHeaders = v.object({
 });
 
 export const vCreateStatusPageSubscriberPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
 });
 
 /**
@@ -6320,8 +5892,8 @@ export const vDeleteStatusPageSubscriberHeaders = v.object({
 });
 
 export const vDeleteStatusPageSubscriberPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
-	subscriber_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
+	subscriber_id: v.string(),
 });
 
 /**
@@ -6353,7 +5925,7 @@ export const vListStatusPageIncidentsHeaders = v.object({
 });
 
 export const vListStatusPageIncidentsPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
 });
 
 export const vListStatusPageIncidentsQuery = v.object({
@@ -6440,7 +6012,7 @@ export const vCreateStatusPageIncidentHeaders = v.object({
 });
 
 export const vCreateStatusPageIncidentPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
 });
 
 /**
@@ -6470,8 +6042,8 @@ export const vDeleteStatusPageIncidentHeaders = v.object({
 });
 
 export const vDeleteStatusPageIncidentPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
-	status_page_incident_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
+	status_page_incident_id: v.string(),
 });
 
 /**
@@ -6503,8 +6075,8 @@ export const vGetStatusPageIncidentHeaders = v.object({
 });
 
 export const vGetStatusPageIncidentPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
-	status_page_incident_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
+	status_page_incident_id: v.string(),
 });
 
 /**
@@ -6545,8 +6117,8 @@ export const vUpdateStatusPageIncidentHeaders = v.object({
 });
 
 export const vUpdateStatusPageIncidentPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
-	status_page_incident_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
+	status_page_incident_id: v.string(),
 });
 
 /**
@@ -6576,8 +6148,8 @@ export const vListStatusPageIncidentUpdatesHeaders = v.object({
 });
 
 export const vListStatusPageIncidentUpdatesPath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
-	status_page_incident_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
+	status_page_incident_id: v.string(),
 });
 
 export const vListStatusPageIncidentUpdatesQuery = v.object({
@@ -6667,8 +6239,8 @@ export const vCreateStatusPageIncidentUpdateHeaders = v.object({
 });
 
 export const vCreateStatusPageIncidentUpdatePath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
-	status_page_incident_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
+	status_page_incident_id: v.string(),
 });
 
 /**
@@ -6698,9 +6270,9 @@ export const vDeleteStatusPageIncidentUpdateHeaders = v.object({
 });
 
 export const vDeleteStatusPageIncidentUpdatePath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
-	status_page_incident_id: v.pipe(v.string(), v.minLength(8)),
-	incident_update_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
+	status_page_incident_id: v.string(),
+	incident_update_id: v.string(),
 });
 
 /**
@@ -6732,9 +6304,9 @@ export const vGetStatusPageIncidentUpdateHeaders = v.object({
 });
 
 export const vGetStatusPageIncidentUpdatePath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
-	status_page_incident_id: v.pipe(v.string(), v.minLength(8)),
-	incident_update_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
+	status_page_incident_id: v.string(),
+	incident_update_id: v.string(),
 });
 
 /**
@@ -6782,9 +6354,9 @@ export const vUpdateStatusPageIncidentUpdateHeaders = v.object({
 });
 
 export const vUpdateStatusPageIncidentUpdatePath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
-	status_page_incident_id: v.pipe(v.string(), v.minLength(8)),
-	incident_update_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
+	status_page_incident_id: v.string(),
+	incident_update_id: v.string(),
 });
 
 /**
@@ -6829,7 +6401,7 @@ export const vCreateStatusPageScheduledMaintenanceHeaders = v.object({
 });
 
 export const vCreateStatusPageScheduledMaintenancePath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
 });
 
 /**
@@ -6859,8 +6431,8 @@ export const vDeleteStatusPageScheduledMaintenanceHeaders = v.object({
 });
 
 export const vDeleteStatusPageScheduledMaintenancePath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
-	scheduled_maintenance_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
+	scheduled_maintenance_id: v.string(),
 });
 
 /**
@@ -6892,8 +6464,8 @@ export const vGetStatusPageScheduledMaintenanceHeaders = v.object({
 });
 
 export const vGetStatusPageScheduledMaintenancePath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
-	scheduled_maintenance_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
+	scheduled_maintenance_id: v.string(),
 });
 
 /**
@@ -6937,8 +6509,8 @@ export const vUpdateStatusPageScheduledMaintenanceHeaders = v.object({
 });
 
 export const vUpdateStatusPageScheduledMaintenancePath = v.object({
-	status_page_id: v.pipe(v.string(), v.minLength(8)),
-	scheduled_maintenance_id: v.pipe(v.string(), v.minLength(8)),
+	status_page_id: v.string(),
+	scheduled_maintenance_id: v.string(),
 });
 
 /**
@@ -6968,7 +6540,7 @@ export const vGetWebhookDeliverySummaryHeaders = v.object({
 });
 
 export const vGetWebhookDeliverySummaryQuery = v.object({
-	webhook_ids: v.pipe(v.string(), v.maxLength(12900)),
+	webhook_ids: v.string(),
 });
 
 /**
@@ -7021,7 +6593,7 @@ export const vGetWebhookDeliveryActivityHeaders = v.object({
 });
 
 export const vGetWebhookDeliveryActivityPath = v.object({
-	webhook_id: v.pipe(v.string(), v.minLength(8)),
+	webhook_id: v.string(),
 });
 
 export const vGetWebhookDeliveryActivityQuery = v.object({
@@ -7089,7 +6661,7 @@ export const vListWebhookDeliveriesHeaders = v.object({
 });
 
 export const vListWebhookDeliveriesPath = v.object({
-	webhook_id: v.pipe(v.string(), v.minLength(8)),
+	webhook_id: v.string(),
 });
 
 export const vListWebhookDeliveriesQuery = v.object({
@@ -7185,7 +6757,7 @@ export const vGetWebhookDeliveryHeaders = v.object({
 });
 
 export const vGetWebhookDeliveryPath = v.object({
-	webhook_id: v.pipe(v.string(), v.minLength(8)),
+	webhook_id: v.string(),
 	attempt_id: v.string(),
 });
 
@@ -7318,16 +6890,7 @@ export const vListWebhooksResponse = v.union([
  * At least one nonempty status_page_ids, check_ids, or heartbeat_ids association is required. Each selected resource type requires a matching event type, and each subscribed event type requires a resource of its type. Events and association IDs must not contain duplicates.
  */
 export const vCreateWebhookBody = v.object({
-	project_id: v.nullish(
-		v.pipe(
-			v.string(),
-			v.minLength(12),
-			v.maxLength(128),
-			v.regex(
-				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
-			),
-		),
-	),
+	project_id: v.nullish(v.string()),
 	enabled: v.optional(v.boolean()),
 	url: v.string(),
 	description: v.optional(v.string()),
@@ -7381,7 +6944,7 @@ export const vDeleteWebhookHeaders = v.object({
 });
 
 export const vDeleteWebhookPath = v.object({
-	webhook_id: v.pipe(v.string(), v.minLength(8)),
+	webhook_id: v.string(),
 });
 
 /**
@@ -7413,7 +6976,7 @@ export const vGetWebhookHeaders = v.object({
 });
 
 export const vGetWebhookPath = v.object({
-	webhook_id: v.pipe(v.string(), v.minLength(8)),
+	webhook_id: v.string(),
 });
 
 /**
@@ -7472,7 +7035,7 @@ export const vUpdateWebhookHeaders = v.object({
 });
 
 export const vUpdateWebhookPath = v.object({
-	webhook_id: v.pipe(v.string(), v.minLength(8)),
+	webhook_id: v.string(),
 });
 
 /**
