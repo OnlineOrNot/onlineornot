@@ -125,6 +125,10 @@ export const command = createApiCommand(
 				title: body["title"],
 				description: body["description"],
 				status: body["status"],
+				date_happened:
+					input.body?.["date_happened"] === undefined
+						? undefined
+						: body["date_happened"],
 				components:
 					input.body?.["components"] === undefined
 						? undefined

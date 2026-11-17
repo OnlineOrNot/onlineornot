@@ -932,6 +932,212 @@ export type LogBatch = {
 	}>;
 };
 
+export type OtlpTraceExportResponse = {
+	[key: string]: never;
+};
+
+export type OtlpTraceExport = {
+	resourceSpans?: Array<{
+		resource?: {
+			attributes?: Array<{
+				key: string;
+				value?: unknown;
+			}> | null;
+			droppedAttributesCount?: number | null;
+		} | null;
+		schemaUrl?: string | null;
+		scopeSpans?: Array<{
+			scope?: {
+				attributes?: Array<{
+					key: string;
+					value?: unknown;
+				}> | null;
+				droppedAttributesCount?: number | null;
+				name?: string | null;
+				version?: string | null;
+			} | null;
+			schemaUrl?: string | null;
+			spans?: Array<{
+				traceId: string;
+				spanId: string;
+				parentSpanId?: string | null;
+				traceState?: string | null;
+				flags?: number | null;
+				name: string;
+				kind?: number | null;
+				startTimeUnixNano: string | number;
+				endTimeUnixNano: string | number;
+				attributes?: Array<{
+					key: string;
+					value?: unknown;
+				}> | null;
+				droppedAttributesCount?: number | null;
+				events?: Array<{
+					timeUnixNano: string | number;
+					name: string;
+					attributes?: Array<{
+						key: string;
+						value?: unknown;
+					}> | null;
+					droppedAttributesCount?: number | null;
+				}> | null;
+				droppedEventsCount?: number | null;
+				links?: Array<{
+					traceId: string;
+					spanId: string;
+					traceState?: string | null;
+					attributes?: Array<{
+						key: string;
+						value?: unknown;
+					}> | null;
+					droppedAttributesCount?: number | null;
+					flags?: number | null;
+				}> | null;
+				droppedLinksCount?: number | null;
+				status?: {
+					code?: number | null;
+					message?: string | null;
+				} | null;
+			}> | null;
+		}> | null;
+	}> | null;
+};
+
+export type TraceSearchResponse = {
+	result: {
+		spans: Array<TraceSpan>;
+		next_cursor: string | null;
+		scanned_bytes: number;
+	};
+	/**
+	 * Whether the API call was successful
+	 */
+	success: boolean;
+	errors: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+	messages: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+};
+
+export type TraceSpan = {
+	id: string;
+	project_id: string | null;
+	received_at: string;
+	trace_id: string;
+	span_id: string;
+	parent_span_id: string | null;
+	name: string;
+	service: string | null;
+	environment: string | null;
+	kind: number;
+	start_time_unix_nano: string;
+	end_time_unix_nano: string;
+	duration_ms: number;
+	status_code: number;
+	status_message: string | null;
+	trace_state: string | null;
+	flags: number;
+	attributes: {
+		[key: string]:
+			| {
+					[key: string]: unknown;
+			  }
+			| Array<unknown>
+			| string
+			| number
+			| boolean
+			| null;
+	};
+	resource: {
+		[key: string]:
+			| {
+					[key: string]: unknown;
+			  }
+			| Array<unknown>
+			| string
+			| number
+			| boolean
+			| null;
+	};
+	scope: {
+		[key: string]:
+			| {
+					[key: string]: unknown;
+			  }
+			| Array<unknown>
+			| string
+			| number
+			| boolean
+			| null;
+	};
+	events: Array<
+		| {
+				[key: string]: unknown;
+		  }
+		| Array<unknown>
+		| string
+		| number
+		| boolean
+		| null
+	>;
+	links: Array<
+		| {
+				[key: string]: unknown;
+		  }
+		| Array<unknown>
+		| string
+		| number
+		| boolean
+		| null
+	>;
+	dropped_attributes_count: number;
+	dropped_events_count: number;
+	dropped_links_count: number;
+};
+
+export type AgentFeedbackOutput = {
+	result: {
+		accepted: true;
+	};
+	success: true;
+	errors: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+	messages: Array<{
+		code: number;
+		message: string;
+		type?: string | null;
+	}>;
+};
+
+export type AgentFeedbackInput = {
+	surface: "mcp" | "api" | "cli" | "docs";
+	/**
+	 * What you tried. Omit credentials, private customer data and conversation transcripts.
+	 */
+	attempted: string;
+	/**
+	 * The result you expected.
+	 */
+	expected: string;
+	/**
+	 * What failed or was confusing. Summarize rather than pasting raw requests or responses.
+	 */
+	actual: string;
+	/**
+	 * How you recovered, if you found a workaround.
+	 */
+	workaround?: string;
+};
+
 export type DnsCheckResponse = {
 	result: ExpandedDnsCheck;
 	/**
@@ -2660,9 +2866,9 @@ export type OrgUser = {
 	 */
 	image: string | null;
 	/**
-	 * The role of the user in the organisation
+	 * The role of the user in the organisation. ADMIN manages the organisation, its members and billing. STANDARD manages monitoring resources. BILLING manages only the subscription, payment details and invoices, and cannot access monitoring data, members, projects or API tokens.
 	 */
-	role: "ADMIN" | "STANDARD";
+	role: "ADMIN" | "STANDARD" | "BILLING";
 };
 
 export type Invitation = {
@@ -2675,9 +2881,9 @@ export type Invitation = {
 	 */
 	email: string;
 	/**
-	 * The role of the user in the organisation
+	 * The role of the user in the organisation. ADMIN manages the organisation, its members and billing. STANDARD manages monitoring resources. BILLING manages only the subscription, payment details and invoices, and cannot access monitoring data, members, projects or API tokens.
 	 */
-	role: "ADMIN" | "STANDARD";
+	role: "ADMIN" | "STANDARD" | "BILLING";
 	/**
 	 * When the invitation was created
 	 */
@@ -3555,6 +3761,180 @@ export type GetLogUsageResponses = {
 export type GetLogUsageResponse =
 	GetLogUsageResponses[keyof GetLogUsageResponses];
 
+export type SearchTracesData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path?: never;
+	query: {
+		/**
+		 * Inclusive server receipt time, in RFC 3339 format.
+		 */
+		from: string;
+		/**
+		 * Exclusive server receipt time, at most one hour after from.
+		 */
+		to: string;
+		limit?: number;
+		cursor?: string;
+		project_id?: string | "unassigned";
+		service?: string;
+		environment?: string;
+		trace_id?: string;
+		status_code?: "0" | "1" | "2";
+	};
+	url: "/v1/traces";
+};
+
+export type SearchTracesErrors = {
+	/**
+	 * Invalid or unbounded search request
+	 */
+	400: PublicApiErrorResponse;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Project not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+	/**
+	 * Trace search unavailable
+	 */
+	503: PublicApiErrorResponse;
+};
+
+export type SearchTracesError = SearchTracesErrors[keyof SearchTracesErrors];
+
+export type SearchTracesResponses = {
+	/**
+	 * Matching spans and a continuation cursor
+	 */
+	200: TraceSearchResponse;
+};
+
+export type SearchTracesResponse =
+	SearchTracesResponses[keyof SearchTracesResponses];
+
+export type ExportOtlpTracesData = {
+	body: OtlpTraceExport;
+	path?: never;
+	query?: never;
+	url: "/v1/traces";
+};
+
+export type ExportOtlpTracesErrors = {
+	/**
+	 * Invalid OTLP export
+	 */
+	400: OtlpStatus;
+	/**
+	 * Missing or invalid API token
+	 */
+	401: OtlpStatus;
+	/**
+	 * Requires an explicit LOGS:SEND grant
+	 */
+	403: OtlpStatus;
+	/**
+	 * Requires POST
+	 */
+	405: OtlpStatus;
+	/**
+	 * Export or record exceeds a size limit
+	 */
+	413: OtlpStatus;
+	/**
+	 * Unsupported content type or compression
+	 */
+	415: OtlpStatus;
+	/**
+	 * Shared logs and traces ingestion allowance exceeded
+	 */
+	429: OtlpStatus;
+	/**
+	 * Ingestion unavailable or delivery not confirmed
+	 */
+	503: OtlpStatus;
+};
+
+export type ExportOtlpTracesError =
+	ExportOtlpTracesErrors[keyof ExportOtlpTracesErrors];
+
+export type ExportOtlpTracesResponses = {
+	/**
+	 * OTLP full success, in the request encoding
+	 */
+	200: OtlpTraceExportResponse;
+};
+
+export type ExportOtlpTracesResponse =
+	ExportOtlpTracesResponses[keyof ExportOtlpTracesResponses];
+
+export type SubmitAgentFeedbackData = {
+	body: AgentFeedbackInput;
+	path?: never;
+	query?: never;
+	url: "/v1/feedback";
+};
+
+export type SubmitAgentFeedbackErrors = {
+	/**
+	 * Invalid feedback
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid bearer token
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Feedback exceeds the 16 KiB request limit
+	 */
+	413: PublicApiErrorResponse;
+	/**
+	 * Content-Type must be application/json
+	 */
+	415: PublicApiErrorResponse;
+	/**
+	 * Feedback rate limit exceeded; wait 60 seconds before another submission
+	 */
+	429: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+	/**
+	 * Feedback delivery is unavailable; delivery may be uncertain after a connection failure
+	 */
+	503: PublicApiErrorResponse;
+};
+
+export type SubmitAgentFeedbackError =
+	SubmitAgentFeedbackErrors[keyof SubmitAgentFeedbackErrors];
+
+export type SubmitAgentFeedbackResponses = {
+	/**
+	 * Feedback delivered to the OnlineOrNot team
+	 */
+	200: AgentFeedbackOutput;
+};
+
+export type SubmitAgentFeedbackResponse =
+	SubmitAgentFeedbackResponses[keyof SubmitAgentFeedbackResponses];
+
 export type ListAuditLogsData = {
 	body?: never;
 	headers?: {
@@ -3693,6 +4073,14 @@ export type VerifyTokenResponses = {
 	200:
 		| {
 				result: {
+					/**
+					 * Connected organization identity for API tokens. Independent of the token ID.
+					 */
+					profile?: {
+						id: string;
+						name?: string;
+						email?: string;
+					};
 					/**
 					 * API token ID. Omitted when verifying an OAuth access token.
 					 */
@@ -7991,6 +8379,90 @@ export type RemoveUserResponses = {
 
 export type RemoveUserResponse = RemoveUserResponses[keyof RemoveUserResponses];
 
+export type UpdateUserRoleData = {
+	body: {
+		/**
+		 * The new role for the user in the organisation
+		 */
+		role: "ADMIN" | "STANDARD" | "BILLING";
+	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * The unique identifier of the user
+		 */
+		user_id: string;
+	};
+	query?: never;
+	url: "/v1/users/{user_id}";
+};
+
+export type UpdateUserRoleErrors = {
+	/**
+	 * Bad Request - Invalid user ID, invalid role or the organisation would have no admin
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Unauthenticated
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Forbidden - Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Not Found - User not in organisation
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal Server Error
+	 */
+	500: PublicApiServerError;
+};
+
+export type UpdateUserRoleError =
+	UpdateUserRoleErrors[keyof UpdateUserRoleErrors];
+
+export type UpdateUserRoleResponses = {
+	/**
+	 * Returns the user ID and new role
+	 */
+	200: {
+		result: {
+			/**
+			 * ID of the updated user
+			 */
+			id: string;
+			/**
+			 * The role of the user in the organisation. ADMIN manages the organisation, its members and billing. STANDARD manages monitoring resources. BILLING manages only the subscription, payment details and invoices, and cannot access monitoring data, members, projects or API tokens.
+			 */
+			role: "ADMIN" | "STANDARD" | "BILLING";
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type UpdateUserRoleResponse =
+	UpdateUserRoleResponses[keyof UpdateUserRoleResponses];
+
 export type ListInvitationsData = {
 	body?: never;
 	headers?: {
@@ -8096,7 +8568,7 @@ export type CreateInvitationData = {
 		/**
 		 * The role to assign to the invited user
 		 */
-		role?: "ADMIN" | "STANDARD";
+		role?: "ADMIN" | "STANDARD" | "BILLING";
 	};
 	headers?: {
 		/**
@@ -8156,6 +8628,81 @@ export type CreateInvitationResponses = {
 
 export type CreateInvitationResponse =
 	CreateInvitationResponses[keyof CreateInvitationResponses];
+
+export type RevokeInvitationData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * The unique identifier of the invitation
+		 */
+		invitation_id: string;
+	};
+	query?: never;
+	url: "/v1/invitations/{invitation_id}";
+};
+
+export type RevokeInvitationErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Unauthenticated
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Forbidden - Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Not Found - No pending invitation with this ID
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal Server Error
+	 */
+	500: PublicApiServerError;
+};
+
+export type RevokeInvitationError =
+	RevokeInvitationErrors[keyof RevokeInvitationErrors];
+
+export type RevokeInvitationResponses = {
+	/**
+	 * Returns the ID of the revoked invitation
+	 */
+	200: {
+		result: {
+			/**
+			 * ID of the revoked invitation
+			 */
+			id: string;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type RevokeInvitationResponse =
+	RevokeInvitationResponses[keyof RevokeInvitationResponses];
 
 export type MoveWebhookData = {
 	body: {
@@ -10974,6 +11521,10 @@ export type CreateStatusPageIncidentData = {
 			| "RESOLVED"
 			| "UPDATE";
 		/**
+		 * When the incident and its first update occurred. Defaults to now. Must not be in the future.
+		 */
+		date_happened?: string;
+		/**
 		 * Components affected by this incident with their status
 		 */
 		components?: Array<{
@@ -12058,6 +12609,27 @@ export type UpdateStatusPageScheduledMaintenanceData = {
 		 * Updated duration in minutes
 		 */
 		duration_minutes?: number;
+		/**
+		 * Component IDs affected by this maintenance. Replaces the current list; send an empty array to remove all components.
+		 */
+		components_affected?: Array<string>;
+		/**
+		 * Updated subscriber notification settings. Settings left out keep their current value.
+		 */
+		notifications?: {
+			/**
+			 * Notify subscribers one hour before maintenance starts
+			 */
+			an_hour_before?: boolean;
+			/**
+			 * Notify subscribers when maintenance starts
+			 */
+			at_start?: boolean;
+			/**
+			 * Notify subscribers when maintenance ends
+			 */
+			at_end?: boolean;
+		};
 	};
 	headers?: {
 		/**

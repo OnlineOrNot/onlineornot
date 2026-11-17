@@ -26,6 +26,39 @@ const removeRequiredPropertyDefaults = (schema: Schema): void => {
 	}
 };
 
+const isResourceId = (name: string): boolean =>
+	(name === "id" || name === "ids" || /_ids?$/.test(name)) &&
+	!["trace_id", "span_id", "parent_span_id"].includes(name);
+
+const removeResourceIdConstraints = (
+	schema: Schema,
+	resourceId = false,
+): void => {
+	if (
+		resourceId &&
+		(schema.type === "string" ||
+			(Array.isArray(schema.type) && schema.type.includes("string")))
+	) {
+		delete schema.minLength;
+		delete schema.maxLength;
+		delete schema.pattern;
+		delete schema.format;
+	}
+	for (const [name, property] of Object.entries(schema.properties ?? {})) {
+		if (property !== true && !("$ref" in property))
+			removeResourceIdConstraints(property, isResourceId(name));
+	}
+	for (const child of [
+		...(schema.allOf ?? []),
+		...(schema.anyOf ?? []),
+		...(schema.oneOf ?? []),
+	]) {
+		if (!("$ref" in child)) removeResourceIdConstraints(child, resourceId);
+	}
+	if (schema.items && !Array.isArray(schema.items) && !("$ref" in schema.items))
+		removeResourceIdConstraints(schema.items, resourceId);
+};
+
 export default defineConfig({
 	input,
 	parser: {
@@ -36,7 +69,10 @@ export default defineConfig({
 			}
 
 			for (const schema of Object.values(spec.components?.schemas ?? {})) {
-				if (!("$ref" in schema)) removeRequiredPropertyDefaults(schema);
+				if (!("$ref" in schema)) {
+					removeRequiredPropertyDefaults(schema);
+					removeResourceIdConstraints(schema);
+				}
 			}
 
 			for (const pathItem of Object.values(spec.paths ?? {})) {
@@ -53,6 +89,24 @@ export default defineConfig({
 				];
 				for (const operation of operations) {
 					if (!operation) continue;
+					for (const parameter of [
+						...(pathItem.parameters ?? []),
+						...(operation.parameters ?? []),
+					]) {
+						if ("$ref" in parameter || !isResourceId(parameter.name)) continue;
+						const schema = parameter.schema;
+						if (schema && schema !== true && !("$ref" in schema))
+							removeResourceIdConstraints(schema, true);
+					}
+					const requestBody = operation.requestBody;
+					if (requestBody && !("$ref" in requestBody))
+						for (const mediaTypeName of Object.keys(
+							requestBody.content ?? {},
+						)) {
+							const schema = requestBody.content?.[mediaTypeName]?.schema;
+							if (schema && schema !== true && !("$ref" in schema))
+								removeResourceIdConstraints(schema);
+						}
 					for (const statusCode of Object.keys(operation.responses ?? {})) {
 						const response = operation.responses?.[statusCode];
 						if (!response || "$ref" in response) continue;
@@ -60,6 +114,7 @@ export default defineConfig({
 							const schema = response.content?.[mediaTypeName]?.schema;
 							if (schema && schema !== true && !("$ref" in schema)) {
 								removeRequiredPropertyDefaults(schema);
+								removeResourceIdConstraints(schema);
 							}
 						}
 					}
@@ -84,6 +139,50 @@ export default defineConfig({
 			name: "valibot",
 			includeInEntry: false,
 			$resolvers: {
+				object: (ctx) => {
+					const additionalProperties = ctx.schema.additionalProperties;
+					if (!additionalProperties || additionalProperties.type === "never")
+						return;
+					const value = ctx.walk(additionalProperties, ctx);
+					ctx._childResults.push(value);
+					const validator = ctx.pipes.toNode(
+						ctx.applyModifiers(value).pipes,
+						ctx.plugin,
+					);
+					const properties = ctx.nodes.shape(ctx);
+					const object = properties.isEmpty
+						? ctx
+								.$(ctx.plugin.imports.v)
+								.attr("record")
+								.call(
+									ctx.$(ctx.plugin.imports.v).attr("string").call(),
+									validator,
+								)
+						: ctx
+								.$(ctx.plugin.imports.v)
+								.attr("objectWithRest")
+								.call(properties, validator);
+					return ctx
+						.$(ctx.plugin.imports.v)
+						.attr("pipe")
+						.call(
+							ctx
+								.$(ctx.plugin.imports.v)
+								.attr("custom")
+								.call(
+									ctx.$.func()
+										.param("value")
+										.do(
+											ctx.$.return(
+												ctx.$.not(
+													ctx.$("Array").attr("isArray").call(ctx.$("value")),
+												),
+											),
+										),
+								),
+							object,
+						);
+				},
 				array: (ctx) => {
 					if (!ctx.schema.items || ctx.schema.items.length < 2) return;
 					const element = ctx.walk(

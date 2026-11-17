@@ -1712,7 +1712,7 @@ describe("generated type-specific check commands through the executable", () => 
 			error: "type",
 		},
 		{
-			args: ["checks", "move", "check1234", "--body", '{"project_id":"short"}'],
+			args: ["checks", "move", "check1234", "--body", '{"project_id":42}'],
 			error: "project_id",
 		},
 	])(
@@ -1723,6 +1723,32 @@ describe("generated type-specific check commands through the executable", () => 
 			expect(result.stdout).toBe("");
 			expect(result.stderr).toContain(error);
 			expect(requests).toHaveLength(0);
+		},
+	);
+
+	it.each(["short", "123456789012", "opaque/project:💡", "x".repeat(256)])(
+		"previews and sends opaque project ID %s when moving a check",
+		async (projectId) => {
+			const body = { project_id: projectId };
+			const args = [
+				"checks",
+				"move",
+				"check1234",
+				"--body",
+				JSON.stringify(body),
+			];
+
+			const preview = await runCli([...args, "--dry-run"], "", false);
+
+			expect(preview.code).toBe(0);
+			expect(JSON.parse(preview.stdout).body).toEqual(body);
+			expect(requests).toHaveLength(0);
+			const result = await runCli(args);
+			expect(result.code).toBe(0);
+			expect(requests).toHaveLength(1);
+			expect(requests[0].method).toBe("POST");
+			expect(requests[0].url).toBe("/v1/checks/check1234/move");
+			expect(JSON.parse(requests[0].body)).toEqual(body);
 		},
 	);
 
@@ -2065,6 +2091,29 @@ describe("generated webhook diagnostics, audit history and bulk project moves", 
 		});
 	});
 
+	it.each(["short", "123456789012", "opaque/project:💡", "x".repeat(256)])(
+		"previews and sends opaque project ID %s in an atomic bulk move",
+		async (projectId) => {
+			const body = {
+				project_id: projectId,
+				resources: [{ kind: "check", id: "check1234" }],
+			};
+			const args = ["resources", "move", "--body", JSON.stringify(body)];
+
+			const preview = await runCli([...args, "--dry-run"], "", false);
+
+			expect(preview.code).toBe(0);
+			expect(JSON.parse(preview.stdout).body).toEqual(body);
+			expect(requests).toHaveLength(0);
+			const result = await runCli([...args, "--force"]);
+			expect(result.code).toBe(0);
+			expect(requests).toHaveLength(1);
+			expect(requests[0].method).toBe("POST");
+			expect(requests[0].url).toBe("/v1/resources/move");
+			expect(JSON.parse(requests[0].body)).toEqual(body);
+		},
+	);
+
 	it.each([
 		{ project_id: null, resources: [] },
 		{
@@ -2074,7 +2123,7 @@ describe("generated webhook diagnostics, audit history and bulk project moves", 
 				id: `check${index}`,
 			})),
 		},
-		{ project_id: "short", resources: [{ kind: "check", id: "check1234" }] },
+		{ project_id: 42, resources: [{ kind: "check", id: "check1234" }] },
 		{ resources: [{ kind: "check", id: "check1234" }] },
 		{ project_id: null, resources: [{ kind: "user", id: "user1234" }] },
 		{ project_id: null, resources: [{ kind: "check" }] },
