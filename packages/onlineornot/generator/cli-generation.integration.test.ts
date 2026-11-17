@@ -104,7 +104,7 @@ describe("pinned Forge binary and compiled CLI plugin", () => {
 		const coverage = JSON.parse(
 			await readFile(path.join(first, "coverage.json"), "utf8"),
 		);
-		expect(coverage.operations).toHaveLength(117);
+		expect(coverage.operations).toHaveLength(122);
 		expect(
 			coverage.operations.find(
 				(operation: { operationId: string }) =>

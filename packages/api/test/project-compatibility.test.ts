@@ -28,6 +28,7 @@ import {
 	vGetEnvironmentVariableResponse,
 	vGetHeartbeatResponse,
 	vGetProjectResponse,
+	vGetProjectPath,
 	vGetWebhookResponse,
 	vListChecksResponse,
 } from "../src/valibot";
@@ -36,6 +37,7 @@ import {
 	zGetEnvironmentVariableResponse,
 	zGetHeartbeatResponse,
 	zGetProjectResponse,
+	zGetProjectPath,
 	zGetWebhookResponse,
 	zListChecksResponse,
 } from "../src/zod";
@@ -215,7 +217,13 @@ afterAll(async () => {
 it.each(fixtures)(
 	"validates $name HTTP responses across assignment versions",
 	async (fixture) => {
-		for (const assignment of [undefined, projectId, null]) {
+		for (const assignment of [
+			undefined,
+			projectId,
+			"projectnano1",
+			"123456789012",
+			null,
+		]) {
 			const ownership =
 				assignment === undefined ? {} : { project_id: assignment };
 			const payload = {
@@ -236,7 +244,7 @@ it.each(fixtures)(
 	},
 );
 
-it.each([undefined, projectId, null])(
+it.each([undefined, projectId, "projectnano1", "123456789012", null])(
 	"validates check list assignment %s without inventing defaults",
 	async (assignment) => {
 		const ownership =
@@ -268,29 +276,32 @@ it.each([undefined, projectId, null])(
 	},
 );
 
-it("validates a project HTTP response without legacy metadata", async () => {
-	const payload = {
-		success: true,
-		errors: [],
-		messages: [],
-		result: {
-			id: projectId,
-			name: "Staging",
-			created_at: timestamp,
-			updated_at: timestamp,
-		},
-	};
-	responseBody = JSON.stringify(payload);
+it.each([projectId, "projectnano1", "123456789012"])(
+	"validates project %s over HTTP without legacy metadata",
+	async (id) => {
+		const payload = {
+			success: true,
+			errors: [],
+			messages: [],
+			result: {
+				id,
+				name: "Staging",
+				created_at: timestamp,
+				updated_at: timestamp,
+			},
+		};
+		responseBody = JSON.stringify(payload);
 
-	const received = await getProject({
-		client: createClient({ baseUrl: origin }),
-		path: { project_id: projectId },
-	});
+		const received = await getProject({
+			client: createClient({ baseUrl: origin }),
+			path: parse(vGetProjectPath, zGetProjectPath.parse({ project_id: id })),
+		});
 
-	expect(received.data).toEqual(payload);
-	expect(zGetProjectResponse.parse(received.data)).toEqual(payload);
-	expect(parse(vGetProjectResponse, received.data)).toEqual(payload);
-});
+		expect(received.data).toEqual(payload);
+		expect(zGetProjectResponse.parse(received.data)).toEqual(payload);
+		expect(parse(vGetProjectResponse, received.data)).toEqual(payload);
+	},
+);
 
 it.each([true, false])(
 	"does not expose the removed project marker %s through validators",
@@ -322,20 +333,27 @@ it.each([true, false])(
 	},
 );
 
-it.each([42, true, {}, "short"])(
-	"still rejects malformed assignment %j",
-	(assignment) => {
-		const payload = {
-			success: true,
-			errors: [],
-			messages: [],
-			result: { ...webhook, project_id: assignment },
-		};
+it.each([
+	42,
+	true,
+	{},
+	"short",
+	"1234567890123456",
+	"projectnano",
+	"projectnano12",
+	"PROJECTNANO1",
+	"project-nano",
+])("still rejects malformed assignment %j", (assignment) => {
+	const payload = {
+		success: true,
+		errors: [],
+		messages: [],
+		result: { ...webhook, project_id: assignment },
+	};
 
-		expect(zGetWebhookResponse.safeParse(payload).success).toBe(false);
-		expect(safeParse(vGetWebhookResponse, payload).success).toBe(false);
-	},
-);
+	expect(zGetWebhookResponse.safeParse(payload).success).toBe(false);
+	expect(safeParse(vGetWebhookResponse, payload).success).toBe(false);
+});
 
 it("exposes nullable assignments without legacy project metadata in public types", () => {
 	expectTypeOf<ExpandedUptimeCheck["project_id"]>().toEqualTypeOf<

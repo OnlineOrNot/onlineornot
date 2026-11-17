@@ -6,7 +6,10 @@ import {
 } from "@onlineornot/api/zod";
 
 import { getApiConfig, unwrapApiEnvelope } from "../api/infrastructure";
-import { createApiCommand } from "../command-runtime/api-command";
+import {
+	createApiCommand,
+	hasCommandInputField,
+} from "../command-runtime/api-command";
 
 export const command = createApiCommand(
 	{
@@ -120,6 +123,33 @@ export const command = createApiCommand(
 					input.body?.["duration_minutes"] === undefined
 						? undefined
 						: body["duration_minutes"],
+				components_affected:
+					input.body?.["components_affected"] === undefined
+						? undefined
+						: body["components_affected"],
+				notifications:
+					input.body?.["notifications"] === undefined
+						? undefined
+						: {
+								an_hour_before: !hasCommandInputField(input.body, [
+									"notifications",
+									"an_hour_before",
+								])
+									? undefined
+									: body["notifications"]?.["an_hour_before"],
+								at_start: !hasCommandInputField(input.body, [
+									"notifications",
+									"at_start",
+								])
+									? undefined
+									: body["notifications"]?.["at_start"],
+								at_end: !hasCommandInputField(input.body, [
+									"notifications",
+									"at_end",
+								])
+									? undefined
+									: body["notifications"]?.["at_end"],
+							},
 			},
 		};
 		return {

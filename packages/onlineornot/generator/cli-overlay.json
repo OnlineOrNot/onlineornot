@@ -939,7 +939,8 @@
 			},
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
-			}
+			},
+			"omitFlags": ["date_happened"]
 		},
 		"getStatusPageIncident": {
 			"status": "generated",
@@ -1073,7 +1074,8 @@
 			},
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
-			}
+			},
+			"omitFlags": ["components_affected", "notifications"]
 		},
 		"deleteStatusPageScheduledMaintenance": {
 			"status": "generated",
@@ -1181,6 +1183,26 @@
 			"flags": {
 				"X-OnlineOrNot-Organisation": "organisation"
 			}
+		},
+		"exportOtlpTraces": {
+			"status": "excluded",
+			"reason": "Not exposed by the current CLI."
+		},
+		"revokeInvitation": {
+			"status": "excluded",
+			"reason": "Not exposed by the current CLI."
+		},
+		"searchTraces": {
+			"status": "excluded",
+			"reason": "Not exposed by the current CLI."
+		},
+		"submitAgentFeedback": {
+			"status": "excluded",
+			"reason": "Not exposed by the current CLI."
+		},
+		"updateUserRole": {
+			"status": "excluded",
+			"reason": "Not exposed by the current CLI."
 		}
 	}
 }

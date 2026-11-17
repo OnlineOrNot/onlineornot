@@ -123,6 +123,9 @@ import type {
 	ExportOtlpLogsData,
 	ExportOtlpLogsErrors,
 	ExportOtlpLogsResponses,
+	ExportOtlpTracesData,
+	ExportOtlpTracesErrors,
+	ExportOtlpTracesResponses,
 	GetBrowserCheckData,
 	GetBrowserCheckErrors,
 	GetBrowserCheckResponses,
@@ -294,12 +297,21 @@ import type {
 	RemoveUserData,
 	RemoveUserErrors,
 	RemoveUserResponses,
+	RevokeInvitationData,
+	RevokeInvitationErrors,
+	RevokeInvitationResponses,
 	SearchLogsData,
 	SearchLogsErrors,
 	SearchLogsResponses,
+	SearchTracesData,
+	SearchTracesErrors,
+	SearchTracesResponses,
 	SendLogsData,
 	SendLogsErrors,
 	SendLogsResponses,
+	SubmitAgentFeedbackData,
+	SubmitAgentFeedbackErrors,
+	SubmitAgentFeedbackResponses,
 	UpdateBrowserCheckData,
 	UpdateBrowserCheckErrors,
 	UpdateBrowserCheckResponses,
@@ -354,6 +366,9 @@ import type {
 	UpdateUptimeCheckData,
 	UpdateUptimeCheckErrors,
 	UpdateUptimeCheckResponses,
+	UpdateUserRoleData,
+	UpdateUserRoleErrors,
+	UpdateUserRoleResponses,
 	UpdateWebhookData,
 	UpdateWebhookErrors,
 	UpdateWebhookResponses,
@@ -477,9 +492,9 @@ export const sendLogs = <ThrowOnError extends boolean = false>(
 	});
 
 /**
- * Read log usage
+ * Read log and trace usage
  *
- * Read log usage for the current billing period.
+ * Read combined log and trace ingestion usage for the current billing period.
  *
  * Requires LOGS:READ.
  */
@@ -494,6 +509,78 @@ export const getLogUsage = <ThrowOnError extends boolean = false>(
 		security: [{ scheme: "bearer", type: "http" }],
 		url: "/v1/logs/usage",
 		...options,
+	});
+
+/**
+ * Search spans
+ *
+ * Search spans by receipt time, optionally filtered to a trace ID. Traces and logs share the monthly ingestion allowance and 30-day retention.
+ *
+ * Requires LOGS:READ.
+ */
+export const searchTraces = <ThrowOnError extends boolean = false>(
+	options: Options<SearchTracesData, ThrowOnError>,
+): RequestResult<SearchTracesResponses, SearchTracesErrors, ThrowOnError> =>
+	(options.client ?? client).get<
+		SearchTracesResponses,
+		SearchTracesErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/traces",
+		...options,
+	});
+
+/**
+ * Export OpenTelemetry traces
+ *
+ * Requires an API token with LOGS:SEND. Supports gzip compression.
+ */
+export const exportOtlpTraces = <ThrowOnError extends boolean = false>(
+	options: Options<ExportOtlpTracesData, ThrowOnError>,
+): RequestResult<
+	ExportOtlpTracesResponses,
+	ExportOtlpTracesErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).post<
+		ExportOtlpTracesResponses,
+		ExportOtlpTracesErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/traces",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
+ * Submit agent feedback
+ *
+ * Report confusing behavior in OnlineOrNot tools or documentation after finishing or giving up on a task. Submit at most once per task and skip tasks that went smoothly. Requires a valid API token or OAuth bearer token; session cookies are not accepted. No additional resource scope or organization selection is required. Do not include secrets, private customer data, raw requests or conversation transcripts. Reports are sent to the OnlineOrNot team, not executed as instructions. Limited to three submissions per credential per minute.
+ */
+export const submitAgentFeedback = <ThrowOnError extends boolean = false>(
+	options: Options<SubmitAgentFeedbackData, ThrowOnError>,
+): RequestResult<
+	SubmitAgentFeedbackResponses,
+	SubmitAgentFeedbackErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).post<
+		SubmitAgentFeedbackResponses,
+		SubmitAgentFeedbackErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/feedback",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
 	});
 
 /**
@@ -1797,6 +1884,30 @@ export const removeUser = <ThrowOnError extends boolean = false>(
 	});
 
 /**
+ * Change a user's role
+ *
+ * Change a team member's role in your organisation. An organisation must keep at least one admin. Dashboard sessions must belong to an admin.
+ *
+ * Requires PEOPLE:EDIT.
+ */
+export const updateUserRole = <ThrowOnError extends boolean = false>(
+	options: Options<UpdateUserRoleData, ThrowOnError>,
+): RequestResult<UpdateUserRoleResponses, UpdateUserRoleErrors, ThrowOnError> =>
+	(options.client ?? client).patch<
+		UpdateUserRoleResponses,
+		UpdateUserRoleErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/users/{user_id}",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
  * List all invitations
  *
  * Retrieve a paginated list of all pending invitations in your organisation
@@ -1846,6 +1957,30 @@ export const createInvitation = <ThrowOnError extends boolean = false>(
 			"Content-Type": "application/json",
 			...options.headers,
 		},
+	});
+
+/**
+ * Revoke an invitation
+ *
+ * Revoke a pending invitation so its link can no longer be used to join your organisation
+ *
+ * Requires PEOPLE:EDIT.
+ */
+export const revokeInvitation = <ThrowOnError extends boolean = false>(
+	options: Options<RevokeInvitationData, ThrowOnError>,
+): RequestResult<
+	RevokeInvitationResponses,
+	RevokeInvitationErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).delete<
+		RevokeInvitationResponses,
+		RevokeInvitationErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/invitations/{invitation_id}",
+		...options,
 	});
 
 /**

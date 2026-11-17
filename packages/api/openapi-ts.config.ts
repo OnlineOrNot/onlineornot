@@ -26,6 +26,36 @@ const removeRequiredPropertyDefaults = (schema: Schema): void => {
 	}
 };
 
+const acceptStoredProjectIds = (schema: Schema): void => {
+	if (
+		schema.minLength !== 16 ||
+		schema.maxLength !== 128 ||
+		schema.pattern !== "^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$"
+	)
+		return;
+	schema.minLength = 12;
+	schema.pattern =
+		"^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$";
+};
+
+const visitProjectIds = (schema: Schema, project = false): void => {
+	for (const [name, property] of Object.entries(schema.properties ?? {})) {
+		if (property === true || "$ref" in property) continue;
+		if (name === "project_id" || (project && name === "id"))
+			acceptStoredProjectIds(property);
+		visitProjectIds(property, project);
+	}
+	for (const child of [
+		...(schema.allOf ?? []),
+		...(schema.anyOf ?? []),
+		...(schema.oneOf ?? []),
+	]) {
+		if (!("$ref" in child)) visitProjectIds(child, project);
+	}
+	if (schema.items && !Array.isArray(schema.items) && !("$ref" in schema.items))
+		visitProjectIds(schema.items, project);
+};
+
 export default defineConfig({
 	input,
 	parser: {
@@ -35,11 +65,16 @@ export default defineConfig({
 				throw new Error("The pinned schema must use OpenAPI 3.1");
 			}
 
-			for (const schema of Object.values(spec.components?.schemas ?? {})) {
-				if (!("$ref" in schema)) removeRequiredPropertyDefaults(schema);
+			for (const [name, schema] of Object.entries(
+				spec.components?.schemas ?? {},
+			)) {
+				if (!("$ref" in schema)) {
+					removeRequiredPropertyDefaults(schema);
+					visitProjectIds(schema, name === "Project");
+				}
 			}
 
-			for (const pathItem of Object.values(spec.paths ?? {})) {
+			for (const [pathname, pathItem] of Object.entries(spec.paths ?? {})) {
 				if (!pathItem || "$ref" in pathItem) continue;
 				const operations = [
 					pathItem.get,
@@ -53,6 +88,25 @@ export default defineConfig({
 				];
 				for (const operation of operations) {
 					if (!operation) continue;
+					for (const parameter of [
+						...(pathItem.parameters ?? []),
+						...(operation.parameters ?? []),
+					]) {
+						if ("$ref" in parameter || parameter.name !== "project_id")
+							continue;
+						const schema = parameter.schema;
+						if (schema && schema !== true && !("$ref" in schema))
+							acceptStoredProjectIds(schema);
+					}
+					const requestBody = operation.requestBody;
+					if (requestBody && !("$ref" in requestBody))
+						for (const mediaTypeName of Object.keys(
+							requestBody.content ?? {},
+						)) {
+							const schema = requestBody.content?.[mediaTypeName]?.schema;
+							if (schema && schema !== true && !("$ref" in schema))
+								visitProjectIds(schema, pathname.startsWith("/v1/projects"));
+						}
 					for (const statusCode of Object.keys(operation.responses ?? {})) {
 						const response = operation.responses?.[statusCode];
 						if (!response || "$ref" in response) continue;
@@ -60,6 +114,7 @@ export default defineConfig({
 							const schema = response.content?.[mediaTypeName]?.schema;
 							if (schema && schema !== true && !("$ref" in schema)) {
 								removeRequiredPropertyDefaults(schema);
+								visitProjectIds(schema, pathname.startsWith("/v1/projects"));
 							}
 						}
 					}

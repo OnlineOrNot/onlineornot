@@ -50,9 +50,9 @@ export const zPublicApiServerError = z.object({
 export const zExpandedUptimeCheck = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullish(),
 	id: z.string(),
 	name: z.string(),
@@ -136,9 +136,9 @@ export const zExpandedUptimeCheck = z.object({
 export const zExpandedBrowserCheck = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullish(),
 	id: z.string(),
 	name: z.string(),
@@ -242,9 +242,9 @@ export const zDnsAssertion = z.object({
 export const zExpandedDnsCheck = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullish(),
 	id: z.string(),
 	name: z.string(),
@@ -308,9 +308,9 @@ export const zTcpAssertion = z.object({
 export const zExpandedTcpCheck = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullish(),
 	id: z.string(),
 	name: z.string(),
@@ -381,9 +381,9 @@ export const zAnyCheckResponse = z.object({
 export const zCheckListItem = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullish(),
 	id: z.string(),
 	name: z.string(),
@@ -601,6 +601,296 @@ export const zLogBatch = z.object({
 		.max(100),
 });
 
+export const zOtlpTraceExportResponse = z.record(z.string(), z.never());
+
+export const zOtlpTraceExport = z.object({
+	resourceSpans: z
+		.array(
+			z.object({
+				resource: z
+					.object({
+						attributes: z
+							.array(
+								z.object({
+									key: z.string().min(1).max(128),
+									value: z.unknown().optional(),
+								}),
+							)
+							.max(128)
+							.nullish(),
+						droppedAttributesCount: z.int().gte(0).lte(4294967295).nullish(),
+					})
+					.nullish(),
+				schemaUrl: z.string().max(2048).nullish(),
+				scopeSpans: z
+					.array(
+						z.object({
+							scope: z
+								.object({
+									attributes: z
+										.array(
+											z.object({
+												key: z.string().min(1).max(128),
+												value: z.unknown().optional(),
+											}),
+										)
+										.max(128)
+										.nullish(),
+									droppedAttributesCount: z
+										.int()
+										.gte(0)
+										.lte(4294967295)
+										.nullish(),
+									name: z.string().max(255).nullish(),
+									version: z.string().max(255).nullish(),
+								})
+								.nullish(),
+							schemaUrl: z.string().max(2048).nullish(),
+							spans: z
+								.array(
+									z.object({
+										traceId: z.string().regex(/^[a-fA-F0-9]{32}$/),
+										spanId: z.string().regex(/^[a-fA-F0-9]{16}$/),
+										parentSpanId: z
+											.string()
+											.regex(/^(?:[a-fA-F0-9]{16})?$/)
+											.nullish(),
+										traceState: z.string().max(512).nullish(),
+										flags: z.int().gte(0).lte(4294967295).nullish(),
+										name: z.string().min(1).max(1024),
+										kind: z.int().gte(0).lte(5).nullish(),
+										startTimeUnixNano: z.union([
+											z.string().regex(/^\d+$/),
+											z.int().gte(0),
+										]),
+										endTimeUnixNano: z.union([
+											z.string().regex(/^\d+$/),
+											z.int().gte(0),
+										]),
+										attributes: z
+											.array(
+												z.object({
+													key: z.string().min(1).max(128),
+													value: z.unknown().optional(),
+												}),
+											)
+											.max(128)
+											.nullish(),
+										droppedAttributesCount: z
+											.int()
+											.gte(0)
+											.lte(4294967295)
+											.nullish(),
+										events: z
+											.array(
+												z.object({
+													timeUnixNano: z.union([
+														z.string().regex(/^\d+$/),
+														z.int().gte(0),
+													]),
+													name: z.string().max(1024),
+													attributes: z
+														.array(
+															z.object({
+																key: z.string().min(1).max(128),
+																value: z.unknown().optional(),
+															}),
+														)
+														.max(128)
+														.nullish(),
+													droppedAttributesCount: z
+														.int()
+														.gte(0)
+														.lte(4294967295)
+														.nullish(),
+												}),
+											)
+											.max(128)
+											.nullish(),
+										droppedEventsCount: z
+											.int()
+											.gte(0)
+											.lte(4294967295)
+											.nullish(),
+										links: z
+											.array(
+												z.object({
+													traceId: z.string().regex(/^[a-fA-F0-9]{32}$/),
+													spanId: z.string().regex(/^[a-fA-F0-9]{16}$/),
+													traceState: z.string().max(512).nullish(),
+													attributes: z
+														.array(
+															z.object({
+																key: z.string().min(1).max(128),
+																value: z.unknown().optional(),
+															}),
+														)
+														.max(128)
+														.nullish(),
+													droppedAttributesCount: z
+														.int()
+														.gte(0)
+														.lte(4294967295)
+														.nullish(),
+													flags: z.int().gte(0).lte(4294967295).nullish(),
+												}),
+											)
+											.max(128)
+											.nullish(),
+										droppedLinksCount: z.int().gte(0).lte(4294967295).nullish(),
+										status: z
+											.object({
+												code: z.int().gte(0).lte(2).nullish(),
+												message: z.string().max(65536).nullish(),
+											})
+											.nullish(),
+									}),
+								)
+								.nullish(),
+						}),
+					)
+					.nullish(),
+			}),
+		)
+		.nullish(),
+});
+
+export const zTraceSpan = z.object({
+	id: z.uuid(),
+	project_id: z.string().nullable(),
+	received_at: z.iso.datetime(),
+	trace_id: z.string().regex(/^[a-fA-F0-9]{32}$/),
+	span_id: z.string().regex(/^[a-fA-F0-9]{16}$/),
+	parent_span_id: z
+		.string()
+		.regex(/^[a-fA-F0-9]{16}$/)
+		.nullable(),
+	name: z.string(),
+	service: z.string().nullable(),
+	environment: z.string().nullable(),
+	kind: z.int(),
+	start_time_unix_nano: z.string(),
+	end_time_unix_nano: z.string(),
+	duration_ms: z.number().gte(0),
+	status_code: z.int(),
+	status_message: z.string().nullable(),
+	trace_state: z.string().nullable(),
+	flags: z.int(),
+	attributes: z.record(
+		z.string(),
+		z
+			.union([
+				z.record(z.string(), z.unknown()),
+				z.array(z.unknown()),
+				z.string(),
+				z.number(),
+				z.boolean(),
+			])
+			.nullable(),
+	),
+	resource: z.record(
+		z.string(),
+		z
+			.union([
+				z.record(z.string(), z.unknown()),
+				z.array(z.unknown()),
+				z.string(),
+				z.number(),
+				z.boolean(),
+			])
+			.nullable(),
+	),
+	scope: z.record(
+		z.string(),
+		z
+			.union([
+				z.record(z.string(), z.unknown()),
+				z.array(z.unknown()),
+				z.string(),
+				z.number(),
+				z.boolean(),
+			])
+			.nullable(),
+	),
+	events: z.array(
+		z
+			.union([
+				z.record(z.string(), z.unknown()),
+				z.array(z.unknown()),
+				z.string(),
+				z.number(),
+				z.boolean(),
+			])
+			.nullable(),
+	),
+	links: z.array(
+		z
+			.union([
+				z.record(z.string(), z.unknown()),
+				z.array(z.unknown()),
+				z.string(),
+				z.number(),
+				z.boolean(),
+			])
+			.nullable(),
+	),
+	dropped_attributes_count: z.int(),
+	dropped_events_count: z.int(),
+	dropped_links_count: z.int(),
+});
+
+export const zTraceSearchResponse = z.object({
+	result: z.object({
+		spans: z.array(zTraceSpan),
+		next_cursor: z.string().nullable(),
+		scanned_bytes: z.int().gte(0),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zAgentFeedbackOutput = z.object({
+	result: z.object({
+		accepted: z.literal(true),
+	}),
+	success: z.literal(true),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zAgentFeedbackInput = z.object({
+	surface: z.enum(["mcp", "api", "cli", "docs"]),
+	attempted: z.string().min(1).max(1000),
+	expected: z.string().min(1).max(1000),
+	actual: z.string().min(1).max(2000),
+	workaround: z.string().min(1).max(1000).optional(),
+});
+
 export const zDnsCheckResponse = z.object({
 	result: zExpandedDnsCheck,
 	success: z.boolean(),
@@ -623,9 +913,9 @@ export const zDnsCheckResponse = z.object({
 export const zDnsCheckInput = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullish(),
 	name: z.string(),
 	test_interval: z.int().gte(30).optional(),
@@ -725,9 +1015,9 @@ export const zTcpCheckResponse = z.object({
 export const zTcpCheckInput = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullish(),
 	name: z.string(),
 	test_interval: z.int().gte(30).optional(),
@@ -806,9 +1096,9 @@ export const zUptimeCheckResponse = z.object({
 export const zUptimeCheckInput = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullish(),
 	name: z.string(),
 	test_interval: z.int().gte(30).optional(),
@@ -971,9 +1261,9 @@ export const zBrowserCheckResponse = z.object({
 export const zBrowserCheckInput = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullish(),
 	name: z.string(),
 	test_interval: z.int().gte(30).optional(),
@@ -1281,9 +1571,9 @@ export const zPublicTcpCheckResultsResponse = z.object({
 export const zCheck = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullish(),
 	id: z.string(),
 	name: z.string(),
@@ -1391,9 +1681,9 @@ export const zCheckResponse = z.object({
 export const zCheckInput = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullish(),
 	name: z.string(),
 	test_interval: z.int().gte(30).optional(),
@@ -1542,9 +1832,9 @@ export const zCheckPatch = z.object({
 export const zEnvironmentVariableMetadata = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullish(),
 	id: z.string(),
 	name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
@@ -1557,9 +1847,9 @@ export const zEnvironmentVariableMetadata = z.object({
 export const zHeartbeat = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullish(),
 	id: z.string(),
 	name: z.string(),
@@ -1592,9 +1882,9 @@ export const zExpandedHeartbeat = zHeartbeat.and(
 export const zMaintenanceWindow = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullable(),
 	id: z.string(),
 	name: z.string(),
@@ -1628,22 +1918,22 @@ export const zOrgUser = z.object({
 	last_name: z.string().nullable(),
 	email: z.string().nullable(),
 	image: z.string().nullable(),
-	role: z.enum(["ADMIN", "STANDARD"]),
+	role: z.enum(["ADMIN", "STANDARD", "BILLING"]),
 });
 
 export const zInvitation = z.object({
 	id: z.string(),
 	email: z.string(),
-	role: z.enum(["ADMIN", "STANDARD"]),
+	role: z.enum(["ADMIN", "STANDARD", "BILLING"]),
 	created_at: z.string(),
 });
 
 export const zProject = z.object({
 	id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/),
 	name: z.string().min(1).max(255),
 	created_at: z.iso.datetime(),
 	updated_at: z.iso.datetime(),
@@ -1839,9 +2129,9 @@ export const zStatusPageIncidentDetail =
 export const zWebhook = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullish(),
 	id: z.string(),
 	enabled: z.boolean(),
@@ -1933,9 +2223,11 @@ export const zSearchLogsResponse = z.object({
 					id: z.uuid(),
 					project_id: z
 						.string()
-						.min(16)
+						.min(12)
 						.max(128)
-						.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+						.regex(
+							/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+						)
 						.nullable(),
 					timestamp: z.iso.datetime(),
 					received_at: z.iso.datetime(),
@@ -2030,6 +2322,53 @@ export const zGetLogUsageResponse = z.object({
 	),
 });
 
+export const zSearchTracesHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zSearchTracesQuery = z.object({
+	from: z.iso.datetime(),
+	to: z.iso.datetime(),
+	limit: z.int().gte(1).lte(100).optional().default(50),
+	cursor: z.string().min(1).max(512).optional(),
+	project_id: z
+		.union([
+			z
+				.string()
+				.min(16)
+				.max(128)
+				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			z.enum(["unassigned"]),
+		])
+		.optional(),
+	service: z.string().min(1).max(255).optional(),
+	environment: z.string().min(1).max(128).optional(),
+	trace_id: z
+		.string()
+		.regex(/^[a-fA-F0-9]{32}$/)
+		.optional(),
+	status_code: z.enum(["0", "1", "2"]).optional(),
+});
+
+/**
+ * Matching spans and a continuation cursor
+ */
+export const zSearchTracesResponse = zTraceSearchResponse;
+
+export const zExportOtlpTracesBody = zOtlpTraceExport;
+
+/**
+ * OTLP full success, in the request encoding
+ */
+export const zExportOtlpTracesResponse = zOtlpTraceExportResponse;
+
+export const zSubmitAgentFeedbackBody = zAgentFeedbackInput;
+
+/**
+ * Feedback delivered to the OnlineOrNot team
+ */
+export const zSubmitAgentFeedbackResponse = zAgentFeedbackOutput;
+
 export const zListAuditLogsHeaders = z.object({
 	"X-OnlineOrNot-Organisation": z.string().optional(),
 });
@@ -2093,6 +2432,13 @@ export const zListAuditLogsResponse = z.object({
 export const zVerifyTokenResponse = z.union([
 	z.object({
 		result: z.object({
+			profile: z
+				.object({
+					id: z.string().min(1),
+					name: z.string().optional(),
+					email: z.string().optional(),
+				})
+				.optional(),
 			id: z.string().optional(),
 			status: z.string(),
 		}),
@@ -2187,9 +2533,11 @@ export const zListTokensResponse = z.object({
 			z.object({
 				project_id: z
 					.string()
-					.min(16)
+					.min(12)
 					.max(128)
-					.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+					.regex(
+						/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+					)
 					.nullish(),
 				id: z.string(),
 				name: z.string(),
@@ -2274,9 +2622,9 @@ export const zCreateTokenBody = z.object({
 	expiresAt: z.iso.datetime().nullish(),
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullish(),
 });
 
@@ -2291,9 +2639,11 @@ export const zCreateTokenResponse = z.object({
 	result: z.object({
 		project_id: z
 			.string()
-			.min(16)
+			.min(12)
 			.max(128)
-			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+			.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			)
 			.nullish(),
 		id: z.string(),
 		name: z.string(),
@@ -2365,9 +2715,11 @@ export const zGetTokenResponse = z.object({
 	result: z.object({
 		project_id: z
 			.string()
-			.min(16)
+			.min(12)
 			.max(128)
-			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+			.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			)
 			.nullish(),
 		id: z.string(),
 		name: z.string(),
@@ -2692,9 +3044,9 @@ export const zUpdateBrowserCheckResponse = zBrowserCheckResponse;
 export const zMoveCheckBody = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullable(),
 });
 
@@ -2714,9 +3066,11 @@ export const zMoveCheckResponse = z.object({
 		id: z.string().min(8),
 		project_id: z
 			.string()
-			.min(16)
+			.min(12)
 			.max(128)
-			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+			.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			)
 			.nullable(),
 	}),
 	success: z.boolean(),
@@ -3098,9 +3452,9 @@ export const zListEnvironmentVariablesResponse = z.object({
 export const zCreateEnvironmentVariableBody = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullish(),
 	name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 	type: z.enum(["config", "secret"]),
@@ -3119,9 +3473,11 @@ export const zCreateEnvironmentVariableResponse = z.object({
 		z.object({
 			project_id: z
 				.string()
-				.min(16)
+				.min(12)
 				.max(128)
-				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+				.regex(
+					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+				)
 				.nullish(),
 			id: z.string(),
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
@@ -3133,9 +3489,11 @@ export const zCreateEnvironmentVariableResponse = z.object({
 		z.object({
 			project_id: z
 				.string()
-				.min(16)
+				.min(12)
 				.max(128)
-				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+				.regex(
+					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+				)
 				.nullish(),
 			id: z.string(),
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
@@ -3211,9 +3569,11 @@ export const zGetEnvironmentVariableResponse = z.object({
 		z.object({
 			project_id: z
 				.string()
-				.min(16)
+				.min(12)
 				.max(128)
-				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+				.regex(
+					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+				)
 				.nullish(),
 			id: z.string(),
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
@@ -3225,9 +3585,11 @@ export const zGetEnvironmentVariableResponse = z.object({
 		z.object({
 			project_id: z
 				.string()
-				.min(16)
+				.min(12)
 				.max(128)
-				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+				.regex(
+					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+				)
 				.nullish(),
 			id: z.string(),
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
@@ -3280,9 +3642,11 @@ export const zUpdateEnvironmentVariableResponse = z.object({
 		z.object({
 			project_id: z
 				.string()
-				.min(16)
+				.min(12)
 				.max(128)
-				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+				.regex(
+					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+				)
 				.nullish(),
 			id: z.string(),
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
@@ -3294,9 +3658,11 @@ export const zUpdateEnvironmentVariableResponse = z.object({
 		z.object({
 			project_id: z
 				.string()
-				.min(16)
+				.min(12)
 				.max(128)
-				.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+				.regex(
+					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+				)
 				.nullish(),
 			id: z.string(),
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
@@ -3327,9 +3693,9 @@ export const zUpdateEnvironmentVariableResponse = z.object({
 export const zMoveHeartbeatBody = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullable(),
 });
 
@@ -3349,9 +3715,11 @@ export const zMoveHeartbeatResponse = z.object({
 		id: z.string().min(8),
 		project_id: z
 			.string()
-			.min(16)
+			.min(12)
 			.max(128)
-			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+			.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			)
 			.nullable(),
 	}),
 	success: z.boolean(),
@@ -3431,9 +3799,9 @@ export const zListHeartbeatsResponse = z.union([
 export const zCreateHeartbeatBody = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullish(),
 	name: z.string(),
 	report_period: z.int().gte(1).optional(),
@@ -3653,9 +4021,9 @@ export const zListMaintenanceWindowsResponse = z.union([
 export const zCreateMaintenanceWindowBody = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullish(),
 	name: z.string().min(1),
 	start_date: z.string(),
@@ -3906,6 +4274,43 @@ export const zRemoveUserResponse = z.object({
 	),
 });
 
+export const zUpdateUserRoleBody = z.object({
+	role: z.enum(["ADMIN", "STANDARD", "BILLING"]),
+});
+
+export const zUpdateUserRoleHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zUpdateUserRolePath = z.object({
+	user_id: z.string(),
+});
+
+/**
+ * Returns the user ID and new role
+ */
+export const zUpdateUserRoleResponse = z.object({
+	result: z.object({
+		id: z.string(),
+		role: z.enum(["ADMIN", "STANDARD", "BILLING"]),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
 export const zListInvitationsHeaders = z.object({
 	"X-OnlineOrNot-Organisation": z.string().optional(),
 });
@@ -3961,7 +4366,7 @@ export const zListInvitationsResponse = z.union([
 
 export const zCreateInvitationBody = z.object({
 	email: z.email(),
-	role: z.enum(["ADMIN", "STANDARD"]).optional().default("STANDARD"),
+	role: z.enum(["ADMIN", "STANDARD", "BILLING"]).optional().default("STANDARD"),
 });
 
 export const zCreateInvitationHeaders = z.object({
@@ -3990,12 +4395,44 @@ export const zCreateInvitationResponse = z.object({
 	),
 });
 
+export const zRevokeInvitationHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zRevokeInvitationPath = z.object({
+	invitation_id: z.string(),
+});
+
+/**
+ * Returns the ID of the revoked invitation
+ */
+export const zRevokeInvitationResponse = z.object({
+	result: z.object({
+		id: z.string(),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
 export const zMoveWebhookBody = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullable(),
 });
 
@@ -4015,9 +4452,11 @@ export const zMoveWebhookResponse = z.object({
 		id: z.string(),
 		project_id: z
 			.string()
-			.min(16)
+			.min(12)
 			.max(128)
-			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+			.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			)
 			.nullable(),
 	}),
 	success: z.boolean(),
@@ -4040,9 +4479,9 @@ export const zMoveWebhookResponse = z.object({
 export const zMoveEnvironmentVariableBody = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullable(),
 });
 
@@ -4062,9 +4501,11 @@ export const zMoveEnvironmentVariableResponse = z.object({
 		id: z.string(),
 		project_id: z
 			.string()
-			.min(16)
+			.min(12)
 			.max(128)
-			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+			.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			)
 			.nullable(),
 	}),
 	success: z.boolean(),
@@ -4087,9 +4528,9 @@ export const zMoveEnvironmentVariableResponse = z.object({
 export const zMoveResourcesBody = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullable(),
 	resources: z
 		.array(
@@ -4119,9 +4560,11 @@ export const zMoveResourcesResponse = z.object({
 	result: z.object({
 		project_id: z
 			.string()
-			.min(16)
+			.min(12)
 			.max(128)
-			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+			.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			)
 			.nullable(),
 		resources: z.array(
 			z.object({
@@ -4156,9 +4599,9 @@ export const zMoveResourcesResponse = z.object({
 export const zMoveMaintenanceWindowBody = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullable(),
 });
 
@@ -4178,9 +4621,11 @@ export const zMoveMaintenanceWindowResponse = z.object({
 		id: z.string(),
 		project_id: z
 			.string()
-			.min(16)
+			.min(12)
 			.max(128)
-			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+			.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			)
 			.nullable(),
 	}),
 	success: z.boolean(),
@@ -4274,9 +4719,9 @@ export const zDeleteProjectHeaders = z.object({
 export const zDeleteProjectPath = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/),
 });
 
 /**
@@ -4286,9 +4731,11 @@ export const zDeleteProjectResponse = z.object({
 	result: z.object({
 		id: z
 			.string()
-			.min(16)
+			.min(12)
 			.max(128)
-			.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 	}),
 	success: z.boolean(),
 	errors: z.array(
@@ -4314,9 +4761,9 @@ export const zGetProjectHeaders = z.object({
 export const zGetProjectPath = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/),
 });
 
 /**
@@ -4352,9 +4799,9 @@ export const zUpdateProjectHeaders = z.object({
 export const zUpdateProjectPath = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/),
 });
 
 /**
@@ -5345,6 +5792,7 @@ export const zCreateStatusPageIncidentBody = z.object({
 		"RESOLVED",
 		"UPDATE",
 	]),
+	date_happened: z.iso.datetime().optional(),
 	components: z
 		.array(
 			z.object({
@@ -5849,6 +6297,14 @@ export const zUpdateStatusPageScheduledMaintenanceBody = z.object({
 	title: z.string().min(1).optional(),
 	start_date: z.iso.datetime().optional(),
 	duration_minutes: z.int().gte(1).optional(),
+	components_affected: z.array(z.string()).optional(),
+	notifications: z
+		.object({
+			an_hour_before: z.boolean().optional(),
+			at_start: z.boolean().optional(),
+			at_end: z.boolean().optional(),
+		})
+		.optional(),
 });
 
 export const zUpdateStatusPageScheduledMaintenanceHeaders = z.object({
@@ -6214,9 +6670,9 @@ export const zListWebhooksResponse = z.union([
 export const zCreateWebhookBody = z.object({
 	project_id: z
 		.string()
-		.min(16)
+		.min(12)
 		.max(128)
-		.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/)
+		.regex(/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/)
 		.nullish(),
 	enabled: z.boolean().optional(),
 	url: z.string(),

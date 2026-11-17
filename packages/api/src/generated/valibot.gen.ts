@@ -54,9 +54,11 @@ export const vExpandedUptimeCheck = v.object({
 	project_id: v.nullish(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	id: v.string(),
@@ -148,9 +150,11 @@ export const vExpandedBrowserCheck = v.object({
 	project_id: v.nullish(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	id: v.string(),
@@ -262,9 +266,11 @@ export const vExpandedDnsCheck = v.object({
 	project_id: v.nullish(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	id: v.string(),
@@ -330,9 +336,11 @@ export const vExpandedTcpCheck = v.object({
 	project_id: v.nullish(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	id: v.string(),
@@ -425,9 +433,11 @@ export const vCheckListItem = v.object({
 	project_id: v.nullish(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	id: v.string(),
@@ -703,6 +713,356 @@ export const vLogBatch = v.strictObject({
 	),
 });
 
+export const vOtlpTraceExportResponse = v.strictObject({});
+
+export const vOtlpTraceExport = v.object({
+	resourceSpans: v.nullish(
+		v.array(
+			v.object({
+				resource: v.nullish(
+					v.object({
+						attributes: v.nullish(
+							v.pipe(
+								v.array(
+									v.object({
+										key: v.pipe(v.string(), v.minLength(1), v.maxLength(128)),
+										value: v.optional(v.unknown()),
+									}),
+								),
+								v.maxLength(128),
+							),
+						),
+						droppedAttributesCount: v.nullish(
+							v.pipe(
+								v.number(),
+								v.integer(),
+								v.minValue(0),
+								v.maxValue(4294967295),
+							),
+						),
+					}),
+				),
+				schemaUrl: v.nullish(v.pipe(v.string(), v.maxLength(2048))),
+				scopeSpans: v.nullish(
+					v.array(
+						v.object({
+							scope: v.nullish(
+								v.object({
+									attributes: v.nullish(
+										v.pipe(
+											v.array(
+												v.object({
+													key: v.pipe(
+														v.string(),
+														v.minLength(1),
+														v.maxLength(128),
+													),
+													value: v.optional(v.unknown()),
+												}),
+											),
+											v.maxLength(128),
+										),
+									),
+									droppedAttributesCount: v.nullish(
+										v.pipe(
+											v.number(),
+											v.integer(),
+											v.minValue(0),
+											v.maxValue(4294967295),
+										),
+									),
+									name: v.nullish(v.pipe(v.string(), v.maxLength(255))),
+									version: v.nullish(v.pipe(v.string(), v.maxLength(255))),
+								}),
+							),
+							schemaUrl: v.nullish(v.pipe(v.string(), v.maxLength(2048))),
+							spans: v.nullish(
+								v.array(
+									v.object({
+										traceId: v.pipe(v.string(), v.regex(/^[a-fA-F0-9]{32}$/)),
+										spanId: v.pipe(v.string(), v.regex(/^[a-fA-F0-9]{16}$/)),
+										parentSpanId: v.nullish(
+											v.pipe(v.string(), v.regex(/^(?:[a-fA-F0-9]{16})?$/)),
+										),
+										traceState: v.nullish(v.pipe(v.string(), v.maxLength(512))),
+										flags: v.nullish(
+											v.pipe(
+												v.number(),
+												v.integer(),
+												v.minValue(0),
+												v.maxValue(4294967295),
+											),
+										),
+										name: v.pipe(v.string(), v.minLength(1), v.maxLength(1024)),
+										kind: v.nullish(
+											v.pipe(
+												v.number(),
+												v.integer(),
+												v.minValue(0),
+												v.maxValue(5),
+											),
+										),
+										startTimeUnixNano: v.union([
+											v.pipe(v.string(), v.regex(/^\d+$/)),
+											v.pipe(v.number(), v.integer(), v.minValue(0)),
+										]),
+										endTimeUnixNano: v.union([
+											v.pipe(v.string(), v.regex(/^\d+$/)),
+											v.pipe(v.number(), v.integer(), v.minValue(0)),
+										]),
+										attributes: v.nullish(
+											v.pipe(
+												v.array(
+													v.object({
+														key: v.pipe(
+															v.string(),
+															v.minLength(1),
+															v.maxLength(128),
+														),
+														value: v.optional(v.unknown()),
+													}),
+												),
+												v.maxLength(128),
+											),
+										),
+										droppedAttributesCount: v.nullish(
+											v.pipe(
+												v.number(),
+												v.integer(),
+												v.minValue(0),
+												v.maxValue(4294967295),
+											),
+										),
+										events: v.nullish(
+											v.pipe(
+												v.array(
+													v.object({
+														timeUnixNano: v.union([
+															v.pipe(v.string(), v.regex(/^\d+$/)),
+															v.pipe(v.number(), v.integer(), v.minValue(0)),
+														]),
+														name: v.pipe(v.string(), v.maxLength(1024)),
+														attributes: v.nullish(
+															v.pipe(
+																v.array(
+																	v.object({
+																		key: v.pipe(
+																			v.string(),
+																			v.minLength(1),
+																			v.maxLength(128),
+																		),
+																		value: v.optional(v.unknown()),
+																	}),
+																),
+																v.maxLength(128),
+															),
+														),
+														droppedAttributesCount: v.nullish(
+															v.pipe(
+																v.number(),
+																v.integer(),
+																v.minValue(0),
+																v.maxValue(4294967295),
+															),
+														),
+													}),
+												),
+												v.maxLength(128),
+											),
+										),
+										droppedEventsCount: v.nullish(
+											v.pipe(
+												v.number(),
+												v.integer(),
+												v.minValue(0),
+												v.maxValue(4294967295),
+											),
+										),
+										links: v.nullish(
+											v.pipe(
+												v.array(
+													v.object({
+														traceId: v.pipe(
+															v.string(),
+															v.regex(/^[a-fA-F0-9]{32}$/),
+														),
+														spanId: v.pipe(
+															v.string(),
+															v.regex(/^[a-fA-F0-9]{16}$/),
+														),
+														traceState: v.nullish(
+															v.pipe(v.string(), v.maxLength(512)),
+														),
+														attributes: v.nullish(
+															v.pipe(
+																v.array(
+																	v.object({
+																		key: v.pipe(
+																			v.string(),
+																			v.minLength(1),
+																			v.maxLength(128),
+																		),
+																		value: v.optional(v.unknown()),
+																	}),
+																),
+																v.maxLength(128),
+															),
+														),
+														droppedAttributesCount: v.nullish(
+															v.pipe(
+																v.number(),
+																v.integer(),
+																v.minValue(0),
+																v.maxValue(4294967295),
+															),
+														),
+														flags: v.nullish(
+															v.pipe(
+																v.number(),
+																v.integer(),
+																v.minValue(0),
+																v.maxValue(4294967295),
+															),
+														),
+													}),
+												),
+												v.maxLength(128),
+											),
+										),
+										droppedLinksCount: v.nullish(
+											v.pipe(
+												v.number(),
+												v.integer(),
+												v.minValue(0),
+												v.maxValue(4294967295),
+											),
+										),
+										status: v.nullish(
+											v.object({
+												code: v.nullish(
+													v.pipe(
+														v.number(),
+														v.integer(),
+														v.minValue(0),
+														v.maxValue(2),
+													),
+												),
+												message: v.nullish(
+													v.pipe(v.string(), v.maxLength(65536)),
+												),
+											}),
+										),
+									}),
+								),
+							),
+						}),
+					),
+				),
+			}),
+		),
+	),
+});
+
+export const vTraceSpan = v.strictObject({
+	id: v.pipe(v.string(), v.uuid()),
+	project_id: v.nullable(v.string()),
+	received_at: v.pipe(v.string(), v.isoTimestamp()),
+	trace_id: v.pipe(v.string(), v.regex(/^[a-fA-F0-9]{32}$/)),
+	span_id: v.pipe(v.string(), v.regex(/^[a-fA-F0-9]{16}$/)),
+	parent_span_id: v.nullable(v.pipe(v.string(), v.regex(/^[a-fA-F0-9]{16}$/))),
+	name: v.string(),
+	service: v.nullable(v.string()),
+	environment: v.nullable(v.string()),
+	kind: v.pipe(v.number(), v.integer()),
+	start_time_unix_nano: v.string(),
+	end_time_unix_nano: v.string(),
+	duration_ms: v.pipe(v.number(), v.minValue(0)),
+	status_code: v.pipe(v.number(), v.integer()),
+	status_message: v.nullable(v.string()),
+	trace_state: v.nullable(v.string()),
+	flags: v.pipe(v.number(), v.integer()),
+	attributes: v.object({}),
+	resource: v.object({}),
+	scope: v.object({}),
+	events: v.array(
+		v.nullable(
+			v.union([
+				v.record(v.string(), v.unknown()),
+				v.array(v.unknown()),
+				v.string(),
+				v.number(),
+				v.boolean(),
+			]),
+		),
+	),
+	links: v.array(
+		v.nullable(
+			v.union([
+				v.record(v.string(), v.unknown()),
+				v.array(v.unknown()),
+				v.string(),
+				v.number(),
+				v.boolean(),
+			]),
+		),
+	),
+	dropped_attributes_count: v.pipe(v.number(), v.integer()),
+	dropped_events_count: v.pipe(v.number(), v.integer()),
+	dropped_links_count: v.pipe(v.number(), v.integer()),
+});
+
+export const vTraceSearchResponse = v.object({
+	result: v.strictObject({
+		spans: v.array(vTraceSpan),
+		next_cursor: v.nullable(v.string()),
+		scanned_bytes: v.pipe(v.number(), v.integer(), v.minValue(0)),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vAgentFeedbackOutput = v.object({
+	result: v.object({
+		accepted: v.literal(true),
+	}),
+	success: v.literal(true),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vAgentFeedbackInput = v.strictObject({
+	surface: v.picklist(["mcp", "api", "cli", "docs"]),
+	attempted: v.pipe(v.string(), v.minLength(1), v.maxLength(1000)),
+	expected: v.pipe(v.string(), v.minLength(1), v.maxLength(1000)),
+	actual: v.pipe(v.string(), v.minLength(1), v.maxLength(2000)),
+	workaround: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(1000))),
+});
+
 export const vDnsCheckResponse = v.object({
 	result: vExpandedDnsCheck,
 	success: v.boolean(),
@@ -726,9 +1086,11 @@ export const vDnsCheckInput = v.strictObject({
 	project_id: v.nullish(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	name: v.string(),
@@ -845,9 +1207,11 @@ export const vTcpCheckInput = v.strictObject({
 	project_id: v.nullish(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	name: v.string(),
@@ -947,9 +1311,11 @@ export const vUptimeCheckInput = v.strictObject({
 	project_id: v.nullish(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	name: v.string(),
@@ -1143,9 +1509,11 @@ export const vBrowserCheckInput = v.strictObject({
 	project_id: v.nullish(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	name: v.string(),
@@ -1474,9 +1842,11 @@ export const vCheck = v.object({
 	project_id: v.nullish(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	id: v.string(),
@@ -1598,9 +1968,11 @@ export const vCheckInput = v.object({
 	project_id: v.nullish(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	name: v.string(),
@@ -1780,9 +2152,11 @@ export const vEnvironmentVariableMetadata = v.object({
 	project_id: v.nullish(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	id: v.string(),
@@ -1797,9 +2171,11 @@ export const vHeartbeat = v.object({
 	project_id: v.nullish(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	id: v.string(),
@@ -1842,9 +2218,11 @@ export const vMaintenanceWindow = v.object({
 	project_id: v.nullable(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	id: v.string(),
@@ -1880,22 +2258,24 @@ export const vOrgUser = v.object({
 	last_name: v.nullable(v.string()),
 	email: v.nullable(v.string()),
 	image: v.nullable(v.string()),
-	role: v.picklist(["ADMIN", "STANDARD"]),
+	role: v.picklist(["ADMIN", "STANDARD", "BILLING"]),
 });
 
 export const vInvitation = v.object({
 	id: v.string(),
 	email: v.string(),
-	role: v.picklist(["ADMIN", "STANDARD"]),
+	role: v.picklist(["ADMIN", "STANDARD", "BILLING"]),
 	created_at: v.string(),
 });
 
 export const vProject = v.strictObject({
 	id: v.pipe(
 		v.string(),
-		v.minLength(16),
+		v.minLength(12),
 		v.maxLength(128),
-		v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		v.regex(
+			/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+		),
 	),
 	name: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
 	created_at: v.pipe(v.string(), v.isoTimestamp()),
@@ -2095,9 +2475,11 @@ export const vWebhook = v.object({
 	project_id: v.nullish(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	id: v.string(),
@@ -2195,9 +2577,11 @@ export const vSearchLogsResponse = v.object({
 					project_id: v.nullable(
 						v.pipe(
 							v.string(),
-							v.minLength(16),
+							v.minLength(12),
 							v.maxLength(128),
-							v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+							v.regex(
+								/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+							),
 						),
 					),
 					timestamp: v.pipe(v.string(), v.isoTimestamp()),
@@ -2305,6 +2689,54 @@ export const vGetLogUsageResponse = v.object({
 	),
 });
 
+export const vSearchTracesHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vSearchTracesQuery = v.object({
+	from: v.pipe(v.string(), v.isoTimestamp()),
+	to: v.pipe(v.string(), v.isoTimestamp()),
+	limit: v.optional(
+		v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(100)),
+		50,
+	),
+	cursor: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(512))),
+	project_id: v.optional(
+		v.union([
+			v.pipe(
+				v.string(),
+				v.minLength(16),
+				v.maxLength(128),
+				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			),
+			v.picklist(["unassigned"]),
+		]),
+	),
+	service: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(255))),
+	environment: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(128))),
+	trace_id: v.optional(v.pipe(v.string(), v.regex(/^[a-fA-F0-9]{32}$/))),
+	status_code: v.optional(v.picklist(["0", "1", "2"])),
+});
+
+/**
+ * Matching spans and a continuation cursor
+ */
+export const vSearchTracesResponse = vTraceSearchResponse;
+
+export const vExportOtlpTracesBody = vOtlpTraceExport;
+
+/**
+ * OTLP full success, in the request encoding
+ */
+export const vExportOtlpTracesResponse = vOtlpTraceExportResponse;
+
+export const vSubmitAgentFeedbackBody = vAgentFeedbackInput;
+
+/**
+ * Feedback delivered to the OnlineOrNot team
+ */
+export const vSubmitAgentFeedbackResponse = vAgentFeedbackOutput;
+
 export const vListAuditLogsHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
 });
@@ -2368,6 +2800,13 @@ export const vListAuditLogsResponse = v.object({
 export const vVerifyTokenResponse = v.union([
 	v.object({
 		result: v.object({
+			profile: v.optional(
+				v.strictObject({
+					id: v.pipe(v.string(), v.minLength(1)),
+					name: v.optional(v.string()),
+					email: v.optional(v.string()),
+				}),
+			),
 			id: v.optional(v.string()),
 			status: v.string(),
 		}),
@@ -2465,9 +2904,11 @@ export const vListTokensResponse = v.object({
 				project_id: v.nullish(
 					v.pipe(
 						v.string(),
-						v.minLength(16),
+						v.minLength(12),
 						v.maxLength(128),
-						v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+						v.regex(
+							/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+						),
 					),
 				),
 				id: v.string(),
@@ -2554,9 +2995,11 @@ export const vCreateTokenBody = v.object({
 	project_id: v.nullish(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 });
@@ -2573,9 +3016,11 @@ export const vCreateTokenResponse = v.object({
 		project_id: v.nullish(
 			v.pipe(
 				v.string(),
-				v.minLength(16),
+				v.minLength(12),
 				v.maxLength(128),
-				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+				v.regex(
+					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+				),
 			),
 		),
 		id: v.string(),
@@ -2649,9 +3094,11 @@ export const vGetTokenResponse = v.object({
 		project_id: v.nullish(
 			v.pipe(
 				v.string(),
-				v.minLength(16),
+				v.minLength(12),
 				v.maxLength(128),
-				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+				v.regex(
+					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+				),
 			),
 		),
 		id: v.string(),
@@ -2980,9 +3427,11 @@ export const vMoveCheckBody = v.strictObject({
 	project_id: v.nullable(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 });
@@ -3004,9 +3453,11 @@ export const vMoveCheckResponse = v.object({
 		project_id: v.nullable(
 			v.pipe(
 				v.string(),
-				v.minLength(16),
+				v.minLength(12),
 				v.maxLength(128),
-				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+				v.regex(
+					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+				),
 			),
 		),
 	}),
@@ -3422,9 +3873,11 @@ export const vCreateEnvironmentVariableBody = v.strictObject({
 	project_id: v.nullish(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	name: v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)),
@@ -3445,9 +3898,11 @@ export const vCreateEnvironmentVariableResponse = v.object({
 			project_id: v.nullish(
 				v.pipe(
 					v.string(),
-					v.minLength(16),
+					v.minLength(12),
 					v.maxLength(128),
-					v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+					v.regex(
+						/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+					),
 				),
 			),
 			id: v.string(),
@@ -3461,9 +3916,11 @@ export const vCreateEnvironmentVariableResponse = v.object({
 			project_id: v.nullish(
 				v.pipe(
 					v.string(),
-					v.minLength(16),
+					v.minLength(12),
 					v.maxLength(128),
-					v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+					v.regex(
+						/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+					),
 				),
 			),
 			id: v.string(),
@@ -3541,9 +3998,11 @@ export const vGetEnvironmentVariableResponse = v.object({
 			project_id: v.nullish(
 				v.pipe(
 					v.string(),
-					v.minLength(16),
+					v.minLength(12),
 					v.maxLength(128),
-					v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+					v.regex(
+						/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+					),
 				),
 			),
 			id: v.string(),
@@ -3557,9 +4016,11 @@ export const vGetEnvironmentVariableResponse = v.object({
 			project_id: v.nullish(
 				v.pipe(
 					v.string(),
-					v.minLength(16),
+					v.minLength(12),
 					v.maxLength(128),
-					v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+					v.regex(
+						/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+					),
 				),
 			),
 			id: v.string(),
@@ -3611,9 +4072,11 @@ export const vUpdateEnvironmentVariableResponse = v.object({
 			project_id: v.nullish(
 				v.pipe(
 					v.string(),
-					v.minLength(16),
+					v.minLength(12),
 					v.maxLength(128),
-					v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+					v.regex(
+						/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+					),
 				),
 			),
 			id: v.string(),
@@ -3627,9 +4090,11 @@ export const vUpdateEnvironmentVariableResponse = v.object({
 			project_id: v.nullish(
 				v.pipe(
 					v.string(),
-					v.minLength(16),
+					v.minLength(12),
 					v.maxLength(128),
-					v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+					v.regex(
+						/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+					),
 				),
 			),
 			id: v.string(),
@@ -3662,9 +4127,11 @@ export const vMoveHeartbeatBody = v.strictObject({
 	project_id: v.nullable(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 });
@@ -3686,9 +4153,11 @@ export const vMoveHeartbeatResponse = v.object({
 		project_id: v.nullable(
 			v.pipe(
 				v.string(),
-				v.minLength(16),
+				v.minLength(12),
 				v.maxLength(128),
-				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+				v.regex(
+					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+				),
 			),
 		),
 	}),
@@ -3774,9 +4243,11 @@ export const vCreateHeartbeatBody = v.object({
 	project_id: v.nullish(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	name: v.string(),
@@ -4007,9 +4478,11 @@ export const vCreateMaintenanceWindowBody = v.object({
 	project_id: v.nullish(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	name: v.pipe(v.string(), v.minLength(1)),
@@ -4265,6 +4738,43 @@ export const vRemoveUserResponse = v.object({
 	),
 });
 
+export const vUpdateUserRoleBody = v.strictObject({
+	role: v.picklist(["ADMIN", "STANDARD", "BILLING"]),
+});
+
+export const vUpdateUserRoleHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vUpdateUserRolePath = v.object({
+	user_id: v.string(),
+});
+
+/**
+ * Returns the user ID and new role
+ */
+export const vUpdateUserRoleResponse = v.object({
+	result: v.object({
+		id: v.string(),
+		role: v.picklist(["ADMIN", "STANDARD", "BILLING"]),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
 export const vListInvitationsHeaders = v.object({
 	"X-OnlineOrNot-Organisation": v.optional(v.string()),
 });
@@ -4321,7 +4831,7 @@ export const vListInvitationsResponse = v.union([
 
 export const vCreateInvitationBody = v.object({
 	email: v.pipe(v.string(), v.email()),
-	role: v.optional(v.picklist(["ADMIN", "STANDARD"]), "STANDARD"),
+	role: v.optional(v.picklist(["ADMIN", "STANDARD", "BILLING"]), "STANDARD"),
 });
 
 export const vCreateInvitationHeaders = v.object({
@@ -4350,13 +4860,47 @@ export const vCreateInvitationResponse = v.object({
 	),
 });
 
+export const vRevokeInvitationHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vRevokeInvitationPath = v.object({
+	invitation_id: v.string(),
+});
+
+/**
+ * Returns the ID of the revoked invitation
+ */
+export const vRevokeInvitationResponse = v.object({
+	result: v.object({
+		id: v.string(),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
 export const vMoveWebhookBody = v.strictObject({
 	project_id: v.nullable(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 });
@@ -4378,9 +4922,11 @@ export const vMoveWebhookResponse = v.object({
 		project_id: v.nullable(
 			v.pipe(
 				v.string(),
-				v.minLength(16),
+				v.minLength(12),
 				v.maxLength(128),
-				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+				v.regex(
+					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+				),
 			),
 		),
 	}),
@@ -4405,9 +4951,11 @@ export const vMoveEnvironmentVariableBody = v.strictObject({
 	project_id: v.nullable(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 });
@@ -4429,9 +4977,11 @@ export const vMoveEnvironmentVariableResponse = v.object({
 		project_id: v.nullable(
 			v.pipe(
 				v.string(),
-				v.minLength(16),
+				v.minLength(12),
 				v.maxLength(128),
-				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+				v.regex(
+					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+				),
 			),
 		),
 	}),
@@ -4456,9 +5006,11 @@ export const vMoveResourcesBody = v.strictObject({
 	project_id: v.nullable(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	resources: v.pipe(
@@ -4491,9 +5043,11 @@ export const vMoveResourcesResponse = v.object({
 		project_id: v.nullable(
 			v.pipe(
 				v.string(),
-				v.minLength(16),
+				v.minLength(12),
 				v.maxLength(128),
-				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+				v.regex(
+					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+				),
 			),
 		),
 		resources: v.array(
@@ -4530,9 +5084,11 @@ export const vMoveMaintenanceWindowBody = v.strictObject({
 	project_id: v.nullable(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 });
@@ -4554,9 +5110,11 @@ export const vMoveMaintenanceWindowResponse = v.object({
 		project_id: v.nullable(
 			v.pipe(
 				v.string(),
-				v.minLength(16),
+				v.minLength(12),
 				v.maxLength(128),
-				v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+				v.regex(
+					/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+				),
 			),
 		),
 	}),
@@ -4651,9 +5209,11 @@ export const vDeleteProjectHeaders = v.object({
 export const vDeleteProjectPath = v.object({
 	project_id: v.pipe(
 		v.string(),
-		v.minLength(16),
+		v.minLength(12),
 		v.maxLength(128),
-		v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		v.regex(
+			/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+		),
 	),
 });
 
@@ -4664,9 +5224,11 @@ export const vDeleteProjectResponse = v.object({
 	result: v.strictObject({
 		id: v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	}),
 	success: v.boolean(),
@@ -4693,9 +5255,11 @@ export const vGetProjectHeaders = v.object({
 export const vGetProjectPath = v.object({
 	project_id: v.pipe(
 		v.string(),
-		v.minLength(16),
+		v.minLength(12),
 		v.maxLength(128),
-		v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		v.regex(
+			/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+		),
 	),
 });
 
@@ -4732,9 +5296,11 @@ export const vUpdateProjectHeaders = v.object({
 export const vUpdateProjectPath = v.object({
 	project_id: v.pipe(
 		v.string(),
-		v.minLength(16),
+		v.minLength(12),
 		v.maxLength(128),
-		v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+		v.regex(
+			/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+		),
 	),
 });
 
@@ -5731,6 +6297,7 @@ export const vCreateStatusPageIncidentBody = v.object({
 		"RESOLVED",
 		"UPDATE",
 	]),
+	date_happened: v.optional(v.pipe(v.string(), v.isoTimestamp())),
 	components: v.optional(
 		v.array(
 			v.object({
@@ -6236,6 +6803,14 @@ export const vUpdateStatusPageScheduledMaintenanceBody = v.object({
 	title: v.optional(v.pipe(v.string(), v.minLength(1))),
 	start_date: v.optional(v.pipe(v.string(), v.isoTimestamp())),
 	duration_minutes: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1))),
+	components_affected: v.optional(v.array(v.string())),
+	notifications: v.optional(
+		v.object({
+			an_hour_before: v.optional(v.boolean()),
+			at_start: v.optional(v.boolean()),
+			at_end: v.optional(v.boolean()),
+		}),
+	),
 });
 
 export const vUpdateStatusPageScheduledMaintenanceHeaders = v.object({
@@ -6627,9 +7202,11 @@ export const vCreateWebhookBody = v.object({
 	project_id: v.nullish(
 		v.pipe(
 			v.string(),
-			v.minLength(16),
+			v.minLength(12),
 			v.maxLength(128),
-			v.regex(/^(?=.*[a-zA-Z-])[a-zA-Z0-9-]+$/),
+			v.regex(
+				/^(?:[0-9a-z]{12}|(?=[a-zA-Z0-9-]*[a-zA-Z-])[a-zA-Z0-9-]{16,128})$/,
+			),
 		),
 	),
 	enabled: v.optional(v.boolean()),
