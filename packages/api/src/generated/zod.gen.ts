@@ -2174,7 +2174,7 @@ export const zSendLogsBody = zLogBatch;
 export const zSendLogsResponse = z.object({
 	result: z.object({
 		accepted: z.int().gte(1).lte(100),
-		ids: z.array(z.uuid()).min(1).max(100),
+		ids: z.array(z.string()).min(1).max(100),
 	}),
 	success: z.boolean(),
 	errors: z.array(

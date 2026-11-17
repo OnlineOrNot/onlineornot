@@ -8,6 +8,7 @@ import {
 	createClient,
 	searchLogs,
 	searchTraces,
+	sendLogs,
 	type TraceSpan,
 } from "../src/index";
 import {
@@ -15,12 +16,14 @@ import {
 	vSearchLogsResponse,
 	vSearchTracesQuery,
 	vSearchTracesResponse,
+	vSendLogsResponse,
 } from "../src/valibot";
 import {
 	zSearchLogsQuery,
 	zSearchLogsResponse,
 	zSearchTracesQuery,
 	zSearchTracesResponse,
+	zSendLogsResponse,
 } from "../src/zod";
 
 const timestamp = "2026-11-17T10:00:00.000Z";
@@ -271,3 +274,45 @@ it.each(["logs", "traces"] as const)(
 		}
 	},
 );
+
+it("preserves opaque IDs in log ingestion HTTP responses", async () => {
+	const ids = ["", "1", "opaque/resource:💡", "x".repeat(256)];
+	const payload = {
+		success: true,
+		errors: [],
+		messages: [],
+		result: { accepted: ids.length, ids },
+	};
+	responseBody = JSON.stringify(payload);
+
+	const received = await sendLogs({
+		client: createClient({ baseUrl: origin }),
+		body: { logs: ids.map(() => ({ message: "Request completed" })) },
+	});
+
+	expect(received.response?.status).toBe(200);
+	expect(zSendLogsResponse.parse(received.data)).toEqual(payload);
+	expect(parse(vSendLogsResponse, received.data)).toEqual(payload);
+});
+
+it.each(
+	[[], [42], [null], [true], Array.from({ length: 101 }, () => "id")].map(
+		(ids) => ({ ids }),
+	),
+)("retains log-ingestion ID collection constraints (%#)", async ({ ids }) => {
+	responseBody = JSON.stringify({
+		success: true,
+		errors: [],
+		messages: [],
+		result: { accepted: 1, ids },
+	});
+
+	const received = await sendLogs({
+		client: createClient({ baseUrl: origin }),
+		body: { logs: [{ message: "Request completed" }] },
+	});
+
+	expect(received.response?.status).toBe(200);
+	expect(() => zSendLogsResponse.parse(received.data)).toThrow();
+	expect(() => parse(vSendLogsResponse, received.data)).toThrow();
+});

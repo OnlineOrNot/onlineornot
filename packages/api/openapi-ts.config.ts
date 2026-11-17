@@ -27,7 +27,7 @@ const removeRequiredPropertyDefaults = (schema: Schema): void => {
 };
 
 const isResourceId = (name: string): boolean =>
-	(name === "id" || /_ids?$/.test(name)) &&
+	(name === "id" || name === "ids" || /_ids?$/.test(name)) &&
 	!["trace_id", "span_id", "parent_span_id"].includes(name);
 
 const removeResourceIdConstraints = (

@@ -2581,11 +2581,7 @@ export const vSendLogsBody = vLogBatch;
 export const vSendLogsResponse = v.object({
 	result: v.strictObject({
 		accepted: v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(100)),
-		ids: v.pipe(
-			v.array(v.pipe(v.string(), v.uuid())),
-			v.minLength(1),
-			v.maxLength(100),
-		),
+		ids: v.pipe(v.array(v.string()), v.minLength(1), v.maxLength(100)),
 	}),
 	success: v.boolean(),
 	errors: v.array(
