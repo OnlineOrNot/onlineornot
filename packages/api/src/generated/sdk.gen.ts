@@ -492,9 +492,9 @@ export const sendLogs = <ThrowOnError extends boolean = false>(
 	});
 
 /**
- * Read log and trace usage
+ * Read log and span usage
  *
- * Read combined log and trace ingestion usage for the current billing period.
+ * Read separate accepted log-byte and span allowances, plus shared USD pay-as-you-go spending, for the current billing month.
  *
  * Requires LOGS:READ.
  */
@@ -514,7 +514,7 @@ export const getLogUsage = <ThrowOnError extends boolean = false>(
 /**
  * Search spans
  *
- * Search spans by receipt time, optionally filtered to a trace ID. Traces and logs share the monthly ingestion allowance and 30-day retention.
+ * Search spans by receipt time, optionally filtered to a trace ID. Spans have a separate five-million monthly allowance; logs and spans share an optional pay-as-you-go budget and 30-day retention.
  *
  * Requires LOGS:READ.
  */

@@ -2206,6 +2206,15 @@ export const zGetLogUsageResponse = z.object({
 		period_end: z.iso.datetime(),
 		used_bytes: z.int().gte(0),
 		used_records: z.int().gte(0),
+		used_spans: z.int().gte(0),
+		limit_spans: z.int().gt(0),
+		remaining_spans: z.int().gte(0),
+		payg_budget_cents: z.int().gte(0),
+		payg_used_cents: z.int().gte(0),
+		next_period_budget_cents: z.int().gte(0),
+		currency: z.enum(["usd"]),
+		logs_price_cents_per_gb: z.literal(50),
+		spans_price_cents_per_million: z.literal(200),
 		limit_bytes: z.int().gte(0),
 		remaining_bytes: z.int().gte(0),
 		retention_days: z.int().gt(0),
@@ -2295,6 +2304,7 @@ export const zListAuditLogsResponse = z.object({
 			action: z.string(),
 			location: z.string().nullable(),
 			remote_ip: z.string().nullable(),
+			user_agent: z.string().nullable(),
 			created_at: z.string(),
 			metadata: z.record(z.string(), z.unknown()).nullable(),
 		}),
@@ -2510,6 +2520,7 @@ export const zCreateTokenBody = z.object({
 	),
 	expiresAt: z.iso.datetime().nullish(),
 	project_id: z.string().nullish(),
+	access_scope: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const zCreateTokenHeaders = z.object({
@@ -4156,6 +4167,7 @@ export const zListInvitationsResponse = z.union([
 export const zCreateInvitationBody = z.object({
 	email: z.email(),
 	role: z.enum(["ADMIN", "STANDARD", "BILLING"]).optional().default("STANDARD"),
+	team_assignments: z.array(z.unknown()).optional(),
 });
 
 export const zCreateInvitationHeaders = z.object({

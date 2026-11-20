@@ -3485,7 +3485,7 @@ export type ExportOtlpLogsErrors = {
 	 */
 	415: OtlpStatus;
 	/**
-	 * Log ingestion allowance exceeded
+	 * Log allowance and pay-as-you-go budget exceeded
 	 */
 	429: OtlpStatus;
 	/**
@@ -3643,7 +3643,7 @@ export type SendLogsErrors = {
 	 */
 	415: PublicApiErrorResponse;
 	/**
-	 * Log ingestion allowance exceeded
+	 * Log allowance and pay-as-you-go budget exceeded
 	 */
 	429: PublicApiErrorResponse;
 	/**
@@ -3733,10 +3733,22 @@ export type GetLogUsageResponses = {
 			period_start: string;
 			period_end: string;
 			/**
-			 * Log bytes after decoding, including metadata.
+			 * Accepted uncompressed log bytes, including metadata; excludes spans.
 			 */
 			used_bytes: number;
+			/**
+			 * Accepted log records; excludes spans.
+			 */
 			used_records: number;
+			used_spans: number;
+			limit_spans: number;
+			remaining_spans: number;
+			payg_budget_cents: number;
+			payg_used_cents: number;
+			next_period_budget_cents: number;
+			currency: "usd";
+			logs_price_cents_per_gb: 50;
+			spans_price_cents_per_million: 200;
 			limit_bytes: number;
 			remaining_bytes: number;
 			retention_days: number;
@@ -3862,7 +3874,7 @@ export type ExportOtlpTracesErrors = {
 	 */
 	415: OtlpStatus;
 	/**
-	 * Shared logs and traces ingestion allowance exceeded
+	 * Span allowance and pay-as-you-go budget exceeded
 	 */
 	429: OtlpStatus;
 	/**
@@ -3999,6 +4011,7 @@ export type ListAuditLogsResponses = {
 			action: string;
 			location: string | null;
 			remote_ip: string | null;
+			user_agent: string | null;
 			created_at: string;
 			metadata: {
 				[key: string]: unknown;
@@ -4341,6 +4354,9 @@ export type CreateTokenData = {
 		 * Project receiving logs. Omit or use null for unassigned. Requires LOGS:SEND and applies only to sending; other grants remain organisation-wide. Scope cannot be changed after issuance.
 		 */
 		project_id?: string | null;
+		access_scope?: {
+			[key: string]: unknown;
+		};
 	};
 	headers?: {
 		/**
@@ -8569,6 +8585,7 @@ export type CreateInvitationData = {
 		 * The role to assign to the invited user
 		 */
 		role?: "ADMIN" | "STANDARD" | "BILLING";
+		team_assignments?: Array<unknown>;
 	};
 	headers?: {
 		/**

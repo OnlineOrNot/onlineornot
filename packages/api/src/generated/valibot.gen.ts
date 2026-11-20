@@ -2613,6 +2613,15 @@ export const vGetLogUsageResponse = v.object({
 		period_end: v.pipe(v.string(), v.isoTimestamp()),
 		used_bytes: v.pipe(v.number(), v.integer(), v.minValue(0)),
 		used_records: v.pipe(v.number(), v.integer(), v.minValue(0)),
+		used_spans: v.pipe(v.number(), v.integer(), v.minValue(0)),
+		limit_spans: v.pipe(v.number(), v.integer(), v.gtValue(0)),
+		remaining_spans: v.pipe(v.number(), v.integer(), v.minValue(0)),
+		payg_budget_cents: v.pipe(v.number(), v.integer(), v.minValue(0)),
+		payg_used_cents: v.pipe(v.number(), v.integer(), v.minValue(0)),
+		next_period_budget_cents: v.pipe(v.number(), v.integer(), v.minValue(0)),
+		currency: v.picklist(["usd"]),
+		logs_price_cents_per_gb: v.picklist([50]),
+		spans_price_cents_per_million: v.picklist([200]),
 		limit_bytes: v.pipe(v.number(), v.integer(), v.minValue(0)),
 		remaining_bytes: v.pipe(v.number(), v.integer(), v.minValue(0)),
 		retention_days: v.pipe(v.number(), v.integer(), v.gtValue(0)),
@@ -2702,6 +2711,7 @@ export const vListAuditLogsResponse = v.object({
 			action: v.string(),
 			location: v.nullable(v.string()),
 			remote_ip: v.nullable(v.string()),
+			user_agent: v.nullable(v.string()),
 			created_at: v.string(),
 			metadata: v.nullable(
 				v.pipe(
@@ -2924,6 +2934,12 @@ export const vCreateTokenBody = v.object({
 	),
 	expiresAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
 	project_id: v.nullish(v.string()),
+	access_scope: v.optional(
+		v.pipe(
+			v.custom((value) => !Array.isArray(value)),
+			v.record(v.string(), v.unknown()),
+		),
+	),
 });
 
 export const vCreateTokenHeaders = v.object({
@@ -4619,6 +4635,7 @@ export const vListInvitationsResponse = v.union([
 export const vCreateInvitationBody = v.object({
 	email: v.pipe(v.string(), v.email()),
 	role: v.optional(v.picklist(["ADMIN", "STANDARD", "BILLING"]), "STANDARD"),
+	team_assignments: v.optional(v.array(v.unknown())),
 });
 
 export const vCreateInvitationHeaders = v.object({
