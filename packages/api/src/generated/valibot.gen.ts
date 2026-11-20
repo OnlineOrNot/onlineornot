@@ -2934,12 +2934,6 @@ export const vCreateTokenBody = v.object({
 	),
 	expiresAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
 	project_id: v.nullish(v.string()),
-	access_scope: v.optional(
-		v.pipe(
-			v.custom((value) => !Array.isArray(value)),
-			v.record(v.string(), v.unknown()),
-		),
-	),
 });
 
 export const vCreateTokenHeaders = v.object({
@@ -4635,7 +4629,6 @@ export const vListInvitationsResponse = v.union([
 export const vCreateInvitationBody = v.object({
 	email: v.pipe(v.string(), v.email()),
 	role: v.optional(v.picklist(["ADMIN", "STANDARD", "BILLING"]), "STANDARD"),
-	team_assignments: v.optional(v.array(v.unknown())),
 });
 
 export const vCreateInvitationHeaders = v.object({

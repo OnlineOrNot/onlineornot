@@ -4354,9 +4354,6 @@ export type CreateTokenData = {
 		 * Project receiving logs. Omit or use null for unassigned. Requires LOGS:SEND and applies only to sending; other grants remain organisation-wide. Scope cannot be changed after issuance.
 		 */
 		project_id?: string | null;
-		access_scope?: {
-			[key: string]: unknown;
-		};
 	};
 	headers?: {
 		/**
@@ -8585,7 +8582,6 @@ export type CreateInvitationData = {
 		 * The role to assign to the invited user
 		 */
 		role?: "ADMIN" | "STANDARD" | "BILLING";
-		team_assignments?: Array<unknown>;
 	};
 	headers?: {
 		/**

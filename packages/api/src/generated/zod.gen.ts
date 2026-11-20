@@ -2520,7 +2520,6 @@ export const zCreateTokenBody = z.object({
 	),
 	expiresAt: z.iso.datetime().nullish(),
 	project_id: z.string().nullish(),
-	access_scope: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const zCreateTokenHeaders = z.object({
@@ -4167,7 +4166,6 @@ export const zListInvitationsResponse = z.union([
 export const zCreateInvitationBody = z.object({
 	email: z.email(),
 	role: z.enum(["ADMIN", "STANDARD", "BILLING"]).optional().default("STANDARD"),
-	team_assignments: z.array(z.unknown()).optional(),
 });
 
 export const zCreateInvitationHeaders = z.object({

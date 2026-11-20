@@ -210,12 +210,11 @@ function sdkAdapter(
 		if (fields.length === 0) continue;
 		const validator = `z${pascal}${suffix}`;
 		validators.push(validator);
+		// The SDK validators already drop forbidden properties, so strict
+		// parsing rejects them without an omit.
 		const omitted = location === "body" ? forbidden : [];
-		const omitExpression = omitted.length
-			? `.omit(${JSON.stringify(Object.fromEntries(omitted.map((name) => [name, true])))})`
-			: "";
 		declarations.push(
-			`const ${location} = ${validator}${omitExpression}.strict().parse(input.${location});`,
+			`const ${location} = ${validator}.strict().parse(input.${location});`,
 		);
 		const properties = fields
 			.filter((field) => !field.readOnly && !omitted.includes(field.wireName))
