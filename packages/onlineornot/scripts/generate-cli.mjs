@@ -283,6 +283,7 @@ try {
 	const generated = path.join(temporary, "generated");
 	await execute("generate commands", process.execPath, [
 		forgeBin,
+		"generate",
 		input,
 		"--target",
 		`wasm://${plugin}`,

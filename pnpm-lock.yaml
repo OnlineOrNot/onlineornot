@@ -122,8 +122,8 @@ importers:
         specifier: 1.37.0
         version: 1.37.0
       '@cloudflare/forge':
-        specifier: https://pkg.pr.new/cloudflare/forge/@cloudflare/forge@45c005a259a5507763d866e12d1e907af6ce745d
-        version: https://pkg.pr.new/cloudflare/forge/@cloudflare/forge@45c005a259a5507763d866e12d1e907af6ce745d(@bytecodealliance/jco@1.37.0)
+        specifier: 0.2.0
+        version: 0.2.0(@bytecodealliance/jco@1.37.0)
       '@types/node':
         specifier: ^22.19.15
         version: 22.20.1
@@ -413,9 +413,38 @@ packages:
     resolution: {integrity: sha512-y7/yvZ2TPAnR9+jnc00klvNNLkJiXFFrQA/hlLCcxA9a2A4zQIOimyFQ9XfwYKiGD1fb5GY8vbKIIgO8d5Tb2A==}
     engines: {node: '>= 20.12.0'}
 
-  '@cloudflare/forge@https://pkg.pr.new/cloudflare/forge/@cloudflare/forge@45c005a259a5507763d866e12d1e907af6ce745d':
-    resolution: {integrity: sha512-nWxfij/ENM6whtI3rXBrEyzdApU33gnqIZUgiv1nVDVI+JgH6gTtdolsYszVnq4C8Ll67QbkwKmhp38rMI3x/g==, tarball: https://pkg.pr.new/cloudflare/forge/@cloudflare/forge@45c005a259a5507763d866e12d1e907af6ce745d}
-    version: 0.1.0
+  '@cloudflare/forge-darwin-arm64@0.2.0':
+    resolution: {integrity: sha512-y9HpyHYUXwQ8rQm+eZ06bY2LtJ3gxO3CwHtcTqaIg8tRMddAFDreIWxnfoP5Ncz7xaaaWHagnxfYl/H1nbavUA==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@cloudflare/forge-darwin-x64@0.2.0':
+    resolution: {integrity: sha512-+ueT98BcAlM9HRf4yQUWPxLnhvDMCdXlBE30SUmfUqo0Nq3qxDdWHSE6S8pe2RK9WwDLeghbo/8dbbVLzXSQ+g==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@cloudflare/forge-linux-arm64@0.2.0':
+    resolution: {integrity: sha512-MWoacSBfmzJWgHd5o/3Vy1vddKA51TKfF3EBwFcvzkDYPlCAyDUP/LVI1mP9tL81DyCqNxUe/tjMv/iekMpLjQ==}
+    cpu: [arm64]
+    os: [linux]
+
+  '@cloudflare/forge-linux-x64@0.2.0':
+    resolution: {integrity: sha512-DsC6ymbeWFqYnLkivm/u0KAcUZ2yjd10aLL679MY/zlUXEFllgTnjRmA3vsrSnMwPDlZxm84LTO8ffKEGGR88Q==}
+    cpu: [x64]
+    os: [linux]
+
+  '@cloudflare/forge-win32-arm64@0.2.0':
+    resolution: {integrity: sha512-dKu8+hc7ZSgYxI/SxgtgH4ojXOeTnPCRkd9mVCfeS7G6OvNIBt0I8kmAXny48JJouJmkfalbkMEAeVYXEhbX+g==}
+    cpu: [arm64]
+    os: [win32]
+
+  '@cloudflare/forge-win32-x64@0.2.0':
+    resolution: {integrity: sha512-lpzGHcFLJDYny1hj3Ke/m6VVqP1vIJw4VnOcpdvTSpCo/M3P+P2VKFFrssxKAKf4q6y7IZrssGi5uoztB/70/g==}
+    cpu: [x64]
+    os: [win32]
+
+  '@cloudflare/forge@0.2.0':
+    resolution: {integrity: sha512-EN8NAKt82nvdomOVoGJzYTpWglyWBC2IAdb1/jlYdPLjgQ4Lwsm+q/zXyL1Vj2t4uQBtmsYgRPjNmVVBvKYxLg==}
     engines: {node: '>=18'}
     hasBin: true
     peerDependencies:
@@ -4077,9 +4106,33 @@ snapshots:
       fast-wrap-ansi: 0.2.2
       sisteransi: 1.0.5
 
-  '@cloudflare/forge@https://pkg.pr.new/cloudflare/forge/@cloudflare/forge@45c005a259a5507763d866e12d1e907af6ce745d(@bytecodealliance/jco@1.37.0)':
+  '@cloudflare/forge-darwin-arm64@0.2.0':
+    optional: true
+
+  '@cloudflare/forge-darwin-x64@0.2.0':
+    optional: true
+
+  '@cloudflare/forge-linux-arm64@0.2.0':
+    optional: true
+
+  '@cloudflare/forge-linux-x64@0.2.0':
+    optional: true
+
+  '@cloudflare/forge-win32-arm64@0.2.0':
+    optional: true
+
+  '@cloudflare/forge-win32-x64@0.2.0':
+    optional: true
+
+  '@cloudflare/forge@0.2.0(@bytecodealliance/jco@1.37.0)':
     optionalDependencies:
       '@bytecodealliance/jco': 1.37.0
+      '@cloudflare/forge-darwin-arm64': 0.2.0
+      '@cloudflare/forge-darwin-x64': 0.2.0
+      '@cloudflare/forge-linux-arm64': 0.2.0
+      '@cloudflare/forge-linux-x64': 0.2.0
+      '@cloudflare/forge-win32-arm64': 0.2.0
+      '@cloudflare/forge-win32-x64': 0.2.0
 
   '@colors/colors@1.5.0':
     optional: true
