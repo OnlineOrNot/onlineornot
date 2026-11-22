@@ -44,17 +44,6 @@ export const command = createApiCommand(
 				sensitive: false,
 			},
 			{
-				name: "project-id",
-				wireName: "project_id",
-				location: "body",
-				type: "string",
-				array: false,
-				required: false,
-				positional: false,
-				description: "project_id",
-				sensitive: false,
-			},
-			{
 				name: "name",
 				wireName: "name",
 				location: "body",
@@ -342,10 +331,6 @@ export const command = createApiCommand(
 						: headers["X-OnlineOrNot-Organisation"],
 			},
 			body: {
-				project_id:
-					input.body?.["project_id"] === undefined
-						? undefined
-						: body["project_id"],
 				name: input.body?.["name"] === undefined ? undefined : body["name"],
 				test_interval:
 					input.body?.["test_interval"] === undefined

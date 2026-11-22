@@ -913,7 +913,6 @@ export const zDnsCheckInput = z.object({
 });
 
 export const zDnsCheckPatch = z.object({
-	project_id: z.string().optional(),
 	name: z.string().optional(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -1011,7 +1010,6 @@ export const zTcpCheckInput = z.object({
 });
 
 export const zTcpCheckPatch = z.object({
-	project_id: z.string().optional(),
 	name: z.string().optional(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -1129,7 +1127,6 @@ export const zUptimeCheckInput = z.object({
 });
 
 export const zUptimeCheckPatch = z.object({
-	project_id: z.string().optional(),
 	name: z.string().optional(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -1283,7 +1280,6 @@ export const zBrowserCheckInput = z.object({
 });
 
 export const zBrowserCheckPatch = z.object({
-	project_id: z.string().optional(),
 	name: z.string().optional(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -1704,7 +1700,6 @@ export const zCheckInput = z.object({
 });
 
 export const zCheckPatch = z.object({
-	project_id: z.string().optional(),
 	name: z.string().optional(),
 	test_interval: z.int().gte(30).optional(),
 	test_regions: z.array(z.string()).optional(),
@@ -2520,7 +2515,6 @@ export const zCreateTokenBody = z.object({
 	),
 	expiresAt: z.iso.datetime().nullish(),
 	project_id: z.string().nullish(),
-	access_scope: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const zCreateTokenHeaders = z.object({
@@ -3454,7 +3448,6 @@ export const zGetEnvironmentVariableResponse = z.object({
 });
 
 export const zUpdateEnvironmentVariableBody = z.object({
-	project_id: z.string().optional(),
 	name: z
 		.string()
 		.regex(/^[A-Z_][A-Z0-9_]{0,63}$/)
@@ -3715,7 +3708,6 @@ export const zGetHeartbeatResponse = z.object({
 });
 
 export const zUpdateHeartbeatBody = z.object({
-	project_id: z.string().optional(),
 	name: z.string().optional(),
 	report_period: z.int().gte(1).nullish(),
 	report_period_cron: z.string().nullish(),
@@ -3935,7 +3927,6 @@ export const zGetMaintenanceWindowResponse = z.object({
 });
 
 export const zUpdateMaintenanceWindowBody = z.object({
-	project_id: z.string().optional(),
 	name: z.string().min(1).optional(),
 	start_date: z.string().optional(),
 	duration_minutes: z.int().gt(0).optional(),
@@ -4167,7 +4158,6 @@ export const zListInvitationsResponse = z.union([
 export const zCreateInvitationBody = z.object({
 	email: z.email(),
 	role: z.enum(["ADMIN", "STANDARD", "BILLING"]).optional().default("STANDARD"),
-	team_assignments: z.array(z.unknown()).optional(),
 });
 
 export const zCreateInvitationHeaders = z.object({
@@ -6517,7 +6507,6 @@ export const zGetWebhookResponse = z.object({
  * Partial webhook update. The merged saved state must have matching resource and event types, at least one resource and event, and no duplicate events or association IDs.
  */
 export const zUpdateWebhookBody = z.object({
-	project_id: z.string().optional(),
 	enabled: z.boolean().optional(),
 	url: z.string().optional(),
 	description: z.string().optional(),

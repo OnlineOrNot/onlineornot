@@ -78,10 +78,7 @@ export const command = createApiCommand(
 	},
 	(input) => {
 		const headers = zCreateTokenHeaders.strict().parse(input.headers);
-		const body = zCreateTokenBody
-			.omit({ access_scope: true })
-			.strict()
-			.parse(input.body);
+		const body = zCreateTokenBody.strict().parse(input.body);
 		const request = {
 			headers: {
 				"X-OnlineOrNot-Organisation":

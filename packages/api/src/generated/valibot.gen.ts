@@ -1146,7 +1146,6 @@ export const vDnsCheckInput = v.strictObject({
 });
 
 export const vDnsCheckPatch = v.strictObject({
-	project_id: v.optional(v.string()),
 	name: v.optional(v.string()),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -1259,7 +1258,6 @@ export const vTcpCheckInput = v.strictObject({
 });
 
 export const vTcpCheckPatch = v.strictObject({
-	project_id: v.optional(v.string()),
 	name: v.optional(v.string()),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -1407,7 +1405,6 @@ export const vUptimeCheckInput = v.strictObject({
 });
 
 export const vUptimeCheckPatch = v.strictObject({
-	project_id: v.optional(v.string()),
 	name: v.optional(v.string()),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -1594,7 +1591,6 @@ export const vBrowserCheckInput = v.strictObject({
 });
 
 export const vBrowserCheckPatch = v.strictObject({
-	project_id: v.optional(v.string()),
 	name: v.optional(v.string()),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -2067,7 +2063,6 @@ export const vCheckInput = v.object({
 });
 
 export const vCheckPatch = v.object({
-	project_id: v.optional(v.string()),
 	name: v.optional(v.string()),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -2934,12 +2929,6 @@ export const vCreateTokenBody = v.object({
 	),
 	expiresAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
 	project_id: v.nullish(v.string()),
-	access_scope: v.optional(
-		v.pipe(
-			v.custom((value) => !Array.isArray(value)),
-			v.record(v.string(), v.unknown()),
-		),
-	),
 });
 
 export const vCreateTokenHeaders = v.object({
@@ -3907,7 +3896,6 @@ export const vGetEnvironmentVariableResponse = v.object({
 });
 
 export const vUpdateEnvironmentVariableBody = v.strictObject({
-	project_id: v.optional(v.string()),
 	name: v.optional(v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/))),
 	value: v.optional(v.string()),
 });
@@ -4172,7 +4160,6 @@ export const vGetHeartbeatResponse = v.object({
 });
 
 export const vUpdateHeartbeatBody = v.object({
-	project_id: v.optional(v.string()),
 	name: v.optional(v.string()),
 	report_period: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(1))),
 	report_period_cron: v.nullish(v.string()),
@@ -4399,7 +4386,6 @@ export const vGetMaintenanceWindowResponse = v.object({
 });
 
 export const vUpdateMaintenanceWindowBody = v.object({
-	project_id: v.optional(v.string()),
 	name: v.optional(v.pipe(v.string(), v.minLength(1))),
 	start_date: v.optional(v.string()),
 	duration_minutes: v.optional(v.pipe(v.number(), v.integer(), v.gtValue(0))),
@@ -4635,7 +4621,6 @@ export const vListInvitationsResponse = v.union([
 export const vCreateInvitationBody = v.object({
 	email: v.pipe(v.string(), v.email()),
 	role: v.optional(v.picklist(["ADMIN", "STANDARD", "BILLING"]), "STANDARD"),
-	team_assignments: v.optional(v.array(v.unknown())),
 });
 
 export const vCreateInvitationHeaders = v.object({
@@ -7018,7 +7003,6 @@ export const vGetWebhookResponse = v.object({
  * Partial webhook update. The merged saved state must have matching resource and event types, at least one resource and event, and no duplicate events or association IDs.
  */
 export const vUpdateWebhookBody = v.object({
-	project_id: v.optional(v.string()),
 	enabled: v.optional(v.boolean()),
 	url: v.optional(v.string()),
 	description: v.optional(v.string()),

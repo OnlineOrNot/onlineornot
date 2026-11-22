@@ -150,10 +150,7 @@ export const command = createApiCommand(
 		const headers = zUpdateMaintenanceWindowHeaders
 			.strict()
 			.parse(input.headers);
-		const body = zUpdateMaintenanceWindowBody
-			.omit({ project_id: true })
-			.strict()
-			.parse(input.body);
+		const body = zUpdateMaintenanceWindowBody.strict().parse(input.body);
 		const request = {
 			path: { maintenance_window_id: path["maintenance_window_id"] },
 			headers: {

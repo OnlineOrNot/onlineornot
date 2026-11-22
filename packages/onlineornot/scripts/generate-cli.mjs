@@ -75,8 +75,29 @@ const documentSchema = z
 	.object({
 		paths: z.record(z.string(), z.record(z.string(), z.json())),
 		security: z.array(z.record(z.string(), z.array(z.string()))).optional(),
+		components: z
+			.object({ schemas: z.record(z.string(), z.json()).optional() })
+			.passthrough()
+			.optional(),
 	})
 	.passthrough();
+const componentRefPrefix = "#/components/schemas/";
+const componentRefSchema = z
+	.object({ $ref: z.string().startsWith(componentRefPrefix) })
+	.passthrough();
+const bodyPropertiesSchema = z
+	.object({ properties: z.record(z.string(), z.json()).optional() })
+	.passthrough();
+// Request bodies may reference a component schema; forbidden fields live there.
+const resolveComponentRef = (schema) => {
+	const ref = componentRefSchema.safeParse(schema);
+	if (!ref.success) return schema;
+	const name = ref.data.$ref.slice(componentRefPrefix.length);
+	const resolved = document.components?.schemas?.[name];
+	if (resolved === undefined)
+		throw new Error(`Unresolved request body schema: ${ref.data.$ref}`);
+	return resolved;
+};
 const methods = new Set([
 	"get",
 	"post",
@@ -180,18 +201,17 @@ for (const [apiPath, item] of Object.entries(document.paths)) {
 		const jsonBody = z
 			.object({
 				content: z.object({
-					"application/json": z.object({
-						schema: z
-							.object({ properties: z.record(z.string(), z.json()).optional() })
-							.passthrough(),
-					}),
+					"application/json": z.object({ schema: z.json() }),
 				}),
 			})
 			.safeParse(operation.requestBody);
 		const forbidden = [];
 		if (jsonBody.success) {
+			const bodySchema = resolveComponentRef(
+				jsonBody.data.content["application/json"].schema,
+			);
 			for (const [name, property] of Object.entries(
-				jsonBody.data.content["application/json"].schema.properties ?? {},
+				bodyPropertiesSchema.parse(bodySchema).properties ?? {},
 			)) {
 				const prohibited = z
 					.object({ not: z.object({}).strict() })
@@ -283,6 +303,7 @@ try {
 	const generated = path.join(temporary, "generated");
 	await execute("generate commands", process.execPath, [
 		forgeBin,
+		"generate",
 		input,
 		"--target",
 		`wasm://${plugin}`,
