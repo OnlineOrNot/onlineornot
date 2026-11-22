@@ -1229,7 +1229,6 @@ export type DnsCheckInput = {
 };
 
 export type DnsCheckPatch = {
-	project_id?: string;
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -1410,7 +1409,6 @@ export type TcpCheckInput = {
 };
 
 export type TcpCheckPatch = {
-	project_id?: string;
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -1624,7 +1622,6 @@ export type UptimeCheckInput = {
 };
 
 export type UptimeCheckPatch = {
-	project_id?: string;
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -1893,7 +1890,6 @@ export type BrowserCheckInput = {
 };
 
 export type BrowserCheckPatch = {
-	project_id?: string;
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -2540,7 +2536,6 @@ export type CheckInput = {
 };
 
 export type CheckPatch = {
-	project_id?: string;
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -7008,7 +7003,6 @@ export type GetEnvironmentVariableResponse =
 
 export type UpdateEnvironmentVariableData = {
 	body: {
-		project_id?: string;
 		/**
 		 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the project.
 		 */
@@ -7620,7 +7614,6 @@ export type GetHeartbeatResponse =
 
 export type UpdateHeartbeatData = {
 	body: {
-		project_id?: string;
 		name?: string;
 		/**
 		 * Expected interval in seconds between heartbeat pings (for simple schedule)
@@ -8117,7 +8110,6 @@ export type GetMaintenanceWindowResponse =
 
 export type UpdateMaintenanceWindowData = {
 	body: {
-		project_id?: string;
 		name?: string;
 		/**
 		 * Start date and time of the maintenance window, as a timestamp
@@ -13504,7 +13496,6 @@ export type UpdateWebhookData = {
 	 * Partial webhook update. The merged saved state must have matching resource and event types, at least one resource and event, and no duplicate events or association IDs.
 	 */
 	body: {
-		project_id?: string;
 		/**
 		 * Whether webhook delivery is enabled. Defaults to true on creation; omitted PATCH values preserve the current state.
 		 */

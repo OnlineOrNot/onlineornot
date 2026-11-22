@@ -75,10 +75,7 @@ export const command = createApiCommand(
 		const headers = zUpdateEnvironmentVariableHeaders
 			.strict()
 			.parse(input.headers);
-		const body = zUpdateEnvironmentVariableBody
-			.omit({ project_id: true })
-			.strict()
-			.parse(input.body);
+		const body = zUpdateEnvironmentVariableBody.strict().parse(input.body);
 		const request = {
 			path: { environment_variable_id: path["environment_variable_id"] },
 			headers: {

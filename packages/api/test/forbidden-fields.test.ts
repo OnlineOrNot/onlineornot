@@ -1,12 +1,24 @@
 import { parse } from "valibot";
 import { describe, expect, expectTypeOf, it } from "vitest";
 
-import type { CreateInvitationData, CreateTokenData } from "../src/index";
-import { vCreateInvitationBody, vCreateTokenBody } from "../src/valibot";
-import { zCreateInvitationBody, zCreateTokenBody } from "../src/zod";
+import type {
+	CreateInvitationData,
+	CreateTokenData,
+	UpdateHeartbeatData,
+} from "../src/index";
+import {
+	vCreateInvitationBody,
+	vCreateTokenBody,
+	vUpdateHeartbeatBody,
+} from "../src/valibot";
+import {
+	zCreateInvitationBody,
+	zCreateTokenBody,
+	zUpdateHeartbeatBody,
+} from "../src/zod";
 
-// The API reserves these unreleased fields with `not: {}`, so the SDK must
-// not accept or send them.
+// The API marks fields it always rejects with `not: {}`, so the SDK must not
+// accept or send them.
 describe("forbidden request fields", () => {
 	it("omits access_scope from token creation", () => {
 		expectTypeOf<NonNullable<CreateTokenData["body"]>>().not.toHaveProperty(
@@ -42,5 +54,16 @@ describe("forbidden request fields", () => {
 		expect(parse(vCreateInvitationBody, body)).not.toHaveProperty(
 			"team_assignments",
 		);
+	});
+
+	it("omits project_id from updates; moves change projects", () => {
+		expectTypeOf<NonNullable<UpdateHeartbeatData["body"]>>().not.toHaveProperty(
+			"project_id",
+		);
+		expect(zUpdateHeartbeatBody.shape).not.toHaveProperty("project_id");
+		expect(vUpdateHeartbeatBody.entries).not.toHaveProperty("project_id");
+		expect(() =>
+			zUpdateHeartbeatBody.strict().parse({ project_id: "a1b2c3d4e5f6" }),
+		).toThrow();
 	});
 });
