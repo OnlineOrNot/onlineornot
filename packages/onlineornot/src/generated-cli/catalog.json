@@ -604,17 +604,6 @@
 					"sensitive": false
 				},
 				{
-					"name": "project-id",
-					"wireName": "project_id",
-					"location": "body",
-					"type": "string",
-					"array": false,
-					"required": false,
-					"positional": false,
-					"description": "project_id",
-					"sensitive": false
-				},
-				{
 					"name": "name",
 					"wireName": "name",
 					"location": "body",
@@ -1472,17 +1461,6 @@
 					"sensitive": false
 				},
 				{
-					"name": "project-id",
-					"wireName": "project_id",
-					"location": "body",
-					"type": "string",
-					"array": false,
-					"required": false,
-					"positional": false,
-					"description": "project_id",
-					"sensitive": false
-				},
-				{
 					"name": "name",
 					"wireName": "name",
 					"location": "body",
@@ -2314,17 +2292,6 @@
 					"required": false,
 					"positional": false,
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
-					"sensitive": false
-				},
-				{
-					"name": "project-id",
-					"wireName": "project_id",
-					"location": "body",
-					"type": "string",
-					"array": false,
-					"required": false,
-					"positional": false,
-					"description": "project_id",
 					"sensitive": false
 				},
 				{
@@ -3270,17 +3237,6 @@
 					"required": false,
 					"positional": false,
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
-					"sensitive": false
-				},
-				{
-					"name": "project-id",
-					"wireName": "project_id",
-					"location": "body",
-					"type": "string",
-					"array": false,
-					"required": false,
-					"positional": false,
-					"description": "project_id",
 					"sensitive": false
 				},
 				{
