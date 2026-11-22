@@ -59,6 +59,36 @@ const removeResourceIdConstraints = (
 		removeResourceIdConstraints(schema.items, resourceId);
 };
 
+type Property = NonNullable<Schema["properties"]>[string];
+
+const isForbidden = (property: Property): boolean => {
+	if (property === true || "$ref" in property) return false;
+	const not = property.not;
+	return not !== undefined && !("$ref" in not) && Object.keys(not).length === 0;
+};
+
+// The API reserves unreleased request fields with `not: {}`. The generator
+// would otherwise emit them as optional unknown inputs, so remove them.
+const removeForbiddenProperties = (schema: Schema): void => {
+	for (const [name, property] of Object.entries(schema.properties ?? {})) {
+		if (isForbidden(property)) {
+			delete schema.properties?.[name];
+			schema.required = schema.required?.filter((key) => key !== name);
+		} else if (property !== true && !("$ref" in property)) {
+			removeForbiddenProperties(property);
+		}
+	}
+	for (const child of [
+		...(schema.allOf ?? []),
+		...(schema.anyOf ?? []),
+		...(schema.oneOf ?? []),
+	]) {
+		if (!("$ref" in child)) removeForbiddenProperties(child);
+	}
+	if (schema.items && !Array.isArray(schema.items) && !("$ref" in schema.items))
+		removeForbiddenProperties(schema.items);
+};
+
 export default defineConfig({
 	input,
 	parser: {
@@ -72,6 +102,7 @@ export default defineConfig({
 				if (!("$ref" in schema)) {
 					removeRequiredPropertyDefaults(schema);
 					removeResourceIdConstraints(schema);
+					removeForbiddenProperties(schema);
 				}
 			}
 
@@ -104,8 +135,10 @@ export default defineConfig({
 							requestBody.content ?? {},
 						)) {
 							const schema = requestBody.content?.[mediaTypeName]?.schema;
-							if (schema && schema !== true && !("$ref" in schema))
+							if (schema && schema !== true && !("$ref" in schema)) {
 								removeResourceIdConstraints(schema);
+								removeForbiddenProperties(schema);
+							}
 						}
 					for (const statusCode of Object.keys(operation.responses ?? {})) {
 						const response = operation.responses?.[statusCode];

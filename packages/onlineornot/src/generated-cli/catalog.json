@@ -1,7 +1,7 @@
 {
 	"schema": {
-		"commit": "70ac95bc51e230a8390a7cc24a4ce98879763f97",
-		"sha256": "0f6dec1d5048d38178353032d04546dec90e3d09b6fc6ad5c18c682ecd270998"
+		"commit": "0a0a0ad28c651096f4c496d4cf1b41091e4a8ceb",
+		"sha256": "f7b58bf558ea3fe6263b31e2d80026b2018d8a584eb70dd9231519c4e5445e3e"
 	},
 	"commands": [
 		{
@@ -601,17 +601,6 @@
 					"required": false,
 					"positional": false,
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
-					"sensitive": false
-				},
-				{
-					"name": "project-id",
-					"wireName": "project_id",
-					"location": "body",
-					"type": "string",
-					"array": false,
-					"required": false,
-					"positional": false,
-					"description": "project_id",
 					"sensitive": false
 				},
 				{
@@ -1472,17 +1461,6 @@
 					"sensitive": false
 				},
 				{
-					"name": "project-id",
-					"wireName": "project_id",
-					"location": "body",
-					"type": "string",
-					"array": false,
-					"required": false,
-					"positional": false,
-					"description": "project_id",
-					"sensitive": false
-				},
-				{
 					"name": "name",
 					"wireName": "name",
 					"location": "body",
@@ -2314,17 +2292,6 @@
 					"required": false,
 					"positional": false,
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
-					"sensitive": false
-				},
-				{
-					"name": "project-id",
-					"wireName": "project_id",
-					"location": "body",
-					"type": "string",
-					"array": false,
-					"required": false,
-					"positional": false,
-					"description": "project_id",
 					"sensitive": false
 				},
 				{
@@ -3270,17 +3237,6 @@
 					"required": false,
 					"positional": false,
 					"description": "Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.",
-					"sensitive": false
-				},
-				{
-					"name": "project-id",
-					"wireName": "project_id",
-					"location": "body",
-					"type": "string",
-					"array": false,
-					"required": false,
-					"positional": false,
-					"description": "project_id",
 					"sensitive": false
 				},
 				{

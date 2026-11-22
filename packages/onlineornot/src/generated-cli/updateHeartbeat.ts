@@ -252,10 +252,7 @@ export const command = createApiCommand(
 	(input) => {
 		const path = zUpdateHeartbeatPath.strict().parse(input.path);
 		const headers = zUpdateHeartbeatHeaders.strict().parse(input.headers);
-		const body = zUpdateHeartbeatBody
-			.omit({ project_id: true })
-			.strict()
-			.parse(input.body);
+		const body = zUpdateHeartbeatBody.strict().parse(input.body);
 		const request = {
 			path: { heartbeat_id: path["heartbeat_id"] },
 			headers: {

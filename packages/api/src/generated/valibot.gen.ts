@@ -1146,7 +1146,6 @@ export const vDnsCheckInput = v.strictObject({
 });
 
 export const vDnsCheckPatch = v.strictObject({
-	project_id: v.optional(v.string()),
 	name: v.optional(v.string()),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -1259,7 +1258,6 @@ export const vTcpCheckInput = v.strictObject({
 });
 
 export const vTcpCheckPatch = v.strictObject({
-	project_id: v.optional(v.string()),
 	name: v.optional(v.string()),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -1407,7 +1405,6 @@ export const vUptimeCheckInput = v.strictObject({
 });
 
 export const vUptimeCheckPatch = v.strictObject({
-	project_id: v.optional(v.string()),
 	name: v.optional(v.string()),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -1594,7 +1591,6 @@ export const vBrowserCheckInput = v.strictObject({
 });
 
 export const vBrowserCheckPatch = v.strictObject({
-	project_id: v.optional(v.string()),
 	name: v.optional(v.string()),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -2067,7 +2063,6 @@ export const vCheckInput = v.object({
 });
 
 export const vCheckPatch = v.object({
-	project_id: v.optional(v.string()),
 	name: v.optional(v.string()),
 	test_interval: v.optional(v.pipe(v.number(), v.integer(), v.minValue(30))),
 	test_regions: v.optional(v.array(v.string())),
@@ -2613,6 +2608,15 @@ export const vGetLogUsageResponse = v.object({
 		period_end: v.pipe(v.string(), v.isoTimestamp()),
 		used_bytes: v.pipe(v.number(), v.integer(), v.minValue(0)),
 		used_records: v.pipe(v.number(), v.integer(), v.minValue(0)),
+		used_spans: v.pipe(v.number(), v.integer(), v.minValue(0)),
+		limit_spans: v.pipe(v.number(), v.integer(), v.gtValue(0)),
+		remaining_spans: v.pipe(v.number(), v.integer(), v.minValue(0)),
+		payg_budget_cents: v.pipe(v.number(), v.integer(), v.minValue(0)),
+		payg_used_cents: v.pipe(v.number(), v.integer(), v.minValue(0)),
+		next_period_budget_cents: v.pipe(v.number(), v.integer(), v.minValue(0)),
+		currency: v.picklist(["usd"]),
+		logs_price_cents_per_gb: v.picklist([50]),
+		spans_price_cents_per_million: v.picklist([200]),
 		limit_bytes: v.pipe(v.number(), v.integer(), v.minValue(0)),
 		remaining_bytes: v.pipe(v.number(), v.integer(), v.minValue(0)),
 		retention_days: v.pipe(v.number(), v.integer(), v.gtValue(0)),
@@ -2702,6 +2706,7 @@ export const vListAuditLogsResponse = v.object({
 			action: v.string(),
 			location: v.nullable(v.string()),
 			remote_ip: v.nullable(v.string()),
+			user_agent: v.nullable(v.string()),
 			created_at: v.string(),
 			metadata: v.nullable(
 				v.pipe(
@@ -3891,7 +3896,6 @@ export const vGetEnvironmentVariableResponse = v.object({
 });
 
 export const vUpdateEnvironmentVariableBody = v.strictObject({
-	project_id: v.optional(v.string()),
 	name: v.optional(v.pipe(v.string(), v.regex(/^[A-Z_][A-Z0-9_]{0,63}$/))),
 	value: v.optional(v.string()),
 });
@@ -4156,7 +4160,6 @@ export const vGetHeartbeatResponse = v.object({
 });
 
 export const vUpdateHeartbeatBody = v.object({
-	project_id: v.optional(v.string()),
 	name: v.optional(v.string()),
 	report_period: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(1))),
 	report_period_cron: v.nullish(v.string()),
@@ -4383,7 +4386,6 @@ export const vGetMaintenanceWindowResponse = v.object({
 });
 
 export const vUpdateMaintenanceWindowBody = v.object({
-	project_id: v.optional(v.string()),
 	name: v.optional(v.pipe(v.string(), v.minLength(1))),
 	start_date: v.optional(v.string()),
 	duration_minutes: v.optional(v.pipe(v.number(), v.integer(), v.gtValue(0))),
@@ -7001,7 +7003,6 @@ export const vGetWebhookResponse = v.object({
  * Partial webhook update. The merged saved state must have matching resource and event types, at least one resource and event, and no duplicate events or association IDs.
  */
 export const vUpdateWebhookBody = v.object({
-	project_id: v.optional(v.string()),
 	enabled: v.optional(v.boolean()),
 	url: v.optional(v.string()),
 	description: v.optional(v.string()),

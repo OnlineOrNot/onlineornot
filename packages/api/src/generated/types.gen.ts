@@ -1229,7 +1229,6 @@ export type DnsCheckInput = {
 };
 
 export type DnsCheckPatch = {
-	project_id?: string;
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -1410,7 +1409,6 @@ export type TcpCheckInput = {
 };
 
 export type TcpCheckPatch = {
-	project_id?: string;
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -1624,7 +1622,6 @@ export type UptimeCheckInput = {
 };
 
 export type UptimeCheckPatch = {
-	project_id?: string;
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -1893,7 +1890,6 @@ export type BrowserCheckInput = {
 };
 
 export type BrowserCheckPatch = {
-	project_id?: string;
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -2540,7 +2536,6 @@ export type CheckInput = {
 };
 
 export type CheckPatch = {
-	project_id?: string;
 	name?: string;
 	/**
 	 * Interval in seconds between checks
@@ -3485,7 +3480,7 @@ export type ExportOtlpLogsErrors = {
 	 */
 	415: OtlpStatus;
 	/**
-	 * Log ingestion allowance exceeded
+	 * Log allowance and pay-as-you-go budget exceeded
 	 */
 	429: OtlpStatus;
 	/**
@@ -3643,7 +3638,7 @@ export type SendLogsErrors = {
 	 */
 	415: PublicApiErrorResponse;
 	/**
-	 * Log ingestion allowance exceeded
+	 * Log allowance and pay-as-you-go budget exceeded
 	 */
 	429: PublicApiErrorResponse;
 	/**
@@ -3733,10 +3728,22 @@ export type GetLogUsageResponses = {
 			period_start: string;
 			period_end: string;
 			/**
-			 * Log bytes after decoding, including metadata.
+			 * Accepted uncompressed log bytes, including metadata; excludes spans.
 			 */
 			used_bytes: number;
+			/**
+			 * Accepted log records; excludes spans.
+			 */
 			used_records: number;
+			used_spans: number;
+			limit_spans: number;
+			remaining_spans: number;
+			payg_budget_cents: number;
+			payg_used_cents: number;
+			next_period_budget_cents: number;
+			currency: "usd";
+			logs_price_cents_per_gb: 50;
+			spans_price_cents_per_million: 200;
 			limit_bytes: number;
 			remaining_bytes: number;
 			retention_days: number;
@@ -3862,7 +3869,7 @@ export type ExportOtlpTracesErrors = {
 	 */
 	415: OtlpStatus;
 	/**
-	 * Shared logs and traces ingestion allowance exceeded
+	 * Span allowance and pay-as-you-go budget exceeded
 	 */
 	429: OtlpStatus;
 	/**
@@ -3999,6 +4006,7 @@ export type ListAuditLogsResponses = {
 			action: string;
 			location: string | null;
 			remote_ip: string | null;
+			user_agent: string | null;
 			created_at: string;
 			metadata: {
 				[key: string]: unknown;
@@ -6995,7 +7003,6 @@ export type GetEnvironmentVariableResponse =
 
 export type UpdateEnvironmentVariableData = {
 	body: {
-		project_id?: string;
 		/**
 		 * Case-sensitive name matching [A-Z_][A-Z0-9_]{0,63}, unique within the project.
 		 */
@@ -7607,7 +7614,6 @@ export type GetHeartbeatResponse =
 
 export type UpdateHeartbeatData = {
 	body: {
-		project_id?: string;
 		name?: string;
 		/**
 		 * Expected interval in seconds between heartbeat pings (for simple schedule)
@@ -8104,7 +8110,6 @@ export type GetMaintenanceWindowResponse =
 
 export type UpdateMaintenanceWindowData = {
 	body: {
-		project_id?: string;
 		name?: string;
 		/**
 		 * Start date and time of the maintenance window, as a timestamp
@@ -13491,7 +13496,6 @@ export type UpdateWebhookData = {
 	 * Partial webhook update. The merged saved state must have matching resource and event types, at least one resource and event, and no duplicate events or association IDs.
 	 */
 	body: {
-		project_id?: string;
 		/**
 		 * Whether webhook delivery is enabled. Defaults to true on creation; omitted PATCH values preserve the current state.
 		 */

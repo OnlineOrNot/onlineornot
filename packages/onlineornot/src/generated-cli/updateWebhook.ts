@@ -136,10 +136,7 @@ export const command = createApiCommand(
 	(input) => {
 		const path = zUpdateWebhookPath.strict().parse(input.path);
 		const headers = zUpdateWebhookHeaders.strict().parse(input.headers);
-		const body = zUpdateWebhookBody
-			.omit({ project_id: true })
-			.strict()
-			.parse(input.body);
+		const body = zUpdateWebhookBody.strict().parse(input.body);
 		const request = {
 			path: { webhook_id: path["webhook_id"] },
 			headers: {
