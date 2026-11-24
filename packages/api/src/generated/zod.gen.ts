@@ -1860,6 +1860,32 @@ export const zProject = z.object({
 	updated_at: z.iso.datetime(),
 });
 
+export const zTeam = z.object({
+	id: z.string(),
+	name: z.string().min(1).max(255),
+	created_at: z.iso.datetime(),
+	updated_at: z.iso.datetime(),
+	membership_role: z.enum(["ADMIN", "CONTRIBUTOR"]).nullable(),
+	join_requested: z.boolean(),
+	capabilities: z.object({
+		can_manage_team: z.boolean(),
+		can_manage_members: z.boolean(),
+		can_delete_team: z.boolean(),
+		can_join: z.boolean(),
+		can_leave: z.boolean(),
+	}),
+});
+
+export const zOrganisationAccessSettings = z.object({
+	open_membership: z.boolean(),
+	capabilities: z.object({
+		can_change_open_membership: z.boolean(),
+		can_create_team: z.boolean(),
+		can_create_project: z.boolean(),
+		can_manage_organisation_tokens: z.boolean(),
+	}),
+});
+
 export const zStatusPage = z.object({
 	id: z.string(),
 	name: z.string().min(1).max(100),
@@ -2442,6 +2468,7 @@ export const zListTokensResponse = z.object({
 						z.object({
 							scope: z.enum([
 								"PROJECTS",
+								"TEAMS",
 								"LOGS",
 								"UPTIME_CHECKS",
 								"STATUS_PAGES",
@@ -2494,6 +2521,7 @@ export const zCreateTokenBody = z.object({
 			z.object({
 				scope: z.enum([
 					"PROJECTS",
+					"TEAMS",
 					"LOGS",
 					"UPTIME_CHECKS",
 					"STATUS_PAGES",
@@ -2605,6 +2633,7 @@ export const zGetTokenResponse = z.object({
 				z.object({
 					scope: z.enum([
 						"PROJECTS",
+						"TEAMS",
 						"LOGS",
 						"UPTIME_CHECKS",
 						"STATUS_PAGES",
@@ -4534,6 +4563,651 @@ export const zUpdateProjectPath = z.object({
  */
 export const zUpdateProjectResponse = z.object({
 	result: zProject,
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zListTeamsHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zListTeamsQuery = z.object({
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
+});
+
+/**
+ * Paginated teams
+ */
+export const zListTeamsResponse = z.object({
+	result: z.array(zTeam),
+	result_info: z.object({
+		page: z.number().optional().default(1),
+		per_page: z.number().optional().default(20),
+		count: z.number(),
+		total_count: z.number(),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zCreateTeamBody = z.object({
+	name: z.string().min(1).max(255),
+});
+
+export const zCreateTeamHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+/**
+ * Team
+ */
+export const zCreateTeamResponse = z.object({
+	result: zTeam,
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zDeleteTeamHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zDeleteTeamPath = z.object({
+	team_id: z.string(),
+});
+
+/**
+ * Deleted team ID
+ */
+export const zDeleteTeamResponse = z.object({
+	result: z.object({
+		id: z.string(),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zGetTeamHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zGetTeamPath = z.object({
+	team_id: z.string(),
+});
+
+/**
+ * Team
+ */
+export const zGetTeamResponse = z.object({
+	result: zTeam,
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zUpdateTeamBody = z.object({
+	name: z.string().min(1).max(255),
+});
+
+export const zUpdateTeamHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zUpdateTeamPath = z.object({
+	team_id: z.string(),
+});
+
+/**
+ * Team
+ */
+export const zUpdateTeamResponse = z.object({
+	result: zTeam,
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zListTeamMembersHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zListTeamMembersPath = z.object({
+	team_id: z.string(),
+});
+
+export const zListTeamMembersQuery = z.object({
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
+});
+
+/**
+ * Paginated team members
+ */
+export const zListTeamMembersResponse = z.object({
+	result: z.array(
+		z.object({
+			id: z.string(),
+			first_name: z.string().nullable(),
+			last_name: z.string().nullable(),
+			email: z.string().nullable(),
+			image: z.string().nullable(),
+			role: z.enum(["ADMIN", "STANDARD", "BILLING"]),
+			team_role: z.enum(["ADMIN", "CONTRIBUTOR"]),
+		}),
+	),
+	result_info: z.object({
+		page: z.number().optional().default(1),
+		per_page: z.number().optional().default(20),
+		count: z.number(),
+		total_count: z.number(),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zRemoveTeamMemberHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zRemoveTeamMemberPath = z.object({
+	team_id: z.string(),
+	user_id: z.string(),
+});
+
+/**
+ * Removed user ID
+ */
+export const zRemoveTeamMemberResponse = z.object({
+	result: z.object({
+		id: z.string(),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zSetTeamMemberBody = z.object({
+	role: z.enum(["ADMIN", "CONTRIBUTOR"]),
+});
+
+export const zSetTeamMemberHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zSetTeamMemberPath = z.object({
+	team_id: z.string(),
+	user_id: z.string(),
+});
+
+/**
+ * Team member
+ */
+export const zSetTeamMemberResponse = z.object({
+	result: z.object({
+		id: z.string(),
+		first_name: z.string().nullable(),
+		last_name: z.string().nullable(),
+		email: z.string().nullable(),
+		image: z.string().nullable(),
+		role: z.enum(["ADMIN", "STANDARD", "BILLING"]),
+		team_role: z.enum(["ADMIN", "CONTRIBUTOR"]),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zJoinTeamHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zJoinTeamPath = z.object({
+	team_id: z.string(),
+});
+
+/**
+ * Membership or pending request state
+ */
+export const zJoinTeamResponse = z.object({
+	result: z.object({
+		state: z.enum(["member", "pending"]),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zLeaveTeamHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zLeaveTeamPath = z.object({
+	team_id: z.string(),
+});
+
+/**
+ * Removed user ID
+ */
+export const zLeaveTeamResponse = z.object({
+	result: z.object({
+		id: z.string(),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zListTeamJoinRequestsHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zListTeamJoinRequestsPath = z.object({
+	team_id: z.string(),
+});
+
+export const zListTeamJoinRequestsQuery = z.object({
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
+});
+
+/**
+ * Paginated join requests
+ */
+export const zListTeamJoinRequestsResponse = z.object({
+	result: z.array(
+		z.object({
+			team_id: z.string(),
+			user: zOrgUser,
+			created_at: z.iso.datetime(),
+		}),
+	),
+	result_info: z.object({
+		page: z.number().optional().default(1),
+		per_page: z.number().optional().default(20),
+		count: z.number(),
+		total_count: z.number(),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zApproveTeamJoinRequestHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zApproveTeamJoinRequestPath = z.object({
+	team_id: z.string(),
+	user_id: z.string(),
+});
+
+/**
+ * New team member
+ */
+export const zApproveTeamJoinRequestResponse = z.object({
+	result: z.object({
+		id: z.string(),
+		first_name: z.string().nullable(),
+		last_name: z.string().nullable(),
+		email: z.string().nullable(),
+		image: z.string().nullable(),
+		role: z.enum(["ADMIN", "STANDARD", "BILLING"]),
+		team_role: z.enum(["ADMIN", "CONTRIBUTOR"]),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zDeleteTeamJoinRequestHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zDeleteTeamJoinRequestPath = z.object({
+	team_id: z.string(),
+	user_id: z.string(),
+});
+
+/**
+ * User ID of requester
+ */
+export const zDeleteTeamJoinRequestResponse = z.object({
+	result: z.object({
+		id: z.string(),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zListTeamProjectsHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zListTeamProjectsPath = z.object({
+	team_id: z.string(),
+});
+
+export const zListTeamProjectsQuery = z.object({
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
+});
+
+/**
+ * Paginated projects
+ */
+export const zListTeamProjectsResponse = z.object({
+	result: z.array(zProject),
+	result_info: z.object({
+		page: z.number().optional().default(1),
+		per_page: z.number().optional().default(20),
+		count: z.number(),
+		total_count: z.number(),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zListProjectTeamsHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zListProjectTeamsPath = z.object({
+	project_id: z.string(),
+});
+
+export const zListProjectTeamsQuery = z.object({
+	page: z.int().gte(1).optional().default(1),
+	per_page: z.int().gte(1).optional().default(20),
+});
+
+/**
+ * Paginated teams
+ */
+export const zListProjectTeamsResponse = z.object({
+	result: z.array(zTeam),
+	result_info: z.object({
+		page: z.number().optional().default(1),
+		per_page: z.number().optional().default(20),
+		count: z.number(),
+		total_count: z.number(),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zRemoveProjectTeamHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zRemoveProjectTeamPath = z.object({
+	team_id: z.string(),
+	project_id: z.string(),
+});
+
+/**
+ * Detached team ID
+ */
+export const zRemoveProjectTeamResponse = z.object({
+	result: z.object({
+		id: z.string(),
+	}),
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zAddProjectTeamHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+export const zAddProjectTeamPath = z.object({
+	team_id: z.string(),
+	project_id: z.string(),
+});
+
+/**
+ * Team
+ */
+export const zAddProjectTeamResponse = z.object({
+	result: zTeam,
+	success: z.boolean(),
+	errors: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+	messages: z.array(
+		z.object({
+			code: z.number(),
+			message: z.string(),
+			type: z.string().nullish(),
+		}),
+	),
+});
+
+export const zGetOrganisationAccessSettingsHeaders = z.object({
+	"X-OnlineOrNot-Organisation": z.string().optional(),
+});
+
+/**
+ * Organisation access settings
+ */
+export const zGetOrganisationAccessSettingsResponse = z.object({
+	result: zOrganisationAccessSettings,
 	success: z.boolean(),
 	errors: z.array(
 		z.object({

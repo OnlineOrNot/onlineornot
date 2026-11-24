@@ -1,7 +1,7 @@
 {
 	"schema": {
-		"commit": "0a0a0ad28c651096f4c496d4cf1b41091e4a8ceb",
-		"sha256": "f7b58bf558ea3fe6263b31e2d80026b2018d8a584eb70dd9231519c4e5445e3e"
+		"commit": "89f7f618cc3b8d4ffcc59182a81358f479846e78",
+		"sha256": "9cebd4506f9dc0448ec76aa5789ec01792600d4f6fd7c801cbb2d15b8f2c6558"
 	},
 	"commands": [
 		{
@@ -4967,7 +4967,7 @@
 			"operationId": "deleteProject",
 			"command": "onlineornot projects delete",
 			"words": ["projects", "delete"],
-			"description": "Requires PROJECTS:EDIT.",
+			"description": "Deleting a shared project removes all of its team links. Requires an organisation Admin, an Admin of an associated team, or an organisation-wide token with PROJECTS:EDIT.\n\nRequires PROJECTS:EDIT.",
 			"method": "DELETE",
 			"path": "/v1/projects/{project_id}",
 			"hasBody": false,
@@ -7608,7 +7608,7 @@
 			"operationId": "createToken",
 			"command": "onlineornot tokens create",
 			"words": ["tokens", "create"],
-			"description": "Create a new API token for the organization.\n\nYour API token grants or OAuth access token scopes must permit each requested permission.\n- EDIT permits READ or EDIT for the same scope.\n- READ permits only READ for the same scope.\n- The API returns HTTP 403 if your token does not have a required permission.\n- This limit does not apply when you use session cookies. LOGS:EDIT and LOGS:SEND still require current ADMIN membership.\n- OAuth callers also require current ADMIN membership to issue LOGS:EDIT or LOGS:SEND.\n- LOGS:SEND can be combined with other explicitly granted permissions. Tokens with LOGS:SEND may specify project_id; omit it or use null for unassigned.\n- Project scope applies only to sending; other grants remain organisation-wide.\n- Issuing LOGS:SEND requires LOGS:EDIT or explicit LOGS:SEND delegation authority in addition to API_TOKENS:EDIT for bearer callers. LOGS:EDIT itself does not authorize sending logs.\n- Project scope is fixed at creation. Revoke and replace the token to change it. A sending credential with API_TOKENS:EDIT may delegate sending only to its own project unless it also holds organisation-wide LOGS:EDIT.\n- Logs grants are available to authorized callers in every organisation. Ingestion and search are not available yet.\n\nExample requirements:\n- Read permissions: API_TOKENS:EDIT and UPTIME_CHECKS:READ (or UPTIME_CHECKS:EDIT).\n- Multiple permissions: API_TOKENS:EDIT, UPTIME_CHECKS:EDIT, and STATUS_PAGES:EDIT.\n\nRequires API_TOKENS:EDIT.",
+			"description": "Create a new API token for the organization.\n\nYour API token grants or OAuth access token scopes must permit each requested permission.\n- EDIT permits READ or EDIT for the same scope.\n- READ permits only READ for the same scope.\n- The API returns HTTP 403 if your token does not have a required permission.\n- This limit does not apply when you use session cookies. LOGS:EDIT and LOGS:SEND still require current ADMIN membership.\n- OAuth callers also require current ADMIN membership to issue LOGS:EDIT or LOGS:SEND.\n- Session and OAuth callers need current organisation Admin membership to issue TEAMS:READ, TEAMS:EDIT, PROJECTS:EDIT, or PEOPLE:EDIT. Only an organisation-wide API token can delegate these grants, and it must already hold the requested authority.\n- LOGS:SEND can be combined with other explicitly granted permissions. Tokens with LOGS:SEND may specify project_id; omit it or use null for unassigned.\n- Project scope applies only to sending; other grants remain organisation-wide.\n- Issuing LOGS:SEND requires LOGS:EDIT or explicit LOGS:SEND delegation authority in addition to API_TOKENS:EDIT for bearer callers. LOGS:EDIT itself does not authorize sending logs.\n- Project scope is fixed at creation. Revoke and replace the token to change it. A sending credential with API_TOKENS:EDIT may delegate sending only to its own project unless it also holds organisation-wide LOGS:EDIT.\n- Logs grants are available to authorized callers in every organisation. Ingestion and search are not available yet.\n\nExample requirements:\n- Read permissions: API_TOKENS:EDIT and UPTIME_CHECKS:READ (or UPTIME_CHECKS:EDIT).\n- Multiple permissions: API_TOKENS:EDIT, UPTIME_CHECKS:EDIT, and STATUS_PAGES:EDIT.\n\nRequires API_TOKENS:EDIT.",
 			"method": "POST",
 			"path": "/v1/tokens",
 			"hasBody": true,
