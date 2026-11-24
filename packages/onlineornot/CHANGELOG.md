@@ -1,5 +1,16 @@
 # onlineornot
 
+## 2.0.4
+
+### Patch Changes
+
+- [#148](https://github.com/OnlineOrNot/onlineornot/pull/148) [`cc1a8eb`](https://github.com/OnlineOrNot/onlineornot/commit/cc1a8ebe56cc4c3dbadfe4bb803604404dbc20d8) Thanks [@rozenmd](https://github.com/rozenmd)! - fix: Remove the `--project-id` flag from check update commands
+
+  The API rejects `project_id` on check updates, so the flag always failed. Use `onlineornot checks move` (or `resources move`) to change a check's project.
+
+- Updated dependencies [[`cc1a8eb`](https://github.com/OnlineOrNot/onlineornot/commit/cc1a8ebe56cc4c3dbadfe4bb803604404dbc20d8), [`ffeaff7`](https://github.com/OnlineOrNot/onlineornot/commit/ffeaff7e89a09c3659f9345364d3e7f4318bc0b2)]:
+  - @onlineornot/api@0.13.0
+
 ## 2.0.3
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @onlineornot/api
 
+## 0.13.0
+
+### Minor Changes
+
+- [#148](https://github.com/OnlineOrNot/onlineornot/pull/148) [`cc1a8eb`](https://github.com/OnlineOrNot/onlineornot/commit/cc1a8ebe56cc4c3dbadfe4bb803604404dbc20d8) Thanks [@rozenmd](https://github.com/rozenmd)! - feature: Refresh the SDK from the latest API schema
+
+  Expose span usage and pay-as-you-go budget fields in log usage responses, and include user agents in audit log entries.
+
+  The SDK no longer accepts request fields the API always rejects. `project_id` is removed from check, heartbeat, maintenance window, webhook and environment variable update bodies; use the move operations to change a resource's project.
+
+- [#152](https://github.com/OnlineOrNot/onlineornot/pull/152) [`ffeaff7`](https://github.com/OnlineOrNot/onlineornot/commit/ffeaff7e89a09c3659f9345364d3e7f4318bc0b2) Thanks [@dolly-session-bot](https://github.com/apps/dolly-session-bot)! - feature: Add Teams and organisation access settings operations
+
+  Refresh the SDK from the latest API schema. New operations manage teams (`listTeams`, `createTeam`, `getTeam`, `updateTeam`, `deleteTeam`), team membership (`listTeamMembers`, `setTeamMember`, `removeTeamMember`, `joinTeam`, `leaveTeam`), join requests (`listTeamJoinRequests`, `approveTeamJoinRequest`, `deleteTeamJoinRequest`), and team–project links (`listTeamProjects`, `listProjectTeams`, `addProjectTeam`, `removeProjectTeam`). `getOrganisationAccessSettings` reads the organisation's open-membership setting and the caller's capabilities. API token grants accept the new `TEAMS` scope.
+
 ## 0.12.0
 
 ### Minor Changes
