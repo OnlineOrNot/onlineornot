@@ -671,6 +671,78 @@
 				"X-OnlineOrNot-Organisation": "organisation"
 			}
 		},
+		"listTeams": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"createTeam": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getTeam": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"updateTeam": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"deleteTeam": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listTeamMembers": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"setTeamMember": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"removeTeamMember": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"leaveTeam": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"joinTeam": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listTeamJoinRequests": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"approveTeamJoinRequest": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"deleteTeamJoinRequest": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listTeamProjects": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"listProjectTeams": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"addProjectTeam": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"removeProjectTeam": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		"getOrganisationAccessSettings": {
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
 		"getStatusPage": {
 			"status": "generated",
 			"group": "status-pages",

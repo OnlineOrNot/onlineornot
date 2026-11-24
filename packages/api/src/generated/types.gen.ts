@@ -2898,6 +2898,35 @@ export type Project = {
 	updated_at: string;
 };
 
+export type Team = {
+	/**
+	 * Team ID.
+	 */
+	id: string;
+	name: string;
+	created_at: string;
+	updated_at: string;
+	membership_role: "ADMIN" | "CONTRIBUTOR" | null;
+	join_requested: boolean;
+	capabilities: {
+		can_manage_team: boolean;
+		can_manage_members: boolean;
+		can_delete_team: boolean;
+		can_join: boolean;
+		can_leave: boolean;
+	};
+};
+
+export type OrganisationAccessSettings = {
+	open_membership: boolean;
+	capabilities: {
+		can_change_open_membership: boolean;
+		can_create_team: boolean;
+		can_create_project: boolean;
+		can_manage_organisation_tokens: boolean;
+	};
+};
+
 export type StatusPage = {
 	/**
 	 * Status Page ID
@@ -4267,6 +4296,7 @@ export type ListTokensResponses = {
 					| {
 							scope:
 								| "PROJECTS"
+								| "TEAMS"
 								| "LOGS"
 								| "UPTIME_CHECKS"
 								| "STATUS_PAGES"
@@ -4324,6 +4354,7 @@ export type CreateTokenData = {
 			| {
 					scope:
 						| "PROJECTS"
+						| "TEAMS"
 						| "LOGS"
 						| "UPTIME_CHECKS"
 						| "STATUS_PAGES"
@@ -4371,7 +4402,7 @@ export type CreateTokenErrors = {
 	 */
 	401: PublicApiErrorResponse;
 	/**
-	 * Your token does not have API_TOKENS:EDIT or a requested permission
+	 * Insufficient permissions to issue one or more requested grants
 	 */
 	403: PublicApiErrorResponse;
 	/**
@@ -4588,6 +4619,7 @@ export type GetTokenResponses = {
 				| {
 						scope:
 							| "PROJECTS"
+							| "TEAMS"
 							| "LOGS"
 							| "UPTIME_CHECKS"
 							| "STATUS_PAGES"
@@ -8596,7 +8628,7 @@ export type CreateInvitationErrors = {
 	 */
 	401: PublicApiErrorResponse;
 	/**
-	 * Forbidden - Plan limit reached
+	 * Forbidden - Insufficient permissions or plan limit reached
 	 */
 	403: PublicApiErrorResponse;
 	/**
@@ -9251,7 +9283,7 @@ export type DeleteProjectErrors = {
 	 */
 	401: PublicApiErrorResponse;
 	/**
-	 * Insufficient permissions
+	 * Insufficient permissions to delete this project
 	 */
 	403: PublicApiErrorResponse;
 	/**
@@ -9458,6 +9490,1517 @@ export type UpdateProjectResponses = {
 
 export type UpdateProjectResponse =
 	UpdateProjectResponses[keyof UpdateProjectResponses];
+
+export type ListTeamsData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path?: never;
+	query?: {
+		/**
+		 * Page number of paginated results, starting at 1.
+		 */
+		page?: number;
+		/**
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
+		 */
+		per_page?: number;
+	};
+	url: "/v1/teams";
+};
+
+export type ListTeamsErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type ListTeamsError = ListTeamsErrors[keyof ListTeamsErrors];
+
+export type ListTeamsResponses = {
+	/**
+	 * Paginated teams
+	 */
+	200: {
+		result: Array<Team>;
+		result_info: {
+			/**
+			 * Page number of paginated results.
+			 */
+			page?: number;
+			/**
+			 * Number of items per page.
+			 */
+			per_page?: number;
+			/**
+			 * Number of items on the current page.
+			 */
+			count: number;
+			/**
+			 * Total number of items.
+			 */
+			total_count: number;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type ListTeamsResponse = ListTeamsResponses[keyof ListTeamsResponses];
+
+export type CreateTeamData = {
+	body: {
+		name: string;
+	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path?: never;
+	query?: never;
+	url: "/v1/teams";
+};
+
+export type CreateTeamErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Team name already in use
+	 */
+	409: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type CreateTeamError = CreateTeamErrors[keyof CreateTeamErrors];
+
+export type CreateTeamResponses = {
+	/**
+	 * Team
+	 */
+	201: {
+		result: Team;
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type CreateTeamResponse = CreateTeamResponses[keyof CreateTeamResponses];
+
+export type DeleteTeamData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Team ID.
+		 */
+		team_id: string;
+	};
+	query?: never;
+	url: "/v1/teams/{team_id}";
+};
+
+export type DeleteTeamErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Team not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type DeleteTeamError = DeleteTeamErrors[keyof DeleteTeamErrors];
+
+export type DeleteTeamResponses = {
+	/**
+	 * Deleted team ID
+	 */
+	200: {
+		result: {
+			/**
+			 * Team ID.
+			 */
+			id: string;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type DeleteTeamResponse = DeleteTeamResponses[keyof DeleteTeamResponses];
+
+export type GetTeamData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Team ID.
+		 */
+		team_id: string;
+	};
+	query?: never;
+	url: "/v1/teams/{team_id}";
+};
+
+export type GetTeamErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Team not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type GetTeamError = GetTeamErrors[keyof GetTeamErrors];
+
+export type GetTeamResponses = {
+	/**
+	 * Team
+	 */
+	200: {
+		result: Team;
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type GetTeamResponse = GetTeamResponses[keyof GetTeamResponses];
+
+export type UpdateTeamData = {
+	body: {
+		name: string;
+	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Team ID.
+		 */
+		team_id: string;
+	};
+	query?: never;
+	url: "/v1/teams/{team_id}";
+};
+
+export type UpdateTeamErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Team not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Team name already in use
+	 */
+	409: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type UpdateTeamError = UpdateTeamErrors[keyof UpdateTeamErrors];
+
+export type UpdateTeamResponses = {
+	/**
+	 * Team
+	 */
+	200: {
+		result: Team;
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type UpdateTeamResponse = UpdateTeamResponses[keyof UpdateTeamResponses];
+
+export type ListTeamMembersData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Team ID.
+		 */
+		team_id: string;
+	};
+	query?: {
+		/**
+		 * Page number of paginated results, starting at 1.
+		 */
+		page?: number;
+		/**
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
+		 */
+		per_page?: number;
+	};
+	url: "/v1/teams/{team_id}/members";
+};
+
+export type ListTeamMembersErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Team not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type ListTeamMembersError =
+	ListTeamMembersErrors[keyof ListTeamMembersErrors];
+
+export type ListTeamMembersResponses = {
+	/**
+	 * Paginated team members
+	 */
+	200: {
+		result: Array<{
+			/**
+			 * The unique identifier of the user
+			 */
+			id: string;
+			/**
+			 * The user's first name
+			 */
+			first_name: string | null;
+			/**
+			 * The user's last name
+			 */
+			last_name: string | null;
+			/**
+			 * The user's email address
+			 */
+			email: string | null;
+			/**
+			 * URL to the user's avatar image
+			 */
+			image: string | null;
+			/**
+			 * The role of the user in the organisation. ADMIN manages the organisation, its members and billing. STANDARD manages monitoring resources. BILLING manages only the subscription, payment details and invoices, and cannot access monitoring data, members, projects or API tokens.
+			 */
+			role: "ADMIN" | "STANDARD" | "BILLING";
+			team_role: "ADMIN" | "CONTRIBUTOR";
+		}>;
+		result_info: {
+			/**
+			 * Page number of paginated results.
+			 */
+			page?: number;
+			/**
+			 * Number of items per page.
+			 */
+			per_page?: number;
+			/**
+			 * Number of items on the current page.
+			 */
+			count: number;
+			/**
+			 * Total number of items.
+			 */
+			total_count: number;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type ListTeamMembersResponse =
+	ListTeamMembersResponses[keyof ListTeamMembersResponses];
+
+export type RemoveTeamMemberData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Team ID.
+		 */
+		team_id: string;
+		/**
+		 * The unique identifier of the user
+		 */
+		user_id: string;
+	};
+	query?: never;
+	url: "/v1/teams/{team_id}/members/{user_id}";
+};
+
+export type RemoveTeamMemberErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Team or team member not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type RemoveTeamMemberError =
+	RemoveTeamMemberErrors[keyof RemoveTeamMemberErrors];
+
+export type RemoveTeamMemberResponses = {
+	/**
+	 * Removed user ID
+	 */
+	200: {
+		result: {
+			/**
+			 * The unique identifier of the user
+			 */
+			id: string;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type RemoveTeamMemberResponse =
+	RemoveTeamMemberResponses[keyof RemoveTeamMemberResponses];
+
+export type SetTeamMemberData = {
+	body: {
+		role: "ADMIN" | "CONTRIBUTOR";
+	};
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Team ID.
+		 */
+		team_id: string;
+		/**
+		 * The unique identifier of the user
+		 */
+		user_id: string;
+	};
+	query?: never;
+	url: "/v1/teams/{team_id}/members/{user_id}";
+};
+
+export type SetTeamMemberErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Team not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * User is not eligible for team membership
+	 */
+	409: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type SetTeamMemberError = SetTeamMemberErrors[keyof SetTeamMemberErrors];
+
+export type SetTeamMemberResponses = {
+	/**
+	 * Team member
+	 */
+	200: {
+		result: {
+			/**
+			 * The unique identifier of the user
+			 */
+			id: string;
+			/**
+			 * The user's first name
+			 */
+			first_name: string | null;
+			/**
+			 * The user's last name
+			 */
+			last_name: string | null;
+			/**
+			 * The user's email address
+			 */
+			email: string | null;
+			/**
+			 * URL to the user's avatar image
+			 */
+			image: string | null;
+			/**
+			 * The role of the user in the organisation. ADMIN manages the organisation, its members and billing. STANDARD manages monitoring resources. BILLING manages only the subscription, payment details and invoices, and cannot access monitoring data, members, projects or API tokens.
+			 */
+			role: "ADMIN" | "STANDARD" | "BILLING";
+			team_role: "ADMIN" | "CONTRIBUTOR";
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type SetTeamMemberResponse =
+	SetTeamMemberResponses[keyof SetTeamMemberResponses];
+
+export type JoinTeamData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Team ID.
+		 */
+		team_id: string;
+	};
+	query?: never;
+	url: "/v1/teams/{team_id}/join";
+};
+
+export type JoinTeamErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Team not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type JoinTeamError = JoinTeamErrors[keyof JoinTeamErrors];
+
+export type JoinTeamResponses = {
+	/**
+	 * Membership or pending request state
+	 */
+	200: {
+		result: {
+			state: "member" | "pending";
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type JoinTeamResponse = JoinTeamResponses[keyof JoinTeamResponses];
+
+export type LeaveTeamData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Team ID.
+		 */
+		team_id: string;
+	};
+	query?: never;
+	url: "/v1/teams/{team_id}/membership";
+};
+
+export type LeaveTeamErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Team or team membership not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type LeaveTeamError = LeaveTeamErrors[keyof LeaveTeamErrors];
+
+export type LeaveTeamResponses = {
+	/**
+	 * Removed user ID
+	 */
+	200: {
+		result: {
+			/**
+			 * The unique identifier of the user
+			 */
+			id: string;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type LeaveTeamResponse = LeaveTeamResponses[keyof LeaveTeamResponses];
+
+export type ListTeamJoinRequestsData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Team ID.
+		 */
+		team_id: string;
+	};
+	query?: {
+		/**
+		 * Page number of paginated results, starting at 1.
+		 */
+		page?: number;
+		/**
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
+		 */
+		per_page?: number;
+	};
+	url: "/v1/teams/{team_id}/join-requests";
+};
+
+export type ListTeamJoinRequestsErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Team not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type ListTeamJoinRequestsError =
+	ListTeamJoinRequestsErrors[keyof ListTeamJoinRequestsErrors];
+
+export type ListTeamJoinRequestsResponses = {
+	/**
+	 * Paginated join requests
+	 */
+	200: {
+		result: Array<{
+			/**
+			 * Team ID.
+			 */
+			team_id: string;
+			user: OrgUser;
+			created_at: string;
+		}>;
+		result_info: {
+			/**
+			 * Page number of paginated results.
+			 */
+			page?: number;
+			/**
+			 * Number of items per page.
+			 */
+			per_page?: number;
+			/**
+			 * Number of items on the current page.
+			 */
+			count: number;
+			/**
+			 * Total number of items.
+			 */
+			total_count: number;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type ListTeamJoinRequestsResponse =
+	ListTeamJoinRequestsResponses[keyof ListTeamJoinRequestsResponses];
+
+export type ApproveTeamJoinRequestData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Team ID.
+		 */
+		team_id: string;
+		/**
+		 * The unique identifier of the user
+		 */
+		user_id: string;
+	};
+	query?: never;
+	url: "/v1/teams/{team_id}/join-requests/{user_id}/approve";
+};
+
+export type ApproveTeamJoinRequestErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Team or join request not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * User is not eligible for team membership
+	 */
+	409: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type ApproveTeamJoinRequestError =
+	ApproveTeamJoinRequestErrors[keyof ApproveTeamJoinRequestErrors];
+
+export type ApproveTeamJoinRequestResponses = {
+	/**
+	 * New team member
+	 */
+	201: {
+		result: {
+			/**
+			 * The unique identifier of the user
+			 */
+			id: string;
+			/**
+			 * The user's first name
+			 */
+			first_name: string | null;
+			/**
+			 * The user's last name
+			 */
+			last_name: string | null;
+			/**
+			 * The user's email address
+			 */
+			email: string | null;
+			/**
+			 * URL to the user's avatar image
+			 */
+			image: string | null;
+			/**
+			 * The role of the user in the organisation. ADMIN manages the organisation, its members and billing. STANDARD manages monitoring resources. BILLING manages only the subscription, payment details and invoices, and cannot access monitoring data, members, projects or API tokens.
+			 */
+			role: "ADMIN" | "STANDARD" | "BILLING";
+			team_role: "ADMIN" | "CONTRIBUTOR";
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type ApproveTeamJoinRequestResponse =
+	ApproveTeamJoinRequestResponses[keyof ApproveTeamJoinRequestResponses];
+
+export type DeleteTeamJoinRequestData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Team ID.
+		 */
+		team_id: string;
+		/**
+		 * The unique identifier of the user
+		 */
+		user_id: string;
+	};
+	query?: never;
+	url: "/v1/teams/{team_id}/join-requests/{user_id}";
+};
+
+export type DeleteTeamJoinRequestErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Team or join request not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type DeleteTeamJoinRequestError =
+	DeleteTeamJoinRequestErrors[keyof DeleteTeamJoinRequestErrors];
+
+export type DeleteTeamJoinRequestResponses = {
+	/**
+	 * User ID of requester
+	 */
+	200: {
+		result: {
+			/**
+			 * The unique identifier of the user
+			 */
+			id: string;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type DeleteTeamJoinRequestResponse =
+	DeleteTeamJoinRequestResponses[keyof DeleteTeamJoinRequestResponses];
+
+export type ListTeamProjectsData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Team ID.
+		 */
+		team_id: string;
+	};
+	query?: {
+		/**
+		 * Page number of paginated results, starting at 1.
+		 */
+		page?: number;
+		/**
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
+		 */
+		per_page?: number;
+	};
+	url: "/v1/teams/{team_id}/projects";
+};
+
+export type ListTeamProjectsErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Team not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type ListTeamProjectsError =
+	ListTeamProjectsErrors[keyof ListTeamProjectsErrors];
+
+export type ListTeamProjectsResponses = {
+	/**
+	 * Paginated projects
+	 */
+	200: {
+		result: Array<Project>;
+		result_info: {
+			/**
+			 * Page number of paginated results.
+			 */
+			page?: number;
+			/**
+			 * Number of items per page.
+			 */
+			per_page?: number;
+			/**
+			 * Number of items on the current page.
+			 */
+			count: number;
+			/**
+			 * Total number of items.
+			 */
+			total_count: number;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type ListTeamProjectsResponse =
+	ListTeamProjectsResponses[keyof ListTeamProjectsResponses];
+
+export type ListProjectTeamsData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Project ID.
+		 */
+		project_id: string;
+	};
+	query?: {
+		/**
+		 * Page number of paginated results, starting at 1.
+		 */
+		page?: number;
+		/**
+		 * Number of items per page. Defaults to 20. Continue requesting subsequent pages until the accumulated item count reaches result_info.total_count or a page is empty.
+		 */
+		per_page?: number;
+	};
+	url: "/v1/projects/{project_id}/teams";
+};
+
+export type ListProjectTeamsErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Project not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type ListProjectTeamsError =
+	ListProjectTeamsErrors[keyof ListProjectTeamsErrors];
+
+export type ListProjectTeamsResponses = {
+	/**
+	 * Paginated teams
+	 */
+	200: {
+		result: Array<Team>;
+		result_info: {
+			/**
+			 * Page number of paginated results.
+			 */
+			page?: number;
+			/**
+			 * Number of items per page.
+			 */
+			per_page?: number;
+			/**
+			 * Number of items on the current page.
+			 */
+			count: number;
+			/**
+			 * Total number of items.
+			 */
+			total_count: number;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type ListProjectTeamsResponse =
+	ListProjectTeamsResponses[keyof ListProjectTeamsResponses];
+
+export type RemoveProjectTeamData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Team ID.
+		 */
+		team_id: string;
+		/**
+		 * Project ID.
+		 */
+		project_id: string;
+	};
+	query?: never;
+	url: "/v1/projects/{project_id}/teams/{team_id}";
+};
+
+export type RemoveProjectTeamErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Project, team or link not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type RemoveProjectTeamError =
+	RemoveProjectTeamErrors[keyof RemoveProjectTeamErrors];
+
+export type RemoveProjectTeamResponses = {
+	/**
+	 * Detached team ID
+	 */
+	200: {
+		result: {
+			/**
+			 * Team ID.
+			 */
+			id: string;
+		};
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type RemoveProjectTeamResponse =
+	RemoveProjectTeamResponses[keyof RemoveProjectTeamResponses];
+
+export type AddProjectTeamData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path: {
+		/**
+		 * Team ID.
+		 */
+		team_id: string;
+		/**
+		 * Project ID.
+		 */
+		project_id: string;
+	};
+	query?: never;
+	url: "/v1/projects/{project_id}/teams/{team_id}";
+};
+
+export type AddProjectTeamErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Project or team not found
+	 */
+	404: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type AddProjectTeamError =
+	AddProjectTeamErrors[keyof AddProjectTeamErrors];
+
+export type AddProjectTeamResponses = {
+	/**
+	 * Team
+	 */
+	200: {
+		result: Team;
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type AddProjectTeamResponse =
+	AddProjectTeamResponses[keyof AddProjectTeamResponses];
+
+export type GetOrganisationAccessSettingsData = {
+	body?: never;
+	headers?: {
+		/**
+		 * Public organization ID to select from an OAuth grant. Required for grants authorizing multiple organizations. Omit for single-organization grants and API tokens.
+		 */
+		"X-OnlineOrNot-Organisation"?: string;
+	};
+	path?: never;
+	query?: never;
+	url: "/v1/organisation/access-settings";
+};
+
+export type GetOrganisationAccessSettingsErrors = {
+	/**
+	 * Invalid request
+	 */
+	400: PublicApiBadRequest;
+	/**
+	 * Missing or invalid credentials
+	 */
+	401: PublicApiErrorResponse;
+	/**
+	 * Insufficient permissions
+	 */
+	403: PublicApiErrorResponse;
+	/**
+	 * Internal server error
+	 */
+	500: PublicApiServerError;
+};
+
+export type GetOrganisationAccessSettingsError =
+	GetOrganisationAccessSettingsErrors[keyof GetOrganisationAccessSettingsErrors];
+
+export type GetOrganisationAccessSettingsResponses = {
+	/**
+	 * Organisation access settings
+	 */
+	200: {
+		result: OrganisationAccessSettings;
+		/**
+		 * Whether the API call was successful
+		 */
+		success: boolean;
+		errors: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+		messages: Array<{
+			code: number;
+			message: string;
+			type?: string | null;
+		}>;
+	};
+};
+
+export type GetOrganisationAccessSettingsResponse =
+	GetOrganisationAccessSettingsResponses[keyof GetOrganisationAccessSettingsResponses];
 
 export type DeleteStatusPageData = {
 	body?: never;

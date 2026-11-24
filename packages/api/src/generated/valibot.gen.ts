@@ -2251,6 +2251,32 @@ export const vProject = v.strictObject({
 	updated_at: v.pipe(v.string(), v.isoTimestamp()),
 });
 
+export const vTeam = v.strictObject({
+	id: v.string(),
+	name: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+	created_at: v.pipe(v.string(), v.isoTimestamp()),
+	updated_at: v.pipe(v.string(), v.isoTimestamp()),
+	membership_role: v.nullable(v.picklist(["ADMIN", "CONTRIBUTOR"])),
+	join_requested: v.boolean(),
+	capabilities: v.strictObject({
+		can_manage_team: v.boolean(),
+		can_manage_members: v.boolean(),
+		can_delete_team: v.boolean(),
+		can_join: v.boolean(),
+		can_leave: v.boolean(),
+	}),
+});
+
+export const vOrganisationAccessSettings = v.strictObject({
+	open_membership: v.boolean(),
+	capabilities: v.strictObject({
+		can_change_open_membership: v.boolean(),
+		can_create_team: v.boolean(),
+		can_create_project: v.boolean(),
+		can_manage_organisation_tokens: v.boolean(),
+	}),
+});
+
 export const vStatusPage = v.object({
 	id: v.string(),
 	name: v.pipe(v.string(), v.minLength(1), v.maxLength(100)),
@@ -2856,6 +2882,7 @@ export const vListTokensResponse = v.object({
 						v.object({
 							scope: v.picklist([
 								"PROJECTS",
+								"TEAMS",
 								"LOGS",
 								"UPTIME_CHECKS",
 								"STATUS_PAGES",
@@ -2908,6 +2935,7 @@ export const vCreateTokenBody = v.object({
 			v.object({
 				scope: v.picklist([
 					"PROJECTS",
+					"TEAMS",
 					"LOGS",
 					"UPTIME_CHECKS",
 					"STATUS_PAGES",
@@ -3019,6 +3047,7 @@ export const vGetTokenResponse = v.object({
 				v.object({
 					scope: v.picklist([
 						"PROJECTS",
+						"TEAMS",
 						"LOGS",
 						"UPTIME_CHECKS",
 						"STATUS_PAGES",
@@ -4998,6 +5027,651 @@ export const vUpdateProjectPath = v.object({
  */
 export const vUpdateProjectResponse = v.object({
 	result: vProject,
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vListTeamsHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vListTeamsQuery = v.object({
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+});
+
+/**
+ * Paginated teams
+ */
+export const vListTeamsResponse = v.object({
+	result: v.array(vTeam),
+	result_info: v.object({
+		page: v.optional(v.number(), 1),
+		per_page: v.optional(v.number(), 20),
+		count: v.number(),
+		total_count: v.number(),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vCreateTeamBody = v.strictObject({
+	name: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+});
+
+export const vCreateTeamHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+/**
+ * Team
+ */
+export const vCreateTeamResponse = v.object({
+	result: vTeam,
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vDeleteTeamHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vDeleteTeamPath = v.object({
+	team_id: v.string(),
+});
+
+/**
+ * Deleted team ID
+ */
+export const vDeleteTeamResponse = v.object({
+	result: v.strictObject({
+		id: v.string(),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vGetTeamHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vGetTeamPath = v.object({
+	team_id: v.string(),
+});
+
+/**
+ * Team
+ */
+export const vGetTeamResponse = v.object({
+	result: vTeam,
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vUpdateTeamBody = v.strictObject({
+	name: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+});
+
+export const vUpdateTeamHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vUpdateTeamPath = v.object({
+	team_id: v.string(),
+});
+
+/**
+ * Team
+ */
+export const vUpdateTeamResponse = v.object({
+	result: vTeam,
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vListTeamMembersHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vListTeamMembersPath = v.object({
+	team_id: v.string(),
+});
+
+export const vListTeamMembersQuery = v.object({
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+});
+
+/**
+ * Paginated team members
+ */
+export const vListTeamMembersResponse = v.object({
+	result: v.array(
+		v.strictObject({
+			id: v.string(),
+			first_name: v.nullable(v.string()),
+			last_name: v.nullable(v.string()),
+			email: v.nullable(v.string()),
+			image: v.nullable(v.string()),
+			role: v.picklist(["ADMIN", "STANDARD", "BILLING"]),
+			team_role: v.picklist(["ADMIN", "CONTRIBUTOR"]),
+		}),
+	),
+	result_info: v.object({
+		page: v.optional(v.number(), 1),
+		per_page: v.optional(v.number(), 20),
+		count: v.number(),
+		total_count: v.number(),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vRemoveTeamMemberHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vRemoveTeamMemberPath = v.object({
+	team_id: v.string(),
+	user_id: v.string(),
+});
+
+/**
+ * Removed user ID
+ */
+export const vRemoveTeamMemberResponse = v.object({
+	result: v.strictObject({
+		id: v.string(),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vSetTeamMemberBody = v.strictObject({
+	role: v.picklist(["ADMIN", "CONTRIBUTOR"]),
+});
+
+export const vSetTeamMemberHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vSetTeamMemberPath = v.object({
+	team_id: v.string(),
+	user_id: v.string(),
+});
+
+/**
+ * Team member
+ */
+export const vSetTeamMemberResponse = v.object({
+	result: v.strictObject({
+		id: v.string(),
+		first_name: v.nullable(v.string()),
+		last_name: v.nullable(v.string()),
+		email: v.nullable(v.string()),
+		image: v.nullable(v.string()),
+		role: v.picklist(["ADMIN", "STANDARD", "BILLING"]),
+		team_role: v.picklist(["ADMIN", "CONTRIBUTOR"]),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vJoinTeamHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vJoinTeamPath = v.object({
+	team_id: v.string(),
+});
+
+/**
+ * Membership or pending request state
+ */
+export const vJoinTeamResponse = v.object({
+	result: v.strictObject({
+		state: v.picklist(["member", "pending"]),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vLeaveTeamHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vLeaveTeamPath = v.object({
+	team_id: v.string(),
+});
+
+/**
+ * Removed user ID
+ */
+export const vLeaveTeamResponse = v.object({
+	result: v.strictObject({
+		id: v.string(),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vListTeamJoinRequestsHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vListTeamJoinRequestsPath = v.object({
+	team_id: v.string(),
+});
+
+export const vListTeamJoinRequestsQuery = v.object({
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+});
+
+/**
+ * Paginated join requests
+ */
+export const vListTeamJoinRequestsResponse = v.object({
+	result: v.array(
+		v.strictObject({
+			team_id: v.string(),
+			user: vOrgUser,
+			created_at: v.pipe(v.string(), v.isoTimestamp()),
+		}),
+	),
+	result_info: v.object({
+		page: v.optional(v.number(), 1),
+		per_page: v.optional(v.number(), 20),
+		count: v.number(),
+		total_count: v.number(),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vApproveTeamJoinRequestHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vApproveTeamJoinRequestPath = v.object({
+	team_id: v.string(),
+	user_id: v.string(),
+});
+
+/**
+ * New team member
+ */
+export const vApproveTeamJoinRequestResponse = v.object({
+	result: v.strictObject({
+		id: v.string(),
+		first_name: v.nullable(v.string()),
+		last_name: v.nullable(v.string()),
+		email: v.nullable(v.string()),
+		image: v.nullable(v.string()),
+		role: v.picklist(["ADMIN", "STANDARD", "BILLING"]),
+		team_role: v.picklist(["ADMIN", "CONTRIBUTOR"]),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vDeleteTeamJoinRequestHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vDeleteTeamJoinRequestPath = v.object({
+	team_id: v.string(),
+	user_id: v.string(),
+});
+
+/**
+ * User ID of requester
+ */
+export const vDeleteTeamJoinRequestResponse = v.object({
+	result: v.strictObject({
+		id: v.string(),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vListTeamProjectsHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vListTeamProjectsPath = v.object({
+	team_id: v.string(),
+});
+
+export const vListTeamProjectsQuery = v.object({
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+});
+
+/**
+ * Paginated projects
+ */
+export const vListTeamProjectsResponse = v.object({
+	result: v.array(vProject),
+	result_info: v.object({
+		page: v.optional(v.number(), 1),
+		per_page: v.optional(v.number(), 20),
+		count: v.number(),
+		total_count: v.number(),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vListProjectTeamsHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vListProjectTeamsPath = v.object({
+	project_id: v.string(),
+});
+
+export const vListProjectTeamsQuery = v.object({
+	page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 1),
+	per_page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1)), 20),
+});
+
+/**
+ * Paginated teams
+ */
+export const vListProjectTeamsResponse = v.object({
+	result: v.array(vTeam),
+	result_info: v.object({
+		page: v.optional(v.number(), 1),
+		per_page: v.optional(v.number(), 20),
+		count: v.number(),
+		total_count: v.number(),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vRemoveProjectTeamHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vRemoveProjectTeamPath = v.object({
+	team_id: v.string(),
+	project_id: v.string(),
+});
+
+/**
+ * Detached team ID
+ */
+export const vRemoveProjectTeamResponse = v.object({
+	result: v.strictObject({
+		id: v.string(),
+	}),
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vAddProjectTeamHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+export const vAddProjectTeamPath = v.object({
+	team_id: v.string(),
+	project_id: v.string(),
+});
+
+/**
+ * Team
+ */
+export const vAddProjectTeamResponse = v.object({
+	result: vTeam,
+	success: v.boolean(),
+	errors: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+	messages: v.array(
+		v.object({
+			code: v.number(),
+			message: v.string(),
+			type: v.nullish(v.string()),
+		}),
+	),
+});
+
+export const vGetOrganisationAccessSettingsHeaders = v.object({
+	"X-OnlineOrNot-Organisation": v.optional(v.string()),
+});
+
+/**
+ * Organisation access settings
+ */
+export const vGetOrganisationAccessSettingsResponse = v.object({
+	result: vOrganisationAccessSettings,
 	success: v.boolean(),
 	errors: v.array(
 		v.object({

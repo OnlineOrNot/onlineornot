@@ -9,6 +9,12 @@ import type {
 } from "./client";
 import { client } from "./client.gen";
 import type {
+	AddProjectTeamData,
+	AddProjectTeamErrors,
+	AddProjectTeamResponses,
+	ApproveTeamJoinRequestData,
+	ApproveTeamJoinRequestErrors,
+	ApproveTeamJoinRequestResponses,
 	CreateBrowserCheckData,
 	CreateBrowserCheckErrors,
 	CreateBrowserCheckResponses,
@@ -57,6 +63,9 @@ import type {
 	CreateTcpCheckData,
 	CreateTcpCheckErrors,
 	CreateTcpCheckResponses,
+	CreateTeamData,
+	CreateTeamErrors,
+	CreateTeamResponses,
 	CreateTokenData,
 	CreateTokenErrors,
 	CreateTokenResponses,
@@ -111,6 +120,12 @@ import type {
 	DeleteTcpCheckData,
 	DeleteTcpCheckErrors,
 	DeleteTcpCheckResponses,
+	DeleteTeamData,
+	DeleteTeamErrors,
+	DeleteTeamJoinRequestData,
+	DeleteTeamJoinRequestErrors,
+	DeleteTeamJoinRequestResponses,
+	DeleteTeamResponses,
 	DeleteTokenData,
 	DeleteTokenErrors,
 	DeleteTokenResponses,
@@ -147,6 +162,9 @@ import type {
 	GetMaintenanceWindowData,
 	GetMaintenanceWindowErrors,
 	GetMaintenanceWindowResponses,
+	GetOrganisationAccessSettingsData,
+	GetOrganisationAccessSettingsErrors,
+	GetOrganisationAccessSettingsResponses,
 	GetProjectData,
 	GetProjectErrors,
 	GetProjectResponses,
@@ -174,6 +192,9 @@ import type {
 	GetTcpCheckData,
 	GetTcpCheckErrors,
 	GetTcpCheckResponses,
+	GetTeamData,
+	GetTeamErrors,
+	GetTeamResponses,
 	GetTokenData,
 	GetTokenErrors,
 	GetTokenPermissionsData,
@@ -195,6 +216,12 @@ import type {
 	GetWebhookDeliverySummaryResponses,
 	GetWebhookErrors,
 	GetWebhookResponses,
+	JoinTeamData,
+	JoinTeamErrors,
+	JoinTeamResponses,
+	LeaveTeamData,
+	LeaveTeamErrors,
+	LeaveTeamResponses,
 	ListAuditLogsData,
 	ListAuditLogsErrors,
 	ListAuditLogsResponses,
@@ -228,6 +255,9 @@ import type {
 	ListProjectsData,
 	ListProjectsErrors,
 	ListProjectsResponses,
+	ListProjectTeamsData,
+	ListProjectTeamsErrors,
+	ListProjectTeamsResponses,
 	ListStatusPageComponentGroupsData,
 	ListStatusPageComponentGroupsErrors,
 	ListStatusPageComponentGroupsResponses,
@@ -252,6 +282,18 @@ import type {
 	ListTcpCheckResultsData,
 	ListTcpCheckResultsErrors,
 	ListTcpCheckResultsResponses,
+	ListTeamJoinRequestsData,
+	ListTeamJoinRequestsErrors,
+	ListTeamJoinRequestsResponses,
+	ListTeamMembersData,
+	ListTeamMembersErrors,
+	ListTeamMembersResponses,
+	ListTeamProjectsData,
+	ListTeamProjectsErrors,
+	ListTeamProjectsResponses,
+	ListTeamsData,
+	ListTeamsErrors,
+	ListTeamsResponses,
 	ListTokensData,
 	ListTokensErrors,
 	ListTokensResponses,
@@ -294,6 +336,12 @@ import type {
 	PingHeartbeatGetErrors,
 	PingHeartbeatGetResponses,
 	PingHeartbeatResponses,
+	RemoveProjectTeamData,
+	RemoveProjectTeamErrors,
+	RemoveProjectTeamResponses,
+	RemoveTeamMemberData,
+	RemoveTeamMemberErrors,
+	RemoveTeamMemberResponses,
 	RemoveUserData,
 	RemoveUserErrors,
 	RemoveUserResponses,
@@ -309,6 +357,9 @@ import type {
 	SendLogsData,
 	SendLogsErrors,
 	SendLogsResponses,
+	SetTeamMemberData,
+	SetTeamMemberErrors,
+	SetTeamMemberResponses,
 	SubmitAgentFeedbackData,
 	SubmitAgentFeedbackErrors,
 	SubmitAgentFeedbackResponses,
@@ -363,6 +414,9 @@ import type {
 	UpdateTcpCheckData,
 	UpdateTcpCheckErrors,
 	UpdateTcpCheckResponses,
+	UpdateTeamData,
+	UpdateTeamErrors,
+	UpdateTeamResponses,
 	UpdateUptimeCheckData,
 	UpdateUptimeCheckErrors,
 	UpdateUptimeCheckResponses,
@@ -674,6 +728,7 @@ export const listTokens = <ThrowOnError extends boolean = false>(
  * - The API returns HTTP 403 if your token does not have a required permission.
  * - This limit does not apply when you use session cookies. LOGS:EDIT and LOGS:SEND still require current ADMIN membership.
  * - OAuth callers also require current ADMIN membership to issue LOGS:EDIT or LOGS:SEND.
+ * - Session and OAuth callers need current organisation Admin membership to issue TEAMS:READ, TEAMS:EDIT, PROJECTS:EDIT, or PEOPLE:EDIT. Only an organisation-wide API token can delegate these grants, and it must already hold the requested authority.
  * - LOGS:SEND can be combined with other explicitly granted permissions. Tokens with LOGS:SEND may specify project_id; omit it or use null for unassigned.
  * - Project scope applies only to sending; other grants remain organisation-wide.
  * - Issuing LOGS:SEND requires LOGS:EDIT or explicit LOGS:SEND delegation authority in addition to API_TOKENS:EDIT for bearer callers. LOGS:EDIT itself does not authorize sending logs.
@@ -1866,7 +1921,7 @@ export const listUsers = <ThrowOnError extends boolean = false>(
 /**
  * Remove a user from the organisation
  *
- * Remove a team member from your organisation
+ * Remove a team member from your organisation. Session and OAuth callers must be current organisation admins.
  *
  * Requires PEOPLE:EDIT.
  */
@@ -1886,7 +1941,7 @@ export const removeUser = <ThrowOnError extends boolean = false>(
 /**
  * Change a user's role
  *
- * Change a team member's role in your organisation. An organisation must keep at least one admin. Dashboard sessions must belong to an admin.
+ * Change a team member's role in your organisation. An organisation must keep at least one admin. Session and OAuth callers must be current organisation admins.
  *
  * Requires PEOPLE:EDIT.
  */
@@ -1934,7 +1989,7 @@ export const listInvitations = <ThrowOnError extends boolean = false>(
 /**
  * Create an invitation
  *
- * Send an invitation email to add a new team member to your organisation
+ * Send an invitation email to add a new team member to your organisation. Session and OAuth callers must be current organisation admins.
  *
  * Requires PEOPLE:EDIT.
  */
@@ -1962,7 +2017,7 @@ export const createInvitation = <ThrowOnError extends boolean = false>(
 /**
  * Revoke an invitation
  *
- * Revoke a pending invitation so its link can no longer be used to join your organisation
+ * Revoke a pending invitation so its link can no longer be used to join your organisation. Session and OAuth callers must be current organisation admins.
  *
  * Requires PEOPLE:EDIT.
  */
@@ -2126,6 +2181,8 @@ export const createProject = <ThrowOnError extends boolean = false>(
 /**
  * Delete an empty project
  *
+ * Deleting a shared project removes all of its team links. Requires an organisation Admin, an Admin of an associated team, or an organisation-wide token with PROJECTS:EDIT.
+ *
  * Requires PROJECTS:EDIT.
  */
 export const deleteProject = <ThrowOnError extends boolean = false>(
@@ -2179,6 +2236,398 @@ export const updateProject = <ThrowOnError extends boolean = false>(
 			"Content-Type": "application/json",
 			...options.headers,
 		},
+	});
+
+/**
+ * List teams
+ *
+ * Requires TEAMS:READ.
+ */
+export const listTeams = <ThrowOnError extends boolean = false>(
+	options?: Options<ListTeamsData, ThrowOnError>,
+): RequestResult<ListTeamsResponses, ListTeamsErrors, ThrowOnError> =>
+	(options?.client ?? client).get<
+		ListTeamsResponses,
+		ListTeamsErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/teams",
+		...options,
+	});
+
+/**
+ * Create a team
+ *
+ * Requires a paid plan or an active trial.
+ *
+ * Requires TEAMS:EDIT.
+ */
+export const createTeam = <ThrowOnError extends boolean = false>(
+	options: Options<CreateTeamData, ThrowOnError>,
+): RequestResult<CreateTeamResponses, CreateTeamErrors, ThrowOnError> =>
+	(options.client ?? client).post<
+		CreateTeamResponses,
+		CreateTeamErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/teams",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
+ * Delete a team
+ *
+ * Removes team memberships, pending join requests, and project links, and revokes pending organisation invitations with this team. Does not delete any projects or monitoring resources. In a closed organisation, a project with no remaining team is only accessible to organisation Admins and appropriately granted organisation credentials.
+ *
+ * Requires TEAMS:EDIT.
+ */
+export const deleteTeam = <ThrowOnError extends boolean = false>(
+	options: Options<DeleteTeamData, ThrowOnError>,
+): RequestResult<DeleteTeamResponses, DeleteTeamErrors, ThrowOnError> =>
+	(options.client ?? client).delete<
+		DeleteTeamResponses,
+		DeleteTeamErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/teams/{team_id}",
+		...options,
+	});
+
+/**
+ * Get a team
+ *
+ * Requires TEAMS:READ.
+ */
+export const getTeam = <ThrowOnError extends boolean = false>(
+	options: Options<GetTeamData, ThrowOnError>,
+): RequestResult<GetTeamResponses, GetTeamErrors, ThrowOnError> =>
+	(options.client ?? client).get<GetTeamResponses, GetTeamErrors, ThrowOnError>(
+		{
+			security: [{ scheme: "bearer", type: "http" }],
+			url: "/v1/teams/{team_id}",
+			...options,
+		},
+	);
+
+/**
+ * Rename a team
+ *
+ * Requires TEAMS:EDIT.
+ */
+export const updateTeam = <ThrowOnError extends boolean = false>(
+	options: Options<UpdateTeamData, ThrowOnError>,
+): RequestResult<UpdateTeamResponses, UpdateTeamErrors, ThrowOnError> =>
+	(options.client ?? client).patch<
+		UpdateTeamResponses,
+		UpdateTeamErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/teams/{team_id}",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
+ * List team members
+ *
+ * Requires TEAMS:READ.
+ */
+export const listTeamMembers = <ThrowOnError extends boolean = false>(
+	options: Options<ListTeamMembersData, ThrowOnError>,
+): RequestResult<
+	ListTeamMembersResponses,
+	ListTeamMembersErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		ListTeamMembersResponses,
+		ListTeamMembersErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/teams/{team_id}/members",
+		...options,
+	});
+
+/**
+ * Remove a team member
+ *
+ * Requires TEAMS:EDIT.
+ */
+export const removeTeamMember = <ThrowOnError extends boolean = false>(
+	options: Options<RemoveTeamMemberData, ThrowOnError>,
+): RequestResult<
+	RemoveTeamMemberResponses,
+	RemoveTeamMemberErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).delete<
+		RemoveTeamMemberResponses,
+		RemoveTeamMemberErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/teams/{team_id}/members/{user_id}",
+		...options,
+	});
+
+/**
+ * Set a team member’s role
+ *
+ * Adds an eligible organisation member or changes their role on this team. Assigning Team Admin requires Business. Does not change their organisation role.
+ *
+ * Requires TEAMS:EDIT.
+ */
+export const setTeamMember = <ThrowOnError extends boolean = false>(
+	options: Options<SetTeamMemberData, ThrowOnError>,
+): RequestResult<SetTeamMemberResponses, SetTeamMemberErrors, ThrowOnError> =>
+	(options.client ?? client).put<
+		SetTeamMemberResponses,
+		SetTeamMemberErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/teams/{team_id}/members/{user_id}",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options.headers,
+		},
+	});
+
+/**
+ * Join a team or request to join
+ *
+ * Joins as Contributor if Open Membership is enabled; otherwise requests membership. Only a signed-in user or user-authorized OAuth caller can join for themselves. Repeating the request does not change an existing role or create another request.
+ *
+ * Requires TEAMS:EDIT.
+ */
+export const joinTeam = <ThrowOnError extends boolean = false>(
+	options: Options<JoinTeamData, ThrowOnError>,
+): RequestResult<JoinTeamResponses, JoinTeamErrors, ThrowOnError> =>
+	(options.client ?? client).post<
+		JoinTeamResponses,
+		JoinTeamErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/teams/{team_id}/join",
+		...options,
+	});
+
+/**
+ * Leave a team
+ *
+ * Removes only the signed-in user’s own team membership. Organisation tokens cannot leave a team on behalf of a user.
+ *
+ * Requires TEAMS:EDIT.
+ */
+export const leaveTeam = <ThrowOnError extends boolean = false>(
+	options: Options<LeaveTeamData, ThrowOnError>,
+): RequestResult<LeaveTeamResponses, LeaveTeamErrors, ThrowOnError> =>
+	(options.client ?? client).delete<
+		LeaveTeamResponses,
+		LeaveTeamErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/teams/{team_id}/membership",
+		...options,
+	});
+
+/**
+ * List pending team join requests
+ *
+ * Team and organisation Admins can list pending requests. A requester can see their own pending state on the team detail response.
+ *
+ * Requires TEAMS:READ.
+ */
+export const listTeamJoinRequests = <ThrowOnError extends boolean = false>(
+	options: Options<ListTeamJoinRequestsData, ThrowOnError>,
+): RequestResult<
+	ListTeamJoinRequestsResponses,
+	ListTeamJoinRequestsErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		ListTeamJoinRequestsResponses,
+		ListTeamJoinRequestsErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/teams/{team_id}/join-requests",
+		...options,
+	});
+
+/**
+ * Approve a team join request
+ *
+ * Creates a Contributor membership and removes the pending request.
+ *
+ * Requires TEAMS:EDIT.
+ */
+export const approveTeamJoinRequest = <ThrowOnError extends boolean = false>(
+	options: Options<ApproveTeamJoinRequestData, ThrowOnError>,
+): RequestResult<
+	ApproveTeamJoinRequestResponses,
+	ApproveTeamJoinRequestErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).post<
+		ApproveTeamJoinRequestResponses,
+		ApproveTeamJoinRequestErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/teams/{team_id}/join-requests/{user_id}/approve",
+		...options,
+	});
+
+/**
+ * Reject or cancel a team join request
+ *
+ * An Admin can reject a request. The requester can cancel their own request.
+ *
+ * Requires TEAMS:EDIT.
+ */
+export const deleteTeamJoinRequest = <ThrowOnError extends boolean = false>(
+	options: Options<DeleteTeamJoinRequestData, ThrowOnError>,
+): RequestResult<
+	DeleteTeamJoinRequestResponses,
+	DeleteTeamJoinRequestErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).delete<
+		DeleteTeamJoinRequestResponses,
+		DeleteTeamJoinRequestErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/teams/{team_id}/join-requests/{user_id}",
+		...options,
+	});
+
+/**
+ * List visible projects shared with a team
+ *
+ * Requires PROJECTS:READ.
+ */
+export const listTeamProjects = <ThrowOnError extends boolean = false>(
+	options: Options<ListTeamProjectsData, ThrowOnError>,
+): RequestResult<
+	ListTeamProjectsResponses,
+	ListTeamProjectsErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		ListTeamProjectsResponses,
+		ListTeamProjectsErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/teams/{team_id}/projects",
+		...options,
+	});
+
+/**
+ * List teams sharing a project
+ *
+ * Requires PROJECTS:READ.
+ */
+export const listProjectTeams = <ThrowOnError extends boolean = false>(
+	options: Options<ListProjectTeamsData, ThrowOnError>,
+): RequestResult<
+	ListProjectTeamsResponses,
+	ListProjectTeamsErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).get<
+		ListProjectTeamsResponses,
+		ListProjectTeamsErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/projects/{project_id}/teams",
+		...options,
+	});
+
+/**
+ * Remove a project’s link to a team
+ *
+ * Only organisation Admins or Admins of the team being removed can detach it. In a closed organisation, removing the last team leaves the project accessible only to organisation Admins and appropriately granted organisation credentials.
+ *
+ * Requires PROJECTS:EDIT.
+ */
+export const removeProjectTeam = <ThrowOnError extends boolean = false>(
+	options: Options<RemoveProjectTeamData, ThrowOnError>,
+): RequestResult<
+	RemoveProjectTeamResponses,
+	RemoveProjectTeamErrors,
+	ThrowOnError
+> =>
+	(options.client ?? client).delete<
+		RemoveProjectTeamResponses,
+		RemoveProjectTeamErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/projects/{project_id}/teams/{team_id}",
+		...options,
+	});
+
+/**
+ * Share a project with a team
+ *
+ * Project Admins can share with any team in their organisation. Repeating the operation does not duplicate the team link.
+ *
+ * Requires PROJECTS:EDIT.
+ */
+export const addProjectTeam = <ThrowOnError extends boolean = false>(
+	options: Options<AddProjectTeamData, ThrowOnError>,
+): RequestResult<AddProjectTeamResponses, AddProjectTeamErrors, ThrowOnError> =>
+	(options.client ?? client).put<
+		AddProjectTeamResponses,
+		AddProjectTeamErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/projects/{project_id}/teams/{team_id}",
+		...options,
+	});
+
+/**
+ * Get organisation access settings
+ *
+ * Requires TEAMS:READ.
+ */
+export const getOrganisationAccessSettings = <
+	ThrowOnError extends boolean = false,
+>(
+	options?: Options<GetOrganisationAccessSettingsData, ThrowOnError>,
+): RequestResult<
+	GetOrganisationAccessSettingsResponses,
+	GetOrganisationAccessSettingsErrors,
+	ThrowOnError
+> =>
+	(options?.client ?? client).get<
+		GetOrganisationAccessSettingsResponses,
+		GetOrganisationAccessSettingsErrors,
+		ThrowOnError
+	>({
+		security: [{ scheme: "bearer", type: "http" }],
+		url: "/v1/organisation/access-settings",
+		...options,
 	});
 
 /**

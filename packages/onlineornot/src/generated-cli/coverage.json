@@ -1,13 +1,27 @@
 {
 	"schema": {
-		"commit": "0a0a0ad28c651096f4c496d4cf1b41091e4a8ceb",
-		"sha256": "f7b58bf558ea3fe6263b31e2d80026b2018d8a584eb70dd9231519c4e5445e3e"
+		"commit": "89f7f618cc3b8d4ffcc59182a81358f479846e78",
+		"sha256": "9cebd4506f9dc0448ec76aa5789ec01792600d4f6fd7c801cbb2d15b8f2c6558"
 	},
 	"groupAliases": {
 		"env": ["environment-variables"],
 		"maintenance": ["maintenance-windows"]
 	},
 	"operations": [
+		{
+			"operationId": "addProjectTeam",
+			"method": "PUT",
+			"path": "/v1/projects/{project_id}/teams/{team_id}",
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		{
+			"operationId": "approveTeamJoinRequest",
+			"method": "POST",
+			"path": "/v1/teams/{team_id}/join-requests/{user_id}/approve",
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
 		{
 			"operationId": "createBrowserCheck",
 			"method": "create",
@@ -249,6 +263,13 @@
 			"sensitive": ["tcp_data"],
 			"omitFlags": ["type"],
 			"requireBodyAnyOf": []
+		},
+		{
+			"operationId": "createTeam",
+			"method": "POST",
+			"path": "/v1/teams",
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
 		},
 		{
 			"operationId": "createToken",
@@ -514,6 +535,20 @@
 			"reason": "Use the shared checks delete command; a type-specific duplicate is not exposed."
 		},
 		{
+			"operationId": "deleteTeam",
+			"method": "DELETE",
+			"path": "/v1/teams/{team_id}",
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		{
+			"operationId": "deleteTeamJoinRequest",
+			"method": "DELETE",
+			"path": "/v1/teams/{team_id}/join-requests/{user_id}",
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		{
 			"operationId": "deleteToken",
 			"method": "delete",
 			"path": "/v1/tokens/{token_id}",
@@ -650,6 +685,13 @@
 			"sensitive": [],
 			"omitFlags": [],
 			"requireBodyAnyOf": []
+		},
+		{
+			"operationId": "getOrganisationAccessSettings",
+			"method": "GET",
+			"path": "/v1/organisation/access-settings",
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
 		},
 		{
 			"operationId": "getProject",
@@ -793,6 +835,13 @@
 			"reason": "Use the shared checks get command; a type-specific duplicate is not exposed."
 		},
 		{
+			"operationId": "getTeam",
+			"method": "GET",
+			"path": "/v1/teams/{team_id}",
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		{
 			"operationId": "getToken",
 			"method": "get",
 			"path": "/v1/tokens/{token_id}",
@@ -885,6 +934,20 @@
 			"sensitive": [],
 			"omitFlags": [],
 			"requireBodyAnyOf": []
+		},
+		{
+			"operationId": "joinTeam",
+			"method": "POST",
+			"path": "/v1/teams/{team_id}/join",
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		{
+			"operationId": "leaveTeam",
+			"method": "DELETE",
+			"path": "/v1/teams/{team_id}/membership",
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
 		},
 		{
 			"operationId": "listAuditLogs",
@@ -1049,6 +1112,13 @@
 			"requireBodyAnyOf": []
 		},
 		{
+			"operationId": "listProjectTeams",
+			"method": "GET",
+			"path": "/v1/projects/{project_id}/teams",
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		{
 			"operationId": "listStatusPageComponentGroups",
 			"method": "list",
 			"path": "/v1/status_pages/{status_page_id}/groups",
@@ -1176,6 +1246,34 @@
 			"sensitive": [],
 			"omitFlags": [],
 			"requireBodyAnyOf": []
+		},
+		{
+			"operationId": "listTeamJoinRequests",
+			"method": "GET",
+			"path": "/v1/teams/{team_id}/join-requests",
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		{
+			"operationId": "listTeamMembers",
+			"method": "GET",
+			"path": "/v1/teams/{team_id}/members",
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		{
+			"operationId": "listTeamProjects",
+			"method": "GET",
+			"path": "/v1/teams/{team_id}/projects",
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		{
+			"operationId": "listTeams",
+			"method": "GET",
+			"path": "/v1/teams",
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
 		},
 		{
 			"operationId": "listTokens",
@@ -1372,6 +1470,20 @@
 			"reason": "Heartbeat ping is not part of the CLI."
 		},
 		{
+			"operationId": "removeProjectTeam",
+			"method": "DELETE",
+			"path": "/v1/projects/{project_id}/teams/{team_id}",
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		{
+			"operationId": "removeTeamMember",
+			"method": "DELETE",
+			"path": "/v1/teams/{team_id}/members/{user_id}",
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		{
 			"operationId": "removeUser",
 			"method": "DELETE",
 			"path": "/v1/users/{user_id}",
@@ -1403,6 +1515,13 @@
 			"operationId": "sendLogs",
 			"method": "POST",
 			"path": "/v1/logs",
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
+		},
+		{
+			"operationId": "setTeamMember",
+			"method": "PUT",
+			"path": "/v1/teams/{team_id}/members/{user_id}",
 			"status": "deferred",
 			"reason": "Not exposed by the current CLI."
 		},
@@ -1699,6 +1818,13 @@
 			"sensitive": ["tcp_data"],
 			"omitFlags": [],
 			"requireBodyAnyOf": []
+		},
+		{
+			"operationId": "updateTeam",
+			"method": "PATCH",
+			"path": "/v1/teams/{team_id}",
+			"status": "deferred",
+			"reason": "Not exposed by the current CLI."
 		},
 		{
 			"operationId": "updateUptimeCheck",
