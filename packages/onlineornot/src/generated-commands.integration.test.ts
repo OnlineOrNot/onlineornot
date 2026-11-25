@@ -28,6 +28,7 @@ let apiSuccess = true;
 let malformedResponse = false;
 type FixtureApiResult = z.infer<ReturnType<typeof z.json>>;
 let fixtureResult: FixtureApiResult | undefined;
+let fixtureErrors: FixtureApiResult | undefined;
 let fixturePagination: PublicCheckResultsResultInfo | null | undefined;
 let directory: string;
 let cliPath: string;
@@ -57,7 +58,9 @@ const server = createServer(async (request, response) => {
 				: null,
 			errors: apiSuccess
 				? []
-				: [{ code: 1001, message: "Heartbeat access denied" }],
+				: (fixtureErrors ?? [
+						{ code: 1001, message: "Heartbeat access denied" },
+					]),
 			messages: [],
 			result_info:
 				fixturePagination === null
@@ -116,6 +119,7 @@ beforeEach(() => {
 	apiSuccess = true;
 	malformedResponse = false;
 	fixtureResult = undefined;
+	fixtureErrors = undefined;
 	fixturePagination = undefined;
 });
 
@@ -2229,5 +2233,167 @@ describe("first-check setup for returning accounts", () => {
 
 		expect(result.code).not.toBe(0);
 		expect(requests.map(({ method }) => method)).toEqual(["GET"]);
+	});
+});
+
+describe("domain expiry alerts through the executable", () => {
+	const domainExpiry = {
+		domain: "example.com",
+		lookup_status: "verified",
+		expires_at: "2027-01-01T00:00:00.000Z",
+		expired: false,
+		last_verified_at: "2026-11-01T00:00:00.000Z",
+	};
+	const checkTypes = [
+		{
+			group: "http",
+			path: "uptime",
+			required: ["--name", "Site", "--url", "https://example.com"],
+			body: { name: "Site", url: "https://example.com" },
+		},
+		{
+			group: "browser",
+			path: "browser",
+			required: ["--name", "Site", "--url", "https://example.com"],
+			body: { name: "Site", url: "https://example.com" },
+		},
+		{
+			group: "tcp",
+			path: "tcp",
+			required: [
+				"--name",
+				"Site",
+				"--hostname",
+				"example.com",
+				"--port",
+				"443",
+			],
+			body: { name: "Site", tcp_hostname: "example.com", tcp_port: 443 },
+		},
+		{
+			group: "dns",
+			path: "dns",
+			required: [
+				"--name",
+				"Site",
+				"--domain",
+				"example.com",
+				"--record-type",
+				"A",
+			],
+			body: { name: "Site", dns_domain: "example.com", dns_record_type: "A" },
+		},
+	];
+
+	it.each(checkTypes)(
+		"enables alerts when creating $group checks and prints the summary",
+		async ({ group, path: resource, required, body }) => {
+			fixtureResult = {
+				id: "check1234",
+				domain_expiry_alerts: true,
+				domain_expiry: domainExpiry,
+			};
+			const result = await runCli([
+				"checks",
+				group,
+				"create",
+				...required,
+				"--domain-expiry-alerts",
+			]);
+			expect(result.code).toBe(0);
+			expect(requests[0].url).toBe(`/v1/checks/${resource}`);
+			expect(JSON.parse(requests[0].body)).toEqual({
+				...body,
+				domain_expiry_alerts: true,
+			});
+			expect(JSON.parse(result.stdout)).toEqual({
+				id: "check1234",
+				domain_expiry_alerts: true,
+				domain_expiry: domainExpiry,
+			});
+		},
+	);
+
+	it.each(checkTypes)(
+		"disables alerts on $group updates and omits the field when not passed",
+		async ({ group, path: resource }) => {
+			const disabled = await runCli([
+				"checks",
+				group,
+				"update",
+				"check1234",
+				"--no-domain-expiry-alerts",
+			]);
+			expect(disabled.code).toBe(0);
+			expect(requests[0].method).toBe("PATCH");
+			expect(requests[0].url).toBe(`/v1/checks/${resource}/check1234`);
+			expect(JSON.parse(requests[0].body)).toEqual({
+				domain_expiry_alerts: false,
+			});
+			const renamed = await runCli([
+				"checks",
+				group,
+				"update",
+				"check1234",
+				"--name",
+				"Renamed",
+			]);
+			expect(renamed.code).toBe(0);
+			expect(JSON.parse(requests[1].body)).toEqual({ name: "Renamed" });
+		},
+	);
+
+	it("shows domain expiry fields from checks get", async () => {
+		fixtureResult = {
+			id: "check1234",
+			check_type: "UPTIME",
+			domain_expiry_alerts: true,
+			domain_expiry: domainExpiry,
+		};
+		const result = await runCli(["checks", "get", "check1234"]);
+		expect(result.code).toBe(0);
+		expect(JSON.parse(result.stdout)).toEqual({
+			id: "check1234",
+			check_type: "UPTIME",
+			domain_expiry_alerts: true,
+			domain_expiry: domainExpiry,
+		});
+	});
+
+	it("reports the API validation error for targets without a registered domain", async () => {
+		status = 400;
+		apiSuccess = false;
+		fixtureErrors = [
+			{
+				code: 10001,
+				message:
+					"domain_expiry_alerts requires a target with a registered domain",
+			},
+		];
+		const result = await runCli([
+			"checks",
+			"http",
+			"create",
+			"--name",
+			"Local",
+			"--url",
+			"https://127.0.0.1",
+			"--domain-expiry-alerts",
+		]);
+		expect(result.code).toBe(1);
+		expect(result.stdout).toBe("");
+		expect(result.stderr).toContain(
+			"A request to the OnlineOrNot API (/v1/checks/uptime) failed.",
+		);
+		expect(result.stderr).toContain(
+			"domain_expiry_alerts requires a target with a registered domain [code: 10001]",
+		);
+	});
+
+	it("documents the flag in check help", async () => {
+		const help = await runCli(["checks", "tcp", "update", "--help"], "", false);
+		expect(help.code).toBe(0);
+		expect(help.stdout).toContain("--domain-expiry-alerts");
+		expect(requests).toHaveLength(0);
 	});
 });

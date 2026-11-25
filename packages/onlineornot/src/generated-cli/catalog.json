@@ -1,7 +1,7 @@
 {
 	"schema": {
-		"commit": "89f7f618cc3b8d4ffcc59182a81358f479846e78",
-		"sha256": "9cebd4506f9dc0448ec76aa5789ec01792600d4f6fd7c801cbb2d15b8f2c6558"
+		"commit": "19198be6b59807ee95b5ddb827c10ad3a7141ff7",
+		"sha256": "4d4911a51006f79a634aaff46d248f75b412b2a6ab868003d12d96fcf812c7f9"
 	},
 	"commands": [
 		{
@@ -271,6 +271,17 @@
 					"required": false,
 					"positional": false,
 					"description": "Timeout in milliseconds",
+					"sensitive": false
+				},
+				{
+					"name": "domain-expiry-alerts",
+					"wireName": "domain_expiry_alerts",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.",
 					"sensitive": false
 				},
 				{
@@ -814,6 +825,17 @@
 					"sensitive": false
 				},
 				{
+					"name": "domain-expiry-alerts",
+					"wireName": "domain_expiry_alerts",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.",
+					"sensitive": false
+				},
+				{
 					"name": "url",
 					"wireName": "url",
 					"location": "body",
@@ -1205,6 +1227,17 @@
 					"required": false,
 					"positional": false,
 					"description": "Timeout in milliseconds",
+					"sensitive": false
+				},
+				{
+					"name": "domain-expiry-alerts",
+					"wireName": "domain_expiry_alerts",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.",
 					"sensitive": false
 				},
 				{
@@ -1671,6 +1704,17 @@
 					"sensitive": false
 				},
 				{
+					"name": "domain-expiry-alerts",
+					"wireName": "domain_expiry_alerts",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.",
+					"sensitive": false
+				},
+				{
 					"name": "domain",
 					"wireName": "dns_domain",
 					"location": "body",
@@ -1985,6 +2029,17 @@
 					"required": false,
 					"positional": false,
 					"description": "Timeout in milliseconds",
+					"sensitive": false
+				},
+				{
+					"name": "domain-expiry-alerts",
+					"wireName": "domain_expiry_alerts",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.",
 					"sensitive": false
 				},
 				{
@@ -2505,6 +2560,17 @@
 					"sensitive": false
 				},
 				{
+					"name": "domain-expiry-alerts",
+					"wireName": "domain_expiry_alerts",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.",
+					"sensitive": false
+				},
+				{
 					"name": "url",
 					"wireName": "url",
 					"location": "body",
@@ -2974,6 +3040,17 @@
 					"required": false,
 					"positional": false,
 					"description": "Timeout in milliseconds",
+					"sensitive": false
+				},
+				{
+					"name": "domain-expiry-alerts",
+					"wireName": "domain_expiry_alerts",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.",
 					"sensitive": false
 				},
 				{
@@ -3447,6 +3524,17 @@
 					"required": false,
 					"positional": false,
 					"description": "Suppresses alerts without stopping checks.",
+					"sensitive": false
+				},
+				{
+					"name": "domain-expiry-alerts",
+					"wireName": "domain_expiry_alerts",
+					"location": "body",
+					"type": "boolean",
+					"array": false,
+					"required": false,
+					"positional": false,
+					"description": "Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.",
 					"sensitive": false
 				},
 				{

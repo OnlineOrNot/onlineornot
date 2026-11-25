@@ -238,6 +238,18 @@ export const command = createApiCommand(
 				sensitive: false,
 			},
 			{
+				name: "domain-expiry-alerts",
+				wireName: "domain_expiry_alerts",
+				location: "body",
+				type: "boolean",
+				array: false,
+				required: false,
+				positional: false,
+				description:
+					"Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.",
+				sensitive: false,
+			},
+			{
 				name: "url",
 				wireName: "url",
 				location: "body",
@@ -456,6 +468,10 @@ export const command = createApiCommand(
 						: body["reminder_alert_interval_minutes"],
 				timeout:
 					input.body?.["timeout"] === undefined ? undefined : body["timeout"],
+				domain_expiry_alerts:
+					input.body?.["domain_expiry_alerts"] === undefined
+						? undefined
+						: body["domain_expiry_alerts"],
 				url: input.body?.["url"] === undefined ? undefined : body["url"],
 				text_to_search_for:
 					input.body?.["text_to_search_for"] === undefined
