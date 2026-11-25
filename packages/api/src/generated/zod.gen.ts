@@ -60,9 +60,9 @@ export const zDomainExpiry = z
 			"not_found",
 			"no_expiry_date",
 		]),
-		expires_at: z.iso.datetime().nullable(),
+		expires_at: z.iso.datetime({ offset: true }).nullable(),
 		expired: z.boolean(),
-		last_verified_at: z.iso.datetime().nullable(),
+		last_verified_at: z.iso.datetime({ offset: true }).nullable(),
 	})
 	.nullable();
 
@@ -580,7 +580,7 @@ export const zLogBatch = z.object({
 	logs: z
 		.array(
 			z.object({
-				timestamp: z.iso.datetime().optional(),
+				timestamp: z.iso.datetime({ offset: true }).optional(),
 				level: z
 					.enum(["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"])
 					.optional()
@@ -760,7 +760,7 @@ export const zOtlpTraceExport = z.object({
 export const zTraceSpan = z.object({
 	id: z.string(),
 	project_id: z.string().nullable(),
-	received_at: z.iso.datetime(),
+	received_at: z.iso.datetime({ offset: true }),
 	trace_id: z.string().regex(/^[a-fA-F0-9]{32}$/),
 	span_id: z.string().regex(/^[a-fA-F0-9]{16}$/),
 	parent_span_id: z
@@ -1378,8 +1378,8 @@ export const zBrowserCheckPatch = z.object({
 export const zPublicCheckIncident = z.object({
 	id: z.string(),
 	check_id: z.string(),
-	started_at: z.iso.datetime(),
-	ended_at: z.iso.datetime().nullable(),
+	started_at: z.iso.datetime({ offset: true }),
+	ended_at: z.iso.datetime({ offset: true }).nullable(),
 });
 
 export const zPublicCheckIncidentResultInfo = z.object({
@@ -1398,8 +1398,8 @@ export const zPublicCheckIncidentListResponse = z.object({
 });
 
 export const zPublicCheckResultWindow = z.object({
-	from: z.iso.datetime(),
-	to: z.iso.datetime(),
+	from: z.iso.datetime({ offset: true }),
+	to: z.iso.datetime({ offset: true }),
 });
 
 export const zPublicCheckResultBodyAvailability = z.enum([
@@ -1411,7 +1411,7 @@ export const zPublicCheckResultBodyAvailability = z.enum([
 
 export const zPublicHttpCheckResult = z.object({
 	id: z.string(),
-	checked_at: z.iso.datetime(),
+	checked_at: z.iso.datetime({ offset: true }),
 	checked_from: z
 		.enum([
 			"aws:us-east-1",
@@ -1471,7 +1471,7 @@ export const zPublicBrowserCheckResultsResponse = z.object({
 
 export const zPublicDnsCheckResult = z.object({
 	id: z.string(),
-	checked_at: z.iso.datetime(),
+	checked_at: z.iso.datetime({ offset: true }),
 	checked_from: z
 		.enum([
 			"aws:us-east-1",
@@ -1513,7 +1513,7 @@ export const zPublicDnsCheckResultsResponse = z.object({
 
 export const zPublicTcpCheckResult = z.object({
 	id: z.string(),
-	checked_at: z.iso.datetime(),
+	checked_at: z.iso.datetime({ offset: true }),
 	checked_from: z
 		.enum([
 			"aws:us-east-1",
@@ -1814,8 +1814,8 @@ export const zEnvironmentVariableMetadata = z.object({
 	name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 	type: z.enum(["config", "secret"]),
 	has_value: z.literal(true),
-	created_at: z.iso.datetime(),
-	updated_at: z.iso.datetime(),
+	created_at: z.iso.datetime({ offset: true }),
+	updated_at: z.iso.datetime({ offset: true }),
 });
 
 export const zHeartbeat = z.object({
@@ -1895,15 +1895,15 @@ export const zInvitation = z.object({
 export const zProject = z.object({
 	id: z.string(),
 	name: z.string().min(1).max(255),
-	created_at: z.iso.datetime(),
-	updated_at: z.iso.datetime(),
+	created_at: z.iso.datetime({ offset: true }),
+	updated_at: z.iso.datetime({ offset: true }),
 });
 
 export const zTeam = z.object({
 	id: z.string(),
 	name: z.string().min(1).max(255),
-	created_at: z.iso.datetime(),
-	updated_at: z.iso.datetime(),
+	created_at: z.iso.datetime({ offset: true }),
+	updated_at: z.iso.datetime({ offset: true }),
 	membership_role: z.enum(["ADMIN", "CONTRIBUTOR"]).nullable(),
 	join_requested: z.boolean(),
 	capabilities: z.object({
@@ -2171,8 +2171,8 @@ export const zSearchLogsHeaders = z.object({
 });
 
 export const zSearchLogsQuery = z.object({
-	from: z.iso.datetime(),
-	to: z.iso.datetime(),
+	from: z.iso.datetime({ offset: true }),
+	to: z.iso.datetime({ offset: true }),
 	limit: z.int().gte(1).lte(100).optional().default(50),
 	cursor: z.string().min(1).max(512).optional(),
 	project_id: z.union([z.string(), z.enum(["unassigned"])]).optional(),
@@ -2194,8 +2194,8 @@ export const zSearchLogsResponse = z.object({
 				z.object({
 					id: z.string(),
 					project_id: z.string().nullable(),
-					timestamp: z.iso.datetime(),
-					received_at: z.iso.datetime(),
+					timestamp: z.iso.datetime({ offset: true }),
+					received_at: z.iso.datetime({ offset: true }),
 					level: z.enum(["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"]),
 					message: z.string(),
 					service: z.string().nullable(),
@@ -2262,8 +2262,8 @@ export const zGetLogUsageHeaders = z.object({
  */
 export const zGetLogUsageResponse = z.object({
 	result: z.object({
-		period_start: z.iso.datetime(),
-		period_end: z.iso.datetime(),
+		period_start: z.iso.datetime({ offset: true }),
+		period_end: z.iso.datetime({ offset: true }),
 		used_bytes: z.int().gte(0),
 		used_records: z.int().gte(0),
 		used_spans: z.int().gte(0),
@@ -2301,8 +2301,8 @@ export const zSearchTracesHeaders = z.object({
 });
 
 export const zSearchTracesQuery = z.object({
-	from: z.iso.datetime(),
-	to: z.iso.datetime(),
+	from: z.iso.datetime({ offset: true }),
+	to: z.iso.datetime({ offset: true }),
 	limit: z.int().gte(1).lte(100).optional().default(50),
 	cursor: z.string().min(1).max(512).optional(),
 	project_id: z.union([z.string(), z.enum(["unassigned"])]).optional(),
@@ -2580,7 +2580,7 @@ export const zCreateTokenBody = z.object({
 			}),
 		]),
 	),
-	expiresAt: z.iso.datetime().nullish(),
+	expiresAt: z.iso.datetime({ offset: true }).nullish(),
 	project_id: z.string().nullish(),
 });
 
@@ -3032,8 +3032,8 @@ export const zListUptimeCheckIncidentsPath = z.object({
 export const zListUptimeCheckIncidentsQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).lte(100).optional().default(20),
-	from: z.iso.datetime().optional(),
-	to: z.iso.datetime().optional(),
+	from: z.iso.datetime({ offset: true }).optional(),
+	to: z.iso.datetime({ offset: true }).optional(),
 });
 
 /**
@@ -3053,8 +3053,8 @@ export const zListBrowserCheckIncidentsPath = z.object({
 export const zListBrowserCheckIncidentsQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).lte(100).optional().default(20),
-	from: z.iso.datetime().optional(),
-	to: z.iso.datetime().optional(),
+	from: z.iso.datetime({ offset: true }).optional(),
+	to: z.iso.datetime({ offset: true }).optional(),
 });
 
 /**
@@ -3074,8 +3074,8 @@ export const zListDnsCheckIncidentsPath = z.object({
 export const zListDnsCheckIncidentsQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).lte(100).optional().default(20),
-	from: z.iso.datetime().optional(),
-	to: z.iso.datetime().optional(),
+	from: z.iso.datetime({ offset: true }).optional(),
+	to: z.iso.datetime({ offset: true }).optional(),
 });
 
 /**
@@ -3094,8 +3094,8 @@ export const zListTcpCheckIncidentsPath = z.object({
 export const zListTcpCheckIncidentsQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).lte(100).optional().default(20),
-	from: z.iso.datetime().optional(),
-	to: z.iso.datetime().optional(),
+	from: z.iso.datetime({ offset: true }).optional(),
+	to: z.iso.datetime({ offset: true }).optional(),
 });
 
 /**
@@ -3114,8 +3114,8 @@ export const zListUptimeCheckResultsPath = z.object({
 export const zListUptimeCheckResultsQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).lte(100).optional().default(20),
-	from: z.iso.datetime(),
-	to: z.iso.datetime(),
+	from: z.iso.datetime({ offset: true }),
+	to: z.iso.datetime({ offset: true }),
 });
 
 /**
@@ -3135,8 +3135,8 @@ export const zListBrowserCheckResultsPath = z.object({
 export const zListBrowserCheckResultsQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).lte(100).optional().default(20),
-	from: z.iso.datetime(),
-	to: z.iso.datetime(),
+	from: z.iso.datetime({ offset: true }),
+	to: z.iso.datetime({ offset: true }),
 });
 
 /**
@@ -3156,8 +3156,8 @@ export const zListDnsCheckResultsPath = z.object({
 export const zListDnsCheckResultsQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).lte(100).optional().default(20),
-	from: z.iso.datetime(),
-	to: z.iso.datetime(),
+	from: z.iso.datetime({ offset: true }),
+	to: z.iso.datetime({ offset: true }),
 });
 
 /**
@@ -3176,8 +3176,8 @@ export const zListTcpCheckResultsPath = z.object({
 export const zListTcpCheckResultsQuery = z.object({
 	page: z.int().gte(1).optional().default(1),
 	per_page: z.int().gte(1).lte(100).optional().default(20),
-	from: z.iso.datetime(),
-	to: z.iso.datetime(),
+	from: z.iso.datetime({ offset: true }),
+	to: z.iso.datetime({ offset: true }),
 });
 
 /**
@@ -3402,8 +3402,8 @@ export const zCreateEnvironmentVariableResponse = z.object({
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 			type: z.enum(["secret"]),
 			has_value: z.literal(true),
-			created_at: z.iso.datetime(),
-			updated_at: z.iso.datetime(),
+			created_at: z.iso.datetime({ offset: true }),
+			updated_at: z.iso.datetime({ offset: true }),
 		}),
 		z.object({
 			project_id: z.string().nullish(),
@@ -3411,8 +3411,8 @@ export const zCreateEnvironmentVariableResponse = z.object({
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 			type: z.enum(["config"]),
 			has_value: z.literal(true),
-			created_at: z.iso.datetime(),
-			updated_at: z.iso.datetime(),
+			created_at: z.iso.datetime({ offset: true }),
+			updated_at: z.iso.datetime({ offset: true }),
 			value: z.string(),
 		}),
 	]),
@@ -3484,8 +3484,8 @@ export const zGetEnvironmentVariableResponse = z.object({
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 			type: z.enum(["secret"]),
 			has_value: z.literal(true),
-			created_at: z.iso.datetime(),
-			updated_at: z.iso.datetime(),
+			created_at: z.iso.datetime({ offset: true }),
+			updated_at: z.iso.datetime({ offset: true }),
 		}),
 		z.object({
 			project_id: z.string().nullish(),
@@ -3493,8 +3493,8 @@ export const zGetEnvironmentVariableResponse = z.object({
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 			type: z.enum(["config"]),
 			has_value: z.literal(true),
-			created_at: z.iso.datetime(),
-			updated_at: z.iso.datetime(),
+			created_at: z.iso.datetime({ offset: true }),
+			updated_at: z.iso.datetime({ offset: true }),
 			value: z.string(),
 		}),
 	]),
@@ -3542,8 +3542,8 @@ export const zUpdateEnvironmentVariableResponse = z.object({
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 			type: z.enum(["secret"]),
 			has_value: z.literal(true),
-			created_at: z.iso.datetime(),
-			updated_at: z.iso.datetime(),
+			created_at: z.iso.datetime({ offset: true }),
+			updated_at: z.iso.datetime({ offset: true }),
 		}),
 		z.object({
 			project_id: z.string().nullish(),
@@ -3551,8 +3551,8 @@ export const zUpdateEnvironmentVariableResponse = z.object({
 			name: z.string().regex(/^[A-Z_][A-Z0-9_]{0,63}$/),
 			type: z.enum(["config"]),
 			has_value: z.literal(true),
-			created_at: z.iso.datetime(),
-			updated_at: z.iso.datetime(),
+			created_at: z.iso.datetime({ offset: true }),
+			updated_at: z.iso.datetime({ offset: true }),
 			value: z.string(),
 		}),
 	]),
@@ -4994,7 +4994,7 @@ export const zListTeamJoinRequestsResponse = z.object({
 		z.object({
 			team_id: z.string(),
 			user: zOrgUser,
-			created_at: z.iso.datetime(),
+			created_at: z.iso.datetime({ offset: true }),
 		}),
 	),
 	result_info: z.object({
@@ -6230,7 +6230,7 @@ export const zCreateStatusPageIncidentBody = z.object({
 		"RESOLVED",
 		"UPDATE",
 	]),
-	date_happened: z.iso.datetime().optional(),
+	date_happened: z.iso.datetime({ offset: true }).optional(),
 	components: z
 		.array(
 			z.object({
@@ -6625,7 +6625,7 @@ export const zUpdateStatusPageIncidentUpdateResponse = z.object({
 export const zCreateStatusPageScheduledMaintenanceBody = z.object({
 	title: z.string().min(1),
 	description: z.string().min(1),
-	start_date: z.iso.datetime(),
+	start_date: z.iso.datetime({ offset: true }),
 	duration_minutes: z.int().gte(1),
 	components_affected: z.array(z.string()).optional(),
 	notifications: z
@@ -6733,7 +6733,7 @@ export const zGetStatusPageScheduledMaintenanceResponse = z.object({
 
 export const zUpdateStatusPageScheduledMaintenanceBody = z.object({
 	title: z.string().min(1).optional(),
-	start_date: z.iso.datetime().optional(),
+	start_date: z.iso.datetime({ offset: true }).optional(),
 	duration_minutes: z.int().gte(1).optional(),
 	components_affected: z.array(z.string()).optional(),
 	notifications: z
@@ -6801,7 +6801,7 @@ export const zGetWebhookDeliverySummaryResponse = z.object({
 					error_count: z.int().gte(0),
 					average_response_time_ms: z.number().gte(0).nullable(),
 					error_rate: z.number().gte(0).lte(100).nullable(),
-					timestamp: z.iso.datetime(),
+					timestamp: z.iso.datetime({ offset: true }),
 				}),
 			),
 		}),
@@ -6852,7 +6852,7 @@ export const zGetWebhookDeliveryActivityResponse = z.object({
 					error_count: z.int().gte(0),
 					average_response_time_ms: z.number().gte(0).nullable(),
 					error_rate: z.number().gte(0).lte(100).nullable(),
-					timestamp: z.iso.datetime(),
+					timestamp: z.iso.datetime({ offset: true }),
 				}),
 			),
 		}),
@@ -6862,7 +6862,7 @@ export const zGetWebhookDeliveryActivityResponse = z.object({
 				error_count: z.int().gte(0),
 				average_response_time_ms: z.number().gte(0).nullable(),
 				error_rate: z.number().gte(0).lte(100).nullable(),
-				timestamp: z.iso.datetime(),
+				timestamp: z.iso.datetime({ offset: true }),
 			}),
 		),
 	}),
@@ -6938,9 +6938,9 @@ export const zListWebhookDeliveriesResponse = z.object({
 					"heartbeat.down",
 					"heartbeat.up",
 				]),
-				queued_at: z.iso.datetime(),
-				attempted_at: z.iso.datetime(),
-				completed_at: z.iso.datetime(),
+				queued_at: z.iso.datetime({ offset: true }),
+				attempted_at: z.iso.datetime({ offset: true }),
+				completed_at: z.iso.datetime({ offset: true }),
 				outcome: z.enum([
 					"success",
 					"http_error",
@@ -7001,9 +7001,9 @@ export const zGetWebhookDeliveryResponse = z.object({
 			"heartbeat.down",
 			"heartbeat.up",
 		]),
-		queued_at: z.iso.datetime(),
-		attempted_at: z.iso.datetime(),
-		completed_at: z.iso.datetime(),
+		queued_at: z.iso.datetime({ offset: true }),
+		attempted_at: z.iso.datetime({ offset: true }),
+		completed_at: z.iso.datetime({ offset: true }),
 		outcome: z.enum([
 			"success",
 			"http_error",

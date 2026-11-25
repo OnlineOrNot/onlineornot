@@ -166,6 +166,8 @@ export default defineConfig({
 		{
 			name: "zod",
 			compatibilityVersion: 4,
+			// OpenAPI date-time is RFC 3339, which allows numeric offsets as well as Z.
+			dates: { offset: true },
 			includeInEntry: false,
 		},
 		{

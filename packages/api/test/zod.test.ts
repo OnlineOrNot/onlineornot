@@ -82,6 +82,30 @@ describe("generated Zod schemas", () => {
 		expect(zDomainExpiry.parse(summary)).toEqual(summary);
 	});
 
+	it("accepts RFC 3339 offsets in date-time fields", () => {
+		const summary = {
+			domain: "example.com",
+			lookup_status: "verified",
+			expires_at: "2027-01-01T00:00:00+01:00",
+			expired: false,
+			last_verified_at: "2026-10-16T13:37:39-05:30",
+		};
+
+		expect(zDomainExpiry.parse(summary)).toEqual(summary);
+	});
+
+	it("rejects date-time values without a timezone", () => {
+		expect(() =>
+			zDomainExpiry.parse({
+				domain: "example.com",
+				lookup_status: "verified",
+				expires_at: "2027-01-01T00:00:00",
+				expired: false,
+				last_verified_at: null,
+			}),
+		).toThrow();
+	});
+
 	it("rejects unknown domain expiry lookup statuses", () => {
 		expect(() =>
 			zDomainExpiry.parse({
