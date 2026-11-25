@@ -50,6 +50,25 @@ export const vPublicApiServerError = v.object({
 	messages: v.pipe(v.array(v.unknown()), v.length(0)),
 });
 
+/**
+ * Registration expiry of the check’s domain, or null when domain_expiry_alerts is off.
+ */
+export const vDomainExpiry = v.nullable(
+	v.strictObject({
+		domain: v.string(),
+		lookup_status: v.picklist([
+			"pending",
+			"verified",
+			"unavailable",
+			"not_found",
+			"no_expiry_date",
+		]),
+		expires_at: v.nullable(v.pipe(v.string(), v.isoTimestamp())),
+		expired: v.boolean(),
+		last_verified_at: v.nullable(v.pipe(v.string(), v.isoTimestamp())),
+	}),
+);
+
 export const vExpandedUptimeCheck = v.object({
 	project_id: v.nullish(v.string()),
 	id: v.string(),
@@ -139,6 +158,8 @@ export const vExpandedUptimeCheck = v.object({
 	pushover_alerts: v.array(v.string()),
 	oncall_alerts: v.array(v.string()),
 	webhook_alerts: v.array(v.string()),
+	domain_expiry_alerts: v.boolean(),
+	domain_expiry: vDomainExpiry,
 	check_type: v.picklist(["UPTIME"]),
 });
 
@@ -230,6 +251,8 @@ export const vExpandedBrowserCheck = v.object({
 	pushover_alerts: v.array(v.string()),
 	oncall_alerts: v.array(v.string()),
 	webhook_alerts: v.array(v.string()),
+	domain_expiry_alerts: v.boolean(),
+	domain_expiry: vDomainExpiry,
 	version: v.picklist(["NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
 	check_type: v.picklist(["BROWSER"]),
 });
@@ -285,6 +308,8 @@ export const vExpandedDnsCheck = v.object({
 	pushover_alerts: v.array(v.string()),
 	oncall_alerts: v.array(v.string()),
 	webhook_alerts: v.array(v.string()),
+	domain_expiry_alerts: v.boolean(),
+	domain_expiry: vDomainExpiry,
 	check_type: v.picklist(["DNS"]),
 	url: v.null(),
 	version: v.picklist(["NODE24_DNS"]),
@@ -346,6 +371,8 @@ export const vExpandedTcpCheck = v.object({
 	pushover_alerts: v.array(v.string()),
 	oncall_alerts: v.array(v.string()),
 	webhook_alerts: v.array(v.string()),
+	domain_expiry_alerts: v.boolean(),
+	domain_expiry: vDomainExpiry,
 	check_type: v.picklist(["TCP"]),
 	url: v.null(),
 	version: v.picklist(["NODE24_TCP"]),
@@ -1137,6 +1164,7 @@ export const vDnsCheckInput = v.strictObject({
 		1440,
 	),
 	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
+	domain_expiry_alerts: v.optional(v.boolean()),
 	type: v.optional(v.picklist(["DNS_CHECK"])),
 	dns_domain: v.pipe(v.string(), v.minLength(1), v.maxLength(253)),
 	dns_record_type: v.picklist(["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"]),
@@ -1171,6 +1199,7 @@ export const vDnsCheckPatch = v.strictObject({
 	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000))),
 	paused: v.optional(v.boolean()),
 	muted: v.optional(v.boolean()),
+	domain_expiry_alerts: v.optional(v.boolean()),
 	dns_domain: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(253))),
 	dns_record_type: v.optional(
 		v.picklist(["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"]),
@@ -1248,6 +1277,7 @@ export const vTcpCheckInput = v.strictObject({
 		1440,
 	),
 	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
+	domain_expiry_alerts: v.optional(v.boolean()),
 	type: v.optional(v.picklist(["TCP_CHECK"])),
 	tcp_hostname: v.pipe(v.string(), v.minLength(1), v.maxLength(253)),
 	tcp_port: v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(65535)),
@@ -1283,6 +1313,7 @@ export const vTcpCheckPatch = v.strictObject({
 	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000))),
 	paused: v.optional(v.boolean()),
 	muted: v.optional(v.boolean()),
+	domain_expiry_alerts: v.optional(v.boolean()),
 	tcp_hostname: v.optional(
 		v.pipe(v.string(), v.minLength(1), v.maxLength(253)),
 	),
@@ -1342,6 +1373,7 @@ export const vUptimeCheckInput = v.strictObject({
 		1440,
 	),
 	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
+	domain_expiry_alerts: v.optional(v.boolean()),
 	url: v.pipe(v.string(), v.url()),
 	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
 	type: v.optional(v.picklist(["UPTIME_CHECK"]), "UPTIME_CHECK"),
@@ -1430,6 +1462,7 @@ export const vUptimeCheckPatch = v.strictObject({
 	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000))),
 	paused: v.optional(v.boolean()),
 	muted: v.optional(v.boolean()),
+	domain_expiry_alerts: v.optional(v.boolean()),
 	url: v.optional(v.pipe(v.string(), v.url())),
 	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
 	headers: v.optional(
@@ -1945,6 +1978,8 @@ export const vExpandedCheck = v.intersect([
 		pushover_alerts: v.array(v.string()),
 		oncall_alerts: v.array(v.string()),
 		webhook_alerts: v.array(v.string()),
+		domain_expiry_alerts: v.boolean(),
+		domain_expiry: vDomainExpiry,
 	}),
 ]);
 
@@ -1995,6 +2030,7 @@ export const vCheckInput = v.object({
 		1440,
 	),
 	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
+	domain_expiry_alerts: v.optional(v.boolean()),
 	url: v.nullish(v.pipe(v.string(), v.url())),
 	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
 	type: v.optional(
@@ -2088,6 +2124,7 @@ export const vCheckPatch = v.object({
 	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000))),
 	paused: v.optional(v.boolean()),
 	muted: v.optional(v.boolean()),
+	domain_expiry_alerts: v.optional(v.boolean()),
 	url: v.nullish(v.pipe(v.string(), v.url())),
 	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
 	type: v.optional(v.picklist(["UPTIME_CHECK", "BROWSER_CHECK"])),

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
 	zCheckDeleteResponse,
 	zCreateCheckBody,
+	zDomainExpiry,
 	zStatusPageComponent,
 	zSendLogsBody,
 } from "../src/zod";
@@ -57,6 +58,64 @@ describe("generated Zod schemas", () => {
 			url: "https://example.com",
 			test_interval: 60,
 		});
+	});
+
+	it("accepts domain_expiry_alerts on check request bodies", () => {
+		const result = zCreateCheckBody.parse({
+			name: "Website",
+			url: "https://example.com",
+			domain_expiry_alerts: true,
+		});
+
+		expect(result.domain_expiry_alerts).toBe(true);
+	});
+
+	it("parses a verified domain expiry summary", () => {
+		const summary = {
+			domain: "example.com",
+			lookup_status: "verified",
+			expires_at: "2027-01-01T00:00:00.000Z",
+			expired: false,
+			last_verified_at: "2026-10-16T13:37:39.000Z",
+		};
+
+		expect(zDomainExpiry.parse(summary)).toEqual(summary);
+	});
+
+	it("accepts RFC 3339 offsets in date-time fields", () => {
+		const summary = {
+			domain: "example.com",
+			lookup_status: "verified",
+			expires_at: "2027-01-01T00:00:00+01:00",
+			expired: false,
+			last_verified_at: "2026-10-16T13:37:39-05:30",
+		};
+
+		expect(zDomainExpiry.parse(summary)).toEqual(summary);
+	});
+
+	it("rejects date-time values without a timezone", () => {
+		expect(() =>
+			zDomainExpiry.parse({
+				domain: "example.com",
+				lookup_status: "verified",
+				expires_at: "2027-01-01T00:00:00",
+				expired: false,
+				last_verified_at: null,
+			}),
+		).toThrow();
+	});
+
+	it("rejects unknown domain expiry lookup statuses", () => {
+		expect(() =>
+			zDomainExpiry.parse({
+				domain: "example.com",
+				lookup_status: "stale",
+				expires_at: null,
+				expired: false,
+				last_verified_at: null,
+			}),
+		).toThrow();
 	});
 
 	it("parses a representative response", () => {

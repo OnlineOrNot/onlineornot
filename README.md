@@ -126,6 +126,31 @@ results and incident history, for example:
 onlineornot checks http results <check-id> --help
 ```
 
+### Domain expiry alerts
+
+Add `--domain-expiry-alerts` to any `checks http|dns|tcp create` or `update`
+command to email the check's alert recipients 30, 14, 7 and 1 day
+before the target's registered domain expires, and again if it expires. Use
+`--no-domain-expiry-alerts` (or `--domain-expiry-alerts=false`) to turn them off.
+Updates leave the setting unchanged unless you pass the flag.
+
+```sh
+onlineornot checks http create --name "Homepage" --url "https://api.example.com" --domain-expiry-alerts
+onlineornot checks tcp update <check-id> --no-domain-expiry-alerts
+```
+
+Alerts track the registered domain (`https://api.example.com` becomes
+`example.com`). The API rejects enabling them for targets with no registered
+domain, such as IP addresses, `localhost` or hosting-provider subdomains like
+`myapp.herokuapp.com`. The CLI exits with status 1 and prints the API's
+validation message. Browser checks run scripts, so `checks browser` commands
+do not offer the flag. Turning alerts off always
+succeeds.
+
+`checks get` and the create/update commands return `domain_expiry_alerts` and a
+`domain_expiry` object (`domain`, `lookup_status`, `expires_at`, `expired`,
+`last_verified_at`), or `null` when alerts are off.
+
 ## Scripting and CI
 
 - Resource commands write JSON to stdout without `--json`. Diagnostics and
