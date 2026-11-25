@@ -244,8 +244,44 @@ export type ExpandedUptimeCheck = {
 	 * Webhook IDs to notify
 	 */
 	webhook_alerts: Array<string>;
+	/**
+	 * Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.
+	 */
+	domain_expiry_alerts: boolean;
+	domain_expiry: DomainExpiry;
 	check_type: "UPTIME";
 };
+
+/**
+ * Registration expiry of the check’s domain, or null when domain_expiry_alerts is off.
+ */
+export type DomainExpiry = {
+	/**
+	 * Registered domain of the check’s target.
+	 */
+	domain: string;
+	/**
+	 * Result of the latest registry lookup; unavailable denotes a temporary lookup failure.
+	 */
+	lookup_status:
+		| "pending"
+		| "verified"
+		| "unavailable"
+		| "not_found"
+		| "no_expiry_date";
+	/**
+	 * Last known registry expiration time, not the registrar’s billing deadline. A date may be stale if lookup_status is not verified.
+	 */
+	expires_at: string | null;
+	/**
+	 * Whether the registry reported the domain as expired, or in its redemption or pending delete period, at the last verified lookup.
+	 */
+	expired: boolean;
+	/**
+	 * When the expiration time was last verified with the registry.
+	 */
+	last_verified_at: string | null;
+} | null;
 
 export type ExpandedBrowserCheck = {
 	/**
@@ -418,6 +454,11 @@ export type ExpandedBrowserCheck = {
 	 */
 	webhook_alerts: Array<string>;
 	/**
+	 * Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.
+	 */
+	domain_expiry_alerts: boolean;
+	domain_expiry: DomainExpiry;
+	/**
 	 * Runtime version for browser checks.
 	 */
 	version: "NODE24_PLAYWRIGHT" | "CLOUDFLARE";
@@ -511,6 +552,11 @@ export type ExpandedDnsCheck = {
 	 * Webhook IDs to notify
 	 */
 	webhook_alerts: Array<string>;
+	/**
+	 * Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.
+	 */
+	domain_expiry_alerts: boolean;
+	domain_expiry: DomainExpiry;
 	check_type: "DNS";
 	/**
 	 * DNS checks do not use a URL target.
@@ -660,6 +706,11 @@ export type ExpandedTcpCheck = {
 	 * Webhook IDs to notify
 	 */
 	webhook_alerts: Array<string>;
+	/**
+	 * Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.
+	 */
+	domain_expiry_alerts: boolean;
+	domain_expiry: DomainExpiry;
 	check_type: "TCP";
 	/**
 	 * TCP checks do not use a URL target.
@@ -1205,6 +1256,10 @@ export type DnsCheckInput = {
 	 * Timeout in milliseconds
 	 */
 	timeout?: number;
+	/**
+	 * Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.
+	 */
+	domain_expiry_alerts?: boolean;
 	type?: "DNS_CHECK";
 	/**
 	 * DNS name to query
@@ -1281,6 +1336,10 @@ export type DnsCheckPatch = {
 	 * Suppresses alerts without stopping checks.
 	 */
 	muted?: boolean;
+	/**
+	 * Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.
+	 */
+	domain_expiry_alerts?: boolean;
 	dns_domain?: string;
 	dns_record_type?: "A" | "AAAA" | "CNAME" | "MX" | "NS" | "SOA" | "TXT";
 	/**
@@ -1381,6 +1440,10 @@ export type TcpCheckInput = {
 	 * Timeout in milliseconds
 	 */
 	timeout?: number;
+	/**
+	 * Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.
+	 */
+	domain_expiry_alerts?: boolean;
 	type?: "TCP_CHECK";
 	/**
 	 * Publicly reachable hostname or IP address to connect to
@@ -1461,6 +1524,10 @@ export type TcpCheckPatch = {
 	 * Suppresses alerts without stopping checks.
 	 */
 	muted?: boolean;
+	/**
+	 * Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.
+	 */
+	domain_expiry_alerts?: boolean;
 	/**
 	 * Publicly reachable hostname or IP address to connect to
 	 */
@@ -1545,6 +1612,10 @@ export type UptimeCheckInput = {
 	 * Timeout in milliseconds
 	 */
 	timeout?: number;
+	/**
+	 * Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.
+	 */
+	domain_expiry_alerts?: boolean;
 	/**
 	 * URL to check.
 	 */
@@ -1674,6 +1745,10 @@ export type UptimeCheckPatch = {
 	 * Suppresses alerts without stopping checks.
 	 */
 	muted?: boolean;
+	/**
+	 * Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.
+	 */
+	domain_expiry_alerts?: boolean;
 	/**
 	 * URL to check
 	 */
@@ -1817,6 +1892,10 @@ export type BrowserCheckInput = {
 	 */
 	timeout?: number;
 	/**
+	 * Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.
+	 */
+	domain_expiry_alerts?: boolean;
+	/**
 	 * URL to load for URL-based browser checks. Optional when script is provided.
 	 */
 	url?: string | null;
@@ -1942,6 +2021,10 @@ export type BrowserCheckPatch = {
 	 * Suppresses alerts without stopping checks.
 	 */
 	muted?: boolean;
+	/**
+	 * Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.
+	 */
+	domain_expiry_alerts?: boolean;
 	/**
 	 * URL to check
 	 */
@@ -2364,6 +2447,11 @@ export type ExpandedCheck = Check & {
 	 * Webhook IDs to notify
 	 */
 	webhook_alerts: Array<string>;
+	/**
+	 * Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.
+	 */
+	domain_expiry_alerts: boolean;
+	domain_expiry: DomainExpiry;
 };
 
 export type Check = {
@@ -2451,6 +2539,10 @@ export type CheckInput = {
 	 * Timeout in milliseconds
 	 */
 	timeout?: number;
+	/**
+	 * Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.
+	 */
+	domain_expiry_alerts?: boolean;
 	/**
 	 * URL to check. Required for URL-based checks, optional for script-based checks.
 	 */
@@ -2588,6 +2680,10 @@ export type CheckPatch = {
 	 * Suppresses alerts without stopping checks.
 	 */
 	muted?: boolean;
+	/**
+	 * Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.
+	 */
+	domain_expiry_alerts?: boolean;
 	/**
 	 * URL to check
 	 */

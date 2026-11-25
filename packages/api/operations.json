@@ -1,5 +1,5 @@
 {
-	"schema": "https://raw.githubusercontent.com/OnlineOrNot/api-schemas/89f7f618cc3b8d4ffcc59182a81358f479846e78/openapi.json",
+	"schema": "https://raw.githubusercontent.com/OnlineOrNot/api-schemas/19198be6b59807ee95b5ddb827c10ad3a7141ff7/openapi.json",
 	"count": 140,
 	"operations": [
 		"addProjectTeam",

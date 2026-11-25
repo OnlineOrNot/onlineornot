@@ -64,6 +64,8 @@ const alerts = {
 };
 const check = {
 	...alerts,
+	domain_expiry_alerts: false,
+	domain_expiry: null,
 	id: "check-public-0001",
 	name: "Website",
 	last_queued: null,

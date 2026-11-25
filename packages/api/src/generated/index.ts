@@ -373,6 +373,7 @@ export type {
 	DnsCheckInput,
 	DnsCheckPatch,
 	DnsCheckResponse,
+	DomainExpiry,
 	EnvironmentVariableMetadata,
 	ExpandedBrowserCheck,
 	ExpandedCheck,

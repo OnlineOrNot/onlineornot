@@ -47,6 +47,25 @@ export const zPublicApiServerError = z.object({
 	messages: z.array(z.unknown()).length(0),
 });
 
+/**
+ * Registration expiry of the check’s domain, or null when domain_expiry_alerts is off.
+ */
+export const zDomainExpiry = z
+	.object({
+		domain: z.string(),
+		lookup_status: z.enum([
+			"pending",
+			"verified",
+			"unavailable",
+			"not_found",
+			"no_expiry_date",
+		]),
+		expires_at: z.iso.datetime().nullable(),
+		expired: z.boolean(),
+		last_verified_at: z.iso.datetime().nullable(),
+	})
+	.nullable();
+
 export const zExpandedUptimeCheck = z.object({
 	project_id: z.string().nullish(),
 	id: z.string(),
@@ -125,6 +144,8 @@ export const zExpandedUptimeCheck = z.object({
 	pushover_alerts: z.array(z.string()),
 	oncall_alerts: z.array(z.string()),
 	webhook_alerts: z.array(z.string()),
+	domain_expiry_alerts: z.boolean(),
+	domain_expiry: zDomainExpiry,
 	check_type: z.enum(["UPTIME"]),
 });
 
@@ -205,6 +226,8 @@ export const zExpandedBrowserCheck = z.object({
 	pushover_alerts: z.array(z.string()),
 	oncall_alerts: z.array(z.string()),
 	webhook_alerts: z.array(z.string()),
+	domain_expiry_alerts: z.boolean(),
+	domain_expiry: zDomainExpiry,
 	version: z.enum(["NODE24_PLAYWRIGHT", "CLOUDFLARE"]),
 	check_type: z.enum(["BROWSER"]),
 });
@@ -260,6 +283,8 @@ export const zExpandedDnsCheck = z.object({
 	pushover_alerts: z.array(z.string()),
 	oncall_alerts: z.array(z.string()),
 	webhook_alerts: z.array(z.string()),
+	domain_expiry_alerts: z.boolean(),
+	domain_expiry: zDomainExpiry,
 	check_type: z.enum(["DNS"]),
 	url: z.null(),
 	version: z.enum(["NODE24_DNS"]),
@@ -321,6 +346,8 @@ export const zExpandedTcpCheck = z.object({
 	pushover_alerts: z.array(z.string()),
 	oncall_alerts: z.array(z.string()),
 	webhook_alerts: z.array(z.string()),
+	domain_expiry_alerts: z.boolean(),
+	domain_expiry: zDomainExpiry,
 	check_type: z.enum(["TCP"]),
 	url: z.null(),
 	version: z.enum(["NODE24_TCP"]),
@@ -904,6 +931,7 @@ export const zDnsCheckInput = z.object({
 	recovery_period_seconds: z.int().gte(0).optional().default(180),
 	reminder_alert_interval_minutes: z.int().gte(-1).optional().default(1440),
 	timeout: z.int().gte(1000).optional().default(10000),
+	domain_expiry_alerts: z.boolean().optional(),
 	type: z.enum(["DNS_CHECK"]).optional(),
 	dns_domain: z.string().min(1).max(253),
 	dns_record_type: z.enum(["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"]),
@@ -932,6 +960,7 @@ export const zDnsCheckPatch = z.object({
 	timeout: z.int().gte(1000).optional(),
 	paused: z.boolean().optional(),
 	muted: z.boolean().optional(),
+	domain_expiry_alerts: z.boolean().optional(),
 	dns_domain: z.string().min(1).max(253).optional(),
 	dns_record_type: z
 		.enum(["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"])
@@ -1000,6 +1029,7 @@ export const zTcpCheckInput = z.object({
 	recovery_period_seconds: z.int().gte(0).optional().default(180),
 	reminder_alert_interval_minutes: z.int().gte(-1).optional().default(1440),
 	timeout: z.int().gte(1000).optional().default(10000),
+	domain_expiry_alerts: z.boolean().optional(),
 	type: z.enum(["TCP_CHECK"]).optional(),
 	tcp_hostname: z.string().min(1).max(253),
 	tcp_port: z.int().gte(1).lte(65535),
@@ -1029,6 +1059,7 @@ export const zTcpCheckPatch = z.object({
 	timeout: z.int().gte(1000).optional(),
 	paused: z.boolean().optional(),
 	muted: z.boolean().optional(),
+	domain_expiry_alerts: z.boolean().optional(),
 	tcp_hostname: z.string().min(1).max(253).optional(),
 	tcp_port: z.int().gte(1).lte(65535).optional(),
 	tcp_ip_family: z.enum(["IPv4", "IPv6"]).optional(),
@@ -1075,6 +1106,7 @@ export const zUptimeCheckInput = z.object({
 	recovery_period_seconds: z.int().gte(0).optional().default(180),
 	reminder_alert_interval_minutes: z.int().gte(-1).optional().default(1440),
 	timeout: z.int().gte(1000).optional().default(10000),
+	domain_expiry_alerts: z.boolean().optional(),
 	url: z.url(),
 	text_to_search_for: z.string().max(4000).optional(),
 	type: z.enum(["UPTIME_CHECK"]).optional().default("UPTIME_CHECK"),
@@ -1146,6 +1178,7 @@ export const zUptimeCheckPatch = z.object({
 	timeout: z.int().gte(1000).optional(),
 	paused: z.boolean().optional(),
 	muted: z.boolean().optional(),
+	domain_expiry_alerts: z.boolean().optional(),
 	url: z.url().optional(),
 	text_to_search_for: z.string().max(4000).optional(),
 	headers: z.record(z.string(), z.string()).optional(),
@@ -1234,6 +1267,7 @@ export const zBrowserCheckInput = z.object({
 	recovery_period_seconds: z.int().gte(0).optional().default(180),
 	reminder_alert_interval_minutes: z.int().gte(-1).optional().default(1440),
 	timeout: z.int().gte(1000).optional().default(10000),
+	domain_expiry_alerts: z.boolean().optional(),
 	url: z.url().nullish(),
 	text_to_search_for: z.string().max(4000).optional(),
 	type: z.enum(["BROWSER_CHECK"]).optional().default("BROWSER_CHECK"),
@@ -1299,6 +1333,7 @@ export const zBrowserCheckPatch = z.object({
 	timeout: z.int().gte(1000).optional(),
 	paused: z.boolean().optional(),
 	muted: z.boolean().optional(),
+	domain_expiry_alerts: z.boolean().optional(),
 	url: z.url().nullish(),
 	text_to_search_for: z.string().max(4000).optional(),
 	headers: z.record(z.string(), z.string()).optional(),
@@ -1602,6 +1637,8 @@ export const zExpandedCheck = zCheck.and(
 		pushover_alerts: z.array(z.string()),
 		oncall_alerts: z.array(z.string()),
 		webhook_alerts: z.array(z.string()),
+		domain_expiry_alerts: z.boolean(),
+		domain_expiry: zDomainExpiry,
 	}),
 );
 
@@ -1643,6 +1680,7 @@ export const zCheckInput = z.object({
 	recovery_period_seconds: z.int().gte(0).optional().default(180),
 	reminder_alert_interval_minutes: z.int().gte(-1).optional().default(1440),
 	timeout: z.int().gte(1000).optional().default(10000),
+	domain_expiry_alerts: z.boolean().optional(),
 	url: z.url().nullish(),
 	text_to_search_for: z.string().max(4000).optional(),
 	type: z
@@ -1719,6 +1757,7 @@ export const zCheckPatch = z.object({
 	timeout: z.int().gte(1000).optional(),
 	paused: z.boolean().optional(),
 	muted: z.boolean().optional(),
+	domain_expiry_alerts: z.boolean().optional(),
 	url: z.url().nullish(),
 	text_to_search_for: z.string().max(4000).optional(),
 	type: z.enum(["UPTIME_CHECK", "BROWSER_CHECK"]).optional(),
