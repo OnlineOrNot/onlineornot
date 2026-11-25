@@ -1,5 +1,18 @@
 # onlineornot
 
+## 2.1.0
+
+### Minor Changes
+
+- [#153](https://github.com/OnlineOrNot/onlineornot/pull/153) [`eba72a1`](https://github.com/OnlineOrNot/onlineornot/commit/eba72a1709702bdba4329dc120c548a7a7379eb6) Thanks [@dolly-session-bot](https://github.com/apps/dolly-session-bot)! - feature: Add `--domain-expiry-alerts` to check create and update commands
+
+  `checks http|dns|tcp create` and `update` accept `--domain-expiry-alerts` and `--no-domain-expiry-alerts`. When alerts are on, the check's alert recipients get an email 30, 14, 7 and 1 day before the target's registered domain expires, and again if it expires. Updates send the field only when you pass the flag. Check output includes `domain_expiry_alerts` and the `domain_expiry` summary. If the target has no registered domain, the API's validation error is printed. Browser checks run scripts, so `checks browser` commands do not offer the flag.
+
+### Patch Changes
+
+- Updated dependencies [[`eba72a1`](https://github.com/OnlineOrNot/onlineornot/commit/eba72a1709702bdba4329dc120c548a7a7379eb6)]:
+  - @onlineornot/api@0.14.0
+
 ## 2.0.4
 
 ### Patch Changes
