@@ -41,7 +41,7 @@
 				"auth_password",
 				"script"
 			],
-			"omitFlags": ["type"],
+			"omitFlags": ["type", "domain_expiry_alerts"],
 			"requireBodyAnyOf": ["url", "script"]
 		},
 		{
@@ -1553,7 +1553,7 @@
 				"auth_password",
 				"script"
 			],
-			"omitFlags": [],
+			"omitFlags": ["domain_expiry_alerts"],
 			"requireBodyAnyOf": []
 		},
 		{

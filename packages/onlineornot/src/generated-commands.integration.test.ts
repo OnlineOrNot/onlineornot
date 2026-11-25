@@ -2252,12 +2252,6 @@ describe("domain expiry alerts through the executable", () => {
 			body: { name: "Site", url: "https://example.com" },
 		},
 		{
-			group: "browser",
-			path: "browser",
-			required: ["--name", "Site", "--url", "https://example.com"],
-			body: { name: "Site", url: "https://example.com" },
-		},
-		{
 			group: "tcp",
 			path: "tcp",
 			required: [
@@ -2340,6 +2334,25 @@ describe("domain expiry alerts through the executable", () => {
 			]);
 			expect(renamed.code).toBe(0);
 			expect(JSON.parse(requests[1].body)).toEqual({ name: "Renamed" });
+		},
+	);
+
+	it.each([
+		["create", "--name", "Checkout", "--script", "test()"],
+		["update", "check1234"],
+	])(
+		"does not offer the flag on browser %s because browser checks are scripts",
+		async (...args) => {
+			const result = await runCli([
+				"checks",
+				"browser",
+				...args,
+				"--domain-expiry-alerts",
+			]);
+			expect(result.code).toBe(1);
+			expect(result.stdout).toBe("");
+			expect(result.stderr).toContain("domain-expiry-alerts");
+			expect(requests).toHaveLength(0);
 		},
 	);
 

@@ -213,7 +213,7 @@
 				"auth_password",
 				"script"
 			],
-			"omitFlags": ["type"],
+			"omitFlags": ["type", "domain_expiry_alerts"],
 			"requireBodyAnyOf": ["url", "script"]
 		},
 		"getBrowserCheck": {
@@ -238,7 +238,8 @@
 				"auth_username",
 				"auth_password",
 				"script"
-			]
+			],
+			"omitFlags": ["domain_expiry_alerts"]
 		},
 		"deleteBrowserCheck": {
 			"status": "deferred",
