@@ -477,10 +477,6 @@ export const command = createApiCommand(
 				paused:
 					input.body?.["paused"] === undefined ? undefined : body["paused"],
 				muted: input.body?.["muted"] === undefined ? undefined : body["muted"],
-				domain_expiry_alerts:
-					input.body?.["domain_expiry_alerts"] === undefined
-						? undefined
-						: body["domain_expiry_alerts"],
 				url: input.body?.["url"] === undefined ? undefined : body["url"],
 				text_to_search_for:
 					input.body?.["text_to_search_for"] === undefined

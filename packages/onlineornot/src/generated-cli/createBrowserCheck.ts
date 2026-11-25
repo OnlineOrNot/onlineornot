@@ -456,10 +456,6 @@ export const command = createApiCommand(
 						: body["reminder_alert_interval_minutes"],
 				timeout:
 					input.body?.["timeout"] === undefined ? undefined : body["timeout"],
-				domain_expiry_alerts:
-					input.body?.["domain_expiry_alerts"] === undefined
-						? undefined
-						: body["domain_expiry_alerts"],
 				url: input.body?.["url"] === undefined ? undefined : body["url"],
 				text_to_search_for:
 					input.body?.["text_to_search_for"] === undefined

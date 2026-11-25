@@ -1573,7 +1573,6 @@ export const vBrowserCheckInput = v.strictObject({
 		1440,
 	),
 	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000)), 10000),
-	domain_expiry_alerts: v.optional(v.boolean()),
 	url: v.nullish(v.pipe(v.string(), v.url())),
 	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
 	type: v.optional(v.picklist(["BROWSER_CHECK"]), "BROWSER_CHECK"),
@@ -1650,7 +1649,6 @@ export const vBrowserCheckPatch = v.strictObject({
 	timeout: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1000))),
 	paused: v.optional(v.boolean()),
 	muted: v.optional(v.boolean()),
-	domain_expiry_alerts: v.optional(v.boolean()),
 	url: v.nullish(v.pipe(v.string(), v.url())),
 	text_to_search_for: v.optional(v.pipe(v.string(), v.maxLength(4000))),
 	headers: v.optional(

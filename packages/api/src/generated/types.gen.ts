@@ -1892,10 +1892,6 @@ export type BrowserCheckInput = {
 	 */
 	timeout?: number;
 	/**
-	 * Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.
-	 */
-	domain_expiry_alerts?: boolean;
-	/**
 	 * URL to load for URL-based browser checks. Optional when script is provided.
 	 */
 	url?: string | null;
@@ -2021,10 +2017,6 @@ export type BrowserCheckPatch = {
 	 * Suppresses alerts without stopping checks.
 	 */
 	muted?: boolean;
-	/**
-	 * Alert before the registered domain of the check’s target expires: the URL host, TCP hostname or DNS domain, reduced to the registered domain (https://api.example.com becomes example.com). Alerts go to the check’s email alert recipients at 30, 14, 7 and 1 day before expiry and when it expires, once per organization and domain. Requires a target with a registered domain; IP addresses and hosting providers’ subdomains have none. Defaults to false.
-	 */
-	domain_expiry_alerts?: boolean;
 	/**
 	 * URL to check
 	 */
